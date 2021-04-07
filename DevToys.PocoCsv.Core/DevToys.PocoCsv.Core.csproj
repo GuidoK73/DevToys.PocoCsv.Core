@@ -5,6 +5,9 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>- Stream csv lines into a poco object.
 - Query large csv files.</Description>
+    <PackageProjectUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
   </PropertyGroup>
 
 </Project>
