@@ -8,6 +8,9 @@
     <PackageProjectUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
+    <Authors>GuidoK73</Authors>
+    <Company />
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
