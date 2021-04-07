@@ -10,4 +10,8 @@
     <RepositoryType>Git</RepositoryType>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>E:\DEV\GIT\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core.xml</DocumentationFile>
+  </PropertyGroup>
+
 </Project>

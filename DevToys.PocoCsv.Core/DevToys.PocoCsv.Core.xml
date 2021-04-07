@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DevToys.PocoCsv.Core</name>
+    </assembly>
+    <members>
+        <member name="F:DevToys.PocoCsv.Core.CsvReader`1.BeforeSerialize">
+            <summary>
+            After Read, before Serialize. use this to prepare row values for serialization.
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.Culture">
+            <summary>
+            Culture info to use for serialization.
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.RowData.Skip">
+            <summary>
+            If true, the row will not be serialized, in this case a null element will occur in the enumerator.
+            </summary>
+        </member>
+    </members>
+</doc>
