@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -57,7 +58,15 @@ namespace DevToys.PocoCsv.Core
 
         public void Write(IEnumerable<T> rows)
         {
-            _Writer.BaseStream.Position = 0;
+            if (Append)
+            {
+                FileInfo _info = new FileInfo(_File);
+                _Writer.BaseStream.Position = _info.Length;
+            }
+            else
+            {
+                _Writer.BaseStream.Position = 0;
+            }
 
             List<int> columnIndexes = _Properties.Keys.ToList();
             int _max = columnIndexes.Max();

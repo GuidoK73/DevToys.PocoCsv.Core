@@ -57,7 +57,7 @@ namespace TestProject2
         {
             string file = @"D:\data2.csv";
 
-            using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(file) { Separator = ',', Append = false })
+            using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(file) { Separator = ',', Append = true })
             {
                 _writer.Open();
                 _writer.Write(Data());
