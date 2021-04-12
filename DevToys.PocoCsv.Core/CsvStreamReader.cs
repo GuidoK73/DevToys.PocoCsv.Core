@@ -6,19 +6,36 @@ namespace DevToys.PocoCsv.Core
 {
     public sealed class CsvStreamReader : StreamReader
     {
-        public CsvStreamReader(string path) : base(path, true)
-        {
-        }
 
-        public CsvStreamReader(Stream stream) : base(stream, true)
-        {
-        }
+        public CsvStreamReader(Stream stream) : base(stream) { }
+
+        public CsvStreamReader(string path) : base(path) { }
+
+        public CsvStreamReader(Stream stream, bool detectEncodingFromByteOrderMarks) : base(stream, detectEncodingFromByteOrderMarks) { }
+
+        public CsvStreamReader(Stream stream, Encoding encoding) : base(stream, encoding) { }
+
+        public CsvStreamReader(string path, bool detectEncodingFromByteOrderMarks) : base(path, detectEncodingFromByteOrderMarks) { }
+
+        public CsvStreamReader(string path, Encoding encoding) : base(path, encoding) { }
+
+        public CsvStreamReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks) : base(stream, encoding, detectEncodingFromByteOrderMarks) { }
+
+        public CsvStreamReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks) : base(path, encoding, detectEncodingFromByteOrderMarks) { }
+
+        public CsvStreamReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize) : base(stream, encoding, detectEncodingFromByteOrderMarks, bufferSize) { }
+
+        public CsvStreamReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize) : base(path, encoding, detectEncodingFromByteOrderMarks, bufferSize) { }
+
+        public CsvStreamReader(Stream stream, Encoding? encoding = null, bool detectEncodingFromByteOrderMarks = true, int bufferSize = -1, bool leaveOpen = false) : base(stream,  encoding = null,  detectEncodingFromByteOrderMarks = true, bufferSize = -1,  leaveOpen = false) { }
+
 
         private enum State { First = 0, Normal = 1, Escaped = 2 }
 
         public bool EndOfCsvStream => (BaseStream.Position >= BaseStream.Length);
 
         public char Separator { get; set; } = ',';
+
 
         public string[] ReadCsvLine()
         {

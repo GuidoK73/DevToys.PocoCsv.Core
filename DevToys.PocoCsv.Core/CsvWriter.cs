@@ -7,25 +7,25 @@ using System.Text;
 
 namespace DevToys.PocoCsv.Core
 {
-    public class CsvReader<T> : IDisposable where T : new()
+    public class CsvWriter<T> : IDisposable where T : new()
     {
         /// <summary>
         /// After Read, before Serialize. use this to prepare row values for serialization.
         /// </summary>
         public Action<RowData> BeforeSerialize = delegate { };
 
-
         private string[] _CurrentRow = null;
         private string _File = null;
         private Dictionary<int, PropertyInfo> _Properties = new Dictionary<int, PropertyInfo>();
-        private CsvStreamReader _Reader;
+        private CsvStreamWriter _Writer;
 
-        public CsvReader(string file)
+
+        public CsvWriter(string file)
         {
             _File = file;
         }
 
-        public CsvReader(string file, Action<RowData> beforeSerialize)
+        public CsvWriter(string file, Action<RowData> beforeSerialize)
         {
             _File = file;
             BeforeSerialize = beforeSerialize;
@@ -35,78 +35,50 @@ namespace DevToys.PocoCsv.Core
         /// Culture info to use for serialization.
         /// </summary>
         public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
+
         public char Separator { get; set; } = ',';
+
+        public bool Append { get; set; } = false;
 
         public Encoding Encoding { get; set; } = Encoding.Default;
 
         public void Dispose()
         {
             GC.SuppressFinalize(this);
-            _Reader.Close();
+            _Writer.Close();
         }
 
         public void Open()
         {
             Init();
-            _Reader = new CsvStreamReader(_File, Encoding);
-            _Reader.Separator = Separator;
+            _Writer = new CsvStreamWriter(_File, Append, Encoding);
+            _Writer.Separator = Separator;
         }
 
-        public IEnumerable<T> Rows()
+        public void Write(IEnumerable<T> rows)
         {
-            _Reader.BaseStream.Position = 0;
+            _Writer.BaseStream.Position = 0;
 
-            int _rowNumber = -1;
+            List<int> columnIndexes = _Properties.Keys.ToList();
+            int _max = columnIndexes.Max();
 
-            while (!_Reader.EndOfCsvStream)
+            string[] _data = new string[_max + 1];
+
+            foreach (T item in rows)
             {
-                T _result = new T();
-                _CurrentRow = _Reader.ReadCsvLine();
-                _rowNumber++;
-
-                if (_CurrentRow.Length != 9)
+                for (int ii = 0; ii <= _max; ii++)
                 {
-                }
-
-                RowData _ea = new RowData() { Row = _CurrentRow, RowNumber = _rowNumber };
-                BeforeSerialize(_ea);
-
-                if (_ea.Skip)
-                {
-                    //yield return default;
-                    continue;
-                }
-
-                for (int ii = 0; ii < _ea.Row.Length; ii++)
-                {
-                    PropertyInfo _prop = _Properties[ii];
-                    string _value = _ea.Row[ii];
-                    try
+                    if (_Properties.ContainsKey(ii))
                     {
-                        _prop.SetValue(_result, Convert(_value, _prop.PropertyType, Culture));
+                        _data[ii] = (string)Convert(_Properties[ii].GetValue(item), typeof(string), Culture);
                     }
-                    catch
+                    else
                     {
+                        _data[ii] = string.Empty;
                     }
                 }
-
-                yield return _result;
+                _Writer.WriteCsvLine(_data);
             }
-        }
-
-        public string[] SampleRow()
-        {
-            string[] _result = null;
-            if (_Reader.BaseStream.Position == 0)
-            {
-                _result = _Reader.ReadCsvLine();
-                _Reader.BaseStream.Position = 0;
-            }
-            else
-            {
-                _result = _CurrentRow;
-            }
-            return _result;
         }
 
         private static object Convert(object value, Type target, CultureInfo culture)
