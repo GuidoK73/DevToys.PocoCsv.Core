@@ -14,11 +14,6 @@
             Culture info to use for serialization.
             </summary>
         </member>
-        <member name="F:DevToys.PocoCsv.Core.CsvWriter`1.BeforeSerialize">
-            <summary>
-            After Read, before Serialize. use this to prepare row values for serialization.
-            </summary>
-        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvWriter`1.Culture">
             <summary>
             Culture info to use for serialization.

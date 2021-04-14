@@ -10,12 +10,7 @@ namespace DevToys.PocoCsv.Core
 {
     public class CsvWriter<T> : IDisposable where T : new()
     {
-        /// <summary>
-        /// After Read, before Serialize. use this to prepare row values for serialization.
-        /// </summary>
-        public Action<RowData> BeforeSerialize = delegate { };
 
-        private string[] _CurrentRow = null;
         private string _File = null;
         private Dictionary<int, PropertyInfo> _Properties = new Dictionary<int, PropertyInfo>();
         private CsvStreamWriter _Writer;
@@ -25,13 +20,6 @@ namespace DevToys.PocoCsv.Core
         {
             _File = file;
         }
-
-        public CsvWriter(string file, Action<RowData> beforeSerialize)
-        {
-            _File = file;
-            BeforeSerialize = beforeSerialize;
-        }
-
         /// <summary>
         /// Culture info to use for serialization.
         /// </summary>
@@ -39,7 +27,7 @@ namespace DevToys.PocoCsv.Core
 
         public char Separator { get; set; } = ',';
 
-        public bool Append { get; set; } = false;
+        public bool Append { get; set; } = true;
 
         public Encoding Encoding { get; set; } = Encoding.Default;
 

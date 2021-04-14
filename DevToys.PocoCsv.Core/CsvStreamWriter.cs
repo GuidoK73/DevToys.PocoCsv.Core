@@ -29,8 +29,6 @@ namespace DevToys.PocoCsv.Core
 
         public void WriteCsvLine(params string[] values)
         {
-
-
             var _sb = new StringBuilder().Append((BaseStream.Position > 0) ? "\r\n" : "");
             for (int ii = 0; ii < values.Length; ii++)
                 _sb.Append(Esc(values[ii] ?? "")).Append(Separator);
