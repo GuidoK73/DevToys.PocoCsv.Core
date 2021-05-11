@@ -37,14 +37,14 @@ namespace TestProject2
     }
 
     [TestClass]
-    public class UnitTest2
+    public class UnitTestSimple
     {
         [TestMethod]
-        public void TestMethod2()
+        public void TestReaderSimple()
         {
             string file = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "data.csv");
 
-            using (CsvReader<CsvSimple> _reader = new CsvReader<CsvSimple>(file))
+            using (CsvReader<CsvSimple> _reader = new(file))
             {
                 _reader.Open();
 
@@ -57,7 +57,7 @@ namespace TestProject2
         {
             string file = @"D:\data2.csv";
 
-            using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(file) { Separator = ',', Append = true })
+            using (CsvWriter<CsvSimple> _writer = new(file) { Separator = ',', Append = true })
             {
                 _writer.Open();
                 _writer.Write(Data());
@@ -68,7 +68,7 @@ namespace TestProject2
         {
             for (int ii = 0; ii < 1000; ii++)
             {
-                CsvSimple _line = new CsvSimple()
+                CsvSimple _line = new()
                 {
                     AfBij = "bij",
                     Bedrag = "100",
@@ -81,5 +81,7 @@ namespace TestProject2
                 yield return _line;
             }
         }
+
+
     }
 }

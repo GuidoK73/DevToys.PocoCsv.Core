@@ -16,8 +16,8 @@ namespace DevToys.PocoCsv.Core
 
 
         private string[] _CurrentRow = null;
-        private string _File = null;
-        private Dictionary<int, PropertyInfo> _Properties = new Dictionary<int, PropertyInfo>();
+        private readonly string _File = null;
+        private Dictionary<int, PropertyInfo> _Properties = new();
         private CsvStreamReader _Reader;
 
         public CsvReader(string file)
@@ -37,19 +37,25 @@ namespace DevToys.PocoCsv.Core
         public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
         public char Separator { get; set; } = ',';
 
+        public bool DetectEncodingFromByteOrderMarks { get; set; } = true;
+
         public Encoding Encoding { get; set; } = Encoding.Default;
 
         public void Dispose()
         {
             GC.SuppressFinalize(this);
-            _Reader.Close();
+            Close();
         }
 
         public void Open()
         {
             Init();
-            _Reader = new CsvStreamReader(_File, Encoding);
-            _Reader.Separator = Separator;
+            _Reader = new CsvStreamReader(_File, Encoding, DetectEncodingFromByteOrderMarks)  { Separator = Separator };
+        }
+
+        public void Close()
+        {
+            _Reader.Close();
         }
 
         public IEnumerable<T> Rows()
@@ -64,23 +70,22 @@ namespace DevToys.PocoCsv.Core
                 _CurrentRow = _Reader.ReadCsvLine();
                 _rowNumber++;
 
-                if (_CurrentRow.Length != 9)
-                {
-                }
-
-                RowData _ea = new RowData() { Row = _CurrentRow, RowNumber = _rowNumber };
+                RowData _ea = new() { Row = _CurrentRow, RowNumber = _rowNumber };
                 BeforeSerialize(_ea);
 
                 if (_ea.Skip)
                 {
-                    //yield return default;
                     continue;
                 }
 
-                for (int ii = 0; ii < _ea.Row.Length; ii++)
+                foreach (int columnIndex in _Properties.Keys)
                 {
-                    PropertyInfo _prop = _Properties[ii];
-                    string _value = _ea.Row[ii];
+                    PropertyInfo _prop = _Properties[columnIndex];
+                    if (columnIndex > _ea.Row.Length -1)
+                    {
+                        throw new IndexOutOfRangeException($"Column Index {columnIndex} is out of range");
+                    }
+                    string _value = _ea.Row[columnIndex];
                     try
                     {
                         _prop.SetValue(_result, Convert(_value, _prop.PropertyType, Culture));
@@ -89,14 +94,13 @@ namespace DevToys.PocoCsv.Core
                     {
                     }
                 }
-
                 yield return _result;
             }
         }
 
         public string[] SampleRow()
         {
-            string[] _result = null;
+            string[] _result;
             if (_Reader.BaseStream.Position == 0)
             {
                 _result = _Reader.ReadCsvLine();

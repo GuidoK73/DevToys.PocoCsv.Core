@@ -39,14 +39,14 @@ namespace TestProject2
 
 
     [TestClass]
-    public class UnitTest1
+    public class UnitTestComplex
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TestReaderComplex()
         {
             string file = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "data.csv");
 
-            using (CsvReader<Csv> _reader = new CsvReader<Csv>(file))
+            using (CsvReader<Csv> _reader = new(file))
             {
                 _reader.Open();
                 _reader.BeforeSerialize += OnBeforeSerialize;
@@ -55,6 +55,7 @@ namespace TestProject2
 
                 foreach (Csv csv in _reader.Rows())
                 {
+                    Console.WriteLine(csv.Bedrag);
                 }
 
                 var _bij = _reader.Rows().Where(p => p.AfBij == "Bij").ToList();

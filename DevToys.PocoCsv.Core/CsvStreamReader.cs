@@ -27,7 +27,7 @@ namespace DevToys.PocoCsv.Core
 
         public CsvStreamReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize) : base(path, encoding, detectEncodingFromByteOrderMarks, bufferSize) { }
 
-        public CsvStreamReader(Stream stream, Encoding? encoding = null, bool detectEncodingFromByteOrderMarks = true, int bufferSize = -1, bool leaveOpen = false) : base(stream,  encoding = null,  detectEncodingFromByteOrderMarks = true, bufferSize = -1,  leaveOpen = false) { }
+        public CsvStreamReader(Stream stream, Encoding? encoding = null, bool detectEncodingFromByteOrderMarks = true, int bufferSize = -1, bool leaveOpen = false) : base(stream,  encoding,  detectEncodingFromByteOrderMarks, bufferSize,  leaveOpen) { }
 
 
         private enum State { First = 0, Normal = 1, Escaped = 2 }

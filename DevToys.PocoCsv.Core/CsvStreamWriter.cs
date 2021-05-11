@@ -1,29 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DevToys.PocoCsv.Core
 {
     public sealed class CsvStreamWriter : StreamWriter
     {
-        public CsvStreamWriter(Stream stream) : base(stream) { }
+        public CsvStreamWriter(Stream stream) : base(stream)
+        {
+        }
 
-        public CsvStreamWriter(string path) : base(path) { }
+        public CsvStreamWriter(string path) : base(path)
+        {
+        }
 
-        public CsvStreamWriter(Stream stream, Encoding encoding) : base(stream, encoding) { }
+        public CsvStreamWriter(Stream stream, Encoding encoding) : base(stream, encoding)
+        {
+        }
 
-        public CsvStreamWriter(string path, bool append) : base(path, append) { }
+        public CsvStreamWriter(string path, bool append) : base(path, append)
+        {
+        }
 
-        public CsvStreamWriter(Stream stream, Encoding encoding, int bufferSize) : base(stream,  encoding,  bufferSize) { }
+        public CsvStreamWriter(Stream stream, Encoding encoding, int bufferSize) : base(stream, encoding, bufferSize)
+        {
+        }
 
-        public CsvStreamWriter(string path, bool append, Encoding encoding) : base(path, append, encoding) { }
+        public CsvStreamWriter(string path, bool append, Encoding encoding) : base(path, append, encoding)
+        {
+        }
 
-        public CsvStreamWriter(Stream stream, Encoding? encoding = null, int bufferSize = -1, bool leaveOpen = false) : base(stream, encoding = null, bufferSize = -1, leaveOpen = false) { }
+        public CsvStreamWriter(Stream stream, Encoding? encoding = null, int bufferSize = -1, bool leaveOpen = false) : base(stream, encoding, bufferSize, leaveOpen)
+        {
+        }
 
-        public CsvStreamWriter(string path, bool append, Encoding encoding, int bufferSize) : base(path, append, encoding, bufferSize) { }
+        public CsvStreamWriter(string path, bool append, Encoding encoding, int bufferSize) : base(path, append, encoding, bufferSize)
+        {
+        }
 
         public char Separator { get; set; } = ',';
 

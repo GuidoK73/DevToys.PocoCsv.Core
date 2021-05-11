@@ -11,8 +11,8 @@ namespace DevToys.PocoCsv.Core
     public class CsvWriter<T> : IDisposable where T : new()
     {
 
-        private string _File = null;
-        private Dictionary<int, PropertyInfo> _Properties = new Dictionary<int, PropertyInfo>();
+        private readonly string _File = null;
+        private Dictionary<int, PropertyInfo> _Properties = new();
         private CsvStreamWriter _Writer;
 
 
@@ -40,15 +40,14 @@ namespace DevToys.PocoCsv.Core
         public void Open()
         {
             Init();
-            _Writer = new CsvStreamWriter(_File, Append, Encoding);
-            _Writer.Separator = Separator;
+            _Writer = new CsvStreamWriter(_File, Append, Encoding) { Separator = Separator };
         }
 
         public void Write(IEnumerable<T> rows)
         {
             if (Append)
             {
-                FileInfo _info = new FileInfo(_File);
+                FileInfo _info = new(_File);
                 _Writer.BaseStream.Position = _info.Length;
             }
             else
