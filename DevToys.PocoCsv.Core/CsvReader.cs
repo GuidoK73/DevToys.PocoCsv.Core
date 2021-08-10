@@ -67,7 +67,7 @@ namespace DevToys.PocoCsv.Core
             while (!_Reader.EndOfCsvStream)
             {
                 T _result = new T();
-                _CurrentRow = _Reader.ReadCsvLine();
+                _CurrentRow = _Reader.ReadCsvLine().ToArray();
                 _rowNumber++;
 
                 RowData _ea = new() { Row = _CurrentRow, RowNumber = _rowNumber };
@@ -103,7 +103,7 @@ namespace DevToys.PocoCsv.Core
             string[] _result;
             if (_Reader.BaseStream.Position == 0)
             {
-                _result = _Reader.ReadCsvLine();
+                _result = _Reader.ReadCsvLine().ToArray();
                 _Reader.BaseStream.Position = 0;
             }
             else

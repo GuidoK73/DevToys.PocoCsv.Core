@@ -37,10 +37,9 @@ namespace DevToys.PocoCsv.Core
         public char Separator { get; set; } = ',';
 
 
-        public string[] ReadCsvLine()
+        public IEnumerable<string> ReadCsvLine()
         {
             var _state = State.First;
-            var _result = new List<string>();
             var _sb = new StringBuilder();
 
             while (true)
@@ -48,7 +47,7 @@ namespace DevToys.PocoCsv.Core
                 var _char = (char)BaseStream.ReadByte();
                 if (_char == char.MaxValue || (_state == State.Normal && (_char == '\r' || _char == '\n')))
                 {
-                    _result.Add(_sb.ToString().Trim(new char[] { '"' }));
+                    yield return _sb.ToString().Trim(new char[] { '"' });
                     break;
                 }
                 if (_state == State.First)
@@ -59,7 +58,7 @@ namespace DevToys.PocoCsv.Core
                 }
                 if (_state == State.Normal && _char == Separator)
                 {
-                    _result.Add(_sb.ToString().Trim(new char[] { '"' }));
+                    yield return _sb.ToString().Trim(new char[] { '"' });
                     _sb.Clear();
                     continue;
                 }
@@ -68,7 +67,6 @@ namespace DevToys.PocoCsv.Core
 
                 _sb.Append(_char);
             }
-            return _result.ToArray();
         }
     }
 }
