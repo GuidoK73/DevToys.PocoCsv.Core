@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -43,7 +44,20 @@ namespace DevToys.PocoCsv.Core
         {
             var _sb = new StringBuilder().Append((BaseStream.Position > 0) ? "\r\n" : "");
             for (int ii = 0; ii < values.Length; ii++)
+            {
                 _sb.Append(Esc(values[ii] ?? "")).Append(Separator);
+            }
+            _sb.Length--;
+            BaseStream.Write(Encoding.Default.GetBytes(_sb.ToString()), 0, _sb.Length);
+        }
+
+        public void WriteCsvLine(IEnumerable<string> values)
+        {
+            var _sb = new StringBuilder().Append((BaseStream.Position > 0) ? "\r\n" : "");
+            foreach (string value in values)
+            {
+                _sb.Append(Esc(value ?? "")).Append(Separator);
+            }
             _sb.Length--;
             BaseStream.Write(Encoding.Default.GetBytes(_sb.ToString()), 0, _sb.Length);
         }

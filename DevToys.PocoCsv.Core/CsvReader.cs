@@ -14,7 +14,6 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public Action<RowData> BeforeSerialize = delegate { };
 
-
         private string[] _CurrentRow = null;
         private readonly string _File = null;
         private Dictionary<int, PropertyInfo> _Properties = new();

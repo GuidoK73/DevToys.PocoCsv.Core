@@ -6,5 +6,7 @@ namespace DevToys.PocoCsv.Core
     public class ColumnAttribute : Attribute
     {
         public int Index { get; set; }
+
+        public string WriteFormat { get; set; }
     }
 }
