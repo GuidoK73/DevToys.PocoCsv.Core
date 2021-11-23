@@ -3,18 +3,26 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>- Read/Write Stream csv lines into a poco object.
+    <Description>1.1.0
+- Speed optimizations
+
+1.0.5
+- Read/Write Stream csv lines into a poco object.
 - Query / Read / Write large csv files.</Description>
     <PackageProjectUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.0.5</Version>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>E:\DEV\GIT\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core.xml</DocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Delegates\" />
+  </ItemGroup>
 
 </Project>

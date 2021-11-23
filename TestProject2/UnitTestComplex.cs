@@ -1,3 +1,4 @@
+using Delegates;
 using DevToys.PocoCsv.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -28,13 +29,18 @@ namespace TestProject2
         public string AfBij { get; set; }
 
         [Column(Index = 6)]
-        public decimal Bedrag { get; set; }
+        public string Bedrag { get; set; }
 
         [Column(Index = 7)]
         public string MutatieSoort { get; set; }
 
         [Column(Index = 8)]
         public string Mededelingen { get; set; }
+    }
+
+    public class TestClass
+    {
+        public string MyProp { get; set; }
     }
 
 
@@ -49,7 +55,6 @@ namespace TestProject2
             using (CsvReader<Csv> _reader = new(file))
             {
                 _reader.Open();
-                _reader.BeforeSerialize += OnBeforeSerialize;
 
                 _reader.Culture = CultureInfo.GetCultureInfo("nl-NL");
 
@@ -58,26 +63,35 @@ namespace TestProject2
                     Console.WriteLine(csv.Bedrag);
                 }
 
+
+                var _x = _reader.Rows().ToList();
+
                 var _bij = _reader.Rows().Where(p => p.AfBij == "Bij").ToList();
+
+
             }
         }
 
-        // use this to prepare row values which can not be serialized directly.
-        private void OnBeforeSerialize(RowData r)
+
+
+
+        [TestMethod]
+        public void TestDelegates()
         {
-            if (r.Row.Length != 9)
-            {
-                r.Skip = true; // Skip invalid lines.
-                return;
-            }
-            
-            if (r.RowNumber == 0)
-            {
-                r.Skip = true; // Skip the header.
-                return;
-            }
-            
-            r.Row[0] = $"{r.Row[0].Substring(0, 4)}-{r.Row[0].Substring(4, 2)}-{r.Row[0].Substring(6, 2)}";  // Make the date castable.
+            Type _testClassType = typeof(TestClass);
+            TestClass _testClassInstance = new TestClass();
+            var _action = _testClassType.PropertySet<string>("MyProp");
+            _action(_testClassInstance, "New Test Value");
+
+
+            var _action2 = _testClassType.PropertySet("MyProp");
+            _action2(_testClassInstance, "New Test Value 2");
+
+            var _funcGet = _testClassType.PropertyGet("MyProp");
+            var _xxx = _funcGet(_testClassInstance);
+
+            Console.Write("X");
         }
+
     }
 }

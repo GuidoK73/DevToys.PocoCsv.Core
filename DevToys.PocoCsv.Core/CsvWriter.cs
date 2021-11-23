@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Delegates;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -13,6 +14,8 @@ namespace DevToys.PocoCsv.Core
 
         private readonly string _File = null;
         private Dictionary<int, PropertyInfo> _Properties = new();
+        private Dictionary<int, Func<object, object>> _ActionGetters = new();
+
         private CsvStreamWriter _Writer;
 
 
@@ -66,7 +69,10 @@ namespace DevToys.PocoCsv.Core
                 {
                     if (_Properties.ContainsKey(ii))
                     {
-                        _data[ii] = (string)Convert(_Properties[ii].GetValue(item), typeof(string), Culture);
+                        var _actionGet = _ActionGetters[ii];
+                        var _value = _actionGet(item);
+                        _data[ii] = (string)Convert(_value, typeof(string), Culture);
+                        //_data[ii] = (string)Convert(_Properties[ii].GetValue(item), typeof(string), Culture);
                     }
                     else
                     {
@@ -94,6 +100,11 @@ namespace DevToys.PocoCsv.Core
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
                 .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index })
                 .ToDictionary(p => p.Key, p => p.Value);
+
+            _ActionGetters = _type.GetProperties()
+                .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
+                .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index })
+                .ToDictionary(p => p.Key, p => _type.PropertyGet(p.Value.Name));
         }
     }
 }

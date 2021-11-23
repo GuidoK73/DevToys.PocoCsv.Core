@@ -36,7 +36,9 @@ namespace DevToys.PocoCsv.Core
 
         public char Separator { get; set; } = ',';
 
-
+        /// <summary>
+        /// Each iteration steps to the next cell till the end of the CSV line.
+        /// </summary>
         public IEnumerable<string> ReadCsvLine()
         {
             var _state = State.First;

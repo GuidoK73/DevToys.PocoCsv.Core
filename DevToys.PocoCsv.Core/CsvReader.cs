@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Delegates;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -12,22 +13,16 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// After Read, before Serialize. use this to prepare row values for serialization.
         /// </summary>
-        public Action<RowData> BeforeSerialize = delegate { };
-
         private string[] _CurrentRow = null;
         private readonly string _File = null;
-        private Dictionary<int, PropertyInfo> _Properties = new();
+        private PropertyInfo[] _Properties = null;
+        private Action<object, object>[] _ActionSetters = null;
         private CsvStreamReader _Reader;
+        
 
         public CsvReader(string file)
         {
             _File = file;
-        }
-
-        public CsvReader(string file, Action<RowData> beforeSerialize)
-        {
-            _File = file;
-            BeforeSerialize = beforeSerialize;
         }
 
         /// <summary>
@@ -57,6 +52,9 @@ namespace DevToys.PocoCsv.Core
             _Reader.Close();
         }
 
+        /// <summary>
+        /// Each iteration will read the next row.
+        /// </summary>
         public IEnumerable<T> Rows()
         {
             _Reader.BaseStream.Position = 0;
@@ -65,33 +63,24 @@ namespace DevToys.PocoCsv.Core
 
             while (!_Reader.EndOfCsvStream)
             {
-                T _result = new T();
-                _CurrentRow = _Reader.ReadCsvLine().ToArray();
+                T _result = new();
                 _rowNumber++;
 
-                RowData _ea = new() { Row = _CurrentRow, RowNumber = _rowNumber };
-                BeforeSerialize(_ea);
-
-                if (_ea.Skip)
+                int _columnIndex = 0;
+                foreach (string cell in _Reader.ReadCsvLine())
                 {
-                    continue;
-                }
-
-                foreach (int columnIndex in _Properties.Keys)
-                {
-                    PropertyInfo _prop = _Properties[columnIndex];
-                    if (columnIndex > _ea.Row.Length -1)
-                    {
-                        throw new IndexOutOfRangeException($"Column Index {columnIndex} is out of range");
-                    }
-                    string _value = _ea.Row[columnIndex];
+                    PropertyInfo _prop = _Properties[_columnIndex];
+                    var _setterAction = _ActionSetters[_columnIndex];
                     try
                     {
-                        _prop.SetValue(_result, Convert(_value, _prop.PropertyType, Culture));
+                        //_prop.SetValue(_result, Convert(cell, _prop.PropertyType, Culture));
+                        object _value = Convert(cell, _prop.PropertyType, Culture);
+                        _setterAction(_result, _value);
                     }
                     catch
                     {
                     }
+                    _columnIndex++;
                 }
                 yield return _result;
             }
@@ -120,15 +109,26 @@ namespace DevToys.PocoCsv.Core
 
         private void Init()
         {
-            if (_Properties.Count > 0)
+            if (_Properties != null)
                 return;
 
             var _type = typeof(T);
 
-            _Properties = _type.GetProperties()
+            int _max = _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
-                .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index })
-                .ToDictionary(p => p.Key, p => p.Value);
+                .Select(p => (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index).Max();
+
+            _Properties = new PropertyInfo[_max + 1];
+            _ActionSetters = new Action<object, object>[_max + 1];
+
+            foreach (var _property in _type.GetProperties()
+                .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
+                .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index })
+                )
+            {
+                _Properties[_property.Index] = _property.Property;
+                _ActionSetters[_property.Index] = _type.PropertySet(_property.Property.Name);
+            }
         }
     }
 }

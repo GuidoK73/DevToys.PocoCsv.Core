@@ -4,7 +4,7 @@
         <name>DevToys.PocoCsv.Core</name>
     </assembly>
     <members>
-        <member name="F:DevToys.PocoCsv.Core.CsvReader`1.BeforeSerialize">
+        <member name="F:DevToys.PocoCsv.Core.CsvReader`1._CurrentRow">
             <summary>
             After Read, before Serialize. use this to prepare row values for serialization.
             </summary>
@@ -14,15 +14,1345 @@
             Culture info to use for serialization.
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Rows">
+            <summary>
+            Each iteration will read the next row.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadCsvLine">
+            <summary>
+            Each iteration steps to the next cell till the end of the CSV line.
+            </summary>
+        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvWriter`1.Culture">
             <summary>
             Culture info to use for serialization.
             </summary>
         </member>
-        <member name="P:DevToys.PocoCsv.Core.RowData.Skip">
+        <member name="T:Delegates.CustomDelegates.StructGetFunc`2">
             <summary>
-            If true, the row will not be serialized, in this case a null element will occur in the enumerator.
+            Delegates for returning value of property from structure type by reference.
             </summary>
+            <typeparam name="T">Type of structure</typeparam>
+            <typeparam name="TProp">Property type</typeparam>
+            <param name="i">Structure type instance</param>
+            <returns>Value of a property</returns>
+        </member>
+        <member name="T:Delegates.CustomDelegates.StructIndex1GetFunc`3">
+            <summary>
+            Delegates for returning value of indexer with single index parameter from structure type by reference.
+            </summary>
+            <typeparam name="T">Structure type</typeparam>
+            <typeparam name="TI1">Index parameter type</typeparam>
+            <typeparam name="TReturn">Index return type</typeparam>
+            <param name="instance">Structure type instance</param>
+            <param name="index">Index parameter</param>
+            <returns>Value of indexer at given index</returns>
+        </member>
+        <member name="T:Delegates.CustomDelegates.StructIndex1SetAction`3">
+            <summary>
+            Delegates for setting value of indexer with single index parameter in structure type by reference.
+            </summary>
+            <typeparam name="T">Structure type</typeparam>
+            <typeparam name="TI1">Index parameter type</typeparam>
+            <typeparam name="TProp">Property type</typeparam>
+            <param name="i">Structure type instance</param>
+            <param name="i1">Index parameter</param>
+            <param name="value">Value of indexer to set at given parameter</param>
+        </member>
+        <member name="T:Delegates.CustomDelegates.StructIndex2GetFunc`4">
+            <summary>
+            Delegates for returning value of indexer with two index parameters from structure type by reference.
+            </summary>
+            <typeparam name="T">Structure type</typeparam>
+            <typeparam name="TI1">First index parameter type</typeparam>
+            <typeparam name="TI2">Second index parameter type</typeparam>
+            <typeparam name="TProp">Property type</typeparam>
+            <param name="i">Structure type instance</param>
+            <param name="i1">First index parameter</param>
+            <param name="i2">Second index parameter</param>
+            <returns>Value of indexer at given index parameters</returns>
+        </member>
+        <member name="T:Delegates.CustomDelegates.StructIndex2SetAction`4">
+            <summary>
+            Delegates for setting value of indexer with two index parameters in structure type by reference.
+            </summary>
+            <typeparam name="T">Structure type</typeparam>
+            <typeparam name="TI1">First index parameter type</typeparam>
+            <typeparam name="TI2">Second index parameter type</typeparam>
+            <typeparam name="TProp">Property type</typeparam>
+            <param name="i">Structure type instance</param>
+            <param name="i1">First index parameter</param>
+            <param name="i2">Second index parameter</param>
+            <param name="value">Value of indexer to set at given index parameters</param>
+        </member>
+        <member name="T:Delegates.CustomDelegates.StructIndex3GetFunc`5">
+            <summary>
+            Delegates for returning value of indexer with three index parameters from structure type by reference.
+            </summary>
+            <typeparam name="T">Structure type</typeparam>
+            <typeparam name="TI1">First index parameter type</typeparam>
+            <typeparam name="TI2">Second index parameter type</typeparam>
+            <typeparam name="TI3">Third index parameter type</typeparam>
+            <typeparam name="TProp">Property type</typeparam>
+            <param name="i">Structure type instance</param>
+            <param name="i1">First index parameter</param>
+            <param name="i2">Second index parameter</param>
+            <param name="i3">Third index parameter</param>
+            <returns>Value of indexer at given index parameters</returns>
+        </member>
+        <member name="T:Delegates.CustomDelegates.StructIndex3SetAction`5">
+            <summary>
+            Delegates for setting value of indexer with three index parameters in structure type by reference.
+            </summary>
+            <typeparam name="T">Structure type</typeparam>
+            <typeparam name="TI1">First index parameter type</typeparam>
+            <typeparam name="TI2">Second index parameter type</typeparam>
+            <typeparam name="TI3">Third index parameter type</typeparam>
+            <typeparam name="TProp">Property type</typeparam>
+            <param name="i">Structure type instance</param>
+            <param name="i1">First index parameter</param>
+            <param name="i2">Second index parameter</param>
+            <param name="i3">Third index parameter</param>
+            <param name="value">Value of indexer to set at given index parameters</param>
+        </member>
+        <member name="T:Delegates.CustomDelegates.StructIndexesSetAction`2">
+            <summary>
+            Delegates for setting value of indexer with unspecified index parameters in structure type by reference.
+            </summary>
+            <typeparam name="T">Structure type</typeparam>
+            <typeparam name="TValue">Value type</typeparam>
+            <param name="instance">Structure type instance</param>
+            <param name="indexes">Set of indexer index parameters</param>
+            <param name="value">Value of indexer to set at given index parameters</param>
+        </member>
+        <member name="T:Delegates.CustomDelegates.StructSetAction`2">
+            <summary>
+            Delegates for setting value of indexer with unspecified index parameters in structure type.
+            </summary>
+            <typeparam name="T">Structure type</typeparam>
+            <typeparam name="TProp">Property type</typeparam>
+            <param name="i">Structure type instance</param>
+            <param name="value">Value of indexer to set at given index parameters</param>
+            <returns>Changed structure value</returns>
+        </member>
+        <member name="T:Delegates.StructSetActionRef`2">
+            <summary>
+            Delegates for setting value of indexer with single index parameter in structure type by reference.
+            </summary>
+            <typeparam name="T">Structure type</typeparam>
+            <typeparam name="TProp">Property type</typeparam>
+            <param name="i">Structure type instance</param>
+            <param name="value">Value of indexer to set at given index parameters</param>
+        </member>
+        <member name="T:Delegates.DelegateFactory">
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+            <summary>
+            Creates delegates for types members
+            </summary>
+        </member>
+        <member name="M:Delegates.DelegateFactory.Contructor``1">
+            <summary>
+            Creates delegate for type constructor. Constructed type has to be return type of delegate.
+            </summary>
+            <typeparam name="TDelegate">Constructor delegate type. It should have parameters of searched constructor 
+            and return constructed type.</typeparam>
+            <returns>Requested constructor delegate</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.Contructor(System.Type,System.Type[])">
+            <summary>
+            Creates delegate for type constructor. Delegate takes array of objects as parameters of a constructor and
+            returns constructed type as object.
+            </summary>
+            <param name="source">Type to be constructed</param>
+            <param name="ctrArgs">Array of types of constructor parameters</param>
+            <returns>Constructor delegate</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.Contructor``1(System.Type)">
+            <summary>
+            Creates delegate for type constructor returns constructed type as object.
+            </summary>
+            <typeparam name="TDelegate">Type of delegate to return. It should have parameters of searched 
+            constructor and return constructed type.</typeparam>
+            <param name="source">Type to be constructed</param>
+            <returns>Constructor delegate</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.DefaultContructor``1">
+            <summary>
+            Creates delegate for type default constructor.
+            </summary>
+            <typeparam name="TSource">Type of instance to be created by delegate.</typeparam>
+            <returns>Default constructor delegate</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.DefaultContructor(System.Type)">
+            <summary>
+            Creates delegate for type default constructor.
+            </summary>
+            <param name="type">Type to be constructed</param>
+            <returns>Default constructor delegate</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.EventAdd``2(System.String)">
+            <summary>
+            Creates delegate for adding event handler with source instance type and event argument type
+            </summary>
+            <typeparam name="TSource">Source type with event</typeparam>
+            <typeparam name="TEventArgs">Event argument type</typeparam>
+            <param name="eventName">Name of an event</param>
+            <returns>Delegate for event add accessor</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.EventAdd``1(System.Type,System.String)">
+            <summary>
+            Creates delegate for adding event handler with source instance as object and event argument type
+            </summary>
+            <typeparam name="TEventArgs">Event argument type</typeparam>
+            <param name="source">Source type with defined event</param>
+            <param name="eventName">Name of an event</param>
+            <returns>Delegate for event add accessor</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.EventAdd``1(System.String)">
+            <summary>
+            Creates delegate for adding event handler with source instance type and event argument as object
+            </summary>
+            <typeparam name="TSource">Source type with event</typeparam>
+            <param name="eventName">Name of an event</param>
+            <returns>Delegate for event add accessor</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.EventAdd(System.Type,System.String)">
+            <summary>
+            Creates delegate for adding event handler with source instance as object and event argument as object
+            </summary>
+            <param name="source">Source type with defined event</param>
+            <param name="eventName">Name of an event</param>
+            <returns>Delegate for event add accessor</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.EventRemove``1(System.Type,System.String)">
+            <summary>
+            Creates delegate for removing event handler with source instance as object and event argument type
+            </summary>
+            <typeparam name="TEventArgs">Event argument type</typeparam>
+            <param name="source">Source type with defined event</param>
+            <param name="eventName">Name of an event</param>
+            <returns>Delegate for event remove accessor</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.EventRemove``2(System.String)">
+            <summary>
+            Creates delegate for removing event handler with source instance type and event argument type
+            </summary>
+            <typeparam name="TSource">Source type with event</typeparam>
+            <typeparam name="TEventArgs">Event argument type</typeparam>
+            <param name="eventName">Name of an event</param>
+            <returns>Delegate for event remove accessor</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.EventRemove``1(System.String)">
+            <summary>
+            Creates delegate for removing event handler with source instance type and event argument as object
+            </summary>
+            <typeparam name="TSource">Source type with event</typeparam>
+            <param name="eventName">Name of an event</param>
+            <returns>Delegate for event remove accessor</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.EventRemove(System.Type,System.String)">
+            <summary>
+            Creates delegate for removing event handler with source instance as object and event argument as object
+            </summary>
+            <param name="source">Source type with defined event</param>
+            <param name="eventName">Name of an event</param>
+            <returns>Delegate for event remove accessor</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldGet``2(System.String)">
+            <summary>
+            Creates delegate for retrieving instance field value
+            </summary>
+            <typeparam name="TSource">Source type with defined field</typeparam>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for retrieving instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldGetStruct``2(System.String)">
+            <summary>
+            Creates delegate for retrieving instance field value from structure type by reference
+            </summary>
+            <typeparam name="TSource">Source value type with defined field</typeparam>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for retrieving instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldGet``1(System.Type,System.String)">
+            <summary>
+            Creates delegate for retrieving instance field value
+            </summary>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="source">Type with defined field</param>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for retrieving instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldGet(System.Type,System.String)">
+            <summary>
+            Creates delegate for retrieving instance field value as object from source instance as object
+            </summary>
+            <param name="source">Type with defined field</param>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for retrieving instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldGet2``1(System.Type,System.String)">
+            <summary>
+            Creates delegate for retrieving instance field value from source instance as object
+            </summary>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="source">Type with defined field</param>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for retrieving instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldSetStructRef``1(System.Type,System.String)">
+            <summary>
+            Creates delegate for setting instance field value in structure type passed by reference as object
+            </summary>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="source"></param>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for setting instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldSetStruct``1(System.Type,System.String)">
+            <summary>
+            Creates delegate for setting instance field value in structure passed by value as object.
+            Returns new value with changed field value.
+            </summary>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="source">Type with defined field</param>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for setting instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldSet``1(System.Type,System.String)">
+            <summary>
+            Creates delegate for setting instance field value in instance by passed by object
+            </summary>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="source">Type with defined field</param>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for setting instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldSetStruct``2(System.String)">
+            <summary>
+            Creates delegate for setting instance field value in structure by passed by type as reference
+            </summary>
+            <typeparam name="TSource">Source type with defined field</typeparam>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for setting instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldSet``2(System.String)">
+            <summary>
+            Creates delegate for setting instance field value in instance
+            </summary>
+            <typeparam name="TSource">Source type with defined field</typeparam>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for setting instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldSet(System.Type,System.String)">
+            <summary>
+            Creates delegate for setting instance field value as object in instance as object
+            </summary>
+            <param name="source">Type with defined field</param>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for setting instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldSetStructRef(System.Type,System.String)">
+            <summary>
+            Creates delegate for setting instance field value as object in structure passed by reference as object
+            </summary>
+            <param name="source">Type with defined field</param>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for setting instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldSetStruct(System.Type,System.String)">
+            <summary>
+            Creates delegate for setting instance field value as object in structure passed as object.
+            Returns new value with changed field value.
+            </summary>
+            <param name="source">Type with defined field</param>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for setting instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldSetWithCast``1(System.Type,System.String)">
+            <summary>
+            Creates delegate for setting instance field value in instance as object
+            </summary>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="source">Type with defined field</param>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for setting instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.FieldSetWithCast``2(System.String)">
+            <summary>
+            Creates delegate for setting instance field value in instance
+            </summary>
+            <typeparam name="TSource">Source type with defined field</typeparam>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for setting instance field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerGet``3">
+            <summary>
+            Creates delegate for indexer get accessor at specified index
+            </summary>
+            <typeparam name="TSource">Source type with defined indexer</typeparam>
+            <typeparam name="TReturn">Indexer return type</typeparam>
+            <typeparam name="TIndex">Index parameter type</typeparam>
+            <returns>Delegate for indexer get accessor at specified index</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerGet``4">
+            <summary>
+            Creates delegate for indexer get accessor at specified index
+            </summary>
+            <typeparam name="TSource">Source type with defined indexer</typeparam>
+            <typeparam name="TReturn">Indexer return type</typeparam>
+            <typeparam name="TIndex">First index parameter type</typeparam>
+            <typeparam name="TIndex2">Second index parameter type</typeparam>
+            <returns>Delegate for indexer get accessor with two indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerGet``5">
+            <summary>
+            Creates delegate for indexer get accessor at specified three indexes from instance
+            </summary>
+            <typeparam name="TSource">Source type with defined indexer</typeparam>
+            <typeparam name="TReturn">Indexer return type</typeparam>
+            <typeparam name="TIndex">First index parameter type</typeparam>
+            <typeparam name="TIndex2">Second index parameter type</typeparam>
+            <typeparam name="TIndex3">Third index parameter type</typeparam>
+            <returns>Delegate for indexer get accessor with two indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerGet``2(System.Type)">
+            <summary>
+            Creates delegate for indexer get accessor at specified index from instance as object
+            </summary>
+            <typeparam name="TReturn">Indexer return type</typeparam>
+            <typeparam name="TIndex">Index parameter type</typeparam>
+            <param name="source">Type with defined indexer</param>
+            <returns>Delegate for indexer get accessor at specified index</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerGet``3(System.Type)">
+            <summary>
+            Creates delegate for indexer get accessor at specified two indexes from instance as object
+            </summary>
+            <typeparam name="TReturn">Indexer return type</typeparam>
+            <typeparam name="TIndex">First index parameter type</typeparam>
+            <typeparam name="TIndex2">Second index parameter type</typeparam>
+            <param name="source">Type with defined indexer</param>
+            <returns>Delegate for indexer get accessor with two indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerGet``4(System.Type)">
+            <summary>
+            Creates delegate for indexer get accessor at specified three indexes from instance as object
+            </summary>
+            <typeparam name="TReturn">Indexer return type</typeparam>
+            <typeparam name="TIndex">First index parameter type</typeparam>
+            <typeparam name="TIndex2">Second index parameter type</typeparam>
+            <typeparam name="TIndex3">Third index parameter type</typeparam>
+            <param name="source">Type with defined indexer</param>
+            <returns>Delegate for indexer get accessor with three indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerGet(System.Type,System.Type,System.Type[])">
+            <summary>
+            Creates delegate for indexer get accessor with unspecified number of indexes from instance as object
+            </summary>
+            <param name="source">Type with defined indexer</param>
+            <param name="returnType">Return type of indexer</param>
+            <param name="indexTypes">Collection of index parameters types</param>
+            <returns>Delegate for indexer get accessor with array of indexes</returns>
+            <remarks>
+            <paramref name="returnType"/> parameter is not necessary, but for compatibility new method was created.
+            This one will be removed in next release.
+            </remarks>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerGetNew(System.Type,System.Type[])">
+            <summary>
+            Creates delegate for indexer get accessor with unspecified number of indexes from instance as object
+            </summary>
+            <param name="source">Type with defined indexer</param>
+            <param name="indexTypes">Collection of index parameters types</param>
+            <returns>Delegate for indexer get accessor with array of indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerGetStruct``3">
+            <summary>
+            Creates delegate for indexer get accessor at specified index from structure passed by reference
+            </summary>
+            <typeparam name="TSource">Source type with defined indexer</typeparam>
+            <typeparam name="TReturn">Indexer return type</typeparam>
+            <typeparam name="TIndex">Index parameter type</typeparam>
+            <returns>Delegate for indexer get accessor at specified index</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerGetStruct``4">
+            <summary>
+            Creates delegate for indexer get accessor at specified two indexes from structure passed by reference
+            </summary>
+            <typeparam name="TSource">Source type with defined indexer</typeparam>
+            <typeparam name="TReturn">Indexer return type</typeparam>
+            <typeparam name="TIndex">First index parameter type</typeparam>
+            <typeparam name="TIndex2">Second index parameter type</typeparam>
+            <returns>Delegate for indexer get accessor with two indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerGetStruct``5">
+            <summary>
+            Creates delegate for indexer get accessor at specified three indexes from structure passed by reference
+            </summary>
+            <typeparam name="TSource">Source type with defined indexer</typeparam>
+            <typeparam name="TReturn">Indexer return type</typeparam>
+            <typeparam name="TIndex">First index parameter type</typeparam>
+            <typeparam name="TIndex2">Second index parameter type</typeparam>
+            <typeparam name="TIndex3">Third index parameter type</typeparam>
+            <returns>Delegate for indexer get accessor with two indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.DelegateIndexerGet(System.Type,System.Type[])">
+            <summary>
+            Creates delegate for indexer get accessor
+            </summary>
+            <param name="source">Type with defined indexer</param>
+            <param name="indexTypes">Collection of indexer index parameters</param>
+            <returns>Delegate for indexer get accessor</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerSet``2(System.Type)">
+            <summary>
+            Creates delegate for indexer set accessor at specified index from instance as object
+            </summary>
+            <typeparam name="TValue">Indexer value type</typeparam>
+            <typeparam name="TIndex">Index parameter type</typeparam>
+            <param name="source">Type with defined indexer</param>
+            <returns>Delegate for indexer set accessor with single index</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerSetStruct``2(System.Type)">
+            <summary>
+            Creates delegate for indexer set accessor at specified index from structure as object passed by reference
+            </summary>
+            <typeparam name="TValue">Indexer value type</typeparam>
+            <typeparam name="TIndex">Index parameter type</typeparam>
+            <param name="source">Type with defined indexer</param>
+            <returns>Delegate for indexer set accessor with single index</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerSet``3(System.Type)">
+            <summary>
+            Creates delegate for indexer set accessor at specified two indexes from instance as object
+            </summary>
+            <typeparam name="TValue">Indexer value type</typeparam>
+            <typeparam name="TIndex">First index parameter type</typeparam>
+            <typeparam name="TIndex2">Second index parameter type</typeparam>
+            <param name="source">Type with defined indexer</param>
+            <returns>Delegate for indexer set accessor with two indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerSetStruct``3(System.Type)">
+            <summary>
+            Creates delegate for indexer set accessor at specified two indexes from structure as object passed by reference
+            </summary>
+            <typeparam name="TValue">Indexer value type</typeparam>
+            <typeparam name="TIndex">First index parameter type</typeparam>
+            <typeparam name="TIndex2">Second index parameter type</typeparam>
+            <param name="source">Type with defined indexer</param>
+            <returns>Delegate for indexer set accessor with two indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerSet``4(System.Type)">
+            <summary>
+            Creates delegate for indexer set accessor at specified three indexes from instance as object
+            </summary>
+            <typeparam name="TValue">Indexer value type</typeparam>
+            <typeparam name="TIndex">First index parameter type</typeparam>
+            <typeparam name="TIndex2">Second index parameter type</typeparam>
+            <typeparam name="TIndex3">Third index parameter type</typeparam>
+            <param name="source">Type with defined indexer</param>
+            <returns>Delegate for indexer set accessor with three indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerSetStruct``4(System.Type)">
+            <summary>
+            Creates delegate for indexer set accessor at specified three indexes from structure as object
+            passed by reference
+            </summary>
+            <typeparam name="TValue">Indexer value type</typeparam>
+            <typeparam name="TIndex">First index parameter type</typeparam>
+            <typeparam name="TIndex2">Second index parameter type</typeparam>
+            <typeparam name="TIndex3">Third index parameter type</typeparam>
+            <param name="source">Type with defined indexer</param>
+            <returns>Delegate for indexer set accessor with three indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerSet``3">
+            <summary>
+            Creates delegate for indexer set accessor at specified three indexes from instance as object
+            </summary>
+            <typeparam name="TSource">Source type with defined indexer</typeparam>
+            <typeparam name="TValue">Indexer value type</typeparam>
+            <typeparam name="TIndex">Index parameter type</typeparam>
+            <returns>Delegate for indexer set accessor with specified index</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerSetStruct``3">
+            <summary>
+            Creates delegate for indexer set accessor at specified index from structure passed by reference
+            </summary>
+            <typeparam name="TSource">Source type with defined indexer</typeparam>
+            <typeparam name="TValue">Indexer value type</typeparam>
+            <typeparam name="TIndex">Index parameter type</typeparam>
+            <returns>Delegate for indexer set accessor with specified index</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerSet``4">
+            <summary>
+            Creates delegate for indexer set accessor with two indexes
+            </summary>
+            <typeparam name="TSource">Source type with defined indexer</typeparam>
+            <typeparam name="TValue">Indexer value type</typeparam>
+            <typeparam name="TIndex">First index parameter type</typeparam>
+            <typeparam name="TIndex2">Second index parameter type</typeparam>
+            <returns>Delegate for indexer set accessor with two indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerSetStruct``4">
+            <summary>
+            Creates delegate for indexer set accessor with two indexes from structure passed by reference
+            </summary>
+            <typeparam name="TSource">Source type with defined indexer</typeparam>
+            <typeparam name="TValue">Indexer value type</typeparam>
+            <typeparam name="TIndex">First index parameter type</typeparam>
+            <typeparam name="TIndex2">Second index parameter type</typeparam>
+            <returns>Delegate for indexer set accessor with two indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerSet``5">
+            <summary>
+            Creates delegate for indexer set accessor with three indexes from instance
+            </summary>
+            <typeparam name="TSource">Source type with defined indexer</typeparam>
+            <typeparam name="TValue">Indexer value type</typeparam>
+            <typeparam name="TIndex">First index parameter type</typeparam>
+            <typeparam name="TIndex2">Second index parameter type</typeparam>
+            <typeparam name="TIndex3">Third index parameter type</typeparam>
+            <returns>Delegate for indexer set accessor with three indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.IndexerSetStruct``5">
+            <summary>
+            Creates delegate for indexer set accessor with three indexes from structure passed by reference
+            </summary>
+            <typeparam name="TSource">Source type with defined indexer</typeparam>
+            <typeparam name="TValue">Indexer value type</typeparam>
+            <typeparam name="TIndex">First index parameter type</typeparam>
+            <typeparam name="TIndex2">Second index parameter type</typeparam>
+            <typeparam name="TIndex3">Third index parameter type</typeparam>
+            <returns>Delegate for indexer set accessor with three indexes</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.InstanceGenericMethod(System.Type,System.String,System.Type[],System.Type[])">
+            <summary>
+            Creates delegate to non-void generic instance method with unspecified number of parameters passed as array of objects from 
+            instance as object 
+            </summary>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <param name="paramsTypes">Types of parameters</param>
+            <param name="typeParams">Type parameters for generic instance method</param>
+            <returns>Delegate for non-void generic instance method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.InstanceGenericMethodVoid(System.Type,System.String,System.Type[],System.Type[])">
+            <summary>
+            Creates delegate to void generic instance method with unspecified number of parameters passed as array 
+            of objects from instance as object
+            </summary>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <param name="paramsTypes">Types of parameters</param>
+            <param name="typeParams">Type parameters for generic instance method</param>
+            <returns>Delegate for void generic instance method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.InstanceGenericMethod``1(System.Type,System.String,System.Type[],System.Type[])">
+            <summary>
+            Creates delegate to generic instance method with unspecified number of parameters passed as array 
+            of objects from instance as object. 
+            </summary>
+            <typeparam name="TDelegate">Either Action{object,object[]} or Function{object,object[],object}</typeparam>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <param name="paramsTypes">Types of parameters</param>
+            <param name="typeParams">Type parameters for generic instance method</param>
+            <returns>Delegate for void generic instance method</returns>
+            <remarks>
+            Intended for internal use.
+            </remarks>
+        </member>
+        <member name="M:Delegates.DelegateFactory.InstanceMethod(System.Type,System.String,System.Type[])">
+            <summary>
+            Creates delegate for non-void instance method with unspecified number of parameters passed as array of 
+            objects from instance as object
+            </summary>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <param name="paramsTypes">Types of parameters</param>
+            <returns>Delegate for non-void instance method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.InstanceMethod``2(System.String)">
+            <summary>
+            Creates delegate for generic instance method with single type parameter
+            </summary>
+            <typeparam name="TDelegate">Delegate compatible with instance method signature</typeparam>
+            <typeparam name="TParam1">Instance method type parameter</typeparam>
+            <param name="name">Name of method</param>
+            <returns>Delegate for instance method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.InstanceMethod``3(System.String)">
+            <summary>
+            Creates delegate for generic instance method with two type parameters
+            </summary>
+            <typeparam name="TDelegate">Delegate compatible with instance method signature</typeparam>
+            <typeparam name="TParam1">First instance method type parameter</typeparam>
+            <typeparam name="TParam2">Second instance method type parameter</typeparam>
+            <param name="name">Name of method</param>
+            <returns>Delegate for instance method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.InstanceMethod``4(System.String)">
+            <summary>
+            Creates delegate for generic instance method with three type parameters
+            </summary>
+            <typeparam name="TDelegate">Delegate compatible with instance method signature</typeparam>
+            <typeparam name="TParam1">First instance method type parameter</typeparam>
+            <typeparam name="TParam2">Second instance method type parameter</typeparam>
+            <typeparam name="TParam3">Third instance method type parameter</typeparam>
+            <param name="name">Name of method</param>
+            <returns>Delegate for instance method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.InstanceMethod``1(System.String,System.Type[])">
+            <summary>
+            Creates delegate for (generic) instance method
+            </summary>
+            <typeparam name="TDelegate">Delegate compatible with instance method signature</typeparam>
+            <param name="name">Name of method</param>
+            <param name="typeParameters">Collection of type parameters for generic method</param>
+            <returns>Delegate for instance method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.InstanceMethod``2(System.Type,System.String)">
+            <summary>
+            Creates delegate for generic instance method with single type parameter
+            </summary>
+            <typeparam name="TDelegate">
+            Delegate compatible with instance method signature or with object as source
+            </typeparam>
+            <typeparam name="TParam1">Type parameter of generic method</typeparam>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <returns>Delegate for generic instance method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.InstanceMethod``3(System.Type,System.String)">
+            <summary>
+            Creates delegate for generic instance method with two type parameters
+            </summary>
+            <typeparam name="TDelegate">
+            Delegate compatible with instance method signature or with object as source
+            </typeparam>
+            <typeparam name="TParam1">First type parameter of generic method</typeparam>
+            <typeparam name="TParam2">Second type parameter of generic method</typeparam>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <returns>Delegate for generic instance method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.InstanceMethod``4(System.Type,System.String)">
+            <summary>
+            Creates delegate for generic instance method with three type parameters
+            </summary>
+            <typeparam name="TDelegate">
+            Delegate compatible with instance method signature or with object as source
+            </typeparam>
+            <typeparam name="TParam1">First type parameter of generic method</typeparam>
+            <typeparam name="TParam2">Second type parameter of generic method</typeparam>
+            <typeparam name="TParam3">Third type parameter of generic method</typeparam>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <returns>Delegate for generic instance method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.InstanceMethod``1(System.Type,System.String,System.Type[])">
+            <summary>
+            Creates delegate for (generic) instance method with three type parameters
+            </summary>
+            <typeparam name="TDelegate">
+            Delegate compatible with instance method signature or with object as source
+            </typeparam>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <param name="typeParams">Collection of type parameters for generic method</param>
+            <returns>Delegate for (generic) instance method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.InstanceMethodExpr``1(System.String)">
+            <summary>
+            Obsolete
+            </summary>
+            <typeparam name="TDelegate"></typeparam>
+            <param name="methodName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.InstanceMethodVoid(System.Type,System.String,System.Type[])">
+            <summary>
+            Creates delegate for void instance method with unspecified number of parameters passed as array of 
+            objects from instance as object
+            </summary>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <param name="paramsTypes">Types of parameters</param>
+            <returns>Delegate for void instance method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.PropertyGet``1(System.Type,System.String)">
+            <summary>
+            Creates delegate to instance property getter from instance as object with return type of property type
+            </summary>
+            <typeparam name="TProperty">Type of property</typeparam>
+            <param name="source">Type with defined property</param>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for instance property getter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.PropertyGet(System.Type,System.String)">
+            <summary>
+            Creates delegate to instance property getter from instance as object with return type of object
+            </summary>
+            <param name="source">Type with defined property</param>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for instance property getter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.PropertyGet``2(System.String)">
+            <summary>
+            Creates delegate to instance property getter with return type of property type
+            </summary>
+            <typeparam name="TSource">Type with defined property</typeparam>
+            <typeparam name="TProperty">Type of property</typeparam>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for instance property getter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.PropertyGet2``2(System.Type,System.String)">
+            <summary>
+            Obsolete
+            </summary>
+            <typeparam name="TSource"></typeparam>
+            <typeparam name="TProperty"></typeparam>
+            <param name="source"></param>
+            <param name="propertyName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.PropertyGetStruct``2(System.String)">
+            <summary>
+            Creates delegate to instance property getter from structure passed by reference with return type of 
+            property type
+            </summary>
+            <typeparam name="TSource">Type with defined property</typeparam>
+            <typeparam name="TProperty">Type of property</typeparam>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for instance property getter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.PropertySet``2(``0,System.String)">
+            <summary>
+            Creates delegate to instance property setter with value of property type
+            </summary>
+            <typeparam name="TSource">Type with defined property</typeparam>
+            <typeparam name="TProperty">Type of property</typeparam>
+            <param name="source">Type with defined property</param>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for instance property setter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.PropertySet``1(System.Type,System.String)">
+            <summary>
+            Creates delegate to instance property setter in instance as object with value of property type
+            </summary>
+            <typeparam name="TProperty">Type of property</typeparam>
+            <param name="source">Type with defined property</param>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for instance property setter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.PropertySetStructRef``1(System.Type,System.String)">
+            <summary>
+            Creates delegate to instance property setter in structure passed by reference with value of 
+            property type
+            </summary>
+            <typeparam name="TProperty">Type of property</typeparam>
+            <param name="source">Type with defined property</param>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for instance property setter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.PropertySetStruct``1(System.Type,System.String)">
+            <summary>
+            Creates delegate to instance property setter in structure passed by value as object with value of 
+            property type. Creates new instance with changed property.
+            </summary>
+            <typeparam name="TProperty">Type of property</typeparam>
+            <param name="source">Type with defined property</param>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for instance property setter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.PropertySet(System.Type,System.String)">
+            <summary>
+            Creates delegate to instance property setter in instance as object with value as object
+            </summary>
+            <param name="source">Type with defined property</param>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for instance property setter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.PropertySetStructRef(System.Type,System.String)">
+            <summary>
+            Creates delegate to instance property setter in structure passed by reference as object with value as
+            object
+            </summary>
+            <param name="source">Type with defined property</param>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for instance property setter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.PropertySetStruct(System.Type,System.String)">
+            <summary>
+            Creates delegate to instance property setter in structure passed by value as object with value of 
+            object. Creates new instance with changed property.
+            </summary>
+            <param name="source">Type with defined property</param>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for instance property setter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.PropertySet``2(System.String)">
+            <summary>
+            Creates delegate to instance property setter with value of property type
+            </summary>
+            <typeparam name="TSource">Type with defined property</typeparam>
+            <typeparam name="TProperty">Type of property</typeparam>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for instance property setter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.PropertySetStructRef``2(System.String)">
+            <summary>
+            Creates delegate to instance property setter in structure passed by reference with value of property 
+            type
+            </summary>
+            <typeparam name="TSource">Type with defined property</typeparam>
+            <typeparam name="TProperty">Type of property</typeparam>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for instance property setter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticFieldGet``2(System.String)">
+            <summary>
+            Creates delegate for retrieving static field value
+            </summary>
+            <typeparam name="TSource">Source type with defined field</typeparam>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for retrieving static field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticFieldGet``1(System.Type,System.String)">
+            <summary>
+            Creates delegate for retrieving static field value
+            </summary>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="source">Type with defined field</param>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for retrieving static field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticFieldGet(System.Type,System.String)">
+            <summary>
+            Creates delegate for retrieving static field value as object
+            </summary>
+            <param name="source">Type with defined field</param>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for retrieving static field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticFieldGetExpr``2(System.String)">
+            <summary>
+            Obsolete
+            </summary>
+            <typeparam name="TSource"></typeparam>
+            <typeparam name="TField"></typeparam>
+            <param name="fieldName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticFieldSet``2(System.String)">
+            <summary>
+            Creates delegate for setting static field value
+            </summary>
+            <typeparam name="TSource">Source type with defined field</typeparam>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for setting static field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticFieldSet``1(System.Type,System.String)">
+            <summary>
+            Creates delegate for setting static field value
+            </summary>
+            <typeparam name="TField">Type of field</typeparam>
+            <param name="source">Type with defined field</param>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for setting static field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticFieldSet(System.Type,System.String)">
+            <summary>
+            Creates delegate for setting static field value
+            </summary>
+            <param name="source">Type with defined field</param>
+            <param name="fieldName">Field name</param>
+            <returns>Delegate for setting static field value</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticMethod``3(System.String)">
+            <summary>
+            Creates delegate to static method with single type parameter
+            </summary>
+            <typeparam name="TSource">Type with defined method</typeparam>
+            <typeparam name="TDelegate">Delegate compatible with method</typeparam>
+            <typeparam name="TParam1">Method type parameter</typeparam>
+            <param name="name">Name of method</param>
+            <returns>Delegate for generic static method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticMethod``4(System.String)">
+            <summary>
+            Creates delegate to static method with two type parameters
+            </summary>
+            <typeparam name="TSource">Type with defined method</typeparam>
+            <typeparam name="TDelegate">Delegate compatible with method</typeparam>
+            <typeparam name="TParam1">First type parameter</typeparam>
+            <typeparam name="TParam2">Second type parameter</typeparam>
+            <param name="name">Name of method</param>
+            <returns>Delegate for generic static method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticMethod``5(System.String)">
+            <summary>
+            Creates delegate to static method with three type parameters
+            </summary>
+            <typeparam name="TSource">Type with defined method</typeparam>
+            <typeparam name="TDelegate">Delegate compatible with method</typeparam>
+            <typeparam name="TParam1">First type parameter</typeparam>
+            <typeparam name="TParam2">Second type parameter</typeparam>
+            <typeparam name="TParam3">Third type parameter</typeparam>
+            <param name="name">Name of method</param>
+            <returns>Delegate for generic static method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticMethod``2(System.String,System.Type[])">
+            <summary>
+            Creates delegate to static method with unspecified number of type parameters
+            </summary>
+            <typeparam name="TSource">Type with defined method</typeparam>
+            <typeparam name="TDelegate">Delegate compatible with method</typeparam>
+            <param name="name">Name of method</param>
+            <param name="typeParameters">Type parameters for generic static method</param>
+            <returns>Delegate for generic static method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticMethod``2(System.Type,System.String)">
+            <summary>
+            Creates delegate to static method with single type parameter
+            </summary>
+            <typeparam name="TDelegate">Delegate compatible with method</typeparam>
+            <typeparam name="TParam1">Method type parameter</typeparam>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <returns>Delegate for generic static method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticMethod``3(System.Type,System.String)">
+            <summary>
+            Creates delegate to static method with single type parameter
+            </summary>
+            <typeparam name="TDelegate">Delegate compatible with method</typeparam>
+            <typeparam name="TParam1">First type parameter</typeparam>
+            <typeparam name="TParam2">Second type parameter</typeparam>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <returns>Delegate for generic static method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticMethod``4(System.Type,System.String)">
+            <summary>
+            Creates delegate to static method with single type parameter
+            </summary>
+            <typeparam name="TDelegate">Delegate compatible with method</typeparam>
+            <typeparam name="TParam1">First type parameter</typeparam>
+            <typeparam name="TParam2">Second type parameter</typeparam>
+            <typeparam name="TParam3">Third type parameter</typeparam>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <returns>Delegate for generic static method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticMethod``1(System.Type,System.String,System.Type[])">
+            <summary>
+            Creates delegate to static method with unspecified number of type parameters
+            </summary>
+            <typeparam name="TDelegate">Delegate compatible with method</typeparam>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <param name="typeParameters">Type parameters for generic static method</param>
+            <returns>Delegate for generic static method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticGenericMethod(System.Type,System.String,System.Type[],System.Type[])">
+            <summary>
+            Creates delegate to non-void generic static method with unspecified number of parameters passed as array 
+            of objects
+            </summary>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <param name="paramsTypes">Types of parameters</param>
+            <param name="typeParams">Type parameters for generic static method</param>
+            <returns>Delegate for non-void generic static method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticGenericMethodVoid(System.Type,System.String,System.Type[],System.Type[])">
+            <summary>
+            Creates delegate to void generic static method with unspecified number of parameters passed as array 
+            of objects
+            </summary>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <param name="paramsTypes">Types of parameters</param>
+            <param name="typeParams">Type parameters for generic static method</param>
+            <returns>Delegate for void generic static method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticMethod``2(System.String)">
+            <summary>
+            Creates delegate to static method
+            </summary>
+            <typeparam name="TSource">Type with defined method</typeparam>
+            <typeparam name="TDelegate">Delegate compatible with method</typeparam>
+            <param name="name">Name of method</param>
+            <returns>Delegate for static method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticMethod``1(System.Type,System.String)">
+            <summary>
+            Creates delegate to static method
+            </summary>
+            <typeparam name="TDelegate">Delegate compatible with method</typeparam>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <returns>Delegate for static method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticMethod(System.Type,System.String,System.Type[])">
+            <summary>
+            Creates delegate to non-void static method with unspecified number of parameters passed as array 
+            of objects
+            </summary>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <param name="paramsTypes">Types of parameters</param>
+            <returns>Delegate for static method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticMethodVoid(System.Type,System.String,System.Type[])">
+            <summary>
+            Creates delegate to void static method with unspecified number of parameters passed as array of objects
+            </summary>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <param name="paramsTypes">Types of parameters</param>
+            <returns>Delegate for void static method</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticMethod``1(System.Type,System.String,System.Type[],System.Type[])">
+            <summary>
+            Creates delegate to generic static method with unspecified number of parameters passed as array 
+            of objects from instance as object. 
+            </summary>
+            <typeparam name="TDelegate">Either Action{object[]} or Function{object[],object}</typeparam>
+            <param name="source">Type with defined method</param>
+            <param name="name">Name of method</param>
+            <param name="paramsTypes">Types of parameters</param>
+            <param name="typeParams">Type parameters for generic instance method</param>
+            <returns>Delegate for void generic static method</returns>
+            <remarks>
+            Intended for internal use.
+            </remarks>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticPropertyGet``2(System.String)">
+            <summary>
+            Creates delegate to static property getter with return type of property type
+            </summary>
+            <typeparam name="TSource">Type with defined property</typeparam>
+            <typeparam name="TProperty">Type of property</typeparam>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for static property getter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticPropertyGet``1(System.Type,System.String)">
+            <summary>
+            Creates delegate to static property getter with return type of property type
+            </summary>
+            <typeparam name="TProperty">Type of property</typeparam>
+            <param name="source">Type with defined property</param>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for static property getter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticPropertyGet(System.Type,System.String)">
+            <summary>
+            Creates delegate to static property getter with return type of object
+            </summary>
+            <param name="source">Type with defined property</param>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for static property getter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticPropertyGetExpr``1(System.Type,System.String)">
+            <summary>
+            Obsolete
+            </summary>
+            <typeparam name="TProperty"></typeparam>
+            <param name="source"></param>
+            <param name="propertyName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticPropertySet``2(System.String)">
+            <summary>
+            Creates delegate to static property setter with value of property type
+            </summary>
+            <typeparam name="TSource">Type with defined property</typeparam>
+            <typeparam name="TProperty">Type of property</typeparam>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for static property setter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticPropertySet``1(System.Type,System.String)">
+            <summary>
+            Creates delegate to static property setter with value of property type
+            </summary>
+            <typeparam name="TProperty">Type of property</typeparam>
+            <param name="source">Type with defined property</param>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for static property setter</returns>
+        </member>
+        <member name="M:Delegates.DelegateFactory.StaticPropertySet(System.Type,System.String)">
+            <summary>
+            Creates delegate to static property setter with value of object
+            </summary>
+            <param name="source">Type with defined property</param>
+            <param name="propertyName">Name of property</param>
+            <returns>Delegate for static property setter</returns>
+        </member>
+        <member name="T:Delegates.Extensions.CEventInfo">
+            <summary>
+            Compatibility class (wrapper) if version of .NET do not support v4.5 of <see cref="T:System.Reflection.EventInfo"/> class.
+            </summary>
+        </member>
+        <member name="M:Delegates.Extensions.CEventInfo.#ctor(System.Reflection.EventInfo)">
+            <summary>
+            Wrapper constructor
+            </summary>
+            <param name="event">Incompatible <see cref="T:System.Reflection.EventInfo"/> class instance</param>
+        </member>
+        <member name="P:Delegates.Extensions.CEventInfo.AddMethod">
+            <summary>
+            Event add accessor.
+            </summary>
+        </member>
+        <member name="P:Delegates.Extensions.CEventInfo.EventHandlerType">
+            <summary>
+            Proxy property of <see cref="P:System.Reflection.EventInfo.EventHandlerType"/>
+            </summary>
+        </member>
+        <member name="P:Delegates.Extensions.CEventInfo.RemoveMethod">
+            <summary>
+            Event remove accessor.
+            </summary>
+        </member>
+        <member name="T:Delegates.Extensions.CPropertyInfo">
+            <summary>
+            Compatibility class (wrapper) if version of .NET do not support v4.5 of <see cref="T:System.Reflection.EventInfo"/> class.
+            </summary>
+        </member>
+        <member name="M:Delegates.Extensions.CPropertyInfo.#ctor(System.Reflection.PropertyInfo)">
+            <summary>
+            Wrapper constructor
+            </summary>
+            <param name="property">Incompatible <see cref="T:System.Reflection.PropertyInfo"/> class instance</param>
+        </member>
+        <member name="P:Delegates.Extensions.CPropertyInfo.GetMethod">
+            <summary>
+            Property get accessor
+            </summary>
+        </member>
+        <member name="P:Delegates.Extensions.CPropertyInfo.PropertyType">
+            <summary>
+            Proxy property of <see cref="P:System.Reflection.PropertyInfo.PropertyType"/>
+            </summary>
+        </member>
+        <member name="P:Delegates.Extensions.CPropertyInfo.SetMethod">
+            <summary>
+            Property set accessor
+            </summary>
+        </member>
+        <member name="T:Delegates.Extensions.ExpressionsExtensions">
+            <summary>
+            Expression extension methods class
+            </summary>
+        </member>
+        <member name="M:Delegates.Extensions.ExpressionsExtensions.GetNewExprParams(System.Collections.Generic.List{System.Linq.Expressions.ParameterExpression})">
+            <summary>
+            Casts list of <see cref="T:System.Linq.Expressions.ParameterExpression"/> to .NET framework version collection compatible with second 
+            parameter of  
+            <see cref="M:System.Linq.Expressions.Expression.New(System.Reflection.ConstructorInfo,System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression})"/>
+            method
+            </summary>
+            <param name="parameters"></param>
+            <returns>Collection compatible with method
+            <see cref="M:System.Linq.Expressions.Expression.New(System.Reflection.ConstructorInfo,System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression})"/>
+            second parameter.
+            </returns>
+        </member>
+        <member name="M:Delegates.Extensions.ExpressionsExtensions.GetLambdaExprParams(System.Collections.Generic.List{System.Linq.Expressions.ParameterExpression})">
+            <summary>
+            Casts list of <see cref="T:System.Linq.Expressions.ParameterExpression"/> to .NET framework version collection compatible with second parameter
+            of <see cref="M:System.Linq.Expressions.Expression.Lambda``1(System.Linq.Expressions.Expression,System.Collections.Generic.IEnumerable{System.Linq.Expressions.ParameterExpression})"/>
+            method.
+            </summary>
+            <param name="parameters">Collection of <see cref="T:System.Linq.Expressions.ParameterExpression"/></param>
+            <returns>Collection compatible with method
+            <see cref="M:System.Linq.Expressions.Expression.Lambda``1(System.Linq.Expressions.Expression,System.Collections.Generic.IEnumerable{System.Linq.Expressions.ParameterExpression})"/>
+            second parameter.
+            </returns>
+        </member>
+        <member name="M:Delegates.Extensions.ExpressionsExtensions.GetLambdaExprParams(System.Collections.Generic.IEnumerable{System.Linq.Expressions.ParameterExpression},System.Linq.Expressions.ParameterExpression)">
+            <summary>
+            Casts list of <see cref="T:System.Linq.Expressions.ParameterExpression"/> with instance parameter 
+            <see cref="T:System.Linq.Expressions.ParameterExpression"/> to .NET framework version collection compatible with second parameter
+            of <see cref="M:System.Linq.Expressions.Expression.Lambda``1(System.Linq.Expressions.Expression,System.Collections.Generic.IEnumerable{System.Linq.Expressions.ParameterExpression})"/>
+            method.
+            </summary>
+            <param name="parameters">Collection of <see cref="T:System.Linq.Expressions.ParameterExpression"/></param>
+            <param name="sourceParam">Source instance <see cref="T:System.Linq.Expressions.ParameterExpression"/></param>
+            <returns>Collection compatible with method
+            <see cref="M:System.Linq.Expressions.Expression.Lambda``1(System.Linq.Expressions.Expression,System.Collections.Generic.IEnumerable{System.Linq.Expressions.ParameterExpression})"/>
+            second parameter.
+            </returns>
+        </member>
+        <member name="M:Delegates.Extensions.ExpressionsExtensions.GetCallExprParams(System.Collections.Generic.IEnumerable{System.Linq.Expressions.ParameterExpression})">
+            <summary>
+            Casts list of <see cref="T:System.Linq.Expressions.ParameterExpression"/> to .NET framework version collection compatible with second parameter
+            of <see cref="M:System.Linq.Expressions.Expression.Call(System.Linq.Expressions.Expression,System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression})"/>
+            method.
+            </summary>
+            <param name="parameters">Collection of <see cref="T:System.Linq.Expressions.ParameterExpression"/></param>
+            <returns>Collection compatible with method
+            <see cref="M:System.Linq.Expressions.Expression.Call(System.Linq.Expressions.Expression,System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression})"/>
+            second parameter.
+            </returns>
         </member>
     </members>
 </doc>

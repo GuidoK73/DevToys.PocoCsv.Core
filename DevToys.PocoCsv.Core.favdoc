@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Favorites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <folders />
+  <favorites>
+    <Favorite>
+      <name>UnitTestComplex.cs</name>
+      <path>TestProject2\UnitTestComplex.cs</path>
+      <absolutePath>E:\DEV\GIT\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core\TestProject2\UnitTestComplex.cs</absolutePath>
+      <position>
+        <line>27</line>
+        <column>28</column>
+        <lineHash>t3s3HCMevvuHv0U11hHapADk80DFMbZaYVuFnEQz5LY=</lineHash>
+      </position>
+    </Favorite>
+  </favorites>
+</Favorites>
