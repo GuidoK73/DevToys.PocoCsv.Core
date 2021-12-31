@@ -9,16 +9,22 @@ using System.Text;
 
 namespace DevToys.PocoCsv.Core
 {
+    /// <summary>
+    /// Write T to Csv Stream from an IEnumerable source.
+    /// </summary>
     public class CsvWriter<T> : IDisposable where T : new()
     {
 
         private readonly string _File = null;
         private Dictionary<int, PropertyInfo> _Properties = new();
-        private Dictionary<int, Func<object, object>> _ActionGetters = new();
+        private Dictionary<int, Func<object, object>> _PropertyGetters = new();
 
         private CsvStreamWriter _Writer;
 
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="file"></param>
         public CsvWriter(string file)
         {
             _File = file;
@@ -28,24 +34,42 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
 
+        /// <summary>
+        /// Csv Seperator to use default ','
+        /// </summary>
         public char Separator { get; set; } = ',';
 
+        /// <summary>
+        /// Write command can be used to append multiple collections to the open Csv Stream.
+        /// </summary>
         public bool Append { get; set; } = true;
 
+        /// <summary>
+        /// The character encoding to use.
+        /// </summary>
         public Encoding Encoding { get; set; } = Encoding.Default;
 
+        /// <summary>
+        /// Releases all resources used by the System.IO.TextReader object.
+        /// </summary>
         public void Dispose()
         {
             GC.SuppressFinalize(this);
             _Writer.Close();
         }
 
+        /// <summary>
+        /// Initialize and open the CSV Stream Writer.
+        /// </summary>
         public void Open()
         {
             Init();
             _Writer = new CsvStreamWriter(_File, Append, Encoding) { Separator = Separator };
         }
 
+        /// <summary>
+        /// Write IEnumerable T to Csv Stream
+        /// </summary>
         public void Write(IEnumerable<T> rows)
         {
             if (Append)
@@ -69,10 +93,9 @@ namespace DevToys.PocoCsv.Core
                 {
                     if (_Properties.ContainsKey(ii))
                     {
-                        var _actionGet = _ActionGetters[ii];
-                        var _value = _actionGet(item);
+                        var _propertyGetter = _PropertyGetters[ii];
+                        var _value = _propertyGetter(item);
                         _data[ii] = (string)Convert(_value, typeof(string), Culture);
-                        //_data[ii] = (string)Convert(_Properties[ii].GetValue(item), typeof(string), Culture);
                     }
                     else
                     {
@@ -101,7 +124,7 @@ namespace DevToys.PocoCsv.Core
                 .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index })
                 .ToDictionary(p => p.Key, p => p.Value);
 
-            _ActionGetters = _type.GetProperties()
+            _PropertyGetters = _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
                 .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index })
                 .ToDictionary(p => p.Key, p => _type.PropertyGet(p.Value.Name));

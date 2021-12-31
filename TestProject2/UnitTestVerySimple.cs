@@ -36,6 +36,31 @@ namespace TestProject2
                     Console.WriteLine(row.Column1);
                 }
             }
-        }       
+        }
+
+
+
+
+
+
+        [TestMethod]
+        public void TestX()
+        {
+            Guid _myGuid = Guid.NewGuid();
+
+            string _test = _myGuid.ToString();
+            Console.WriteLine("X");
+        }
+
+    }
+
+    public static class Extensions
+    {
+
+        public static string ToString(this Guid value)
+        {
+            return value.ToString().ToUpper();
+        }
+
     }
 }
