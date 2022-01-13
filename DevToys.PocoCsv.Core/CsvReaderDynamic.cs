@@ -1,10 +1,7 @@
-﻿using Delegates;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -73,10 +70,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Close the CSV stream reader
         /// </summary>
-        public void Close()
-        {
-            _Reader.Close();
-        }
+        public void Close() => _Reader.Close();
 
         /// <summary>
         /// Each iteration will read the next row.
@@ -102,39 +96,19 @@ namespace DevToys.PocoCsv.Core
 
             for (int ii = 0; ii < _FirstRow.Length; ii++)
             {
-                string _name = FirstRowIsHeader ? CleanString(_FirstRow[ii]) : _FirstRow[ii];
-
-                if (reader != null)
-                {
-                    if (reader.Length > ii)
-                    {
-                        dataobject3.Add(_name, reader[ii]);
-                    }
-                    else
-                    {
-                        dataobject3.Add(_name, string.Empty);
-                    }
-                }
-                else
-                {
-                    dataobject3.Add(_name, string.Empty);
-                }
+                var _name = FirstRowIsHeader ? CleanString(_FirstRow[ii]) : _FirstRow[ii];
+                var _value = (reader != null && reader.Length >= ii) ? reader[ii] : string.Empty;
+                dataobject3.Add(_name, _value);
             }
 
             dataobject = dataobject3;
             return dataobject;
         }
 
-        public static string CleanString(string name)
+        private static string CleanString(string name)
         {
-            StringBuilder _result = new StringBuilder();
-            char[] chars = name.ToCharArray();
-
-            foreach (char c in chars)
-                if (char.IsLetter(c) || c == '_' || c == ' ')
-                    _result.Append(c == ' ' ? '_' : c);
-
-            return _result.ToString();
+            char[] chars = name.ToCharArray().Where(c => char.IsLetter(c) || c == '_' || c == ' ').Select(c => c == ' ' ? '_' : c).ToArray();
+            return new string(chars);
         }
 
         /// <summary>
@@ -164,9 +138,7 @@ namespace DevToys.PocoCsv.Core
             if (!FirstRowIsHeader)
             {
                 for (int ii = 0; ii < _FirstRow.Length; ii++)
-                {
                     _FirstRow[ii] = $"_{ii}";
-                }
             }
         }
     }
