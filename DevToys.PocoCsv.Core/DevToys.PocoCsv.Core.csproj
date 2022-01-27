@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>1.1.2
+    <Description>1.1.3
 - Added CsvWriterDynamic
 
 1.1.1
@@ -15,12 +15,12 @@
 1.0.5
 - Read/Write Stream csv lines into a poco object.
 - Query / Read / Write large csv files.</Description>
-    <PackageProjectUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core/wiki</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.1.2</Version>
+    <Version>1.1.3</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
