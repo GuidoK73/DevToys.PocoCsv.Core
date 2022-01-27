@@ -3,7 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>1.1.1
+    <Description>1.1.2
+- Added CsvWriterDynamic
+
+1.1.1
 - Added CsvReaderDynamic
 
 1.1.0
@@ -17,11 +20,11 @@
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>E:\DEV\GIT\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core.xml</DocumentationFile>
+    <DocumentationFile>F:\DEV\GIT\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

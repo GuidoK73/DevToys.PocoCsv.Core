@@ -81,7 +81,5 @@ namespace TestProject2
                 yield return _line;
             }
         }
-
-
     }
 }

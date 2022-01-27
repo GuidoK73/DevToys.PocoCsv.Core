@@ -38,11 +38,6 @@ namespace TestProject2
             }
         }
 
-
-
-
-
-
         [TestMethod]
         public void TestX()
         {
@@ -51,16 +46,13 @@ namespace TestProject2
             string _test = _myGuid.ToString();
             Console.WriteLine("X");
         }
-
     }
 
     public static class Extensions
     {
-
         public static string ToString(this Guid value)
         {
             return value.ToString().ToUpper();
         }
-
     }
 }

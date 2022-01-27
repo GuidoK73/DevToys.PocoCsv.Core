@@ -1,6 +1,6 @@
-﻿using Delegates;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace DevToys.PocoCsv.Core
     /// <summary>
     /// Write T to Csv Stream from an IEnumerable source.
     /// </summary>
-    public class CsvWriter<T> : IDisposable where T : new()
+    public class CsvWriterDynamic : IDisposable
     {
         private readonly string _File = null;
         private Dictionary<int, PropertyInfo> _Properties = new();
@@ -23,7 +23,7 @@ namespace DevToys.PocoCsv.Core
         /// Constructor
         /// </summary>
         /// <param name="file"></param>
-        public CsvWriter(string file)
+        public CsvWriterDynamic(string file)
         {
             _File = file;
         }
@@ -62,14 +62,13 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void Open()
         {
-            Init();
             _Writer = new CsvStreamWriter(_File, Append, Encoding) { Separator = Separator };
         }
 
         /// <summary>
         /// Write IEnumerable T to Csv Stream
         /// </summary>
-        public void Write(IEnumerable<T> rows)
+        public void Write(IEnumerable<dynamic> rows)
         {
             if (Append)
             {
@@ -81,51 +80,44 @@ namespace DevToys.PocoCsv.Core
                 _Writer.BaseStream.Position = 0;
             }
 
-            var columnIndexes = _Properties.Keys.ToList();
-            var _max = columnIndexes.Max();
-            var _data = new string[_max + 1];
+            var _first = true;
+            string[] _data;
 
-            foreach (T item in rows)
+            foreach (dynamic item in rows)
             {
-                for (int ii = 0; ii <= _max; ii++)
+                if (_first)
                 {
-                    if (_Properties.ContainsKey(ii))
-                    {
-                        var _propertyGetter = _PropertyGetters[ii];
-                        var _value = _propertyGetter(item);
-                        _data[ii] = (string)Convert(_value, typeof(string), Culture);
-                    }
-                    else
-                    {
-                        _data[ii] = string.Empty;
-                    }
+                    _data = Header(item);
+                    _Writer.WriteCsvLine(_data);
+                    _first = false;
                 }
+                _data = ToArray(item);
                 _Writer.WriteCsvLine(_data);
             }
+        }
+
+        private string[] ToArray(dynamic dataobject)
+        {
+            var dataobject2 = dataobject as IDictionary<string, Object>;
+            var _items = new string[dataobject2.Keys.Count()];
+            var _keys = dataobject2.Keys.ToArray();
+
+            for (int ii = 0; ii < _items.Length; ii++)
+                _items[ii] = (string)Convert(dataobject2[_keys[ii]], typeof(string), Culture);
+
+            return _items;
+        }
+
+        private string[] Header(dynamic dataobject)
+        {
+            var dataobject2 = dataobject as IDictionary<string, Object>;
+            return dataobject2.Keys.ToArray();
         }
 
         private static object Convert(object value, Type target, CultureInfo culture)
         {
             target = Nullable.GetUnderlyingType(target) ?? target;
             return (target.IsEnum) ? Enum.Parse(target, value.ToString()) : System.Convert.ChangeType(value, target, culture);
-        }
-
-        private void Init()
-        {
-            if (_Properties.Count > 0)
-                return;
-
-            var _type = typeof(T);
-
-            _Properties = _type.GetProperties()
-                .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
-                .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index })
-                .ToDictionary(p => p.Key, p => p.Value);
-
-            _PropertyGetters = _type.GetProperties()
-                .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
-                .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index })
-                .ToDictionary(p => p.Key, p => _type.PropertyGet(p.Value.Name));
         }
     }
 }

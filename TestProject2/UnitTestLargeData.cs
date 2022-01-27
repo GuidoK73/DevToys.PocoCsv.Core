@@ -3,12 +3,10 @@ using DevToys.PocoCsv.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace TestProject2
 {
-
     [TestClass]
     public class UnitTestLargeData
     {
@@ -24,7 +22,6 @@ namespace TestProject2
             }
         }
 
-
         [TestMethod]
         public void TestReaderXL()
         {
@@ -39,13 +36,12 @@ namespace TestProject2
                 _reader.Open();
 
                 var x = _reader.Rows().ToList();
-               // var _af = _reader.Rows().Where(p => p.AfBij == "Af").ToList();
+                // var _af = _reader.Rows().Where(p => p.AfBij == "Af").ToList();
             }
 
             _w.Stop();
             Console.WriteLine(_w.Duration);
         }
-
 
         private IEnumerable<CsvSimple> LargeData()
         {

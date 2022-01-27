@@ -43,7 +43,6 @@ namespace TestProject2
         public string MyProp { get; set; }
     }
 
-
     [TestClass]
     public class UnitTestComplex
     {
@@ -63,17 +62,10 @@ namespace TestProject2
                     Console.WriteLine(csv.Bedrag);
                 }
 
-
                 var _x = _reader.Rows().ToList();
-
                 var _bij = _reader.Rows().Where(p => p.AfBij == "Bij").ToList();
-
-
             }
         }
-
-
-
 
         [TestMethod]
         public void TestDelegates()
@@ -83,7 +75,6 @@ namespace TestProject2
             var _action = _testClassType.PropertySet<string>("MyProp");
             _action(_testClassInstance, "New Test Value");
 
-
             var _action2 = _testClassType.PropertySet("MyProp");
             _action2(_testClassInstance, "New Test Value 2");
 
@@ -92,6 +83,5 @@ namespace TestProject2
 
             Console.Write("X");
         }
-
     }
 }

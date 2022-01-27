@@ -22,7 +22,7 @@ namespace DevToys.PocoCsv.Core
         private PropertyInfo[] _Properties = null;
         private Action<object, object>[] _PropertySetters = null;
         private CsvStreamReader _Reader;
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -67,7 +67,7 @@ namespace DevToys.PocoCsv.Core
         public void Open()
         {
             Init();
-            _Reader = new CsvStreamReader(_File, Encoding, DetectEncodingFromByteOrderMarks)  { Separator = Separator };
+            _Reader = new CsvStreamReader(_File, Encoding, DetectEncodingFromByteOrderMarks) { Separator = Separator };
         }
 
         /// <summary>

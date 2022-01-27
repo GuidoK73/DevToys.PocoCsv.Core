@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TestProject2
 {
@@ -14,11 +12,8 @@ namespace TestProject2
     public class UnitTestStreamReader
     {
         [TestMethod]
-        public void TestReaderComplex()
+        public void TestReader()
         {
-            StopWatch _w = new StopWatch();
-
-            _w.Start();
             string file = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "data.csv");
             using (CsvStreamReader _reader = new CsvStreamReader(file))
             {
@@ -27,12 +22,17 @@ namespace TestProject2
                     List<string> _values = _reader.ReadCsvLine().ToList();
                 }
             }
+        }
 
-            _w.Stop();
-            Console.WriteLine(_w.Duration);
-
-
-
+        [TestMethod]
+        public void TestWriter()
+        {
+            string file = @"D:\Temp\test.csv";
+            using (CsvStreamWriter _writer = new CsvStreamWriter(file))
+            {
+                var _line = new string[] { "Row 1", "Row A,A", "Row 3", "Row B" };
+                _writer.WriteCsvLine(_line);
+            }
         }
     }
 }

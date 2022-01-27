@@ -18,7 +18,7 @@ namespace DevToys.PocoCsv.Core
         private readonly string _File = null;
         private CsvStreamReader _Reader;
         private string[] _FirstRow = null;
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -43,7 +43,6 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public Encoding Encoding { get; set; } = Encoding.Default;
 
-
         /// <summary>
         /// Dynamic property names will be as first header.
         /// </summary>
@@ -63,7 +62,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void Open()
         {
-            _Reader = new CsvStreamReader(_File, Encoding, DetectEncodingFromByteOrderMarks)  { Separator = Separator };
+            _Reader = new CsvStreamReader(_File, Encoding, DetectEncodingFromByteOrderMarks) { Separator = Separator };
             Init();
         }
 
