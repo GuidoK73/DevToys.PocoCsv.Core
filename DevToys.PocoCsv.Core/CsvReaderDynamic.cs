@@ -14,7 +14,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// After Read, before Serialize. use this to prepare row values for serialization.
         /// </summary>
-        private string[] _CurrentRow = null;
+        private readonly string[] _CurrentRow = null;
         private readonly string _File = null;
         private CsvStreamReader _Reader;
         private string[] _FirstRow = null;

@@ -15,8 +15,8 @@ namespace DevToys.PocoCsv.Core
     public class CsvWriterDynamic : IDisposable
     {
         private readonly string _File = null;
-        private Dictionary<int, PropertyInfo> _Properties = new();
-        private Dictionary<int, Func<object, object>> _PropertyGetters = new();
+        private readonly Dictionary<int, PropertyInfo> _Properties = new();
+        private readonly Dictionary<int, Func<object, object>> _PropertyGetters = new();
         private CsvStreamWriter _Writer;
 
         /// <summary>
