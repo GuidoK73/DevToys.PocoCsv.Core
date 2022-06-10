@@ -17,11 +17,10 @@ namespace DevToys.PocoCsv.Core
         public static string[] CsvHeader(string text, char separator)
         {
             byte[] byteArray = Encoding.Default.GetBytes(text);
-            using MemoryStream _stream = new MemoryStream(byteArray);
-            using (CsvStreamReader _reader = new CsvStreamReader(_stream))
-            {
+            
+            using MemoryStream _stream = new(byteArray);
+            using CsvStreamReader _reader = new(_stream);
                 return CsvHeader(_reader, separator);
-            }
         }
 
         /// <summary>
@@ -136,26 +135,23 @@ namespace DevToys.PocoCsv.Core
         public static bool IsCsv(string text, char separator, int sampleRows)
         {
             byte[] byteArray = Encoding.Default.GetBytes(text);
-            var _columnCount = new List<int>();
 
-            using (MemoryStream _stream = new MemoryStream(byteArray))
-            {
-                using (CsvStreamReader _reader = new CsvStreamReader(_stream))
-                {
-                    return IsCsv(_reader, separator, sampleRows);
-                }
-            }
+            using MemoryStream _stream = new(byteArray);
+            using CsvStreamReader _reader = new(_stream);
+                return IsCsv(_reader, separator, sampleRows);
         }
 
         /// <summary>
         /// Test whether piece of text is CSV
         /// </summary>
-        public static bool IsCsv(CsvStreamReader reader, char separator, int sampleRows)
+        public static bool IsCsv(CsvStreamReader reader, char separator, int sampleRows = 20)
         {
-            List<int> _columnCount = new List<int>();
+            var _columnCount = new List<int>();
 
             reader.Position = 0;
             reader.Separator = separator;
+            int _row = 0;
+
             while (!reader.EndOfCsvStream)
             {
                 string[] _items = reader.ReadCsvLine().ToArray();
@@ -163,6 +159,11 @@ namespace DevToys.PocoCsv.Core
                 if (_length > 0)
                 {
                     _columnCount.Add(_length);
+                }
+                _row++;
+                if (_row > sampleRows)
+                {
+                    break;
                 }
             }
             int prevcount = _columnCount.First();

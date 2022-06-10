@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -108,7 +107,7 @@ namespace DevToys.PocoCsv.Core
             return _items;
         }
 
-        private string[] Header(dynamic dataobject)
+        private static string[] Header(dynamic dataobject)
         {
             var dataobject2 = dataobject as IDictionary<string, Object>;
             return dataobject2.Keys.ToArray();

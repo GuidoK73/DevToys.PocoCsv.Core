@@ -42,6 +42,9 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public SqlDbType SqlDatabaseType { get; set; }
 
+        /// <summary>
+        /// Returns Name
+        /// </summary>
         public override string ToString()
         {
             return Name;

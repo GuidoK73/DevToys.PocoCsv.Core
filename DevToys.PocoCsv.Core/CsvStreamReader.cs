@@ -116,17 +116,13 @@ namespace DevToys.PocoCsv.Core
         {
         }
 
-        private enum State { First = 0, Normal = 1, Escaped = 2 }
+        private enum State
+        { First = 0, Normal = 1, Escaped = 2 }
 
         /// <summary>
         /// Indicates end of Csv Stream.
         /// </summary>
         public bool EndOfCsvStream => (BaseStream.Position >= BaseStream.Length);
-
-        /// <summary>
-        /// Get / Sets the Separator character to use. 
-        /// </summary>
-        public char Separator { get; set; } = ',';
 
         /// <summary>
         /// Get / Sets the position.
@@ -138,14 +134,48 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
+        /// Get / Sets the Separator character to use.
+        /// </summary>
+        public char Separator { get; set; } = ',';
+
+        /// <summary>
+        /// Returns a schema for the CSV with best fitted types to use.
+        /// </summary>
+        public IEnumerable<CsvColumnInfo> GetCsvSchema(int sampleRows)
+        {
+            Position = 0;
+            var _schema = CsvUtils.GetCsvSchema(this, sampleRows);
+            Position = 0;
+            return _schema;
+        }
+
+        /// <summary>
+        /// Detects and sets CSV Separator.
+        /// </summary>
+        public char GetCsvSeparator(int sampleRows)
+        {
+            Position = 0;
+            bool _succes = CsvUtils.GetCsvSeparator(this, out char separator, sampleRows);
+            Position = 0;
+
+            if (!_succes)
+            {
+                throw new InvalidDataException("Csv does not have valid column counts.");
+            }
+
+            Separator = separator;
+
+            return separator;
+        }
+
+        /// <summary>
         /// Each iteration steps to the next cell till the end of the CSV line.
         /// </summary>
         public IEnumerable<string> ReadCsvLine()
         {
             var _state = State.First;
             var _sb = new StringBuilder();
-           
-     
+
             while (true)
             {
                 var _char = (char)BaseStream.ReadByte();

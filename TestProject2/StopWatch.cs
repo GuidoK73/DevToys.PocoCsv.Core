@@ -4,7 +4,7 @@ namespace DevToys
 {
     public class StopWatch
     {
-        private DateTime _Start = new DateTime();
+        private DateTime _Start = new();
 
         public StopWatch() { }
 

@@ -28,6 +28,8 @@ namespace DevToys.PocoCsv.Core
                 case NetType.UInt32:
                 case NetType.UInt64:
                     return true;
+                default:
+                    break;
             }
             return false;
         }
@@ -68,6 +70,9 @@ namespace DevToys.PocoCsv.Core
 
                 case NetType.UInt64:
                     return 11;
+
+                default:
+                    break;
             }
             return 0;
         }
@@ -132,6 +137,9 @@ namespace DevToys.PocoCsv.Core
 
                 case NetType.Enum:
                     return typeof(Enum);
+
+                default:
+                    break;
             }
             return typeof(object);
         }
@@ -543,17 +551,17 @@ namespace DevToys.PocoCsv.Core
             if (string.IsNullOrEmpty(value))
                 return string.Empty;
 
-            char[] array = value.ToCharArray();
-            for (int ii = 0; ii < array.Length; ii++)
+            var _array = value.ToCharArray();
+            for (int ii = 0; ii < _array.Length; ii++)
             {
-                if (array[ii] == '‘' || array[ii] == '’' || array[ii] == '‚')
-                    array[ii] = _SINGLEQUOTE;
+                if (_array[ii] == '‘' || _array[ii] == '’' || _array[ii] == '‚')
+                    _array[ii] = _SINGLEQUOTE;
 
-                if (array[ii] == '“' || array[ii] == '”' || array[ii] == '„' || array[ii] == '¨')
-                    array[ii] = _DOUBLEQUOTE;
+                if (_array[ii] == '“' || _array[ii] == '”' || _array[ii] == '„' || _array[ii] == '¨')
+                    _array[ii] = _DOUBLEQUOTE;
             }
-            string s = new string(array);
-            return s.Replace("'", "''");
+            var _s = new string(_array);
+            return _s.Replace("'", "''");
         }
 
         public static string SqlTypeConstructorCode(object value, NetType netType)
@@ -707,6 +715,9 @@ namespace DevToys.PocoCsv.Core
 
                 case NetType.Guid:
                     return SqlDbType.UniqueIdentifier;
+
+                default:
+                    break;
             }
 
             return SqlDbType.NVarChar;
@@ -714,9 +725,9 @@ namespace DevToys.PocoCsv.Core
 
         public static string SqlTypeDefinition(NetType type, string name, bool allowNull, bool autoIncrement, int columnLength)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-            sb.Append("[");
+            sb.Append('[');
             sb.Append(name);
             sb.Append("] ");
 
