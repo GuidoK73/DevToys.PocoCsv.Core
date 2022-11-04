@@ -9,7 +9,7 @@ namespace DevToys.PocoCsv.Core
     /// <summary>
     /// Enumerate Csv Stream Reader over dynamic. Slower for large sets.
     /// </summary>
-    public class CsvReaderDynamic : IDisposable
+    public sealed class CsvReaderDynamic : IDisposable
     {
         /// <summary>
         /// After Read, before Serialize. use this to prepare row values for serialization.

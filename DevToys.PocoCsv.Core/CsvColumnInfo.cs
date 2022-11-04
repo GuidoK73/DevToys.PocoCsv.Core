@@ -5,7 +5,7 @@ namespace DevToys.PocoCsv.Core
     /// <summary>
     /// CsvUtils.GetCsvSchema result
     /// </summary>
-    public class CsvColumnInfo
+    public sealed class CsvColumnInfo
     {
         /// <summary>
         /// Best Database type

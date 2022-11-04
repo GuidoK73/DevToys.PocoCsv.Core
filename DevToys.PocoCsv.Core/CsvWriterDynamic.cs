@@ -11,7 +11,7 @@ namespace DevToys.PocoCsv.Core
     /// <summary>
     /// Write T to Csv Stream from an IEnumerable source.
     /// </summary>
-    public class CsvWriterDynamic : IDisposable
+    public sealed class CsvWriterDynamic : IDisposable
     {
         private readonly string _File = null;
         private readonly Dictionary<int, PropertyInfo> _Properties = new();

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace TestProject2
 {
-    public class CsvSimple
+    public sealed class CsvSimple
     {
         [Column(Index = 5)]
         public string AfBij { get; set; }

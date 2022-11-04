@@ -54,6 +54,11 @@
             Best Database type
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvColumnInfo.ToString">
+            <summary>
+            Returns Name
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvReader`1">
             <summary>
             Enumerate Csv Stream Reader over T.
@@ -272,14 +277,24 @@
             Indicates end of Csv Stream.
             </summary>
         </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.Separator">
-            <summary>
-            Get / Sets the Separator character to use. 
-            </summary>
-        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.Position">
             <summary>
             Get / Sets the position.
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.Separator">
+            <summary>
+            Get / Sets the Separator character to use.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.GetCsvSchema(System.Int32)">
+            <summary>
+            Returns a schema for the CSV with best fitted types to use.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.GetCsvSeparator(System.Int32)">
+            <summary>
+            Detects and sets CSV Separator.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadCsvLine">
@@ -501,6 +516,71 @@
             <summary>
             Write IEnumerable T to Csv Stream
             </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.NetType">
+            <summary>
+            Represents a DotNet Type returned by TypeUtils.GetNetType
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.Unknown">
+            <summary>Unknown Net Type</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.String">
+            <summary>Type is String</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.Guid">
+            <summary>Type is Guid</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.Boolean">
+            <summary>Type is Bool</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.DateTime">
+            <summary>Type is DateTime</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.DateTimeOffset">
+            <summary>Type is DateTime Offset</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.TimeSpan">
+            <summary>Type is TimeSpan</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.Byte">
+            <summary>Type is Byte</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.SByte">
+            <summary>Type is SByte</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.Int16">
+            <summary>Type is Int16</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.Int32">
+            <summary>Type is Int32</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.Int64">
+            <summary>Type is Int64</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.Single">
+            <summary>Type is Single</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.Decimal">
+            <summary>Type is Decimal</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.Double">
+            <summary>Type is Double</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.UInt16">
+            <summary>Type is UInt16</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.UInt32">
+            <summary>Type is UInt32</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.UInt64">
+            <summary>Type is UInt64</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.Enum">
+            <summary>Type is Enum</summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetType.Null">
+            <summary>Type is Null</summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.TypeUtils.BestNetType(DevToys.PocoCsv.Core.NetType,System.String)">
             <summary>

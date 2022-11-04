@@ -6,7 +6,7 @@ namespace DevToys.PocoCsv.Core
     /// Csv Column Attribute to assign to POCO Properties.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class ColumnAttribute : Attribute
+    public sealed class ColumnAttribute : Attribute
     {
         /// <summary>
         /// Property corresponds to Csv Column Index.

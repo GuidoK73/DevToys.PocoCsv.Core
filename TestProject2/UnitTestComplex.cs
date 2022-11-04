@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace TestProject2
 {
-    public class Csv
+    public sealed class Csv
     {
         [Column(Index = 0)]
         public DateTime Datum { get; set; }

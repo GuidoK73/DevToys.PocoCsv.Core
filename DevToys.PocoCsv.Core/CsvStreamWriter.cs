@@ -71,7 +71,7 @@ namespace DevToys.PocoCsv.Core
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="bufferSize">The buffer size, in bytes.</param>
         /// <param name="leaveOpen">true to leave the stream open after the System.IO.StreamWriter object is disposed; otherwise, false.</param>
-        public CsvStreamWriter(Stream stream, Encoding? encoding = null, int bufferSize = -1, bool leaveOpen = false) : base(stream, encoding, bufferSize, leaveOpen)
+        public CsvStreamWriter(Stream stream, Encoding encoding = null, int bufferSize = -1, bool leaveOpen = false) : base(stream, encoding, bufferSize, leaveOpen)
         {
         }
 
