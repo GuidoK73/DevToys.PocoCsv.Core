@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core

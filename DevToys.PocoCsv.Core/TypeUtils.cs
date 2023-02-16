@@ -205,6 +205,13 @@ namespace DevToys.PocoCsv.Core
             return NetType.String;
         }
 
+        public static object Convert(object value, Type target, CultureInfo culture)
+        {
+            target = Nullable.GetUnderlyingType(target) ?? target;
+            return (target.IsEnum) ? Enum.Parse(target, value.ToString()) : System.Convert.ChangeType(value, target, culture);
+        }
+
+
         /// <summary>
         /// For use in array of string values, it can be used to detect the best fitting type for a string value.
         /// </summary>

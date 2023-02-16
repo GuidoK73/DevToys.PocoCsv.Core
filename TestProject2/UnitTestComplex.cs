@@ -2,12 +2,17 @@ using Delegates;
 using DevToys.PocoCsv.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace TestProject2
 {
+
+
+
     public sealed class Csv
     {
         [Column(Index = 0)]
@@ -49,6 +54,8 @@ namespace TestProject2
         [TestMethod]
         public void TestReaderComplex()
         {
+
+
             string file = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "data.csv");
 
             using (CsvReader<Csv> _reader = new(file))
@@ -83,5 +90,10 @@ namespace TestProject2
 
             Console.Write("X");
         }
+
+
+
+
+
     }
 }

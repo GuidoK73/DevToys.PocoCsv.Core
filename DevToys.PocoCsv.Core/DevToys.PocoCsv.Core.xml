@@ -116,11 +116,6 @@
             Each iteration will read the next row.
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.SampleRow">
-            <summary>
-            Reads first row as a string Array
-            </summary>
-        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvReaderDynamic">
             <summary>
             Enumerate Csv Stream Reader over dynamic. Slower for large sets.

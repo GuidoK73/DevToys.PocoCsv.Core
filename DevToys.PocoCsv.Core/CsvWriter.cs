@@ -93,7 +93,7 @@ namespace DevToys.PocoCsv.Core
                     {
                         var _propertyGetter = _PropertyGetters[ii];
                         var _value = _propertyGetter(item);
-                        _data[ii] = (string)Convert(_value, typeof(string), Culture);
+                        _data[ii] = (string)TypeUtils.Convert(_value, typeof(string), Culture);
                     }
                     else
                     {
@@ -104,11 +104,6 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        private static object Convert(object value, Type target, CultureInfo culture)
-        {
-            target = Nullable.GetUnderlyingType(target) ?? target;
-            return (target.IsEnum) ? Enum.Parse(target, value.ToString()) : System.Convert.ChangeType(value, target, culture);
-        }
 
         private void Init()
         {

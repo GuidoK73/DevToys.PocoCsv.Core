@@ -22,6 +22,7 @@ namespace DevToys.PocoCsv.Core
         private PropertyInfo[] _Properties = null;
         private Action<object, object>[] _PropertySetters = null;
         private CsvStreamReader _Reader;
+        private char _Separator = ',';
 
         /// <summary>
         /// Constructor
@@ -40,7 +41,26 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Csv Seperator to use default ','
         /// </summary>
-        public char Separator { get; set; } = ',';
+        public char Separator
+        {
+            get
+            {
+                if (_Reader != null)
+                {
+                    _Separator = _Reader.Separator;
+                }
+                return _Separator;
+            }
+            set
+            {
+                _Separator = value;
+                if (_Reader != null)
+                {
+                    _Reader.Separator = _Separator;
+                }
+            }
+        }
+
 
         /// <summary>
         /// Indicates whether to look for byte order marks at the beginning of the file.
@@ -99,8 +119,11 @@ namespace DevToys.PocoCsv.Core
                     var _propertySetter = _PropertySetters[_columnIndex];
                     try
                     {
-                        object _value = Convert(cell, _prop.PropertyType, Culture);
-                        _propertySetter(_result, _value);
+                        if (_prop != null)
+                        {
+                            object _value = TypeUtils.Convert(cell, _prop.PropertyType, Culture);
+                            _propertySetter(_result, _value);
+                        }
                     }
                     catch
                     {
@@ -111,29 +134,7 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        /// <summary>
-        /// Reads first row as a string Array
-        /// </summary>
-        public string[] SampleRow()
-        {
-            string[] _result;
-            if (_Reader.BaseStream.Position == 0)
-            {
-                _result = _Reader.ReadCsvLine().ToArray();
-                _Reader.BaseStream.Position = 0;
-            }
-            else
-            {
-                _result = _CurrentRow;
-            }
-            return _result;
-        }
 
-        private static object Convert(object value, Type target, CultureInfo culture)
-        {
-            target = Nullable.GetUnderlyingType(target) ?? target;
-            return (target.IsEnum) ? Enum.Parse(target, value.ToString()) : System.Convert.ChangeType(value, target, culture);
-        }
 
         private void Init()
         {
