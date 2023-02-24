@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -17,8 +18,8 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// After Read, before Serialize. use this to prepare row values for serialization.
         /// </summary>
-        private readonly string[] _CurrentRow = null;
         private readonly string _File = null;
+        private Stream _Stream = null;
         private PropertyInfo[] _Properties = null;
         private Action<object, object>[] _PropertySetters = null;
         private CsvStreamReader _Reader;
@@ -31,6 +32,15 @@ namespace DevToys.PocoCsv.Core
         public CsvReader(string file)
         {
             _File = file;
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="stream"></param>
+        public CsvReader(Stream stream)
+        {
+            _Stream = stream;
         }
 
         /// <summary>
@@ -87,7 +97,14 @@ namespace DevToys.PocoCsv.Core
         public void Open()
         {
             Init();
-            _Reader = new CsvStreamReader(_File, Encoding, DetectEncodingFromByteOrderMarks) { Separator = Separator };
+            if (_Stream != null)
+            {
+                _Reader = new CsvStreamReader(_Stream, Encoding, DetectEncodingFromByteOrderMarks) { Separator = Separator };
+            }
+            if (!string.IsNullOrEmpty(_File))
+            {
+                _Reader = new CsvStreamReader(_File, Encoding, DetectEncodingFromByteOrderMarks) { Separator = Separator };
+            }
         }
 
         /// <summary>

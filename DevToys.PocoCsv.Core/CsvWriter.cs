@@ -18,6 +18,7 @@ namespace DevToys.PocoCsv.Core
         private Dictionary<int, PropertyInfo> _Properties = new();
         private Dictionary<int, Func<object, object>> _PropertyGetters = new();
         private CsvStreamWriter _Writer;
+        private Stream _Stream = null;
 
         /// <summary>
         /// Constructor
@@ -26,6 +27,15 @@ namespace DevToys.PocoCsv.Core
         public CsvWriter(string file)
         {
             _File = file;
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="stream"></param>
+        public CsvWriter(Stream stream)
+        {
+            _Stream = stream;
         }
 
         /// <summary>
@@ -63,7 +73,14 @@ namespace DevToys.PocoCsv.Core
         public void Open()
         {
             Init();
-            _Writer = new CsvStreamWriter(_File, Append, Encoding) { Separator = Separator };
+            if (_Stream != null)
+            {
+                _Writer = new CsvStreamWriter(_Stream, Encoding) { Separator = Separator };
+            }
+            if (!string.IsNullOrEmpty(_File))
+            {
+                _Writer = new CsvStreamWriter(_File, Append, Encoding) { Separator = Separator };
+            }
         }
 
         /// <summary>
@@ -73,8 +90,11 @@ namespace DevToys.PocoCsv.Core
         {
             if (Append)
             {
-                FileInfo _info = new(_File);
-                _Writer.BaseStream.Position = _info.Length;
+                if (_File != null)
+                {
+                    FileInfo _info = new(_File);
+                    _Writer.BaseStream.Position = _info.Length;
+                }                
             }
             else
             {

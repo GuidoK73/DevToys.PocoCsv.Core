@@ -65,7 +65,7 @@
             Properties needs to be marked with ColumnAttribute
             </summary>
         </member>
-        <member name="F:DevToys.PocoCsv.Core.CsvReader`1._CurrentRow">
+        <member name="F:DevToys.PocoCsv.Core.CsvReader`1._File">
             <summary>
             After Read, before Serialize. use this to prepare row values for serialization.
             </summary>
@@ -75,6 +75,12 @@
             Constructor
             </summary>
             <param name="file"></param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.Stream)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="stream"></param>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.Culture">
             <summary>
@@ -430,6 +436,12 @@
             Constructor
             </summary>
             <param name="file"></param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.IO.Stream)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="stream"></param>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvWriter`1.Culture">
             <summary>
