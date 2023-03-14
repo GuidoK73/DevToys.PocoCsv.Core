@@ -1,5 +1,4 @@
 ﻿using Delegates;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -12,76 +11,23 @@ namespace DevToys.PocoCsv.Core
     /// <summary>
     /// Write T to Csv Stream from an IEnumerable source.
     /// </summary>
-    public class CsvWriter<T> : IDisposable where T : new()
+    public class CsvWriter<T> : BaseCsvWriter where T : new()
     {
-        private readonly string _File = null;
-        private Dictionary<int, PropertyInfo> _Properties = new();
-        private Dictionary<int, Func<object, object>> _PropertyGetters = new();
-        private CsvStreamWriter _Writer;
-        private Stream _Stream = null;
+        private List<int> _ColumnIndexes;
+        private int _MaxColumnIndex = 0;
+        private string[] _Data;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="file"></param>
-        public CsvWriter(string file)
-        {
-            _File = file;
-        }
+        public CsvWriter(string file) : base(file)
+        { }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="stream"></param>
-        public CsvWriter(Stream stream)
-        {
-            _Stream = stream;
-        }
+        public CsvWriter(Stream stream) : base(stream)
+        {  }
 
-        /// <summary>
-        /// Culture info to use for serialization.
-        /// </summary>
-        public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
+        public CsvWriter(string file, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true) : base (file, encoding, culture, separator)
+        { }
 
-        /// <summary>
-        /// Csv Seperator to use default ','
-        /// </summary>
-        public char Separator { get; set; } = ',';
-
-        /// <summary>
-        /// Write command can be used to append multiple collections to the open Csv Stream.
-        /// </summary>
-        public bool Append { get; set; } = true;
-
-        /// <summary>
-        /// The character encoding to use.
-        /// </summary>
-        public Encoding Encoding { get; set; } = Encoding.Default;
-
-        /// <summary>
-        /// Releases all resources used by the System.IO.TextReader object.
-        /// </summary>
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-            _Writer.Close();
-        }
-
-        /// <summary>
-        /// Initialize and open the CSV Stream Writer.
-        /// </summary>
-        public void Open()
-        {
-            Init();
-            if (_Stream != null)
-            {
-                _Writer = new CsvStreamWriter(_Stream, Encoding) { Separator = Separator };
-            }
-            if (!string.IsNullOrEmpty(_File))
-            {
-                _Writer = new CsvStreamWriter(_File, Append, Encoding) { Separator = Separator };
-            }
-        }
+        public CsvWriter(Stream stream, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true) : base (stream, encoding, culture, separator)
+        {  }
 
         /// <summary>
         /// Write IEnumerable T to Csv Stream
@@ -101,31 +47,51 @@ namespace DevToys.PocoCsv.Core
                 _Writer.BaseStream.Position = 0;
             }
 
-            var columnIndexes = _Properties.Keys.ToList();
-            var _max = columnIndexes.Max();
-            var _data = new string[_max + 1];
-
-            foreach (T item in rows)
+            foreach (T row in rows)
             {
-                for (int ii = 0; ii <= _max; ii++)
-                {
-                    if (_Properties.ContainsKey(ii))
-                    {
-                        var _propertyGetter = _PropertyGetters[ii];
-                        var _value = _propertyGetter(item);
-                        _data[ii] = (string)TypeUtils.Convert(_value, typeof(string), Culture);
-                    }
-                    else
-                    {
-                        _data[ii] = string.Empty;
-                    }
-                }
-                _Writer.WriteCsvLine(_data);
+                Write(row);
             }
         }
 
+        /// <summary>
+        /// Write single row to CSV
+        /// </summary>
+        public void Write(T row)
+        {
 
-        private void Init()
+            for (int ii = 0; ii <= _MaxColumnIndex; ii++)
+            {
+                if (_Properties.ContainsKey(ii))
+                {
+                    var _propertyGetter = _PropertyGetters[ii];
+                    var _value = _propertyGetter(row);
+                    _Data[ii] = (string)TypeUtils.Convert(_value, typeof(string), Culture);
+                }
+                else
+                {
+                    _Data[ii] = string.Empty;
+                }
+            }
+            _Writer.WriteCsvLine(_Data);
+        }
+
+        /// <summary>
+        /// Initialize and open the CSV Stream Writer.
+        /// </summary>
+        public override void Open()
+        {
+            Init();
+            if (_Stream != null)
+            {
+                _Writer = new CsvStreamWriter(_Stream, Encoding) { Separator = Separator };
+            }
+            if (!string.IsNullOrEmpty(_File))
+            {
+                _Writer = new CsvStreamWriter(_File, Append, Encoding) { Separator = Separator };
+            }
+        }
+
+        protected override void Init()
         {
             if (_Properties.Count > 0)
                 return;
@@ -141,6 +107,11 @@ namespace DevToys.PocoCsv.Core
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
                 .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index })
                 .ToDictionary(p => p.Key, p => _type.PropertyGet(p.Value.Name));
+
+            _ColumnIndexes = _Properties.Keys.ToList();
+            _MaxColumnIndex = _ColumnIndexes.Max();
+            _Data = new string[_MaxColumnIndex + 1];
+
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Delegates;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,147 +12,102 @@ namespace DevToys.PocoCsv.Core
     /// Enumerate Csv Stream Reader over T.
     /// Properties needs to be marked with ColumnAttribute
     /// </summary>
-    public class CsvReader<T> : IDisposable where T : new()
+    public sealed class CsvReader<T> : BaseCsvReader where T : new()
     {
-        /// <summary>
-        /// After Read, before Serialize. use this to prepare row values for serialization.
-        /// </summary>
-        private readonly string _File = null;
-        private Stream _Stream = null;
         private PropertyInfo[] _Properties = null;
         private Action<object, object>[] _PropertySetters = null;
-        private CsvStreamReader _Reader;
-        private char _Separator = ',';
+
+        public CsvReader(string file) : base(file)
+        { }
+
+        public CsvReader(Stream stream) : base(stream)
+        { }
+
+        public CsvReader(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true) : base(stream, encoding, separator, detectEncodingFromByteOrderMarks)
+        { }
+
+        public CsvReader(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true) : base(file, encoding, separator, detectEncodingFromByteOrderMarks)
+        { }
+
+        [Obsolete("Use ReadAsEnumerable() or Read() instead.")]
+        public IEnumerable<T> Rows() => ReadAsEnumerable();
 
         /// <summary>
-        /// Constructor
+        /// Each iteration will read the next row from stream or file
         /// </summary>
-        /// <param name="file"></param>
-        public CsvReader(string file)
+        public IEnumerable<T> ReadAsEnumerable()
         {
-            _File = file;
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="stream"></param>
-        public CsvReader(Stream stream)
-        {
-            _Stream = stream;
-        }
-
-        /// <summary>
-        /// Culture info to use for serialization.
-        /// </summary>
-        public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
-
-        /// <summary>
-        /// Csv Seperator to use default ','
-        /// </summary>
-        public char Separator
-        {
-            get
+            if (_Reader == null)
             {
-                if (_Reader != null)
-                {
-                    _Separator = _Reader.Separator;
-                }
-                return _Separator;
+                throw new IOException("Reader is closed!");
             }
-            set
+
+            _Reader.BaseStream.Position = 0;
+
+            while (!_Reader.EndOfCsvStream)
             {
-                _Separator = value;
-                if (_Reader != null)
-                {
-                    _Reader.Separator = _Separator;
-                }
+                yield return Read();
             }
         }
 
 
         /// <summary>
-        /// Indicates whether to look for byte order marks at the beginning of the file.
+        /// Single row read 
         /// </summary>
-        public bool DetectEncodingFromByteOrderMarks { get; set; } = true;
-
-        /// <summary>
-        /// The character encoding to use.
-        /// </summary>
-        public Encoding Encoding { get; set; } = Encoding.Default;
-
-        /// <summary>
-        /// Releases all resources used by the System.IO.TextReader object.
-        /// </summary>
-        public void Dispose()
+        public T Read()
         {
-            GC.SuppressFinalize(this);
-            Close();
+            if (_Reader == null)
+            {
+                throw new IOException("Reader is closed!");
+            }
+
+            T _result = new();
+
+            int _columnIndex = 0;
+            foreach (string cell in _Reader.ReadCsvLine())
+            {
+                PropertyInfo _prop = _Properties[_columnIndex];
+                var _propertySetter = _PropertySetters[_columnIndex];
+                try
+                {
+                    if (_prop != null)
+                    {
+                        object _value = TypeUtils.Convert(cell, _prop.PropertyType, Culture);
+                        _propertySetter(_result, _value);
+                    }
+                }
+                catch
+                {
+                }
+                _columnIndex++;
+            }
+            return _result;
         }
 
-        /// <summary>
-        /// Initialize and open the CSV Stream Reader.
-        /// </summary>
-        public void Open()
+        public override void Open()
         {
             Init();
+
+            if (_Stream == null && string.IsNullOrEmpty(_File))
+            {
+                throw new IOException("No file or stream specified in constructor.");
+            }
+
             if (_Stream != null)
             {
                 _Reader = new CsvStreamReader(_Stream, Encoding, DetectEncodingFromByteOrderMarks) { Separator = Separator };
             }
             if (!string.IsNullOrEmpty(_File))
             {
+                if (!File.Exists(_File))
+                {
+                    throw new FileNotFoundException($"File '{_File}' not found.");
+                }
                 _Reader = new CsvStreamReader(_File, Encoding, DetectEncodingFromByteOrderMarks) { Separator = Separator };
             }
         }
 
-        /// <summary>
-        /// Close the CSV stream reader
-        /// </summary>
-        public void Close()
-        {
-            _Reader.Close();
-        }
-
-        /// <summary>
-        /// Each iteration will read the next row.
-        /// </summary>
-        public IEnumerable<T> Rows()
-        {
-            _Reader.BaseStream.Position = 0;
-
-            int _rowNumber = -1;
-
-            while (!_Reader.EndOfCsvStream)
-            {
-                T _result = new();
-                _rowNumber++;
-
-                int _columnIndex = 0;
-                foreach (string cell in _Reader.ReadCsvLine())
-                {
-                    PropertyInfo _prop = _Properties[_columnIndex];
-                    var _propertySetter = _PropertySetters[_columnIndex];
-                    try
-                    {
-                        if (_prop != null)
-                        {
-                            object _value = TypeUtils.Convert(cell, _prop.PropertyType, Culture);
-                            _propertySetter(_result, _value);
-                        }
-                    }
-                    catch
-                    {
-                    }
-                    _columnIndex++;
-                }
-                yield return _result;
-            }
-        }
-
-
-
-        private void Init()
+        protected override void Init()
         {
             if (_Properties != null)
                 return;

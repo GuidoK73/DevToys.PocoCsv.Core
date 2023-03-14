@@ -64,13 +64,13 @@ namespace TestProject2
 
                 _reader.Culture = CultureInfo.GetCultureInfo("nl-NL");
 
-                foreach (Csv csv in _reader.Rows())
+                foreach (Csv csv in _reader.ReadAsEnumerable())
                 {
                     Console.WriteLine(csv.Bedrag);
                 }
 
-                var _x = _reader.Rows().ToList();
-                var _bij = _reader.Rows().Where(p => p.AfBij == "Bij").ToList();
+                var _x = _reader.ReadAsEnumerable().ToList();
+                var _bij = _reader.ReadAsEnumerable().Where(p => p.AfBij == "Bij").ToList();
             }
         }
 

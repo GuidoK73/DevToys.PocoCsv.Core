@@ -48,7 +48,7 @@ namespace TestProject2
             {
                 _reader.Open();
 
-                var _af = _reader.Rows().Where(p => p.AfBij == "Af").ToList();
+                var _af = _reader.ReadAsEnumerable().Where(p => p.AfBij == "Af").ToList();
             }
         }
 

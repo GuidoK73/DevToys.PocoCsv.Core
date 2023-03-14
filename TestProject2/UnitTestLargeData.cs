@@ -35,7 +35,7 @@ namespace TestProject2
             {
                 _reader.Open();
 
-                var x = _reader.Rows().ToList();
+                var x = _reader.ReadAsEnumerable().ToList();
                 // var _af = _reader.Rows().Where(p => p.AfBij == "Af").ToList();
             }
 

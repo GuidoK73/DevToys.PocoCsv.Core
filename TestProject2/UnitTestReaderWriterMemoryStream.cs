@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,34 +22,35 @@ namespace TestProject2
 
 
     [TestClass]
-    public class UnitTest2
+    public class UnitTestReaderWriterMemoryStream
     {
         [TestMethod]
-        public void TestReaderComplex()
+        public void TestReaderWriterMemoryStream()
         {
-            string _file = @"D:\Temp\test.csv";
-
-            if (File.Exists(_file))
-            {
-                File.Delete(_file);
-            }
 
             List<Data> _data = new List<Data>();
             _data.Add(new Data { Collumn1 = "01", Collumn2 = "AA" });
             _data.Add(new Data { Collumn1 = "02", Collumn2 = "BB" });
             _data.Add(new Data { Collumn1 = "03", Collumn2 = "CC" });
 
-                              
-            using (CsvWriter<Data> _csvWriter = new CsvWriter<Data>(_file))
-            {
-                _csvWriter.Open();
-                _csvWriter.Write(_data);
-            }
 
-            using (CsvReader<Data> _csvReader = new CsvReader<Data>(_file))
+            List<Data> _data2 = new List<Data>();
+
+            using (MemoryStream _stream = new MemoryStream())
             {
-                _csvReader.Open();
-                List<Data> _data2 = _csvReader.Rows().Where(p => p.Collumn1 != "02").ToList();
+
+                using (CsvWriter<Data> _csvWriter = new CsvWriter<Data>(_stream))
+                using (CsvReader<Data> _csvReader = new CsvReader<Data>(_stream))
+                {
+                    _csvWriter.Separator = ';';
+                    _csvWriter.Open();
+                    _csvWriter.Write(_data);
+
+
+                    _csvReader.Open();
+                    _csvReader.DetectSeparator();
+                    _data2 = _csvReader.ReadAsEnumerable().Where(p => p.Collumn1 != "02").ToList();
+                }
             }
 
        }

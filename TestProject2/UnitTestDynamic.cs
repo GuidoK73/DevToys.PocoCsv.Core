@@ -19,7 +19,7 @@ namespace TestProject2
             {
                 _reader.FirstRowIsHeader = true;
                 _reader.Open();
-                foreach (dynamic row in _reader.Rows())
+                foreach (dynamic row in _reader.ReadAsEnumerable())
                 {
                     Console.WriteLine("X");
                 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -9,73 +10,69 @@ namespace DevToys.PocoCsv.Core
     /// <summary>
     /// Enumerate Csv Stream Reader over dynamic. Slower for large sets.
     /// </summary>
-    public sealed class CsvReaderDynamic : IDisposable
+    public sealed class CsvReaderDynamic : BaseCsvReader
     {
         /// <summary>
         /// After Read, before Serialize. use this to prepare row values for serialization.
         /// </summary>
         private readonly string[] _CurrentRow = null;
-        private readonly string _File = null;
-        private CsvStreamReader _Reader;
         private string[] _FirstRow = null;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="file"></param>
-        public CsvReaderDynamic(string file)
-        {
-            _File = file;
-        }
+        public CsvReaderDynamic(string file) : base(file)
+        { }
 
-        /// <summary>
-        /// Csv Seperator to use default ','
-        /// </summary>
-        public char Separator { get; set; } = ',';
+        public CsvReaderDynamic(Stream stream) : base(stream)
+        { }
 
-        /// <summary>
-        /// Indicates whether to look for byte order marks at the beginning of the file.
-        /// </summary>
-        public bool DetectEncodingFromByteOrderMarks { get; set; } = true;
+        public CsvReaderDynamic(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true) : base(stream, encoding, separator, detectEncodingFromByteOrderMarks)
+        { }
 
-        /// <summary>
-        /// The character encoding to use.
-        /// </summary>
-        public Encoding Encoding { get; set; } = Encoding.Default;
+        public CsvReaderDynamic(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true) : base(file, encoding, separator, detectEncodingFromByteOrderMarks)
+        { }
 
         /// <summary>
         /// Dynamic property names will be as first header.
         /// </summary>
         public bool FirstRowIsHeader { get; set; } = true;
 
-        /// <summary>
-        /// Releases all resources used by the System.IO.TextReader object.
-        /// </summary>
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-            Close();
-        }
 
         /// <summary>
         /// Initialize and open the CSV Stream Reader.
         /// </summary>
-        public void Open()
+        public override void Open()
         {
-            _Reader = new CsvStreamReader(_File, Encoding, DetectEncodingFromByteOrderMarks) { Separator = Separator };
+            if (_Stream == null && string.IsNullOrEmpty(_File))
+            {
+                throw new IOException("No file or stream specified in constructor.");
+            }
+            if (_Stream != null)
+            {
+                _Reader = new CsvStreamReader(_Stream, Encoding, DetectEncodingFromByteOrderMarks) { Separator = Separator };
+            }
+            if (!string.IsNullOrEmpty(_File))
+            {
+                if (!File.Exists(_File))
+                {
+                    throw new FileNotFoundException($"File '{_File}' not found.");
+                }
+                _Reader = new CsvStreamReader(_File, Encoding, DetectEncodingFromByteOrderMarks) { Separator = Separator };
+            }
             Init();
         }
 
-        /// <summary>
-        /// Close the CSV stream reader
-        /// </summary>
-        public void Close() => _Reader.Close();
+        [Obsolete("Use ReadAsEnumerable() or Read() instead.")]
+        public IEnumerable<dynamic> Rows() => ReadAsEnumerable();
 
         /// <summary>
-        /// Each iteration will read the next row.
+        /// Each iteration will read the next row from stream or file.
         /// </summary>
-        public IEnumerable<dynamic> Rows()
+        public IEnumerable<dynamic> ReadAsEnumerable()
         {
+            if (_Reader == null)
+            {
+                throw new IOException("Reader is closed!");
+            }
+
             _Reader.BaseStream.Position = 0;
 
             int _rowNumber = -1;
@@ -85,6 +82,16 @@ namespace DevToys.PocoCsv.Core
                 _rowNumber++;
                 yield return CreateObject(_Reader.ReadCsvLine().ToArray());
             }
+        }
+
+        public dynamic Read()
+        {
+            if (_Reader == null)
+            {
+                throw new IOException("Reader is closed!");
+            }
+
+            return CreateObject(_Reader.ReadCsvLine().ToArray());
         }
 
         private dynamic CreateObject(string[] reader)
@@ -128,7 +135,7 @@ namespace DevToys.PocoCsv.Core
             return _result;
         }
 
-        private void Init()
+        protected override void Init()
         {
             if (_FirstRow != null)
                 return;

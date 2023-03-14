@@ -11,57 +11,33 @@ namespace DevToys.PocoCsv.Core
     /// <summary>
     /// Write T to Csv Stream from an IEnumerable source.
     /// </summary>
-    public sealed class CsvWriterDynamic : IDisposable
+    public sealed class CsvWriterDynamic : BaseCsvWriter
     {
-        private readonly string _File = null;
-        private readonly Dictionary<int, PropertyInfo> _Properties = new();
-        private readonly Dictionary<int, Func<object, object>> _PropertyGetters = new();
-        private CsvStreamWriter _Writer;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="file"></param>
-        public CsvWriterDynamic(string file)
-        {
-            _File = file;
-        }
+        public CsvWriterDynamic(string file) : base(file)
+        { }
 
-        /// <summary>
-        /// Culture info to use for serialization.
-        /// </summary>
-        public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
+        public CsvWriterDynamic(Stream stream) : base(stream)
+        { }
 
-        /// <summary>
-        /// Csv Seperator to use default ','
-        /// </summary>
-        public char Separator { get; set; } = ',';
+        public CsvWriterDynamic(string file, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true) : base(file, encoding, culture, separator)
+        { }
 
-        /// <summary>
-        /// Write command can be used to append multiple collections to the open Csv Stream.
-        /// </summary>
-        public bool Append { get; set; } = true;
+        public CsvWriterDynamic(Stream stream, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true) : base(stream, encoding, culture, separator)
+        { }
 
-        /// <summary>
-        /// The character encoding to use.
-        /// </summary>
-        public Encoding Encoding { get; set; } = Encoding.Default;
-
-        /// <summary>
-        /// Releases all resources used by the System.IO.TextReader object.
-        /// </summary>
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-            _Writer.Close();
-        }
 
         /// <summary>
         /// Initialize and open the CSV Stream Writer.
         /// </summary>
-        public void Open()
+        public override void Open()
         {
             _Writer = new CsvStreamWriter(_File, Append, Encoding) { Separator = Separator };
+        }
+
+        protected override void Init()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

@@ -31,7 +31,7 @@ namespace TestProject2
             using (CsvReader<CsvVerySimple> _reader = new(file))
             {
                 _reader.Open();
-                foreach (CsvVerySimple row in _reader.Rows())
+                foreach (CsvVerySimple row in _reader.ReadAsEnumerable())
                 {
                     Console.WriteLine(row.Column1);
                 }

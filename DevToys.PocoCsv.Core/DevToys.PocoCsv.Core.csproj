@@ -3,7 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>1.1.5
+    <Description>1.2
+- Bug fixes
+
+1.1.5
 - Bug Fixes
 
 1.1.4
@@ -26,7 +29,7 @@
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.1.6</Version>
+    <Version>1.2</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
