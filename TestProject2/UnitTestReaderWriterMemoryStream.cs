@@ -18,7 +18,7 @@ namespace TestProject2
         public string Collumn1 { get; set; }
         [Column(Index = 1)]
         public string Collumn2 { get; set; }
-        [Column(Index = 2)]
+        [Column(Index = 2, Header = "Test" )]
         public byte[] Collumn3 { get; set; }
 
     }
@@ -47,13 +47,18 @@ namespace TestProject2
                 {
                     _csvWriter.Separator = ';';
                     _csvWriter.Open();
+                    _csvWriter.WriteHeader();
                     _csvWriter.Write(_data);
 
-                    // string _test = StreamToString(_stream);
+                    //string _test = StreamToString(_stream);
 
                     _csvReader.Open();
                     _csvReader.DetectSeparator();
-                    _data2 = _csvReader.ReadAsEnumerable().Where(p => p.Collumn1 != "02").ToList();
+                    _data2 = _csvReader
+                        .ReadAsEnumerable()
+                        .Skip(1) // skip header
+                        .Where(p => p.Collumn1 != "02")
+                        .ToList();
                 }
             }
        }

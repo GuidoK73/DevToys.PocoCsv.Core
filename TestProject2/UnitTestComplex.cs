@@ -55,7 +55,6 @@ namespace TestProject2
         public void TestReaderComplex()
         {
 
-
             string file = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "data.csv");
 
             using (CsvReader<Csv> _reader = new(file))
@@ -77,6 +76,11 @@ namespace TestProject2
         [TestMethod]
         public void TestDelegates()
         {
+            decimal _x = 0;
+            string _s = _x.ToString();
+
+            Console.WriteLine(_s);
+
             Type _testClassType = typeof(TestClass);
             TestClass _testClassInstance = new TestClass();
             var _action = _testClassType.PropertySet<string>("MyProp");

@@ -88,7 +88,7 @@ namespace DevToys.PocoCsv.Core
                     var _property = _Properties[ii];
                     var _name = _property.Name;
                     var _attribute = _property.GetCustomAttribute<ColumnAttribute>();
-                    if (_attribute != null && string.IsNullOrEmpty(_attribute.Header))
+                    if (_attribute != null && !string.IsNullOrEmpty(_attribute.Header))
                     {
                         _name = _attribute.Header;
                     }
