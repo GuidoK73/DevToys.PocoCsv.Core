@@ -60,7 +60,7 @@ namespace TestProject2
             using (CsvWriter<CsvSimple> _writer = new(file) { Separator = ',', Append = true })
             {
                 _writer.Open();
-                _writer.Write(Data());
+                _writer.Write(Data(), writeHeader: false);
             }
         }
 

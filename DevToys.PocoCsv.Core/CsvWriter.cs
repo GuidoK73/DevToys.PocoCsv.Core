@@ -1,4 +1,5 @@
 ﻿using Delegates;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -16,41 +17,90 @@ namespace DevToys.PocoCsv.Core
         private List<int> _ColumnIndexes;
         private int _MaxColumnIndex = 0;
         private string[] _Data;
+        private bool _wroteHeader = false;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public CsvWriter(string file) : base(file)
         { }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public CsvWriter(Stream stream) : base(stream)
         {  }
 
-        public CsvWriter(string file, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true) : base (file, encoding, culture, separator)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public CsvWriter(string file, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true, int buffersize = -1) : base (file, encoding, culture, separator, append, buffersize)
         { }
 
-        public CsvWriter(Stream stream, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true) : base (stream, encoding, culture, separator)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public CsvWriter(Stream stream, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true, int buffersize = -1) : base (stream, encoding, culture, separator, append, buffersize)
         {  }
 
         /// <summary>
         /// Write IEnumerable T to Csv Stream
         /// </summary>
-        public void Write(IEnumerable<T> rows)
+        public void Write(IEnumerable<T> rows, bool writeHeader = false)
         {
-            if (Append)
-            {
+            if (Append || _wroteHeader)
+            {                
                 if (_File != null)
                 {
                     FileInfo _info = new(_File);
-                    _Writer.BaseStream.Position = _info.Length;
+                    _StreamWrtier.BaseStream.Position = _info.Length;
                 }                
             }
             else
             {
-                _Writer.BaseStream.Position = 0;
+                _StreamWrtier.BaseStream.Position = 0;
+            }
+
+            if (_StreamWrtier.BaseStream.Position == 0 && writeHeader)
+            {
+                if (_wroteHeader == false)
+                {
+                    WriteHeader();
+                }
+                _wroteHeader = false;
             }
 
             foreach (T row in rows)
             {
                 Write(row);
             }
+        }
+
+        /// <summary>
+        /// Write header with property names of T.
+        /// </summary>
+        public void WriteHeader()
+        {
+            for (int ii = 0; ii <= _MaxColumnIndex; ii++)
+            {
+                if (_Properties.ContainsKey(ii))
+                {
+                    var _property = _Properties[ii];
+                    var _name = _property.Name;
+                    var _attribute = _property.GetCustomAttribute<ColumnAttribute>();
+                    if (_attribute != null && string.IsNullOrEmpty(_attribute.Header))
+                    {
+                        _name = _attribute.Header;
+                    }
+                    _Data[ii] = _name;
+                }
+                else
+                {
+                    _Data[ii] = string.Empty;
+                }
+            }
+            _StreamWrtier.WriteCsvLine(_Data);
+            _wroteHeader = true;
         }
 
         /// <summary>
@@ -63,16 +113,33 @@ namespace DevToys.PocoCsv.Core
             {
                 if (_Properties.ContainsKey(ii))
                 {
+                    var _property = _Properties[ii];
                     var _propertyGetter = _PropertyGetters[ii];
                     var _value = _propertyGetter(row);
-                    _Data[ii] = (string)TypeUtils.Convert(_value, typeof(string), Culture);
+
+                    if (_property.PropertyType == typeof(byte[]))
+                    {
+                        if (_value != null)
+                        {
+                            var _byteVakye = (byte[])_value;
+                            _Data[ii] = Convert.ToBase64String(_byteVakye);
+                        }
+                        else
+                        {
+                            _Data[ii] = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        _Data[ii] = (string)TypeUtils.Convert(_value, typeof(string), Culture);
+                    }
                 }
                 else
                 {
                     _Data[ii] = string.Empty;
                 }
             }
-            _Writer.WriteCsvLine(_Data);
+            _StreamWrtier.WriteCsvLine(_Data);
         }
 
         /// <summary>
@@ -83,14 +150,17 @@ namespace DevToys.PocoCsv.Core
             Init();
             if (_Stream != null)
             {
-                _Writer = new CsvStreamWriter(_Stream, Encoding) { Separator = Separator };
+                _StreamWrtier = new CsvStreamWriter(stream: _Stream, encoding: Encoding, bufferSize: _BufferSize) { Separator = Separator };
             }
             if (!string.IsNullOrEmpty(_File))
             {
-                _Writer = new CsvStreamWriter(_File, Append, Encoding) { Separator = Separator };
+                _StreamWrtier = new CsvStreamWriter(path: _File, append: Append, encoding: Encoding, bufferSize : _BufferSize) { Separator = Separator };
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected override void Init()
         {
             if (_Properties.Count > 0)

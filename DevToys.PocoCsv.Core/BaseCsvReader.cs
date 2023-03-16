@@ -5,35 +5,52 @@ using System.Text;
 
 namespace DevToys.PocoCsv.Core
 {
-    public abstract class BaseCsvReader : IDisposable 
+    /// <summary>
+    /// base class for CsvReader
+    /// </summary>
+    public abstract class BaseCsvReader : BaseCsvReaderWriter,  IDisposable
     {
-        protected readonly string _File = null;
-        protected Stream _Stream = null;
-        protected CsvStreamReader _Reader;
-        protected char _Separator = ',';
+        /// <summary>
+        /// 
+        /// </summary>
+        protected CsvStreamReader _StreamReader;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public BaseCsvReader(string file)
         {
             _File = file;
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public BaseCsvReader(Stream stream)
         {
             _Stream = stream;
         }
 
-        public BaseCsvReader(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true) : this(stream)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public BaseCsvReader(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int bufferSize = -1) : this(stream)
         {
             Encoding = encoding;
             _Separator = separator;
             DetectEncodingFromByteOrderMarks = detectEncodingFromByteOrderMarks;
+            _BufferSize = bufferSize;
         }
 
-        public BaseCsvReader(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true) : this(file)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public BaseCsvReader(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int bufferSize = -1) : this(file)
         {
             Encoding = encoding;
             _Separator = separator;
             DetectEncodingFromByteOrderMarks = detectEncodingFromByteOrderMarks;
+            _BufferSize = bufferSize;
         }
 
         /// <summary>
@@ -48,18 +65,18 @@ namespace DevToys.PocoCsv.Core
         {
             get
             {
-                if (_Reader != null)
+                if (_StreamReader != null)
                 {
-                    _Separator = _Reader.Separator;
+                    _Separator = _StreamReader.Separator;
                 }
                 return _Separator;
             }
             set
             {
                 _Separator = value;
-                if (_Reader != null)
+                if (_StreamReader != null)
                 {
-                    _Reader.Separator = _Separator;
+                    _StreamReader.Separator = _Separator;
                 }
             }
         }
@@ -68,11 +85,6 @@ namespace DevToys.PocoCsv.Core
         /// Indicates whether to look for byte order marks at the beginning of the file.
         /// </summary>
         public bool DetectEncodingFromByteOrderMarks { get; set; } = true;
-
-        /// <summary>
-        /// The character encoding to use.
-        /// </summary>
-        public Encoding Encoding { get; set; } = Encoding.Default;
 
         /// <summary>
         /// Releases all resources used by the System.IO.TextReader object.
@@ -93,28 +105,31 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public virtual void Close()
         {
-            _Reader.Close();
+            _StreamReader.Close();
         }
 
         /// <summary>
         /// Indicates End of stream, use with Read funcion.
         /// </summary>
-        public bool EndOfStream => _Reader.EndOfCsvStream;
+        public bool EndOfStream => _StreamReader.EndOfCsvStream;
 
         /// <summary>
-        /// Do a 10 line sample to detect and set separator.
+        /// Do a 10 line sample to detect and set separator, it will try ',', ';', '|', '\t', ':'
         /// </summary>
         public virtual void DetectSeparator()
         {
 
-            bool _succes = CsvUtils.GetCsvSeparator(_Reader, out _Separator, 10);
+            bool _succes = CsvUtils.GetCsvSeparator(_StreamReader, out _Separator, 10);
             if (_succes)
             {
                 Separator = _Separator;
             }
-            _Reader.BaseStream.Position = 0;
+            _StreamReader.BaseStream.Position = 0;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected abstract void Init();
     }
 }

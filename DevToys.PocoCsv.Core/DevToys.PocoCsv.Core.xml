@@ -4,6 +4,36 @@
         <name>DevToys.PocoCsv.Core</name>
     </assembly>
     <members>
+        <member name="T:DevToys.PocoCsv.Core.BaseCsvReader">
+            <summary>
+            base class for CsvReader
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.BaseCsvReader._StreamReader">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsvReader.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsvReader.#ctor(System.IO.Stream)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsvReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Char,System.Boolean,System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsvReader.#ctor(System.String,System.Text.Encoding,System.Char,System.Boolean,System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
         <member name="P:DevToys.PocoCsv.Core.BaseCsvReader.Culture">
             <summary>
             Culture info to use for serialization.
@@ -17,11 +47,6 @@
         <member name="P:DevToys.PocoCsv.Core.BaseCsvReader.DetectEncodingFromByteOrderMarks">
             <summary>
             Indicates whether to look for byte order marks at the beginning of the file.
-            </summary>
-        </member>
-        <member name="P:DevToys.PocoCsv.Core.BaseCsvReader.Encoding">
-            <summary>
-            The character encoding to use.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.BaseCsvReader.Dispose">
@@ -46,7 +71,82 @@
         </member>
         <member name="M:DevToys.PocoCsv.Core.BaseCsvReader.DetectSeparator">
             <summary>
-            Do a 10 line sample to detect and set separator.
+            Do a 10 line sample to detect and set separator, it will try ',', ';', '|', '\t', ':'
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsvReader.Init">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.BaseCsvReaderWriter">
+            <summary>
+            Base class for BaseCsvReader and BaseCsvWriter
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.BaseCsvReaderWriter._File">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.BaseCsvReaderWriter._Stream">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.BaseCsvReaderWriter._Separator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.BaseCsvReaderWriter._BufferSize">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.BaseCsvReaderWriter.Encoding">
+            <summary>
+            The character encoding to use.
+            </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.BaseCsvWriter">
+            <summary>
+            base class for CsvWriter
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.BaseCsvWriter._Properties">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.BaseCsvWriter._PropertyGetters">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.BaseCsvWriter._StreamWrtier">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsvWriter.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsvWriter.#ctor(System.IO.Stream)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsvWriter.#ctor(System.String,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Boolean,System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsvWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Boolean,System.Int32)">
+            <summary>
+            Constructor
             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.BaseCsvWriter.Culture">
@@ -64,11 +164,6 @@
             Write command can be used to append multiple collections to the open Csv Stream.
             </summary>
         </member>
-        <member name="P:DevToys.PocoCsv.Core.BaseCsvWriter.Encoding">
-            <summary>
-            The character encoding to use.
-            </summary>
-        </member>
         <member name="M:DevToys.PocoCsv.Core.BaseCsvWriter.Dispose">
             <summary>
             Releases all resources used by the System.IO.TextReader object.
@@ -84,6 +179,11 @@
             Initialize and open the CSV Stream Writer.
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsvWriter.Init">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.ColumnAttribute">
             <summary>
             Csv Column Attribute to assign to POCO Properties.
@@ -92,6 +192,11 @@
         <member name="P:DevToys.PocoCsv.Core.ColumnAttribute.Index">
             <summary>
             Property corresponds to Csv Column Index.
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.ColumnAttribute.Header">
+            <summary>
+            Only used by CsvWriter
             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvColumnInfo">
@@ -145,14 +250,54 @@
             Properties needs to be marked with ColumnAttribute
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.Stream)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.Stream,System.Text.Encoding,System.Char,System.Boolean,System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.String,System.Text.Encoding,System.Char,System.Boolean,System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Rows">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadAsEnumerable">
             <summary>
             Each iteration will read the next row from stream or file
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Skip(System.Int32)">
+            <summary>
+            Use to skip first row(s) combined with Read() method. for ReadAsEnumerable() just use the Enumerable Skip method.
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Read">
             <summary>
             Single row read 
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Open">
+            <summary>
+            Open the reader
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Init">
+            <summary>
+            Initialize the CsvReader
             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvReaderDynamic">
@@ -165,6 +310,26 @@
             After Read, before Serialize. use this to prepare row values for serialization.
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.#ctor(System.IO.Stream)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.#ctor(System.IO.Stream,System.Text.Encoding,System.Char,System.Boolean)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.#ctor(System.String,System.Text.Encoding,System.Char,System.Boolean)">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReaderDynamic.FirstRowIsHeader">
             <summary>
             Dynamic property names will be as first header.
@@ -175,14 +340,29 @@
             Initialize and open the CSV Stream Reader.
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.Rows">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.ReadAsEnumerable">
             <summary>
             Each iteration will read the next row from stream or file.
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.Read">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.SampleRow">
             <summary>
             Reads first row as a string Array
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.Init">
+            <summary>
+            
             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamReader">
@@ -191,70 +371,11 @@
             Extended with ReadCsvLine to read a Csv Line conform RFC 4180.
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.IO.Stream)">
-            <summary>
-            Initializes a new instance of the System.IO.StreamReader class for the specified stream.
-            </summary>
-            <param name="stream">The stream to be read.</param>
-        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.String)">
             <summary>
             Initializes a new instance of the System.IO.StreamReader class for the specified file name.
             </summary>
             <param name="path">The complete file path to be read.</param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.IO.Stream,System.Boolean)">
-            <summary>
-            Initializes a new instance of the System.IO.StreamReader class for the specified stream, with the specified byte order mark detection option.
-            </summary>
-            <param name="stream">The stream to be read.</param>
-            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.IO.Stream,System.Text.Encoding)">
-            <summary>
-            Initializes a new instance of the System.IO.StreamReader class for the specified stream, with the specified character encoding.
-            </summary>
-            <param name="stream">The stream to be read.</param>
-            <param name="encoding">The character encoding to use.</param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.String,System.Boolean)">
-            <summary>
-            Initializes a new instance of the System.IO.StreamReader class for the specified file name, with the specified byte order mark detection option.
-            </summary>
-            <param name="path">The complete file path to be read.</param>
-            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.String,System.Text.Encoding)">
-            <summary>
-            Initializes a new instance of the System.IO.StreamReader class for the specified file name, with the specified character encoding.
-            </summary>
-            <param name="path">The complete file path to be read.</param>
-            <param name="encoding">The character encoding to use.</param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
-            <summary>
-            Initializes a new instance of the System.IO.StreamReader class for the specified stream, with the specified character encoding and byte order mark detection option.
-            </summary>
-            <param name="stream">The stream to be read.</param>
-            <param name="encoding">The character encoding to use.</param>
-            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.String,System.Text.Encoding,System.Boolean)">
-            <summary>
-            Initializes a new instance of the System.IO.StreamReader class for the specified file name, with the specified character encoding and byte order mark detection option.
-            </summary>
-            <param name="path">The complete file path to be read.</param>
-            <param name="encoding">The character encoding to use.</param>
-            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32)">
-            <summary>
-            Initializes a new instance of the System.IO.StreamReader class for the specified stream, with the specified character encoding, byte order mark detection option, and buffer size.
-            </summary>
-            <param name="stream">The stream to be read.</param>
-            <param name="encoding">The character encoding to use.</param>
-            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
-            <param name="bufferSize">The minimum buffer size.</param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.String,System.Text.Encoding,System.Boolean,System.Int32)">
             <summary>
@@ -264,6 +385,19 @@
             <param name="encoding">The character encoding to use.</param>
             <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
             <param name="bufferSize">The minimum buffer size.</param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.String,System.IO.FileStreamOptions)">
+            <summary>
+            
+            </summary>
+            <param name="path"></param>
+            <param name="options"></param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the System.IO.StreamReader class for the specified stream.
+            </summary>
+            <param name="stream">The stream to be read.</param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32,System.Boolean)">
             <summary>
@@ -311,56 +445,11 @@
             Extended with WriteCsvLine to write a Csv Line conform RFC 4180.
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.IO.Stream)">
-            <summary>
-            Initializes a new instance of the System.IO.StreamWriter class for the specified stream by using UTF-8 encoding and the default buffer size.
-            </summary>
-            <param name="stream">The stream to write to.</param>
-        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.String)">
             <summary>
             Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the default encoding and buffer size.
             </summary>
             <param name="path">The complete file path to write to. path can be a file name.</param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.IO.Stream,System.Text.Encoding)">
-            <summary>
-            Initializes a new instance of the System.IO.StreamWriter class for the specified stream by using the specified encoding and the default buffer size.
-            </summary>
-            <param name="stream">The stream to write to.</param>
-            <param name="encoding">The character encoding to use.</param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.String,System.Boolean)">
-            <summary>
-            Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the default encoding and buffer size. If the file exists, it can be either overwritten or appended to. If the file does not exist, this constructor creates a new file.
-            </summary>
-            <param name="path">The complete file path to write to. path can be a file name.</param>
-            <param name="append">true to append data to the file; false to overwrite the file. If the specified file does not exist, this parameter has no effect, and the constructor creates a new file.</param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Int32)">
-            <summary>
-            Initializes a new instance of the System.IO.StreamWriter class for the specified stream by using the specified encoding and buffer size.
-            </summary>
-            <param name="stream">The stream to write to.</param>
-            <param name="encoding">The character encoding to use.</param>
-            <param name="bufferSize">The buffer size, in bytes.</param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.String,System.Boolean,System.Text.Encoding)">
-            <summary>
-            Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the specified encoding and default buffer size. If the file exists, it can be either overwritten or appended to. If the file does not exist, this constructor creates a new file.
-            </summary>
-            <param name="path">The complete file path to write to. path can be a file name.</param>
-            <param name="append">true to append data to the file; false to overwrite the file. If the specified file does not exist, this parameter has no effect, and the constructor creates a new file.</param>
-            <param name="encoding">The character encoding to use.</param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Int32,System.Boolean)">
-            <summary>
-            Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the default encoding and buffer size.
-            </summary>
-            <param name="stream">The stream to write to.</param>
-            <param name="encoding">The character encoding to use.</param>
-            <param name="bufferSize">The buffer size, in bytes.</param>
-            <param name="leaveOpen">true to leave the stream open after the System.IO.StreamWriter object is disposed; otherwise, false.</param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.String,System.Boolean,System.Text.Encoding,System.Int32)">
             <summary>
@@ -370,6 +459,29 @@
             <param name="append">true to append data to the file; false to overwrite the file. If the specified file does not exist, this parameter has no effect, and the constructor creates a new file.</param>
             <param name="encoding">The character encoding to use.</param>
             <param name="bufferSize">The buffer size, in bytes.</param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.String,System.Text.Encoding,System.IO.FileStreamOptions)">
+            <summary>
+            
+            </summary>
+            <param name="path"></param>
+            <param name="encoding"></param>
+            <param name="options"></param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the System.IO.StreamWriter class for the specified stream by using UTF-8 encoding and the default buffer size.
+            </summary>
+            <param name="stream">The stream to write to.</param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Int32,System.Boolean)">
+            <summary>
+            Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the default encoding and buffer size.
+            </summary>
+            <param name="stream">The stream to write to.</param>
+            <param name="encoding">The character encoding to use.</param>
+            <param name="bufferSize">The buffer size, in bytes.</param>
+            <param name="leaveOpen">true to leave the stream open after the System.IO.StreamWriter object is disposed; otherwise, false.</param>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStreamWriter.Separator">
             <summary>
@@ -433,9 +545,34 @@
             Write T to Csv Stream from an IEnumerable source.
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Write(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.IO.Stream)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Boolean,System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.IO.Stream,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Boolean,System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Write(System.Collections.Generic.IEnumerable{`0},System.Boolean)">
             <summary>
             Write IEnumerable T to Csv Stream
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.WriteHeader">
+            <summary>
+            Write header with property names of T.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Write(`0)">
@@ -448,14 +585,44 @@
             Initialize and open the CSV Stream Writer.
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Init">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvWriterDynamic">
             <summary>
             Write T to Csv Stream from an IEnumerable source.
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.#ctor(System.IO.Stream)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.#ctor(System.String,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Boolean,System.Int32)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.#ctor(System.IO.Stream,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Boolean,System.Int32)">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.Open">
             <summary>
             Initialize and open the CSV Stream Writer.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.Init">
+            <summary>
+            
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.Write(System.Collections.Generic.IEnumerable{System.Object})">

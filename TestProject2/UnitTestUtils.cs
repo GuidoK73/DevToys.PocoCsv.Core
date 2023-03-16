@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace TestProject2
 {
@@ -12,6 +13,18 @@ namespace TestProject2
         [TestMethod]
         public void TestUtils()
         {
+            StringBuilder sb = new StringBuilder();
+            for (int ii = 1; ii < 2000; ii++)
+            {
+                char c = (char)ii;
+
+                sb.Append($"{ii} - {c}\r\n");
+                
+
+            }
+            string _text = sb.ToString();
+
+
             string _file = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "data.csv");
             int _sampleRows = 20;
 

@@ -18,15 +18,27 @@ namespace DevToys.PocoCsv.Core
         private readonly string[] _CurrentRow = null;
         private string[] _FirstRow = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public CsvReaderDynamic(string file) : base(file)
         { }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public CsvReaderDynamic(Stream stream) : base(stream)
         { }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public CsvReaderDynamic(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true) : base(stream, encoding, separator, detectEncodingFromByteOrderMarks)
         { }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public CsvReaderDynamic(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true) : base(file, encoding, separator, detectEncodingFromByteOrderMarks)
         { }
 
@@ -47,7 +59,7 @@ namespace DevToys.PocoCsv.Core
             }
             if (_Stream != null)
             {
-                _Reader = new CsvStreamReader(_Stream, Encoding, DetectEncodingFromByteOrderMarks) { Separator = Separator };
+                _StreamReader = new CsvStreamReader(stream: _Stream, encoding : Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: _BufferSize) { Separator = Separator };
             }
             if (!string.IsNullOrEmpty(_File))
             {
@@ -55,11 +67,14 @@ namespace DevToys.PocoCsv.Core
                 {
                     throw new FileNotFoundException($"File '{_File}' not found.");
                 }
-                _Reader = new CsvStreamReader(_File, Encoding, DetectEncodingFromByteOrderMarks) { Separator = Separator };
+                _StreamReader = new CsvStreamReader(path: _File,encoding: Encoding, detectEncodingFromByteOrderMarks : DetectEncodingFromByteOrderMarks, bufferSize : _BufferSize) { Separator = Separator };
             }
             Init();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [Obsolete("Use ReadAsEnumerable() or Read() instead.")]
         public IEnumerable<dynamic> Rows() => ReadAsEnumerable();
 
@@ -68,30 +83,33 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public IEnumerable<dynamic> ReadAsEnumerable()
         {
-            if (_Reader == null)
+            if (_StreamReader == null)
             {
                 throw new IOException("Reader is closed!");
             }
 
-            _Reader.BaseStream.Position = 0;
+            _StreamReader.BaseStream.Position = 0;
 
             int _rowNumber = -1;
 
-            while (!_Reader.EndOfCsvStream)
+            while (!_StreamReader.EndOfCsvStream)
             {
                 _rowNumber++;
-                yield return CreateObject(_Reader.ReadCsvLine().ToArray());
+                yield return CreateObject(_StreamReader.ReadCsvLine().ToArray());
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public dynamic Read()
         {
-            if (_Reader == null)
+            if (_StreamReader == null)
             {
                 throw new IOException("Reader is closed!");
             }
 
-            return CreateObject(_Reader.ReadCsvLine().ToArray());
+            return CreateObject(_StreamReader.ReadCsvLine().ToArray());
         }
 
         private dynamic CreateObject(string[] reader)
@@ -123,10 +141,10 @@ namespace DevToys.PocoCsv.Core
         public string[] SampleRow()
         {
             string[] _result;
-            if (_Reader.BaseStream.Position == 0)
+            if (_StreamReader.BaseStream.Position == 0)
             {
-                _result = _Reader.ReadCsvLine().ToArray();
-                _Reader.BaseStream.Position = 0;
+                _result = _StreamReader.ReadCsvLine().ToArray();
+                _StreamReader.BaseStream.Position = 0;
             }
             else
             {
@@ -135,6 +153,9 @@ namespace DevToys.PocoCsv.Core
             return _result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected override void Init()
         {
             if (_FirstRow != null)

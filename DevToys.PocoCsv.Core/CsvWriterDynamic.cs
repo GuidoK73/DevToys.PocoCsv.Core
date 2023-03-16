@@ -14,16 +14,28 @@ namespace DevToys.PocoCsv.Core
     public sealed class CsvWriterDynamic : BaseCsvWriter
     {
 
+        /// <summary>
+        /// 
+        /// </summary>
         public CsvWriterDynamic(string file) : base(file)
         { }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public CsvWriterDynamic(Stream stream) : base(stream)
         { }
 
-        public CsvWriterDynamic(string file, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true) : base(file, encoding, culture, separator)
+        /// <summary>
+        /// 
+        /// </summary>
+        public CsvWriterDynamic(string file, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true, int buffersize = -1) : base(file, encoding, culture, separator, append, buffersize)
         { }
 
-        public CsvWriterDynamic(Stream stream, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true) : base(stream, encoding, culture, separator)
+        /// <summary>
+        /// 
+        /// </summary>
+        public CsvWriterDynamic(Stream stream, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true, int buffersize = -1) : base(stream, encoding, culture, separator, append, buffersize)
         { }
 
 
@@ -32,9 +44,12 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public override void Open()
         {
-            _Writer = new CsvStreamWriter(_File, Append, Encoding) { Separator = Separator };
+            _StreamWrtier = new CsvStreamWriter(path: _File, append: Append, encoding: Encoding, bufferSize: _BufferSize ) { Separator = Separator };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected override void Init()
         {
             throw new NotImplementedException();
@@ -48,11 +63,11 @@ namespace DevToys.PocoCsv.Core
             if (Append)
             {
                 FileInfo _info = new(_File);
-                _Writer.BaseStream.Position = _info.Length;
+                _StreamWrtier.BaseStream.Position = _info.Length;
             }
             else
             {
-                _Writer.BaseStream.Position = 0;
+                _StreamWrtier.BaseStream.Position = 0;
             }
 
             var _first = true;
@@ -63,11 +78,11 @@ namespace DevToys.PocoCsv.Core
                 if (_first)
                 {
                     _data = Header(item);
-                    _Writer.WriteCsvLine(_data);
+                    _StreamWrtier.WriteCsvLine(_data);
                     _first = false;
                 }
                 _data = ToArray(item);
-                _Writer.WriteCsvLine(_data);
+                _StreamWrtier.WriteCsvLine(_data);
             }
         }
 

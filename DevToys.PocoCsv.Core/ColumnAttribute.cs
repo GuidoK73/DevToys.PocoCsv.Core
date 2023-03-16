@@ -12,5 +12,10 @@ namespace DevToys.PocoCsv.Core
         /// Property corresponds to Csv Column Index.
         /// </summary>
         public int Index { get; set; }
+
+        /// <summary>
+        /// Only used by CsvWriter
+        /// </summary>
+        public string Header { get; set; }
     }
 }

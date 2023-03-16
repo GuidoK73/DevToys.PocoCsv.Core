@@ -11,14 +11,6 @@ namespace DevToys.PocoCsv.Core
     public sealed class CsvStreamWriter : StreamWriter
     {
         /// <summary>
-        /// Initializes a new instance of the System.IO.StreamWriter class for the specified stream by using UTF-8 encoding and the default buffer size.
-        /// </summary>
-        /// <param name="stream">The stream to write to.</param>
-        public CsvStreamWriter(Stream stream) : base(stream)
-        {
-        }
-
-        /// <summary>
         /// Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the default encoding and buffer size.
         /// </summary>
         /// <param name="path">The complete file path to write to. path can be a file name.</param>
@@ -26,41 +18,33 @@ namespace DevToys.PocoCsv.Core
         {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the System.IO.StreamWriter class for the specified stream by using the specified encoding and the default buffer size.
-        /// </summary>
-        /// <param name="stream">The stream to write to.</param>
-        /// <param name="encoding">The character encoding to use.</param>
-        public CsvStreamWriter(Stream stream, Encoding encoding) : base(stream, encoding)
-        {
-        }
 
         /// <summary>
-        /// Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the default encoding and buffer size. If the file exists, it can be either overwritten or appended to. If the file does not exist, this constructor creates a new file.
+        /// Initializes a new instance of the System.IO.StreamWriter class for the specified file on the specified path, using the specified encoding and buffer size. If the file exists, it can be either overwritten or appended to. If the file does not exist, this constructor creates a new file.
         /// </summary>
         /// <param name="path">The complete file path to write to. path can be a file name.</param>
         /// <param name="append">true to append data to the file; false to overwrite the file. If the specified file does not exist, this parameter has no effect, and the constructor creates a new file.</param>
-        public CsvStreamWriter(string path, bool append) : base(path, append)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the System.IO.StreamWriter class for the specified stream by using the specified encoding and buffer size.
-        /// </summary>
-        /// <param name="stream">The stream to write to.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="bufferSize">The buffer size, in bytes.</param>
-        public CsvStreamWriter(Stream stream, Encoding encoding, int bufferSize) : base(stream, encoding, bufferSize)
+        public CsvStreamWriter(string path, bool append = false, Encoding encoding = null, int bufferSize = -1) : base(path, append, encoding, bufferSize)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the specified encoding and default buffer size. If the file exists, it can be either overwritten or appended to. If the file does not exist, this constructor creates a new file.
+        /// 
         /// </summary>
-        /// <param name="path">The complete file path to write to. path can be a file name.</param>
-        /// <param name="append">true to append data to the file; false to overwrite the file. If the specified file does not exist, this parameter has no effect, and the constructor creates a new file.</param>
-        /// <param name="encoding">The character encoding to use.</param>
-        public CsvStreamWriter(string path, bool append, Encoding encoding) : base(path, append, encoding)
+        /// <param name="path"></param>
+        /// <param name="encoding"></param>
+        /// <param name="options"></param>
+        public CsvStreamWriter(string path, Encoding encoding, FileStreamOptions options) : base(path, encoding, options)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the System.IO.StreamWriter class for the specified stream by using UTF-8 encoding and the default buffer size.
+        /// </summary>
+        /// <param name="stream">The stream to write to.</param>
+        public CsvStreamWriter(Stream stream) : base(stream)
         {
         }
 
@@ -75,16 +59,6 @@ namespace DevToys.PocoCsv.Core
         {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the System.IO.StreamWriter class for the specified file on the specified path, using the specified encoding and buffer size. If the file exists, it can be either overwritten or appended to. If the file does not exist, this constructor creates a new file.
-        /// </summary>
-        /// <param name="path">The complete file path to write to. path can be a file name.</param>
-        /// <param name="append">true to append data to the file; false to overwrite the file. If the specified file does not exist, this parameter has no effect, and the constructor creates a new file.</param>
-        /// <param name="encoding">The character encoding to use.</param>
-        /// <param name="bufferSize">The buffer size, in bytes.</param>
-        public CsvStreamWriter(string path, bool append, Encoding encoding, int bufferSize) : base(path, append, encoding, bufferSize)
-        {
-        }
 
         /// <summary>
         /// Csv Seperator to use default ','

@@ -17,18 +17,33 @@ namespace DevToys.PocoCsv.Core
         private PropertyInfo[] _Properties = null;
         private Action<object, object>[] _PropertySetters = null;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public CsvReader(string file) : base(file)
         { }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public CsvReader(Stream stream) : base(stream)
         { }
 
-        public CsvReader(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true) : base(stream, encoding, separator, detectEncodingFromByteOrderMarks)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public CsvReader(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int buffersize = -1) : base(stream, encoding, separator, detectEncodingFromByteOrderMarks, buffersize)
         { }
 
-        public CsvReader(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true) : base(file, encoding, separator, detectEncodingFromByteOrderMarks)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public CsvReader(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int buffersize = -1) : base(file, encoding, separator, detectEncodingFromByteOrderMarks, buffersize)
         { }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [Obsolete("Use ReadAsEnumerable() or Read() instead.")]
         public IEnumerable<T> Rows() => ReadAsEnumerable();
 
@@ -37,26 +52,36 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public IEnumerable<T> ReadAsEnumerable()
         {
-            if (_Reader == null)
+            if (_StreamReader == null)
             {
                 throw new IOException("Reader is closed!");
             }
 
-            _Reader.BaseStream.Position = 0;
+            _StreamReader.BaseStream.Position = 0;
 
-            while (!_Reader.EndOfCsvStream)
+            while (!_StreamReader.EndOfCsvStream)
             {
                 yield return Read();
             }
         }
 
+        /// <summary>
+        /// Use to skip first row(s) combined with Read() method. for ReadAsEnumerable() just use the Enumerable Skip method.
+        /// </summary>
+        public void Skip(int rows = 1)
+        {
+            for (int ii = 0; ii < rows; ii++) 
+            {
+                Read();
+            }
+        }
 
         /// <summary>
         /// Single row read 
         /// </summary>
         public T Read()
         {
-            if (_Reader == null)
+            if (_StreamReader == null)
             {
                 throw new IOException("Reader is closed!");
             }
@@ -64,16 +89,32 @@ namespace DevToys.PocoCsv.Core
             T _result = new();
 
             int _columnIndex = 0;
-            foreach (string cell in _Reader.ReadCsvLine())
+            foreach (string cell in _StreamReader.ReadCsvLine())
             {
-                PropertyInfo _prop = _Properties[_columnIndex];
+                var _property = _Properties[_columnIndex];
                 var _propertySetter = _PropertySetters[_columnIndex];
                 try
                 {
-                    if (_prop != null)
+                    if (_property != null)
                     {
-                        object _value = TypeUtils.Convert(cell, _prop.PropertyType, Culture);
-                        _propertySetter(_result, _value);
+
+                        if (_property.PropertyType == typeof(byte[]))
+                        {
+                            if (!string.IsNullOrEmpty(cell))
+                            {
+                                byte[] _byteValue = Convert.FromBase64String(cell);
+                                _propertySetter(_result, _byteValue);
+                            }
+                            else
+                            {
+                                _propertySetter(_result, null);
+                            }
+                        }
+                        else
+                        {
+                            object _value = TypeUtils.Convert(cell, _property.PropertyType, Culture);
+                            _propertySetter(_result, _value);
+                        }
                     }
                 }
                 catch
@@ -84,6 +125,9 @@ namespace DevToys.PocoCsv.Core
             return _result;
         }
 
+        /// <summary>
+        /// Open the reader
+        /// </summary>
         public override void Open()
         {
             Init();
@@ -95,7 +139,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_Stream != null)
             {
-                _Reader = new CsvStreamReader(_Stream, Encoding, DetectEncodingFromByteOrderMarks) { Separator = Separator };
+                _StreamReader = new CsvStreamReader(stream: _Stream, encoding : Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: _BufferSize) { Separator = Separator };
             }
             if (!string.IsNullOrEmpty(_File))
             {
@@ -103,10 +147,13 @@ namespace DevToys.PocoCsv.Core
                 {
                     throw new FileNotFoundException($"File '{_File}' not found.");
                 }
-                _Reader = new CsvStreamReader(_File, Encoding, DetectEncodingFromByteOrderMarks) { Separator = Separator };
+                _StreamReader = new CsvStreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks : DetectEncodingFromByteOrderMarks, bufferSize : _BufferSize) { Separator = Separator };
             }
         }
 
+        /// <summary>
+        /// Initialize the CsvReader
+        /// </summary>
         protected override void Init()
         {
             if (_Properties != null)

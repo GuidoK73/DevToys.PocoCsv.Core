@@ -17,6 +17,8 @@ namespace TestProject2
             string file = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "data.csv");
             using (CsvStreamReader _reader = new CsvStreamReader(file))
             {
+                _reader.Separator = ',';
+
                 while (!_reader.EndOfCsvStream)
                 {
                     List<string> _values = _reader.ReadCsvLine().ToList();

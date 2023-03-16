@@ -98,7 +98,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public static bool GetCsvSeparator(CsvStreamReader reader, out char separator, int sampleRows)
         {
-            char[] _tests = new char[] { ',', ';', '\t', '|' };
+            char[] _tests = new char[] { ',', ';', ':', '\t', '|', (char)1643, (char)1644, (char)1616, (char)1562, (char)890, (char)885, (char)825, (char)806, (char)716 };
             foreach (char c in _tests)
             {
                 if (IsCsv(reader, c, sampleRows))

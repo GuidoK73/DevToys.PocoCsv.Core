@@ -3,14 +3,33 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>1.2
-- Bug fixes
+    <Description>DevToys.PocoCsv.Core is a class library to read and write to Csv.
+It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader&lt;T&gt; and CsvWriter&lt;T&gt;.
+
+---
+
+Version history:
+
+1.3
+- Improved constructors to support all parameters for underlying StreamReader and StreamWriters.
+- Added Skip() to CsvReader (to be used in combination Read())
+- Added WriteHeader() to CsvWriter()
+- Added Header to Column attribute to be used by the CsvWriter
+- GetCsvSeparator() / DetectSeparator(),detects more exotic separators.
+- Added byte[] to base64 serialization to CsvReader and CsvWriter
+
+1.2
+- Added single Read() function.
+- Rows() now marked as obsolete.
+- Added ReadAsEnumerable() as replacement for Rows()
+- Added GetCsvSeparator(int sampleRows) to CsvStreamReader()
+- Added DetectSeparator() to CsvReader()
 
 1.1.5
 - Bug Fixes
 
 1.1.4
-- Added CsvUtils
+- Added CsvUtils static class including some special Csv functions to use.
 
 1.1.3
 - Added CsvWriterDynamic
@@ -19,7 +38,7 @@
 - Added CsvReaderDynamic
 
 1.1.0
-- Speed optimizations
+- Speed optimizations (using delegates instead of reflection)
 
 1.0.5
 - Read/Write Stream csv lines into a poco object.
@@ -29,7 +48,11 @@
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.2</Version>
+    <Version>1.3</Version>
+    <PackageLicenseFile>GPL.txt</PackageLicenseFile>
+    <Title>DevToys.PocoCsv.Core</Title>
+    <Copyright>2023</Copyright>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -38,6 +61,20 @@
 
   <ItemGroup>
     <Folder Include="Delegates\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\CodeLibrary\CodeLibrary\GPL.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Readme.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
