@@ -17,12 +17,25 @@ namespace DevToys.PocoCsv.Core
     {
         private PropertyInfo[] _Properties = null;
         private Action<object, object>[] _PropertySetters = null;
-        private Action<T, string>[] _PropertyStringSetters = null;
 
-        /// <summary>
-        /// Increase performance by only allowing string properties (No implicit casting)
-        /// </summary>
-        private bool _AllPropertiesAreStrings { get; set; } = false;
+        private Action<T, string>[] _PropertySettersString = null;
+        private Action<T, Guid>[] _PropertySettersGuid = null;
+        private Action<T, Boolean>[] _PropertySettersBoolean = null;
+        private Action<T, DateTime>[] _PropertySettersDateTime = null;
+        private Action<T, DateTimeOffset>[] _PropertySettersDateTimeOffset = null;
+        private Action<T, TimeSpan>[] _PropertySettersTimeSpan = null;
+        private Action<T, Byte>[] _PropertySettersByte = null;
+        private Action<T, SByte>[] _PropertySettersSByte = null;
+        private Action<T, Int16>[] _PropertySettersInt16 = null;
+        private Action<T, Int32>[] _PropertySettersInt32 = null;
+        private Action<T, Int64>[] _PropertySettersInt64 = null;
+        private Action<T, Single>[] _PropertySettersSingle = null;
+        private Action<T, Decimal>[] _PropertySettersDecimal = null;
+        private Action<T, Double>[] _PropertySettersDouble = null;
+        private Action<T, UInt16>[] _PropertySettersUInt16 = null;
+        private Action<T, UInt32>[] _PropertySettersUInt32 = null;
+        private Action<T, UInt64>[] _PropertySettersUInt64 = null;
+
 
         /// <summary>
         /// Constructor
@@ -101,42 +114,6 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        // SLOWER
-        //public T Read()
-        //{
-        //    T _result = new();
-        //    _Streamer.ReadRow(_StreamReader.BaseStream, (columnIndex, value) =>
-        //        {
-        //            _property = _Properties[columnIndex];
-        //            _propertySetter = _PropertySetters[columnIndex];
-        //            _propertySetterString = _PropertyStringSetters[columnIndex];
-
-        //            if (_property != null)
-        //            {
-        //                if (_AllPropertiesAreStrings)
-        //                {
-        //                    _propertySetterString(_result, value);
-        //                }
-        //                else
-        //                {
-        //                    if (_property.PropertyType == typeof(string))
-        //                    {
-        //                        _propertySetter(_result, value);
-        //                    }
-        //                    else
-        //                    {
-        //                        SetValue(value, _property.PropertyType, Culture, _result, _propertySetter);
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    ); // do nothing with read.
-        //    return _result;
-        //}
-
-        private PropertyInfo _property;
-        private Action<object, object> _propertySetter;
-        private Action<T, string> _propertySetterString;
 
         #region Performance Read
 
@@ -146,6 +123,8 @@ namespace DevToys.PocoCsv.Core
             Normal = 1,
             Escaped = 2
         }
+
+
 
         private readonly StringBuilder _sb = new(63);
         private char _char;
@@ -169,30 +148,8 @@ namespace DevToys.PocoCsv.Core
                 _char = (char)_byte;
                 if (_byte == -1 || (_state == State.Normal && (_char == '\r' || _char == '\n')))
                 {
-                    _property = _Properties[_columnIndex];
-                    _propertySetter = _PropertySetters[_columnIndex];
-                    _propertySetterString = _PropertyStringSetters[_columnIndex];
                     _value = _sb.ToString().Trim('"');
-
-                    if (_property != null)
-                    {
-                        if (_AllPropertiesAreStrings)
-                        {
-                            _propertySetterString(_result, _value);
-                        }
-                        else
-                        {
-                            if (_property.PropertyType == typeof(string))
-                            {
-                                _propertySetterString(_result, _value);
-                            }
-                            else
-                            {
-                                SetValue(_value, _property.PropertyType, Culture, _result, _propertySetter);
-                            }
-                        }
-                    }
-
+                    SetValue(_columnIndex, _value, Culture, _result);
                     _columnIndex++;
                     break;
                 }
@@ -206,31 +163,8 @@ namespace DevToys.PocoCsv.Core
                 }
                 if (_state == State.Normal && _char == Separator)
                 {
-                    _property = _Properties[_columnIndex];
-                    _propertySetter = _PropertySetters[_columnIndex];
-                    _propertySetterString = _PropertyStringSetters[_columnIndex];
-
                     _value = _sb.ToString().Trim('"');
-
-                    if (_property != null)
-                    {
-                        if (_AllPropertiesAreStrings)
-                        {
-                            _propertySetterString(_result, _value);
-                        }
-                        else
-                        {
-                            if (_property.PropertyType == typeof(string))
-                            {
-                                _propertySetter(_result, _value);
-                            }
-                            else
-                            {
-                                SetValue(_value, _property.PropertyType, Culture, _result, _propertySetter);
-                            }
-                        }
-                    }
-
+                    SetValue(_columnIndex, _value, Culture, _result);            
                     _sb.Length = 0;
                     _columnIndex++;
                     continue;
@@ -247,14 +181,109 @@ namespace DevToys.PocoCsv.Core
 
         #endregion Performance Read
 
-        private void SetValue(string value, Type targetType, CultureInfo culture, T targetObject, Action<object, object> _propertySetter)
+        private void SetValue(int index, string value, CultureInfo culture, T targetObject)
         {
-            targetType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+            if (_Properties[index] == null)
+            {
+                return;
+            }
+
+            Type targetType = Nullable.GetUnderlyingType(_Properties[index].PropertyType) ?? _Properties[index].PropertyType;
             bool succes = false;
+
+            
 
             if (targetType == typeof(string))
             {
-                _propertySetter(targetObject, value);
+                _PropertySettersString[index](targetObject, value);
+                return;
+            }
+
+            if (targetType == typeof(Guid))
+            {
+                Guid _value;
+                succes = Guid.TryParse(value, out _value);
+                if (succes)
+                {
+                    _PropertySettersGuid[index](targetObject, _value);
+                }
+                return;
+            }
+
+            if (targetType == typeof(Boolean))
+            {
+                Boolean _value;
+                succes = Boolean.TryParse(value, out _value);
+                if (succes)
+                {
+                    _PropertySettersBoolean[index](targetObject, _value);
+                }
+                return;
+            }
+
+            if (targetType == typeof(DateTime))
+            {
+                DateTime _value;
+                succes = DateTime.TryParse(value, out _value);
+                if (succes)
+                {
+                    _PropertySettersDateTime[index](targetObject, _value);
+                }
+                return;
+            }
+
+            if (targetType == typeof(DateTimeOffset))
+            {
+                DateTimeOffset _value;
+                succes = DateTimeOffset.TryParse(value, out _value);
+                if (succes)
+                {
+                    _PropertySettersDateTimeOffset[index](targetObject, _value);
+                }
+                return;
+            }
+
+            if (targetType == typeof(TimeSpan))
+            {
+                TimeSpan _value;
+                succes = TimeSpan.TryParse(value, out _value);
+                if (succes)
+                {
+                    _PropertySettersTimeSpan[index](targetObject, _value);
+                }
+                return;
+            }
+
+            if (targetType == typeof(Byte))
+            {
+                Byte _value;
+                succes = Byte.TryParse(value, out _value);
+                if (succes)
+                {
+                    _PropertySettersByte[index](targetObject, _value);
+                }
+                return;
+            }
+
+            if (targetType == typeof(SByte))
+            {
+                SByte _value;
+                succes = SByte.TryParse(value, out _value);
+                if (succes)
+                {
+                    _PropertySettersSByte[index](targetObject, _value);
+                }
+                return;
+            }
+
+            if (targetType == typeof(Int16))
+            {
+                Int16 _value;
+                succes = Int16.TryParse(value, out _value);
+                if (succes)
+                {
+                    _PropertySettersInt16[index](targetObject, _value);
+                }
                 return;
             }
 
@@ -264,171 +293,100 @@ namespace DevToys.PocoCsv.Core
                 succes = Int32.TryParse(value, out _value);
                 if (succes)
                 {
-                    _propertySetter(targetObject, _value);
+                    _PropertySettersInt32[index](targetObject, _value);
                 }
                 return;
             }
+
             if (targetType == typeof(Int64))
             {
                 Int64 _value;
                 succes = Int64.TryParse(value, out _value);
                 if (succes)
                 {
-                    _propertySetter(targetObject, _value);
+                    _PropertySettersInt64[index](targetObject, _value);
                 }
                 return;
             }
+
             if (targetType == typeof(Single))
             {
                 Single _value;
                 succes = Single.TryParse(value, out _value);
                 if (succes)
                 {
-                    _propertySetter(targetObject, _value);
+                    _PropertySettersSingle[index](targetObject, _value);
                 }
                 return;
             }
+
             if (targetType == typeof(Decimal))
             {
                 Decimal _value;
                 succes = Decimal.TryParse(value, out _value);
                 if (succes)
                 {
-                    _propertySetter(targetObject, _value);
+                    _PropertySettersDecimal[index](targetObject, _value);
                 }
                 return;
             }
+
             if (targetType == typeof(Double))
             {
                 Double _value;
                 succes = Double.TryParse(value, out _value);
                 if (succes)
                 {
-                    _propertySetter(targetObject, _value);
+                    _PropertySettersDouble[index](targetObject, _value);
                 }
                 return;
             }
-            if (targetType == typeof(Guid))
-            {
-                Guid _value;
-                succes = Guid.TryParse(value, out _value);
-                if (succes)
-                {
-                    _propertySetter(targetObject, _value);
-                }
-                return;
-            }
-            if (targetType == typeof(Boolean))
-            {
-                Boolean _value;
-                succes = Boolean.TryParse(value, out _value);
-                if (succes)
-                {
-                    _propertySetter(targetObject, _value);
-                }
-                return;
-            }
-            if (targetType == typeof(DateTime))
-            {
-                DateTime _value;
-                succes = DateTime.TryParse(value, out _value);
-                if (succes)
-                {
-                    _propertySetter(targetObject, _value);
-                }
-                return;
-            }
-            if (targetType == typeof(DateTimeOffset))
-            {
-                DateTimeOffset _value;
-                succes = DateTimeOffset.TryParse(value, out _value);
-                if (succes)
-                {
-                    _propertySetter(targetObject, _value);
-                }
-                return;
-            }
-            if (targetType == typeof(TimeSpan))
-            {
-                TimeSpan _value;
-                succes = TimeSpan.TryParse(value, out _value);
-                if (succes)
-                {
-                    _propertySetter(targetObject, _value);
-                }
-                return;
-            }
-            if (targetType.IsEnum)
-            {
-                _propertySetter(targetObject, Enum.Parse(targetType, value));
-                return;
-            }
-            if (targetType == typeof(byte[]))
-            {
-                byte[] _byteValue = Convert.FromBase64String(value);
-                _propertySetter(targetObject, _byteValue);
-                return;
-            }
-            if (targetType == typeof(Byte))
-            {
-                Byte _value;
-                succes = Byte.TryParse(value, out _value);
-                if (succes)
-                {
-                    _propertySetter(targetObject, _value);
-                }
-                return;
-            }
-            if (targetType == typeof(SByte))
-            {
-                SByte _value;
-                succes = SByte.TryParse(value, out _value);
-                if (succes)
-                {
-                    _propertySetter(targetObject, _value);
-                }
-                return;
-            }
-            if (targetType == typeof(Int16))
-            {
-                Int16 _value;
-                succes = Int16.TryParse(value, out _value);
-                if (succes)
-                {
-                    _propertySetter(targetObject, _value);
-                }
-                return;
-            }
+
             if (targetType == typeof(UInt16))
             {
                 UInt16 _value;
                 succes = UInt16.TryParse(value, out _value);
                 if (succes)
                 {
-                    _propertySetter(targetObject, _value);
+                    _PropertySettersUInt16[index](targetObject, _value);
                 }
                 return;
             }
+
             if (targetType == typeof(UInt32))
             {
                 UInt32 _value;
                 succes = UInt32.TryParse(value, out _value);
                 if (succes)
                 {
-                    _propertySetter(targetObject, _value);
+                    _PropertySettersUInt32[index](targetObject, _value);
                 }
                 return;
             }
+
             if (targetType == typeof(UInt64))
             {
                 UInt64 _value;
                 succes = UInt64.TryParse(value, out _value);
                 if (succes)
                 {
-                    _propertySetter(targetObject, _value);
+                    _PropertySettersUInt64[index](targetObject, _value);
                 }
                 return;
             }
+
+            if (targetType.IsEnum)
+            {
+                _PropertySetters[index](targetObject, Enum.Parse(targetType, value));
+                return;
+            }
+            if (targetType == typeof(byte[]))
+            {
+                byte[] _byteValue = Convert.FromBase64String(value);
+                _PropertySetters[index](targetObject, _byteValue);
+                return;
+            }
+
         }
 
         /// <summary>
@@ -473,23 +431,84 @@ namespace DevToys.PocoCsv.Core
 
             _Properties = new PropertyInfo[_max + 1];
             _PropertySetters = new Action<object, object>[_max + 1];
-            _PropertyStringSetters = new Action<T, string>[_max + 1];
+            _PropertySettersString = new Action<T, string>[_max + 1];
 
-            _AllPropertiesAreStrings = true;
 
             foreach (var _property in _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
                 .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index })
                 )
             {
-                if (_property.Property.PropertyType != typeof(string))
+                if (_property.Property.PropertyType == typeof(string))
                 {
-                    _AllPropertiesAreStrings = false;
+                    _PropertySettersString[_property.Index] = DelegateFactory.PropertySet<T, string>(_property.Property.Name);
                 }
-                else
+                if (_property.Property.PropertyType == typeof(Guid))
                 {
-                    _PropertyStringSetters[_property.Index] = DelegateFactory.PropertySet<T, string>(_property.Property.Name);
+                    _PropertySettersGuid[_property.Index] = DelegateFactory.PropertySet<T, Guid>(_property.Property.Name);
                 }
+                if (_property.Property.PropertyType == typeof(Boolean))
+                {
+                    _PropertySettersBoolean[_property.Index] = DelegateFactory.PropertySet<T, Boolean>(_property.Property.Name);
+                }
+                if (_property.Property.PropertyType == typeof(DateTime))
+                {
+                    _PropertySettersDateTime[_property.Index] = DelegateFactory.PropertySet<T, DateTime>(_property.Property.Name);
+                }
+                if (_property.Property.PropertyType == typeof(DateTimeOffset))
+                {
+                    _PropertySettersDateTimeOffset[_property.Index] = DelegateFactory.PropertySet<T, DateTimeOffset>(_property.Property.Name);
+                }
+                if (_property.Property.PropertyType == typeof(TimeSpan))
+                {
+                    _PropertySettersTimeSpan[_property.Index] = DelegateFactory.PropertySet<T, TimeSpan>(_property.Property.Name);
+                }
+                if (_property.Property.PropertyType == typeof(Byte))
+                {
+                    _PropertySettersByte[_property.Index] = DelegateFactory.PropertySet<T, Byte>(_property.Property.Name);
+                }
+                if (_property.Property.PropertyType == typeof(SByte))
+                {
+                    _PropertySettersSByte[_property.Index] = DelegateFactory.PropertySet<T, SByte>(_property.Property.Name);
+                }
+                if (_property.Property.PropertyType == typeof(Int16))
+                {
+                    _PropertySettersInt16[_property.Index] = DelegateFactory.PropertySet<T, Int16>(_property.Property.Name);
+                }
+                if (_property.Property.PropertyType == typeof(Int32))
+                {
+                    _PropertySettersInt32[_property.Index] = DelegateFactory.PropertySet<T, Int32>(_property.Property.Name);
+                }
+                if (_property.Property.PropertyType == typeof(Int64))
+                {
+                    _PropertySettersInt64[_property.Index] = DelegateFactory.PropertySet<T, Int64>(_property.Property.Name);
+                }
+                if (_property.Property.PropertyType == typeof(Single))
+                {
+                    _PropertySettersSingle[_property.Index] = DelegateFactory.PropertySet<T, Single>(_property.Property.Name);
+                }
+                if (_property.Property.PropertyType == typeof(Decimal))
+                {
+                    _PropertySettersDecimal[_property.Index] = DelegateFactory.PropertySet<T, Decimal>(_property.Property.Name);
+                }
+                if (_property.Property.PropertyType == typeof(Double))
+                {
+                    _PropertySettersDouble[_property.Index] = DelegateFactory.PropertySet<T, Double>(_property.Property.Name);
+                }
+                if (_property.Property.PropertyType == typeof(UInt16))
+                {
+                    _PropertySettersUInt16[_property.Index] = DelegateFactory.PropertySet<T, UInt16>(_property.Property.Name);
+                }
+                if (_property.Property.PropertyType == typeof(UInt32))
+                {
+                    _PropertySettersUInt32[_property.Index] = DelegateFactory.PropertySet<T, UInt32>(_property.Property.Name);
+                }
+                if (_property.Property.PropertyType == typeof(UInt64))
+                {
+                    _PropertySettersUInt64[_property.Index] = DelegateFactory.PropertySet<T, UInt64>(_property.Property.Name);
+                }
+
+
                 _Properties[_property.Index] = _property.Property;
 
                 _PropertySetters[_property.Index] = _type.PropertySet(_property.Property.Name);
