@@ -12,34 +12,33 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvReaderDynamic : BaseCsvReader
     {
-        private CsvStreamReader _CsvStreamReader;
-
         /// <summary>
         /// After Read, before Serialize. use this to prepare row values for serialization.
         /// </summary>
         private readonly string[] _CurrentRow = null;
+
         private string[] _FirstRow = null;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public CsvReaderDynamic(string file) : base(file)
         { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public CsvReaderDynamic(Stream stream) : base(stream)
         { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public CsvReaderDynamic(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true) : base(stream, encoding, separator, detectEncodingFromByteOrderMarks)
         { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public CsvReaderDynamic(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true) : base(file, encoding, separator, detectEncodingFromByteOrderMarks)
         { }
@@ -48,7 +47,6 @@ namespace DevToys.PocoCsv.Core
         /// Dynamic property names will be as first header.
         /// </summary>
         public bool FirstRowIsHeader { get; set; } = true;
-
 
         /// <summary>
         /// Initialize and open the CSV Stream Reader.
@@ -61,7 +59,7 @@ namespace DevToys.PocoCsv.Core
             }
             if (_Stream != null)
             {
-                _StreamReader = new CsvStreamReader(stream: _Stream, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: _BufferSize) { Separator = Separator };
+                _StreamReader = new StreamReader(stream: _Stream, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: _BufferSize);
             }
             if (!string.IsNullOrEmpty(_File))
             {
@@ -69,13 +67,13 @@ namespace DevToys.PocoCsv.Core
                 {
                     throw new FileNotFoundException($"File '{_File}' not found.");
                 }
-                _StreamReader = new CsvStreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: _BufferSize) { Separator = Separator };
+                _StreamReader = new StreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: _BufferSize);
             }
             Init();
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Obsolete("Use ReadAsEnumerable() or Read() instead.")]
         public IEnumerable<dynamic> Rows() => ReadAsEnumerable();
@@ -94,38 +92,26 @@ namespace DevToys.PocoCsv.Core
 
             int _rowNumber = -1;
 
-            while (!_CsvStreamReader.EndOfCsvStream)
+            while (!EndOfStream)
             {
                 _rowNumber++;
-                yield return CreateObject(_CsvStreamReader.ReadCsvLine().ToArray());
+                yield return Read();
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public dynamic Read()
-        {
-            if (_StreamReader == null)
-            {
-                throw new IOException("Reader is closed!");
-            }
-
-            return CreateObject(_CsvStreamReader.ReadCsvLine().ToArray());
-        }
-
-        private dynamic CreateObject(string[] reader)
         {
             dynamic dataobject;
             var dataobject2 = new ExpandoObject();
             var dataobject3 = dataobject2 as IDictionary<string, Object>;
 
-            for (int ii = 0; ii < _FirstRow.Length; ii++)
-            {
-                var _name = FirstRowIsHeader ? CleanString(_FirstRow[ii]) : _FirstRow[ii];
-                var _value = (reader != null && reader.Length >= ii) ? reader[ii] : string.Empty;
-                dataobject3.Add(_name, _value);
-            }
+            _Streamer.ReadRow(_StreamReader.BaseStream, (columnIndex, value) =>
+                {
+                    var _name = FirstRowIsHeader ? CleanString(_FirstRow[columnIndex]) : _FirstRow[columnIndex];
+                    var _value = value;
+                    dataobject3.Add(_name, _value);
+                }
+            );
 
             dataobject = dataobject3;
             return dataobject;
@@ -142,21 +128,14 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public string[] SampleRow()
         {
-            string[] _result;
-            if (_StreamReader.BaseStream.Position == 0)
-            {
-                _result = _CsvStreamReader.ReadCsvLine().ToArray();
-                _CsvStreamReader.BaseStream.Position = 0;
-            }
-            else
-            {
-                _result = _CurrentRow;
-            }
-            return _result;
+            List<string> _result = new();
+            _Streamer.ReadRow(_StreamReader.BaseStream, (columnindex, value) => { _result.Add(value); });
+            _StreamReader.BaseStream.Position = 0;
+            return _result.ToArray(); ;
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         protected override void Init()
         {
@@ -172,17 +151,12 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
-        /// Indicates End of stream, use with Read funcion.
-        /// </summary>
-        public bool EndOfStream => _CsvStreamReader.EndOfStream;
-
-        /// <summary>
         /// Do a 10 line sample to detect and set separator, it will try ',', ';', '|', '\t', ':'
         /// </summary>
         public void DetectSeparator()
         {
-
-            bool _succes = CsvUtils.GetCsvSeparator(_CsvStreamReader, out _Separator, 10);
+            CsvStreamReader _reader = new CsvStreamReader(_StreamReader.BaseStream);
+            bool _succes = CsvUtils.GetCsvSeparator(_reader, out _Separator, 10);
             if (_succes)
             {
                 Separator = _Separator;

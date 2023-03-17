@@ -84,13 +84,11 @@ namespace DevToys.PocoCsv.Core
 
             _StreamReader.BaseStream.Position = 0;
 
-            while (!_EndOfStream)
+            while (!EndOfStream)
             {
                 yield return Read();
             }
         }
-
-        private bool _EndOfStream => (_StreamReader.BaseStream.Position >= _StreamReader.BaseStream.Length);
 
         /// <summary>
         /// Use to skip to skip first row without serializing, usefull for skipping header.
@@ -107,7 +105,7 @@ namespace DevToys.PocoCsv.Core
         //public T Read()
         //{
         //    T _result = new();
-        //    _Streamer.ReadRow(_StreamReader.BaseStream, (columnIndex, value) => 
+        //    _Streamer.ReadRow(_StreamReader.BaseStream, (columnIndex, value) =>
         //        {
         //            _property = _Properties[columnIndex];
         //            _propertySetter = _PropertySetters[columnIndex];
@@ -135,7 +133,6 @@ namespace DevToys.PocoCsv.Core
         //    ); // do nothing with read.
         //    return _result;
         //}
-
 
         private PropertyInfo _property;
         private Action<object, object> _propertySetter;

@@ -75,8 +75,7 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        
-
+        protected bool EndOfStream => (_StreamReader.BaseStream.Position >= _StreamReader.BaseStream.Length);
 
         /// <summary>
         /// Indicates whether to look for byte order marks at the beginning of the file.
