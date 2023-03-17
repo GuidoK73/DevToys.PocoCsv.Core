@@ -13,7 +13,9 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// 
         /// </summary>
-        protected CsvStreamReader _StreamReader;
+        protected StreamReader _StreamReader;
+
+        protected CsvStreamer _Streamer = new CsvStreamer();
 
         /// <summary>
         /// Constructor
@@ -37,7 +39,7 @@ namespace DevToys.PocoCsv.Core
         public BaseCsvReader(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int bufferSize = 1024) : this(stream)
         {
             Encoding = encoding;
-            _Separator = separator;
+            _Streamer.Separator = separator;
             DetectEncodingFromByteOrderMarks = detectEncodingFromByteOrderMarks;
             _BufferSize = bufferSize;
         }
@@ -48,7 +50,7 @@ namespace DevToys.PocoCsv.Core
         public BaseCsvReader(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int bufferSize = 1024) : this(file)
         {
             Encoding = encoding;
-            _Separator = separator;
+            _Streamer.Separator = separator;
             DetectEncodingFromByteOrderMarks = detectEncodingFromByteOrderMarks;
             _BufferSize = bufferSize;
         }
@@ -65,21 +67,16 @@ namespace DevToys.PocoCsv.Core
         {
             get
             {
-                if (_StreamReader != null)
-                {
-                    _Separator = _StreamReader.Separator;
-                }
-                return _Separator;
+                return _Streamer.Separator;
             }
             set
             {
-                _Separator = value;
-                if (_StreamReader != null)
-                {
-                    _StreamReader.Separator = _Separator;
-                }
+                _Streamer.Separator = value;
             }
         }
+
+        
+
 
         /// <summary>
         /// Indicates whether to look for byte order marks at the beginning of the file.
@@ -108,24 +105,6 @@ namespace DevToys.PocoCsv.Core
             _StreamReader.Close();
         }
 
-        /// <summary>
-        /// Indicates End of stream, use with Read funcion.
-        /// </summary>
-        public bool EndOfStream => _StreamReader.EndOfCsvStream;
-
-        /// <summary>
-        /// Do a 10 line sample to detect and set separator, it will try ',', ';', '|', '\t', ':'
-        /// </summary>
-        public virtual void DetectSeparator()
-        {
-
-            bool _succes = CsvUtils.GetCsvSeparator(_StreamReader, out _Separator, 10);
-            if (_succes)
-            {
-                Separator = _Separator;
-            }
-            _StreamReader.BaseStream.Position = 0;
-        }
 
         /// <summary>
         /// 

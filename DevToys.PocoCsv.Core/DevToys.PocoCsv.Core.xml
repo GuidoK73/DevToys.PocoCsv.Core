@@ -64,16 +64,6 @@
             Close the CSV stream reader
             </summary>
         </member>
-        <member name="P:DevToys.PocoCsv.Core.BaseCsvReader.EndOfStream">
-            <summary>
-            Indicates End of stream, use with Read funcion.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.BaseCsvReader.DetectSeparator">
-            <summary>
-            Do a 10 line sample to detect and set separator, it will try ',', ';', '|', '\t', ':'
-            </summary>
-        </member>
         <member name="M:DevToys.PocoCsv.Core.BaseCsvReader.Init">
             <summary>
             
@@ -280,6 +270,11 @@
             
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.DetectSeparator">
+            <summary>
+            Detect the separator by sampling first 10 rows.
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadAsEnumerable">
             <summary>
             Each iteration will read the next row from stream or file
@@ -290,9 +285,9 @@
             Use to skip first row(s) combined with Read() method. for ReadAsEnumerable() just use the Enumerable Skip method.
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Read">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadOld">
             <summary>
-            Single row read 
+            reads the CsvLine
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Open">
@@ -366,6 +361,21 @@
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.Init">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReaderDynamic.EndOfStream">
+            <summary>
+            Indicates End of stream, use with Read funcion.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.DetectSeparator">
+            <summary>
+            Do a 10 line sample to detect and set separator, it will try ',', ';', '|', '\t', ':'
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamer.Separator">
             <summary>
             
             </summary>

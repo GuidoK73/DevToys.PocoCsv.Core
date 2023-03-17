@@ -1,12 +1,10 @@
 ﻿using Delegates;
-using Delegates.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -20,11 +18,12 @@ namespace DevToys.PocoCsv.Core
         private PropertyInfo[] _Properties = null;
         private Action<object, object>[] _PropertySetters = null;
 
+        private Action<T, string>[] _PropertyStringSetters = null;
+
         /// <summary>
         /// Increase performance by only allowing string properties (No implicit casting)
         /// </summary>
         private bool _AllPropertiesAreStrings { get; set; } = false;
-
 
         /// <summary>
         /// Constructor
@@ -42,19 +41,37 @@ namespace DevToys.PocoCsv.Core
         /// Constructor
         /// </summary>
         public CsvReader(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int buffersize = 1024) : base(stream, encoding, separator, detectEncodingFromByteOrderMarks, buffersize)
-        { }
+        {
+            _Streamer.Separator = separator;
+        }
 
         /// <summary>
         /// Constructor
         /// </summary>
         public CsvReader(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int buffersize = 1024) : base(file, encoding, separator, detectEncodingFromByteOrderMarks, buffersize)
-        { }
+        {
+            _Streamer.Separator = separator;
+        }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Obsolete("Use ReadAsEnumerable() or Read() instead.")]
         public IEnumerable<T> Rows() => ReadAsEnumerable();
+
+        /// <summary>
+        /// Detect the separator by sampling first 10 rows.
+        /// </summary>
+        public void DetectSeparator()
+        {
+            CsvStreamReader _reader = new CsvStreamReader(_StreamReader.BaseStream);
+            bool _succes = CsvUtils.GetCsvSeparator(_reader, out _Separator, 10);
+            if (_succes)
+            {
+                Separator = _Separator;
+            }
+            _StreamReader.BaseStream.Position = 0;
+        }
 
         /// <summary>
         /// Each iteration will read the next row from stream or file
@@ -68,63 +85,130 @@ namespace DevToys.PocoCsv.Core
 
             _StreamReader.BaseStream.Position = 0;
 
-            while (!_StreamReader.EndOfCsvStream)
+            while (!_EndOfStream)
             {
                 yield return Read();
             }
         }
+
+        private bool _EndOfStream => (_StreamReader.BaseStream.Position >= _StreamReader.BaseStream.Length);
 
         /// <summary>
         /// Use to skip first row(s) combined with Read() method. for ReadAsEnumerable() just use the Enumerable Skip method.
         /// </summary>
         public void Skip(int rows = 1)
         {
-            for (int ii = 0; ii < rows; ii++) 
+            for (int ii = 0; ii < rows; ii++)
             {
-                Read();
+                _Streamer.ReadRow(_StreamReader.BaseStream, (columnIndex, value) => { }); // do nothing with read.
             }
         }
 
         private PropertyInfo _property;
         private Action<object, object> _propertySetter;
+        private Action<T, string> _propertySetterString;
 
+        #region Performance Read
+
+        private enum State
+        {
+            First = 0,
+            Normal = 1,
+            Escaped = 2
+        }
+
+        private readonly StringBuilder _sb = new(63);
+        private char _char;
+        private int _byte;
+        private string _value;
 
         /// <summary>
-        /// Single row read 
+        /// reads the CsvLine
         /// </summary>
         public T Read()
         {
-            if (_StreamReader == null)
-            {
-                throw new IOException("Reader is closed!");
-            }
-
+            // Does not use the _Streamer which seems to be slower.
             T _result = new();
-
             int _columnIndex = 0;
 
-            foreach (string cell in _StreamReader.ReadCsvLine())
+            var _state = State.First;
+            _sb.Length = 0;
+            _byte = 0;
+            while (_byte > -1)
             {
-                _property = _Properties[_columnIndex];
-                _propertySetter = _PropertySetters[_columnIndex];
-
-                if (_property != null)
+                _byte = _StreamReader.BaseStream.ReadByte();
+                _char = (char)_byte;
+                if (_byte == -1 || (_state == State.Normal && (_char == '\r' || _char == '\n')))
                 {
-                    if (_AllPropertiesAreStrings)
+                    _property = _Properties[_columnIndex];
+                    _propertySetter = _PropertySetters[_columnIndex];
+                    _propertySetterString = _PropertyStringSetters[_columnIndex];
+                    _value = _sb.ToString().Trim('"');
+
+                    if (_property != null)
                     {
-                        _propertySetter(_result, cell);
+                        if (_AllPropertiesAreStrings)
+                        {
+                            _propertySetterString(_result, _value);
+                        }
+                        else
+                        {
+                            if (_property.PropertyType == typeof(string))
+                            {
+                                _propertySetterString(_result, _value);
+                            }
+                            else
+                            {
+                                SetValue(_value, _property.PropertyType, Culture, _result, _propertySetter);
+                            }
+                        }
                     }
-                    else
+
+                    _columnIndex++;
+                    break;
+                }
+                if (_state == State.First)
+                {
+                    _state = State.Normal;
+                    if (_char == '\n')
                     {
-                        SetValue(cell, _property.PropertyType, Culture, _result, _propertySetter);
+                        continue;
                     }
                 }
-                _columnIndex++;
+                if (_state == State.Normal && _char == Separator)
+                {
+                    _property = _Properties[_columnIndex];
+                    _propertySetter = _PropertySetters[_columnIndex];
+
+                    _value = _sb.ToString().Trim('"');
+
+                    if (_property != null)
+                    {
+                        if (_AllPropertiesAreStrings)
+                        {
+                            _propertySetter(_result, _value);
+                        }
+                        else
+                        {
+                            SetValue(_value, _property.PropertyType, Culture, _result, _propertySetter);
+                        }
+                    }
+
+                    _sb.Length = 0;
+                    _columnIndex++;
+                    continue;
+                }
+                if (_char == '"')
+                {
+                    _state = (_state == State.Normal) ? State.Escaped : State.Normal;
+                }
+
+                _sb.Append(_char);
             }
             return _result;
         }
 
-
+        #endregion Performance Read
 
         private void SetValue(string value, Type targetType, CultureInfo culture, T targetObject, Action<object, object> _propertySetter)
         {
@@ -310,7 +394,6 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
         /// <summary>
         /// Open the reader
         /// </summary>
@@ -325,7 +408,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_Stream != null)
             {
-                _StreamReader = new CsvStreamReader(stream: _Stream, encoding : Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: _BufferSize) { Separator = Separator };
+                _StreamReader = new StreamReader(stream: _Stream, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: _BufferSize);
             }
             if (!string.IsNullOrEmpty(_File))
             {
@@ -333,7 +416,7 @@ namespace DevToys.PocoCsv.Core
                 {
                     throw new FileNotFoundException($"File '{_File}' not found.");
                 }
-                _StreamReader = new CsvStreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks : DetectEncodingFromByteOrderMarks, bufferSize : _BufferSize) { Separator = Separator };
+                _StreamReader = new StreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: _BufferSize);
             }
         }
 
@@ -353,6 +436,7 @@ namespace DevToys.PocoCsv.Core
 
             _Properties = new PropertyInfo[_max + 1];
             _PropertySetters = new Action<object, object>[_max + 1];
+            _PropertyStringSetters = new Action<T, string>[_max + 1];
 
             _AllPropertiesAreStrings = true;
 
@@ -361,15 +445,17 @@ namespace DevToys.PocoCsv.Core
                 .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index })
                 )
             {
-
                 if (_property.Property.PropertyType != typeof(string))
                 {
                     _AllPropertiesAreStrings = false;
                 }
+                else
+                {
+                    _PropertyStringSetters[_property.Index] = DelegateFactory.PropertySet<T, string>(_property.Property.Name);
+                }
                 _Properties[_property.Index] = _property.Property;
-                
+
                 _PropertySetters[_property.Index] = _type.PropertySet(_property.Property.Name);
-                
             }
         }
     }

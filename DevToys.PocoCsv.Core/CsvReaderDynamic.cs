@@ -12,6 +12,8 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvReaderDynamic : BaseCsvReader
     {
+        private CsvStreamReader _CsvStreamReader;
+
         /// <summary>
         /// After Read, before Serialize. use this to prepare row values for serialization.
         /// </summary>
@@ -59,7 +61,7 @@ namespace DevToys.PocoCsv.Core
             }
             if (_Stream != null)
             {
-                _StreamReader = new CsvStreamReader(stream: _Stream, encoding : Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: _BufferSize) { Separator = Separator };
+                _StreamReader = new CsvStreamReader(stream: _Stream, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: _BufferSize) { Separator = Separator };
             }
             if (!string.IsNullOrEmpty(_File))
             {
@@ -67,7 +69,7 @@ namespace DevToys.PocoCsv.Core
                 {
                     throw new FileNotFoundException($"File '{_File}' not found.");
                 }
-                _StreamReader = new CsvStreamReader(path: _File,encoding: Encoding, detectEncodingFromByteOrderMarks : DetectEncodingFromByteOrderMarks, bufferSize : _BufferSize) { Separator = Separator };
+                _StreamReader = new CsvStreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: _BufferSize) { Separator = Separator };
             }
             Init();
         }
@@ -92,10 +94,10 @@ namespace DevToys.PocoCsv.Core
 
             int _rowNumber = -1;
 
-            while (!_StreamReader.EndOfCsvStream)
+            while (!_CsvStreamReader.EndOfCsvStream)
             {
                 _rowNumber++;
-                yield return CreateObject(_StreamReader.ReadCsvLine().ToArray());
+                yield return CreateObject(_CsvStreamReader.ReadCsvLine().ToArray());
             }
         }
 
@@ -109,7 +111,7 @@ namespace DevToys.PocoCsv.Core
                 throw new IOException("Reader is closed!");
             }
 
-            return CreateObject(_StreamReader.ReadCsvLine().ToArray());
+            return CreateObject(_CsvStreamReader.ReadCsvLine().ToArray());
         }
 
         private dynamic CreateObject(string[] reader)
@@ -143,8 +145,8 @@ namespace DevToys.PocoCsv.Core
             string[] _result;
             if (_StreamReader.BaseStream.Position == 0)
             {
-                _result = _StreamReader.ReadCsvLine().ToArray();
-                _StreamReader.BaseStream.Position = 0;
+                _result = _CsvStreamReader.ReadCsvLine().ToArray();
+                _CsvStreamReader.BaseStream.Position = 0;
             }
             else
             {
@@ -167,6 +169,25 @@ namespace DevToys.PocoCsv.Core
                 for (int ii = 0; ii < _FirstRow.Length; ii++)
                     _FirstRow[ii] = $"_{ii}";
             }
+        }
+
+        /// <summary>
+        /// Indicates End of stream, use with Read funcion.
+        /// </summary>
+        public bool EndOfStream => _CsvStreamReader.EndOfStream;
+
+        /// <summary>
+        /// Do a 10 line sample to detect and set separator, it will try ',', ';', '|', '\t', ':'
+        /// </summary>
+        public void DetectSeparator()
+        {
+
+            bool _succes = CsvUtils.GetCsvSeparator(_CsvStreamReader, out _Separator, 10);
+            if (_succes)
+            {
+                Separator = _Separator;
+            }
+            _StreamReader.BaseStream.Position = 0;
         }
     }
 }

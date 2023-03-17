@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -12,6 +10,7 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvStreamReader : StreamReader
     {
+        private CsvStreamer _Streamer = new CsvStreamer();
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamReader class for the specified file name.
@@ -19,7 +18,6 @@ namespace DevToys.PocoCsv.Core
         /// <param name="path">The complete file path to be read.</param>
         public CsvStreamReader(string path) : base(path)
         { }
-
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamReader class for the specified file name, with the specified character encoding, byte order mark detection option, and buffer size.
@@ -32,7 +30,7 @@ namespace DevToys.PocoCsv.Core
         { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="path"></param>
         /// <param name="options"></param>
@@ -74,7 +72,17 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Get / Sets the Separator character to use.
         /// </summary>
-        public char Separator { get; set; } = ',';
+        public char Separator
+        {
+            get
+            {
+                return _Streamer.Separator;
+            }
+            set
+            {
+                _Streamer.Separator = value;
+            }
+        }
 
         /// <summary>
         /// Returns a schema for the CSV with best fitted types to use.
@@ -106,17 +114,6 @@ namespace DevToys.PocoCsv.Core
             return separator;
         }
 
-        private enum State
-        {
-            First = 0,
-            Normal = 1,
-            Escaped = 2
-        }
-
-        private readonly StringBuilder _sb = new(63);
-        private char _char;
-        private int _byte;
-
         /// <summary>
         /// reads the CsvLine
         /// </summary>
@@ -124,39 +121,8 @@ namespace DevToys.PocoCsv.Core
         {
             List<string> _result = new();
 
-            var _state = State.First;
-            _sb.Length = 0;
-            _byte = 0;
-            while (_byte > -1)
-            {
-                _byte = BaseStream.ReadByte();
-                _char = (char)_byte;
-                if (_byte == -1 || (_state == State.Normal && (_char == '\r' || _char == '\n')))
-                {
-                    _result.Add(_sb.ToString().Trim('"'));
-                    break;
-                }
-                if (_state == State.First)
-                {
-                    _state = State.Normal;
-                    if (_char == '\n')
-                    {
-                        continue;
-                    }
-                }
-                if (_state == State.Normal && _char == Separator)
-                {
-                    _result.Add(_sb.ToString().Trim('"'));
-                    _sb.Length = 0;
-                    continue;
-                }
-                if (_char == '"')
-                {
-                    _state = (_state == State.Normal) ? State.Escaped : State.Normal;
-                }
+            _Streamer.ReadRow(BaseStream, (columnindex, value) => { _result.Add(value); });
 
-                _sb.Append(_char);
-            }
             return _result;
         }
     }

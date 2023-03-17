@@ -3,14 +3,14 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>DevToys.PocoCsv.Core is a class library to read and write to Csv.
+    <Description>DevToys.PocoCsv.Core is a very fast reader and writer for Csv.
 It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader&lt;T&gt; and CsvWriter&lt;T&gt;.
 
 ---
 
 Version history:
-1.3.7
-- Performance improvement
+1.3.8
+- Performance improvement for Reader
 
 1.3.2
 - Bug fixes
@@ -53,11 +53,12 @@ Version history:
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.3.7</Version>
+    <Version>1.3.91</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
-    <Title>DevToys.PocoCsv.Core</Title>
+    <Title>Csv - DevToys.PocoCsv.Core</Title>
     <Copyright>2023</Copyright>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <Product>Csv Tools - DevToys.PocoCsv.Core</Product>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
