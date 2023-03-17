@@ -48,7 +48,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        public BaseCsvWriter(string file, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true, int bufferSize = -1) : this(file)
+        public BaseCsvWriter(string file, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true, int bufferSize = 1024) : this(file)
         {
             Culture = culture;
             Separator = separator;
@@ -60,7 +60,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        public BaseCsvWriter(Stream stream, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true, int bufferSize = -1) : this(stream)
+        public BaseCsvWriter(Stream stream, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true, int bufferSize = 1024) : this(stream)
         {
             Culture = culture;
             Separator = separator;

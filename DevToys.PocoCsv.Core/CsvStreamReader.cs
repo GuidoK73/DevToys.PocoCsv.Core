@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection.PortableExecutable;
 using System.Text;
@@ -56,9 +57,6 @@ namespace DevToys.PocoCsv.Core
         public CsvStreamReader(Stream stream, Encoding encoding = null, bool detectEncodingFromByteOrderMarks = true, int bufferSize = -1, bool leaveOpen = false) : base(stream, encoding, detectEncodingFromByteOrderMarks, bufferSize, leaveOpen)
         { }
 
-        private enum State
-        { First = 0, Normal = 1, Escaped = 2 }
-
         /// <summary>
         /// Indicates end of Csv Stream.
         /// </summary>
@@ -108,39 +106,58 @@ namespace DevToys.PocoCsv.Core
             return separator;
         }
 
-        /// <summary>
-        /// Each iteration steps to the next cell till the end of the CSV line.
-        /// </summary>
-        public IEnumerable<string> ReadCsvLine()
+        private enum State
         {
-            var _state = State.First;
-            var _sb = new StringBuilder();
+            First = 0,
+            Normal = 1,
+            Escaped = 2
+        }
 
-            while (true)
+        private readonly StringBuilder _sb = new(63);
+        private char _char;
+        private int _byte;
+
+        /// <summary>
+        /// reads the CsvLine
+        /// </summary>
+        public IList<string> ReadCsvLine()
+        {
+            List<string> _result = new();
+
+            var _state = State.First;
+            _sb.Length = 0;
+            _byte = 0;
+            while (_byte > -1)
             {
-                var _char = (char)BaseStream.ReadByte();
-                if (_char == char.MaxValue || (_state == State.Normal && (_char == '\r' || _char == '\n')))
+                _byte = BaseStream.ReadByte();
+                _char = (char)_byte;
+                if (_byte == -1 || (_state == State.Normal && (_char == '\r' || _char == '\n')))
                 {
-                    yield return _sb.ToString().Trim(new char[] { '"' });
+                    _result.Add(_sb.ToString().Trim('"'));
                     break;
                 }
                 if (_state == State.First)
                 {
                     _state = State.Normal;
                     if (_char == '\n')
+                    {
                         continue;
+                    }
                 }
                 if (_state == State.Normal && _char == Separator)
                 {
-                    yield return _sb.ToString().Trim(new char[] { '"' });
-                    _sb.Clear();
+                    _result.Add(_sb.ToString().Trim('"'));
+                    _sb.Length = 0;
                     continue;
                 }
                 if (_char == '"')
+                {
                     _state = (_state == State.Normal) ? State.Escaped : State.Normal;
+                }
 
                 _sb.Append(_char);
             }
+            return _result;
         }
     }
 }

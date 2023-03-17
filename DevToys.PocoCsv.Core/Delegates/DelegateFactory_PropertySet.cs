@@ -152,6 +152,11 @@ namespace Delegates
             return source.PropertySet<object>(propertyName);
         }
 
+        //public static Action<object, string> PropertySetString(this Type source, string propertyName)
+        //{
+        //    return source.PropertySet<string>(propertyName);
+        //}
+
 #if !NET35
         /// <summary>
         /// Creates delegate to instance property setter in structure passed by reference as object with value as

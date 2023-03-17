@@ -3,6 +3,11 @@
 DevToys.PocoCsv.Core is a class library to read and write to Csv.
 It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader<T> and CsvWriter<T>.
 
+- Read/write serialize/deserialize data to and from Csv fast.
+- Use Linq to query large CSV files with CsvReader<T>.ReadAsEnumerable().
+- Use CsvWriter<T>.Write() to write large data tables to Csv.
+- Retrieve schema for a csv file with CsvUtils.GetCsvSchema() which can be used to create a poco object.
+
 Three flavors for reading and writing CSV files:
 1. Stream
 2. &lt;T&gt; Serialize / Deserialize to T

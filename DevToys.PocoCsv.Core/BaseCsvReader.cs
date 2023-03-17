@@ -34,7 +34,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        public BaseCsvReader(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int bufferSize = -1) : this(stream)
+        public BaseCsvReader(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int bufferSize = 1024) : this(stream)
         {
             Encoding = encoding;
             _Separator = separator;
@@ -45,7 +45,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        public BaseCsvReader(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int bufferSize = -1) : this(file)
+        public BaseCsvReader(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int bufferSize = 1024) : this(file)
         {
             Encoding = encoding;
             _Separator = separator;

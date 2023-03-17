@@ -30,7 +30,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// 
         /// </summary>
-        protected int _BufferSize = -1;
+        protected int _BufferSize = 1024;
 
 
 

@@ -250,6 +250,11 @@
             Properties needs to be marked with ColumnAttribute
             </summary>
         </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReader`1._AllPropertiesAreStrings">
+            <summary>
+            Increase performance by only allowing string properties (No implicit casting)
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.String)">
             <summary>
             Constructor
@@ -436,7 +441,7 @@
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadCsvLine">
             <summary>
-            Each iteration steps to the next cell till the end of the CSV line.
+            reads the CsvLine
             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamWriter">

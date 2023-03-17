@@ -31,6 +31,20 @@ namespace TestProject2
 
             _w.Start();
 
+            using (CsvStreamReader _reader = new CsvStreamReader(file))
+            {
+
+                while (!_reader.EndOfCsvStream)
+                {
+                    IList<string> _data = _reader.ReadCsvLine();
+                }
+            }
+
+            _w.Stop();
+            Console.WriteLine(_w.Duration);
+
+            _w.Start();
+
             using (CsvReader<CsvSimple> _reader = new CsvReader<CsvSimple>(file))
             {
                 _reader.Open();
@@ -41,6 +55,9 @@ namespace TestProject2
 
             _w.Stop();
             Console.WriteLine(_w.Duration);
+            // 00:00:25.5642461
+
+
         }
 
         private IEnumerable<CsvSimple> LargeData()

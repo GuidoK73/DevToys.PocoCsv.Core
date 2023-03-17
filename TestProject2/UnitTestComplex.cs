@@ -69,7 +69,7 @@ namespace TestProject2
                 }
 
                 var _x = _reader.ReadAsEnumerable().ToList();
-                var _bij = _reader.ReadAsEnumerable().Where(p => p.AfBij == "Bij").ToList();
+                var _bij = _reader.ReadAsEnumerable().Where(p => p.AfBij == "Af").ToList();
             }
         }
 
