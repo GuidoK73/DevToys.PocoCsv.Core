@@ -17,7 +17,6 @@ namespace DevToys.PocoCsv.Core
     {
         private PropertyInfo[] _Properties = null;
         private Action<object, object>[] _PropertySetters = null;
-
         private Action<T, string>[] _PropertyStringSetters = null;
 
         /// <summary>
@@ -94,7 +93,7 @@ namespace DevToys.PocoCsv.Core
         private bool _EndOfStream => (_StreamReader.BaseStream.Position >= _StreamReader.BaseStream.Length);
 
         /// <summary>
-        /// Use to skip first row(s) combined with Read() method. for ReadAsEnumerable() just use the Enumerable Skip method.
+        /// Use to skip to skip first row without serializing, usefull for skipping header.
         /// </summary>
         public void Skip(int rows = 1)
         {
@@ -103,6 +102,40 @@ namespace DevToys.PocoCsv.Core
                 _Streamer.ReadRow(_StreamReader.BaseStream, (columnIndex, value) => { }); // do nothing with read.
             }
         }
+
+        // SLOWER
+        //public T Read()
+        //{
+        //    T _result = new();
+        //    _Streamer.ReadRow(_StreamReader.BaseStream, (columnIndex, value) => 
+        //        {
+        //            _property = _Properties[columnIndex];
+        //            _propertySetter = _PropertySetters[columnIndex];
+        //            _propertySetterString = _PropertyStringSetters[columnIndex];
+
+        //            if (_property != null)
+        //            {
+        //                if (_AllPropertiesAreStrings)
+        //                {
+        //                    _propertySetterString(_result, value);
+        //                }
+        //                else
+        //                {
+        //                    if (_property.PropertyType == typeof(string))
+        //                    {
+        //                        _propertySetter(_result, value);
+        //                    }
+        //                    else
+        //                    {
+        //                        SetValue(value, _property.PropertyType, Culture, _result, _propertySetter);
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    ); // do nothing with read.
+        //    return _result;
+        //}
+
 
         private PropertyInfo _property;
         private Action<object, object> _propertySetter;
@@ -127,7 +160,6 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public T Read()
         {
-            // Does not use the _Streamer which seems to be slower.
             T _result = new();
             int _columnIndex = 0;
 
@@ -179,6 +211,7 @@ namespace DevToys.PocoCsv.Core
                 {
                     _property = _Properties[_columnIndex];
                     _propertySetter = _PropertySetters[_columnIndex];
+                    _propertySetterString = _PropertyStringSetters[_columnIndex];
 
                     _value = _sb.ToString().Trim('"');
 
@@ -186,11 +219,18 @@ namespace DevToys.PocoCsv.Core
                     {
                         if (_AllPropertiesAreStrings)
                         {
-                            _propertySetter(_result, _value);
+                            _propertySetterString(_result, _value);
                         }
                         else
                         {
-                            SetValue(_value, _property.PropertyType, Culture, _result, _propertySetter);
+                            if (_property.PropertyType == typeof(string))
+                            {
+                                _propertySetter(_result, _value);
+                            }
+                            else
+                            {
+                                SetValue(_value, _property.PropertyType, Culture, _result, _propertySetter);
+                            }
                         }
                     }
 

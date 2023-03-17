@@ -55,6 +55,10 @@ namespace TestProject2
 
             _w.Stop();
             Console.WriteLine(_w.Duration);
+
+            // 00:00:16.4758305
+            // 00:00:16.4500410
+
             // 00:00:14.9759909
             // 00:00:25.5642461
         }
