@@ -125,7 +125,10 @@ namespace DevToys.PocoCsv.Core
         private readonly StringBuilder _sbValue = new(127);
         private char _char;
         private int _byte;
- 
+
+        private const char _r = '\r';
+        private const char _n = '\n';
+        private const char _escape = '"';
 
         /// <summary>
         /// reads the CsvLine
@@ -143,11 +146,11 @@ namespace DevToys.PocoCsv.Core
             {
                 _byte = _StreamReader.BaseStream.ReadByte();
                 _char = (char)_byte;
-                if (_byte == -1 || (_state == State.Normal && (_char == '\r' || _char == '\n')))
+                if (_byte == -1 || (_state == State.Normal && (_char == _r || _char == _n)))
                 {
                     if (_trimLast)
                     {
-                        if (_sbValue.Length > 0 && _sbValue[_sbValue.Length-1] == '"')
+                        if (_sbValue.Length > 0 && _sbValue[_sbValue.Length-1] == _escape)
                         {
                             _sbValue.Length--;
                         }
@@ -158,7 +161,7 @@ namespace DevToys.PocoCsv.Core
                 if (_state == State.First)
                 {
                     _state = State.Normal;
-                    if (_char == '\n')
+                    if (_char == _n)
                     {
                         continue;
                     }
@@ -178,7 +181,7 @@ namespace DevToys.PocoCsv.Core
                     _columnIndex++;
                     continue;
                 }
-                if (_char == '"')
+                if (_char == _escape)
                 {
                     _state = (_state == State.Normal) ? State.Escaped : State.Normal;
                     if (_sbValue.Length == 0)
@@ -338,7 +341,7 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        private void SetValueDateTime(int index,  T targetObject)
+        private void SetValueDateTime(int index, T targetObject)
         {
             bool succes = DateTime.TryParse(_sbValue.ToString(), Culture, DateTimeStyles.None, out DateTime _value);
             if (succes)
@@ -356,7 +359,7 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        private void SetValueSingle(int index,  T targetObject)
+        private void SetValueSingle(int index, T targetObject)
         {
             bool succes = Single.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out float _value);
             if (succes)
@@ -401,7 +404,7 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        private void SetValueDateTimeOffset(int index,  T targetObject)
+        private void SetValueDateTimeOffset(int index, T targetObject)
         {
             bool succes = DateTimeOffset.TryParse(_sbValue.ToString(), Culture, DateTimeStyles.None, out DateTimeOffset _value);
             if (succes)
@@ -476,7 +479,15 @@ namespace DevToys.PocoCsv.Core
                 {
                     throw new FileNotFoundException($"File '{_File}' not found.");
                 }
-                _StreamReader = new StreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: _BufferSize);
+
+                var _options = new FileStreamOptions();
+                _options.Access = FileAccess.Read;
+                _options.BufferSize = _BufferSize;
+                _options.Share = FileShare.Read;
+                _options.Mode = FileMode.Open;
+
+                _StreamReader = new StreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks,options: _options );
+
             }
         }
 
