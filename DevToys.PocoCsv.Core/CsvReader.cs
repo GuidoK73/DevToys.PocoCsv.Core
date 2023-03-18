@@ -36,7 +36,6 @@ namespace DevToys.PocoCsv.Core
         private Action<T, UInt32>[] _PropertySettersUInt32 = null;
         private Action<T, UInt64>[] _PropertySettersUInt64 = null;
 
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -104,7 +103,7 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
-        /// Use to skip to skip first row without serializing, usefull for skipping header.
+        /// Use to skip first row without serializing, usefull for skipping header.
         /// </summary>
         public void Skip(int rows = 1)
         {
@@ -114,17 +113,12 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
-        #region Performance Read
-
         private enum State
         {
             First = 0,
             Normal = 1,
             Escaped = 2
         }
-
-
 
         private readonly StringBuilder _sb = new(63);
         private char _char;
@@ -150,7 +144,6 @@ namespace DevToys.PocoCsv.Core
                 {
                     _value = _sb.ToString().Trim('"');
                     SetValue(_columnIndex, _value, Culture, _result);
-                    _columnIndex++;
                     break;
                 }
                 if (_state == State.First)
@@ -164,7 +157,7 @@ namespace DevToys.PocoCsv.Core
                 if (_state == State.Normal && _char == Separator)
                 {
                     _value = _sb.ToString().Trim('"');
-                    SetValue(_columnIndex, _value, Culture, _result);            
+                    SetValue(_columnIndex, _value, Culture, _result);
                     _sb.Length = 0;
                     _columnIndex++;
                     continue;
@@ -179,7 +172,7 @@ namespace DevToys.PocoCsv.Core
             return _result;
         }
 
-        #endregion Performance Read
+        #region Value Setters
 
         private void SetValue(int index, string value, CultureInfo culture, T targetObject)
         {
@@ -191,203 +184,270 @@ namespace DevToys.PocoCsv.Core
             Type targetType = Nullable.GetUnderlyingType(_Properties[index].PropertyType) ?? _Properties[index].PropertyType;
             bool succes = false;
 
-            
-
             if (targetType == typeof(string))
             {
                 _PropertySettersString[index](targetObject, value);
                 return;
             }
-
-            if (targetType == typeof(Guid))
+            else if (targetType == typeof(Decimal))
             {
-                Guid _value;
-                succes = Guid.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersGuid[index](targetObject, _value);
-                }
+                SetValueDecimal(index, value, culture, targetObject);
                 return;
             }
-
-            if (targetType == typeof(Boolean))
+            else if (targetType == typeof(Int32))
             {
-                Boolean _value;
-                succes = Boolean.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersBoolean[index](targetObject, _value);
-                }
+                SetValueInt32(index, value, culture, targetObject);
                 return;
             }
-
-            if (targetType == typeof(DateTime))
+            else if (targetType == typeof(Int64))
             {
-                DateTime _value;
-                succes = DateTime.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersDateTime[index](targetObject, _value);
-                }
+                SetValueInt64(index, value, culture, targetObject);
                 return;
             }
-
-            if (targetType == typeof(DateTimeOffset))
+            else if (targetType == typeof(Double))
             {
-                DateTimeOffset _value;
-                succes = DateTimeOffset.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersDateTimeOffset[index](targetObject, _value);
-                }
+                SetValueDouble(index, value, culture, targetObject);
                 return;
             }
-
-            if (targetType == typeof(TimeSpan))
+            else if (targetType == typeof(DateTime))
             {
-                TimeSpan _value;
-                succes = TimeSpan.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersTimeSpan[index](targetObject, _value);
-                }
+                SetValueDateTime(index, value, culture, targetObject);
                 return;
             }
-
-            if (targetType == typeof(Byte))
+            else if (targetType == typeof(Guid))
             {
-                Byte _value;
-                succes = Byte.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersByte[index](targetObject, _value);
-                }
+                SetValueGuid(index, value, culture, targetObject);
                 return;
             }
-
-            if (targetType == typeof(SByte))
+            else if (targetType == typeof(Single))
             {
-                SByte _value;
-                succes = SByte.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersSByte[index](targetObject, _value);
-                }
+                SetValueSingle(index, value, culture, targetObject);
                 return;
             }
-
-            if (targetType == typeof(Int16))
+            else if (targetType == typeof(Boolean))
             {
-                Int16 _value;
-                succes = Int16.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersInt16[index](targetObject, _value);
-                }
+                SetValueBoolean(index, value, culture, targetObject);
                 return;
             }
-
-            if (targetType == typeof(Int32))
+            else if (targetType == typeof(TimeSpan))
             {
-                Int32 _value;
-                succes = Int32.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersInt32[index](targetObject, _value);
-                }
+                SetValueTimeSpan(index, value, culture, targetObject);
                 return;
             }
-
-            if (targetType == typeof(Int64))
+            else if (targetType == typeof(Int16))
             {
-                Int64 _value;
-                succes = Int64.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersInt64[index](targetObject, _value);
-                }
+                SetValueInt16(index, value, culture, targetObject);
                 return;
             }
-
-            if (targetType == typeof(Single))
+            else if (targetType == typeof(Byte))
             {
-                Single _value;
-                succes = Single.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersSingle[index](targetObject, _value);
-                }
+                SetValueByte(index, value, culture, targetObject);
                 return;
             }
-
-            if (targetType == typeof(Decimal))
+            else if (targetType == typeof(DateTimeOffset))
             {
-                Decimal _value;
-                succes = Decimal.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersDecimal[index](targetObject, _value);
-                }
+                SetValueDateTimeOffset(index, value, culture, targetObject);
                 return;
             }
-
-            if (targetType == typeof(Double))
-            {
-                Double _value;
-                succes = Double.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersDouble[index](targetObject, _value);
-                }
-                return;
-            }
-
-            if (targetType == typeof(UInt16))
-            {
-                UInt16 _value;
-                succes = UInt16.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersUInt16[index](targetObject, _value);
-                }
-                return;
-            }
-
-            if (targetType == typeof(UInt32))
-            {
-                UInt32 _value;
-                succes = UInt32.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersUInt32[index](targetObject, _value);
-                }
-                return;
-            }
-
-            if (targetType == typeof(UInt64))
-            {
-                UInt64 _value;
-                succes = UInt64.TryParse(value, out _value);
-                if (succes)
-                {
-                    _PropertySettersUInt64[index](targetObject, _value);
-                }
-                return;
-            }
-
-            if (targetType.IsEnum)
+            else if (targetType.IsEnum)
             {
                 _PropertySetters[index](targetObject, Enum.Parse(targetType, value));
                 return;
             }
-            if (targetType == typeof(byte[]))
+            else if (targetType == typeof(byte[]))
             {
-                byte[] _byteValue = Convert.FromBase64String(value);
-                _PropertySetters[index](targetObject, _byteValue);
+                SetValueByteArray(index, value, culture, targetObject);
                 return;
             }
-
+            else if (targetType == typeof(SByte))
+            {
+                SetValueSByte(index, value, culture, targetObject);
+                return;
+            }
+            else if (targetType == typeof(UInt16))
+            {
+                SetValueUInt16(index, value, culture, targetObject);
+                return;
+            }
+            else if (targetType == typeof(UInt32))
+            {
+                SetValueUInt32(index, value, culture, targetObject);
+                return;
+            }
+            else if (targetType == typeof(UInt64))
+            {
+                SetValueUInt64(index, value, culture, targetObject);
+                return;
+            }
         }
+
+        private void SetValueDecimal(int index, string value, CultureInfo culture, T targetObject)
+        {
+            Decimal _value;
+            bool succes = Decimal.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersDecimal[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueInt32(int index, string value, CultureInfo culture, T targetObject)
+        {
+            Int32 _value;
+            bool succes = Int32.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersInt32[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueInt64(int index, string value, CultureInfo culture, T targetObject)
+        {
+            Int64 _value;
+            bool succes = Int64.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersInt64[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueDouble(int index, string value, CultureInfo culture, T targetObject)
+        {
+            Double _value;
+            bool succes = Double.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersDouble[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueDateTime(int index, string value, CultureInfo culture, T targetObject)
+        {
+            DateTime _value;
+            bool succes = DateTime.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersDateTime[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueGuid(int index, string value, CultureInfo culture, T targetObject)
+        {
+            Guid _value;
+            bool succes = Guid.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersGuid[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueSingle(int index, string value, CultureInfo culture, T targetObject)
+        {
+            Single _value;
+            bool succes = Single.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersSingle[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueBoolean(int index, string value, CultureInfo culture, T targetObject)
+        {
+            Boolean _value;
+            bool succes = Boolean.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersBoolean[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueTimeSpan(int index, string value, CultureInfo culture, T targetObject)
+        {
+            TimeSpan _value;
+            bool succes = TimeSpan.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersTimeSpan[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueInt16(int index, string value, CultureInfo culture, T targetObject)
+        {
+            Int16 _value;
+            bool succes = Int16.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersInt16[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueByte(int index, string value, CultureInfo culture, T targetObject)
+        {
+            Byte _value;
+            bool succes = Byte.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersByte[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueDateTimeOffset(int index, string value, CultureInfo culture, T targetObject)
+        {
+            DateTimeOffset _value;
+            bool succes = DateTimeOffset.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersDateTimeOffset[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueByteArray(int index, string value, CultureInfo culture, T targetObject)
+        {
+            byte[] _byteValue = Convert.FromBase64String(value);
+            _PropertySetters[index](targetObject, _byteValue);
+        }
+
+        private void SetValueSByte(int index, string value, CultureInfo culture, T targetObject)
+        {
+            SByte _value;
+            bool succes = SByte.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersSByte[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueUInt16(int index, string value, CultureInfo culture, T targetObject)
+        {
+            UInt16 _value;
+            bool succes = UInt16.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersUInt16[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueUInt32(int index, string value, CultureInfo culture, T targetObject)
+        {
+            UInt32 _value;
+            bool succes = UInt32.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersUInt32[index](targetObject, _value);
+            }
+        }
+
+        private void SetValueUInt64(int index, string value, CultureInfo culture, T targetObject)
+        {
+            UInt64 _value;
+            bool succes = UInt64.TryParse(value, out _value);
+            if (succes)
+            {
+                _PropertySettersUInt64[index](targetObject, _value);
+            }
+        }
+
+        #endregion Value Setters
 
         /// <summary>
         /// Open the reader
@@ -431,8 +491,24 @@ namespace DevToys.PocoCsv.Core
 
             _Properties = new PropertyInfo[_max + 1];
             _PropertySetters = new Action<object, object>[_max + 1];
-            _PropertySettersString = new Action<T, string>[_max + 1];
 
+            _PropertySettersString = new Action<T, String>[_max + 1];
+            _PropertySettersGuid = new Action<T, Guid>[_max + 1];
+            _PropertySettersBoolean = new Action<T, Boolean>[_max + 1];
+            _PropertySettersDateTime = new Action<T, DateTime>[_max + 1];
+            _PropertySettersDateTimeOffset = new Action<T, DateTimeOffset>[_max + 1];
+            _PropertySettersTimeSpan = new Action<T, TimeSpan>[_max + 1];
+            _PropertySettersByte = new Action<T, Byte>[_max + 1];
+            _PropertySettersSByte = new Action<T, SByte>[_max + 1];
+            _PropertySettersInt16 = new Action<T, Int16>[_max + 1];
+            _PropertySettersInt32 = new Action<T, Int32>[_max + 1];
+            _PropertySettersInt64 = new Action<T, Int64>[_max + 1];
+            _PropertySettersSingle = new Action<T, Single>[_max + 1];
+            _PropertySettersDecimal = new Action<T, Decimal>[_max + 1];
+            _PropertySettersDouble = new Action<T, Double>[_max + 1];
+            _PropertySettersUInt16 = new Action<T, UInt16>[_max + 1];
+            _PropertySettersUInt32 = new Action<T, UInt32>[_max + 1];
+            _PropertySettersUInt64 = new Action<T, UInt64>[_max + 1];
 
             foreach (var _property in _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
@@ -507,7 +583,6 @@ namespace DevToys.PocoCsv.Core
                 {
                     _PropertySettersUInt64[_property.Index] = DelegateFactory.PropertySet<T, UInt64>(_property.Property.Name);
                 }
-
 
                 _Properties[_property.Index] = _property.Property;
 

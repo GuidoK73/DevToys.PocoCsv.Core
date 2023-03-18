@@ -29,19 +29,19 @@ namespace TestProject2
 
             string file = @"D:\largedata.csv";
 
-            _w.Start();
+            //_w.Start();
 
-            using (CsvStreamReader _reader = new CsvStreamReader(file))
-            {
+            //using (CsvStreamReader _reader = new CsvStreamReader(file))
+            //{
 
-                while (!_reader.EndOfCsvStream)
-                {
-                    IList<string> _data = _reader.ReadCsvLine();
-                }
-            }
+            //    while (!_reader.EndOfCsvStream)
+            //    {
+            //        IList<string> _data = _reader.ReadCsvLine();
+            //    }
+            //}
 
-            _w.Stop();
-            Console.WriteLine(_w.Duration);
+            //_w.Stop();
+            //Console.WriteLine(_w.Duration);
 
             _w.Start();
 

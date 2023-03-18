@@ -16,7 +16,7 @@ namespace TestProject2
     public sealed class Csv
     {
         [Column(Index = 0)]
-        public DateTime Datum { get; set; }
+        public string Datum { get; set; }
 
         [Column(Index = 1)]
         public string NaamOmschrijving { get; set; }
@@ -34,7 +34,7 @@ namespace TestProject2
         public string AfBij { get; set; }
 
         [Column(Index = 6)]
-        public string Bedrag { get; set; }
+        public Decimal Bedrag { get; set; }
 
         [Column(Index = 7)]
         public string MutatieSoort { get; set; }
