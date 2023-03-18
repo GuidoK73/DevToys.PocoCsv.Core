@@ -104,17 +104,7 @@
             base class for CsvWriter
             </summary>
         </member>
-        <member name="F:DevToys.PocoCsv.Core.BaseCsvWriter._Properties">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:DevToys.PocoCsv.Core.BaseCsvWriter._PropertyGetters">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:DevToys.PocoCsv.Core.BaseCsvWriter._StreamWrtier">
+        <member name="F:DevToys.PocoCsv.Core.BaseCsvWriter._StreamWriter">
             <summary>
             
             </summary>
@@ -129,12 +119,12 @@
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.BaseCsvWriter.#ctor(System.String,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Boolean,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.BaseCsvWriter.#ctor(System.String,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Int32)">
             <summary>
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.BaseCsvWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Boolean,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.BaseCsvWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Int32)">
             <summary>
             Constructor
             </summary>
@@ -147,11 +137,6 @@
         <member name="P:DevToys.PocoCsv.Core.BaseCsvWriter.Separator">
             <summary>
             Csv Seperator to use default ','
-            </summary>
-        </member>
-        <member name="P:DevToys.PocoCsv.Core.BaseCsvWriter.Append">
-            <summary>
-            Write command can be used to append multiple collections to the open Csv Stream.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.BaseCsvWriter.Dispose">
@@ -185,6 +170,11 @@
             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.ColumnAttribute.Header">
+            <summary>
+            Only used by CsvWriter
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.ColumnAttribute.OutputFormat">
             <summary>
             Only used by CsvWriter
             </summary>
@@ -298,11 +288,6 @@
         <member name="T:DevToys.PocoCsv.Core.CsvReaderDynamic">
             <summary>
             Enumerate Csv Stream Reader over dynamic. Slower for large sets.
-            </summary>
-        </member>
-        <member name="F:DevToys.PocoCsv.Core.CsvReaderDynamic._CurrentRow">
-            <summary>
-            After Read, before Serialize. use this to prepare row values for serialization.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.#ctor(System.String)">
@@ -555,24 +540,24 @@
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Boolean,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Int32)">
             <summary>
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.IO.Stream,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Boolean,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.IO.Stream,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Int32)">
             <summary>
             Constructor
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Write(System.Collections.Generic.IEnumerable{`0},System.Boolean)">
-            <summary>
-            Write IEnumerable T to Csv Stream
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.WriteHeader">
             <summary>
             Write header with property names of T.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Write(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Write IEnumerable T to Csv Stream
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Write(`0)">
@@ -586,9 +571,9 @@
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Init">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvWriterDynamic">
             <summary>
@@ -596,24 +581,24 @@
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.#ctor(System.String)">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.#ctor(System.IO.Stream)">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.#ctor(System.String,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Boolean,System.Int32)">
-            <summary>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.#ctor(System.String,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Int32)">
+             <summary>
             
-            </summary>
+             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.#ctor(System.IO.Stream,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Boolean,System.Int32)">
-            <summary>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.#ctor(System.IO.Stream,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Int32)">
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.Open">
             <summary>
@@ -621,9 +606,9 @@
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.Init">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriterDynamic.Write(System.Collections.Generic.IEnumerable{System.Object})">
             <summary>

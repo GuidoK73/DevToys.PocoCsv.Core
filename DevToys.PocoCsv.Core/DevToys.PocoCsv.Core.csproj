@@ -9,6 +9,9 @@ It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader
 ---
 
 Version history:
+1.4
+- Performance improvements for Writer.
+
 1.3.8
 - Performance improvement for Reader
 
@@ -53,7 +56,7 @@ Version history:
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.3.92</Version>
+    <Version>1.4.1</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>Csv - DevToys.PocoCsv.Core</Title>
     <Copyright>2023</Copyright>

@@ -3,6 +3,7 @@ using DevToys.PocoCsv.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace TestProject2
@@ -14,6 +15,11 @@ namespace TestProject2
         public void TestWriterXL()
         {
             string file = @"D:\largedata.csv";
+
+            if (File.Exists(file))
+            {
+                File.Delete(file);
+            }
 
             using (CsvWriter<CsvSimple> _writer = new(file) { Separator = ','})
             {
@@ -77,7 +83,9 @@ namespace TestProject2
                     Mededelingen = $"test {ii}",
                     Rekening = "3434",
                     Tegenrekening = "3423424",
-                    NaamOmschrijving = $"bla,bla {ii}"
+                    NaamOmschrijving = $"bla,bla {ii}",
+                    MutatieSoort = "Bij"
+                    
 
                 };
                 yield return _line;

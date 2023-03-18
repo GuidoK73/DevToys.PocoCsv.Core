@@ -196,7 +196,7 @@ namespace DevToys.PocoCsv.Core
                     {
                         _StreamWriter.Write(TypeUtils.Convert(_value, typeof(string), Culture));
                     }
-                    if (ii < _MaxColumnIndex - 1)
+                    if (ii < _MaxColumnIndex)
                     {
                         _StreamWriter.Write(Separator);
                     }

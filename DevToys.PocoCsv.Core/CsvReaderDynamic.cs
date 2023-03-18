@@ -12,10 +12,6 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvReaderDynamic : BaseCsvReader
     {
-        /// <summary>
-        /// After Read, before Serialize. use this to prepare row values for serialization.
-        /// </summary>
-        private readonly string[] _CurrentRow = null;
 
         private string[] _FirstRow = null;
 
