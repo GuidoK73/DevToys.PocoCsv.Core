@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevToys.PocoCsv.Core", "Dev
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject2", "TestProject2\TestProject2.csproj", "{43A47C41-4123-4770-9578-FA952BA3CD69}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvCompetitionConsoleApp", "CsvCompetitionConsoleApp\CsvCompetitionConsoleApp.csproj", "{16BFC606-4012-4718-A400-34C19B5176E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{43A47C41-4123-4770-9578-FA952BA3CD69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43A47C41-4123-4770-9578-FA952BA3CD69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43A47C41-4123-4770-9578-FA952BA3CD69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16BFC606-4012-4718-A400-34C19B5176E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16BFC606-4012-4718-A400-34C19B5176E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16BFC606-4012-4718-A400-34C19B5176E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16BFC606-4012-4718-A400-34C19B5176E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

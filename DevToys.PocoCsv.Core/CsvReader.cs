@@ -120,7 +120,7 @@ namespace DevToys.PocoCsv.Core
             Escaped = 2
         }
 
-        private readonly StringBuilder _sb = new(63);
+        private readonly StringBuilder _sb = new(127);
         private char _char;
         private int _byte;
         private string _value;
@@ -132,17 +132,26 @@ namespace DevToys.PocoCsv.Core
         {
             T _result = new();
             int _columnIndex = 0;
-
             var _state = State.First;
-            _sb.Length = 0;
+            bool _trimLast = false;
+            _sb.Length = 0; // Clear
             _byte = 0;
+
             while (_byte > -1)
             {
                 _byte = _StreamReader.BaseStream.ReadByte();
                 _char = (char)_byte;
                 if (_byte == -1 || (_state == State.Normal && (_char == '\r' || _char == '\n')))
                 {
-                    _value = _sb.ToString().Trim('"');
+                    if (_trimLast)
+                    {
+                        if (_sb.Length > 0 && _sb[_sb.Length-1] == '"')
+                        {
+                            _sb.Length--;
+                        }                        
+                        _trimLast = false;
+                    }
+                    _value = _sb.ToString();
                     SetValue(_columnIndex, _value, _result);
                     break;
                 }
@@ -156,7 +165,15 @@ namespace DevToys.PocoCsv.Core
                 }
                 if (_state == State.Normal && _char == Separator)
                 {
-                    _value = _sb.ToString().Trim('"');
+                    if (_trimLast)
+                    {
+                        if (_sb.Length > 0)
+                        {
+                            _sb.Length--;
+                        }
+                        _trimLast = false;
+                    }
+                    _value = _sb.ToString();
                     SetValue(_columnIndex, _value, _result);
                     _sb.Length = 0;
                     _columnIndex++;
@@ -165,6 +182,11 @@ namespace DevToys.PocoCsv.Core
                 if (_char == '"')
                 {
                     _state = (_state == State.Normal) ? State.Escaped : State.Normal;
+                    if (_sb.Length == 0)
+                    {
+                        _trimLast = true; // .Trim() is costly on large sets. so we will change the length of the stringbuilder and skip adding first escape char.
+                        continue;
+                    }
                 }
 
                 _sb.Append(_char);
@@ -172,9 +194,10 @@ namespace DevToys.PocoCsv.Core
             return _result;
         }
 
+
         #region Value Setters
 
-        private void SetValue(int index, string value,  T targetObject)
+        private void SetValue(int index, string value, T targetObject)
         {
             if (_Properties[index] == null)
             {
@@ -182,6 +205,7 @@ namespace DevToys.PocoCsv.Core
             }
 
             Type targetType = Nullable.GetUnderlyingType(_Properties[index].PropertyType) ?? _Properties[index].PropertyType;
+
 
             if (targetType == typeof(string))
             {

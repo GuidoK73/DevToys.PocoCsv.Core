@@ -350,6 +350,13 @@
             
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamer.ReadRow(System.IO.Stream,System.Action{System.Int32,System.String})">
+            <summary>
+            Read CSV row from stream
+            </summary>
+            <param name="stream"></param>
+            <param name="columnRead">Action executes for each column</param>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamReader">
             <summary>
             Implements a System.IO.TextReader that reads characters from a byte stream in a particular encoding.

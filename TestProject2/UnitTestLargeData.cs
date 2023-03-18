@@ -35,21 +35,6 @@ namespace TestProject2
             StopWatch _w = new StopWatch();
 
             string file = @"D:\largedata.csv";
-
-            //_w.Start();
-
-            //using (CsvStreamReader _reader = new CsvStreamReader(file))
-            //{
-
-            //    while (!_reader.EndOfCsvStream)
-            //    {
-            //        IList<string> _data = _reader.ReadCsvLine();
-            //    }
-            //}
-
-            //_w.Stop();
-            //Console.WriteLine(_w.Duration);
-
             _w.Start();
 
             using (CsvReader<CsvSimple> _reader = new CsvReader<CsvSimple>(file))
@@ -63,11 +48,11 @@ namespace TestProject2
             _w.Stop();
             Console.WriteLine(_w.Duration);
 
-            // 00:00:16.4758305
-            // 00:00:16.4500410
+            // 00:00:21.9864542 No Trimming
 
-            // 00:00:14.9759909
-            // 00:00:25.5642461
+            // 00:00:31.2696500
+            // 00:00:30.6005957
+
         }
 
         private IEnumerable<CsvSimple> LargeData()

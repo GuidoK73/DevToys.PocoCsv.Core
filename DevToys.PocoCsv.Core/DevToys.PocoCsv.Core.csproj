@@ -3,12 +3,17 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>DevToys.PocoCsv.Core is a very fast reader and writer for Csv.
+    <Description>One of the fastest if not the fastest Csv reader deserialzer available.
+
+DevToys.PocoCsv.Core is a very fast reader and writer for Csv.
 It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader&lt;T&gt; and CsvWriter&lt;T&gt;.
 
 ---
 
 Version history:
+1.4.2
+- Another performance improvement for Reader
+
 1.4
 - Performance improvements for Writer.
 
@@ -56,7 +61,7 @@ Version history:
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.4.1</Version>
+    <Version>1.4.3</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>Csv - DevToys.PocoCsv.Core</Title>
     <Copyright>2023</Copyright>
