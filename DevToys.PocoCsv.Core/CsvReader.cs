@@ -123,7 +123,7 @@ namespace DevToys.PocoCsv.Core
         private readonly StringBuilder _sb = new(127);
         private char _char;
         private int _byte;
-        private string _value;
+ 
 
         /// <summary>
         /// reads the CsvLine
@@ -148,11 +148,9 @@ namespace DevToys.PocoCsv.Core
                         if (_sb.Length > 0 && _sb[_sb.Length-1] == '"')
                         {
                             _sb.Length--;
-                        }                        
-                        _trimLast = false;
+                        }
                     }
-                    _value = _sb.ToString();
-                    SetValue(_columnIndex, _value, _result);
+                    SetValue(_columnIndex, _sb.ToString(), _result);
                     break;
                 }
                 if (_state == State.First)
@@ -173,8 +171,7 @@ namespace DevToys.PocoCsv.Core
                         }
                         _trimLast = false;
                     }
-                    _value = _sb.ToString();
-                    SetValue(_columnIndex, _value, _result);
+                    SetValue(_columnIndex, _sb.ToString(), _result);
                     _sb.Length = 0;
                     _columnIndex++;
                     continue;

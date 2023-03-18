@@ -44,7 +44,7 @@ namespace DevToys.PocoCsv.Core
                 {
                     if (_trimLast)
                     {
-                        if (_sb[_sb.Length] == '"')
+                        if (_sb.Length > 0 && _sb[_sb.Length] == '"')
                         {
                             _sb.Length--;
                         }
@@ -58,7 +58,10 @@ namespace DevToys.PocoCsv.Core
                 {
                     if (_trimLast)
                     {
-                        _sb.Length--;
+                        if (_sb.Length > 0)
+                        {
+                            _sb.Length--;
+                        }
                         _trimLast = false;
                     }
                     _state = State.Normal;
