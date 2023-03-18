@@ -13,20 +13,12 @@ namespace DevToys.PocoCsv.Core
     public abstract class BaseCsvWriter : BaseCsvReaderWriter, IDisposable
     {
 
-        /// <summary>
-        /// 
-        /// </summary>
-        protected Dictionary<int, PropertyInfo> _Properties = new();
+
 
         /// <summary>
         /// 
         /// </summary>
-        protected Dictionary<int, Func<object, object>> _PropertyGetters = new();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected CsvStreamWriter _StreamWrtier;
+        protected StreamWriter _StreamWriter;
 
 
         /// <summary>
@@ -48,24 +40,22 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        public BaseCsvWriter(string file, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true, int bufferSize = 1024) : this(file)
+        public BaseCsvWriter(string file, Encoding encoding, CultureInfo culture, char separator = ',', int bufferSize = 1024) : this(file)
         {
             Culture = culture;
             Separator = separator;
             Encoding = encoding;
-            Append = append;
             _BufferSize = bufferSize;
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public BaseCsvWriter(Stream stream, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true, int bufferSize = 1024) : this(stream)
+        public BaseCsvWriter(Stream stream, Encoding encoding, CultureInfo culture, char separator = ',', int bufferSize = 1024) : this(stream)
         {
             Culture = culture;
             Separator = separator;
             Encoding = encoding;
-            Append = append;
             _BufferSize = bufferSize;
         }
 
@@ -77,30 +67,8 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Csv Seperator to use default ','
         /// </summary>
-        public char Separator
-        {
-            get
-            {
-                if (_StreamWrtier != null)
-                {
-                    _Separator = _StreamWrtier.Separator;
-                }
-                return _Separator;
-            }
-            set
-            {
-                _Separator = value;
-                if (_StreamWrtier != null)
-                {
-                    _StreamWrtier.Separator = _Separator;
-                }
-            }
-        }
+        public char Separator { get; set; } = ',';
 
-        /// <summary>
-        /// Write command can be used to append multiple collections to the open Csv Stream.
-        /// </summary>
-        public bool Append { get; set; } = true;
 
         /// <summary>
         /// Releases all resources used by the System.IO.TextReader object.
@@ -116,7 +84,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public virtual void Close()
         {
-            _StreamWrtier.Close();
+            _StreamWriter.Close();
         }
 
         /// <summary>

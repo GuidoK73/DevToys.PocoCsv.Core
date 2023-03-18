@@ -57,10 +57,11 @@ namespace TestProject2
         {
             string file = @"D:\data2.csv";
 
-            using (CsvWriter<CsvSimple> _writer = new(file) { Separator = ',', Append = true })
+            using (CsvWriter<CsvSimple> _writer = new(file) { Separator = ',' })
             {
                 _writer.Open();
-                _writer.Write(Data(), writeHeader: false);
+                _writer.WriteHeader();
+                _writer.Write(Data());
             }
         }
 

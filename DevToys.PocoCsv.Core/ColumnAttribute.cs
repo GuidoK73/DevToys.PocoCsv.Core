@@ -17,5 +17,10 @@ namespace DevToys.PocoCsv.Core
         /// Only used by CsvWriter
         /// </summary>
         public string Header { get; set; }
+
+        /// <summary>
+        /// Only used by CsvWriter
+        /// </summary>
+        public string OutputFormat { get; set; }
     }
 }

@@ -240,11 +240,6 @@
             Properties needs to be marked with ColumnAttribute
             </summary>
         </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvReader`1._AllPropertiesAreStrings">
-            <summary>
-            Increase performance by only allowing string properties (No implicit casting)
-            </summary>
-        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.String)">
             <summary>
             Constructor
@@ -266,9 +261,9 @@
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Rows">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.DetectSeparator">
             <summary>
@@ -282,10 +277,10 @@
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Skip(System.Int32)">
             <summary>
-            Use to skip first row(s) combined with Read() method. for ReadAsEnumerable() just use the Enumerable Skip method.
+            Use to skip first row without serializing, usefull for skipping header.
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadOld">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Read">
             <summary>
             reads the CsvLine
             </summary>
@@ -311,24 +306,24 @@
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.#ctor(System.String)">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.#ctor(System.IO.Stream)">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.#ctor(System.IO.Stream,System.Text.Encoding,System.Char,System.Boolean)">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.#ctor(System.String,System.Text.Encoding,System.Char,System.Boolean)">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReaderDynamic.FirstRowIsHeader">
             <summary>
@@ -341,18 +336,13 @@
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.Rows">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.ReadAsEnumerable">
             <summary>
             Each iteration will read the next row from stream or file.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.Read">
-            <summary>
-            
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.SampleRow">
@@ -361,14 +351,9 @@
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.Init">
-            <summary>
+             <summary>
             
-            </summary>
-        </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvReaderDynamic.EndOfStream">
-            <summary>
-            Indicates End of stream, use with Read funcion.
-            </summary>
+             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReaderDynamic.DetectSeparator">
             <summary>
@@ -402,11 +387,11 @@
             <param name="bufferSize">The minimum buffer size.</param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.String,System.IO.FileStreamOptions)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="path"></param>
-            <param name="options"></param>
+             </summary>
+             <param name="path"></param>
+             <param name="options"></param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.IO.Stream)">
             <summary>

@@ -15,9 +15,10 @@ namespace TestProject2
         {
             string file = @"D:\largedata.csv";
 
-            using (CsvWriter<CsvSimple> _writer = new(file) { Separator = ',', Append = true })
+            using (CsvWriter<CsvSimple> _writer = new(file) { Separator = ','})
             {
                 _writer.Open();
+                _writer.WriteHeader();
                 _writer.Write(LargeData());
             }
         }
@@ -75,7 +76,9 @@ namespace TestProject2
                     Datum = "20200203",
                     Mededelingen = $"test {ii}",
                     Rekening = "3434",
-                    Tegenrekening = "3423424"
+                    Tegenrekening = "3423424",
+                    NaamOmschrijving = $"bla,bla {ii}"
+
                 };
                 yield return _line;
             }

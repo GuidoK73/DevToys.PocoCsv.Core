@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -13,42 +12,40 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvWriterDynamic : BaseCsvWriter
     {
-
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public CsvWriterDynamic(string file) : base(file)
         { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public CsvWriterDynamic(Stream stream) : base(stream)
         { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
-        public CsvWriterDynamic(string file, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true, int buffersize = -1) : base(file, encoding, culture, separator, append, buffersize)
+        public CsvWriterDynamic(string file, Encoding encoding, CultureInfo culture, char separator = ',', int buffersize = -1) : base(file, encoding, culture, separator, buffersize)
         { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
-        public CsvWriterDynamic(Stream stream, Encoding encoding, CultureInfo culture, char separator = ',', bool append = true, int buffersize = -1) : base(stream, encoding, culture, separator, append, buffersize)
+        public CsvWriterDynamic(Stream stream, Encoding encoding, CultureInfo culture, char separator = ',', int buffersize = -1) : base(stream, encoding, culture, separator, buffersize)
         { }
-
 
         /// <summary>
         /// Initialize and open the CSV Stream Writer.
         /// </summary>
         public override void Open()
         {
-            _StreamWrtier = new CsvStreamWriter(path: _File, append: Append, encoding: Encoding, bufferSize: _BufferSize ) { Separator = Separator };
+            _StreamWriter = new CsvStreamWriter(path: _File, encoding: Encoding, bufferSize: _BufferSize) { Separator = Separator };
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         protected override void Init()
         {
@@ -60,48 +57,55 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void Write(IEnumerable<dynamic> rows)
         {
-            if (Append)
-            {
-                FileInfo _info = new(_File);
-                _StreamWrtier.BaseStream.Position = _info.Length;
-            }
-            else
-            {
-                _StreamWrtier.BaseStream.Position = 0;
-            }
-
             var _first = true;
-            string[] _data;
-
             foreach (dynamic item in rows)
             {
                 if (_first)
                 {
-                    _data = Header(item);
-                    _StreamWrtier.WriteCsvLine(_data);
+                    WriteHeader(item);
                     _first = false;
                 }
-                _data = ToArray(item);
-                _StreamWrtier.WriteCsvLine(_data);
+                WriteObject(item);
             }
         }
 
-        private string[] ToArray(dynamic dataobject)
+        private void WriteObject(dynamic dataobject)
         {
             var dataobject2 = dataobject as IDictionary<string, Object>;
-            var _items = new string[dataobject2.Keys.Count()];
             var _keys = dataobject2.Keys.ToArray();
-
-            for (int ii = 0; ii < _items.Length; ii++)
-                _items[ii] = (string)Convert(dataobject2[_keys[ii]], typeof(string), Culture);
-
-            return _items;
+            _StreamWriter.Write("\r\n");
+            for (int ii = 0; ii < _keys.Length; ii++)
+            {
+                string _value = (string)Convert(dataobject2[_keys[ii]], typeof(string), Culture);
+                _StreamWriter.Write(Esc(_value));
+                if (ii < _keys.Length-1)
+                {
+                    _StreamWriter.Write(Separator);
+                }
+            }
         }
 
-        private static string[] Header(dynamic dataobject)
+        private string Esc(string s)
+        {
+            if (s.IndexOfAny(new char[] { '\r', '\n', '"', Separator }) == -1)
+            {
+                return s;
+            }
+            return $"\"{s.Replace("\"", "\"\"")}\"";
+        }
+
+        private void WriteHeader(dynamic dataobject)
         {
             var dataobject2 = dataobject as IDictionary<string, Object>;
-            return dataobject2.Keys.ToArray();
+            var _keys = dataobject2.Keys.ToArray();
+            for (int ii = 0; ii < _keys.Length; ii++)
+            {
+                _StreamWriter.Write(Esc(_keys[ii]));
+                if (ii < _keys.Length-1)
+                {
+                    _StreamWriter.Write(Separator);
+                }
+            }
         }
 
         private static object Convert(object value, Type target, CultureInfo culture)
