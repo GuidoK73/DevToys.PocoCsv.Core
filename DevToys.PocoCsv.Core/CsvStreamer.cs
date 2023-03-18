@@ -4,6 +4,9 @@ using System.Text;
 
 namespace DevToys.PocoCsv.Core
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class CsvStreamer
     {
         /// <summary>

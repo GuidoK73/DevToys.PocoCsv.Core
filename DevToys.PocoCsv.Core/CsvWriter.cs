@@ -12,7 +12,7 @@ namespace DevToys.PocoCsv.Core
     /// <summary>
     /// Write T to Csv Stream from an IEnumerable source.
     /// </summary>
-    public class CsvWriter<T> : BaseCsvWriter where T : new()
+    public class CsvWriter<T> : BaseCsv, IDisposable where T : new()
     {
         private Dictionary<int, PropertyInfo> _Properties = new();
 
@@ -20,32 +20,72 @@ namespace DevToys.PocoCsv.Core
 
         private Dictionary<int, string> _Formatters = new();
 
+        private StreamWriter _StreamWriter;
+
         private List<int> _ColumnIndexes;
         private int _MaxColumnIndex = 0;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public CsvWriter(string file) : base(file)
-        { }
+        public CsvWriter(string file)
+        {
+            _File = file;
+        }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public CsvWriter(Stream stream) : base(stream)
-        { }
+        public CsvWriter(Stream stream)
+        {
+            _Stream = stream;
+        }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public CsvWriter(string file, Encoding encoding, CultureInfo culture, char separator = ',', int buffersize = -1) : base(file, encoding, culture, separator, buffersize)
-        { }
+        public CsvWriter(string file, Encoding encoding, CultureInfo culture, char separator = ',', int buffersize = -1)
+        {
+            Culture = culture;
+            Separator = separator;
+            Encoding = encoding;
+            _BufferSize = buffersize;
+            _File = file;
+        }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public CsvWriter(Stream stream, Encoding encoding, CultureInfo culture, char separator = ',', int buffersize = -1) : base(stream, encoding, culture, separator, buffersize)
-        { }
+        public CsvWriter(Stream stream, Encoding encoding, CultureInfo culture, char separator = ',', int buffersize = -1)
+        {
+            _Stream = stream;
+            Culture = culture;
+            Separator = separator;
+            Encoding = encoding;
+            _BufferSize = buffersize;
+        }
+
+        /// <summary>
+        /// Csv Seperator to use default ','
+        /// </summary>
+        public char Separator { get; set; } = ',';
+
+        /// <summary>
+        /// Releases all resources used by the System.IO.TextReader object.
+        /// </summary>
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            Close();
+        }
+
+        /// <summary>
+        /// Close the CSV stream reader
+        /// </summary>
+        public virtual void Close()
+        {
+            _StreamWriter.Close();
+        }
 
         /// <summary>
         /// Write header with property names of T.
@@ -384,7 +424,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Initialize and open the CSV Stream Writer.
         /// </summary>
-        public override void Open()
+        public void Open()
         {
             Init();
             if (_Stream != null)
@@ -400,7 +440,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         ///
         /// </summary>
-        protected override void Init()
+        private void Init()
         {
             if (_Properties.Count > 0)
                 return;

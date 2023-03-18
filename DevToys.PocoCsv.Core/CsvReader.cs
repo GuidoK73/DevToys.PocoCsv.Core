@@ -13,8 +13,15 @@ namespace DevToys.PocoCsv.Core
     /// Enumerate Csv Stream Reader over T.
     /// Properties needs to be marked with ColumnAttribute
     /// </summary>
-    public sealed class CsvReader<T> : BaseCsvReader where T : new()
+    public sealed class CsvReader<T> : BaseCsv, IDisposable where T : new()
     {
+        /// <summary>
+        ///
+        /// </summary>
+        private StreamReader _StreamReader;
+
+        private readonly CsvStreamer _Streamer = new();
+
         private PropertyInfo[] _Properties = null;
         private Type[] _PropertyUnderlyingType = null;
 
@@ -41,36 +48,85 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        public CsvReader(string file) : base(file)
-        { }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public CsvReader(Stream stream) : base(stream)
-        { }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public CsvReader(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int buffersize = 1024) : base(stream, encoding, separator, detectEncodingFromByteOrderMarks, buffersize)
+        public CsvReader(string file)
         {
-            _Streamer.Separator = separator;
+            _File = file;
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public CsvReader(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int buffersize = 1024) : base(file, encoding, separator, detectEncodingFromByteOrderMarks, buffersize)
+        public CsvReader(Stream stream)
         {
-            _Streamer.Separator = separator;
+            _Stream = stream;
         }
 
         /// <summary>
-        ///
+        /// Constructor
         /// </summary>
-        [Obsolete("Use ReadAsEnumerable() or Read() instead.")]
-        public IEnumerable<T> Rows() => ReadAsEnumerable();
+        public CsvReader(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int buffersize = 1024)
+        {
+            _Stream = stream;
+            _Streamer.Separator = separator;
+            Encoding = encoding;
+            DetectEncodingFromByteOrderMarks = detectEncodingFromByteOrderMarks;
+            _BufferSize = buffersize;
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public CsvReader(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int buffersize = 1024)
+        {
+            _File = file;
+            _Streamer.Separator = separator;
+            Encoding = encoding;
+            _Streamer.Separator = separator;
+            DetectEncodingFromByteOrderMarks = detectEncodingFromByteOrderMarks;
+            _BufferSize = buffersize;
+        }
+
+        /// <summary>
+        /// Csv Seperator to use default ','
+        /// </summary>
+        public char Separator
+        {
+            get
+            {
+                return _Streamer.Separator;
+            }
+            set
+            {
+                _Streamer.Separator = value;
+            }
+        }
+
+        /// <summary>
+        /// Indicates the End of the stream.
+        /// </summary>
+        public bool EndOfStream => (_StreamReader.BaseStream.Position >= _StreamReader.BaseStream.Length);
+
+        /// <summary>
+        /// Indicates whether to look for byte order marks at the beginning of the file.
+        /// </summary>
+        public bool DetectEncodingFromByteOrderMarks { get; set; } = true;
+
+        /// <summary>
+        /// Releases all resources used by the System.IO.TextReader object.
+        /// </summary>
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            Close();
+        }
+
+        /// <summary>
+        /// Close the CSV stream reader
+        /// </summary>
+        public void Close()
+        {
+            _StreamReader.Close();
+        }
 
         /// <summary>
         /// Detect the separator by sampling first 10 rows.
@@ -150,7 +206,7 @@ namespace DevToys.PocoCsv.Core
                 {
                     if (_trimLast)
                     {
-                        if (_sbValue.Length > 0 && _sbValue[_sbValue.Length-1] == _escape)
+                        if (_sbValue.Length > 0 && _sbValue[_sbValue.Length - 1] == _escape)
                         {
                             _sbValue.Length--;
                         }
@@ -195,7 +251,6 @@ namespace DevToys.PocoCsv.Core
             }
             return _result;
         }
-
 
         #region Value Setters
 
@@ -322,7 +377,7 @@ namespace DevToys.PocoCsv.Core
                 _PropertySettersInt32[index](targetObject, _value);
             }
         }
-            
+
         private void SetValueInt64(int index, T targetObject)
         {
             bool succes = Int64.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out long _value);
@@ -332,7 +387,7 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        private void SetValueDouble(int index,  T targetObject)
+        private void SetValueDouble(int index, T targetObject)
         {
             bool succes = Double.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out double _value);
             if (succes)
@@ -350,7 +405,7 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        private void SetValueGuid(int index,  T targetObject)
+        private void SetValueGuid(int index, T targetObject)
         {
             bool succes = Guid.TryParse(_sbValue.ToString(), out Guid _value);
             if (succes)
@@ -437,7 +492,7 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        private void SetValueUInt32(int index,  T targetObject)
+        private void SetValueUInt32(int index, T targetObject)
         {
             bool succes = UInt32.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out UInt32 _value);
             if (succes)
@@ -460,7 +515,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Open the reader
         /// </summary>
-        public override void Open()
+        public void Open()
         {
             Init();
 
@@ -480,21 +535,22 @@ namespace DevToys.PocoCsv.Core
                     throw new FileNotFoundException($"File '{_File}' not found.");
                 }
 
-                var _options = new FileStreamOptions();
-                _options.Access = FileAccess.Read;
-                _options.BufferSize = _BufferSize;
-                _options.Share = FileShare.Read;
-                _options.Mode = FileMode.Open;
+                var _options = new FileStreamOptions
+                {
+                    Access = FileAccess.Read,
+                    BufferSize = _BufferSize,
+                    Share = FileShare.Read,
+                    Mode = FileMode.Open
+                };
 
-                _StreamReader = new StreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks,options: _options );
-
+                _StreamReader = new StreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, options: _options);
             }
         }
 
         /// <summary>
         /// Initialize the CsvReader
         /// </summary>
-        protected override void Init()
+        private void Init()
         {
             if (_Properties != null)
                 return;

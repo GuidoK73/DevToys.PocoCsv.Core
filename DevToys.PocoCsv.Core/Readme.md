@@ -10,10 +10,9 @@ It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader
 - Use CsvWriter<T>.Write() to write large data tables to Csv.
 - Retrieve schema for a csv file with CsvUtils.GetCsvSchema() which can be used to create a poco object.
 
-Three flavors for reading and writing CSV files:
+Two flavors for reading and writing CSV files:
 1. Stream
 2. &lt;T&gt; Serialize / Deserialize to T
-3. dynamic. Use dynamic to Read or Write CSV, this is slightly slower then <T>
 
 
 # CsvStreamReader
@@ -100,38 +99,3 @@ Three flavors for reading and writing CSV files:
     }
       
 ~~~
-
-# CsvReaderDynamic
-~~~cs
-    string file = @"C:\Temp\data.csv";
-    using (CsvReaderDynamic _reader = new(file))
-    {
-        _reader.FirstRowIsHeader = true;
-        _reader.Open();
-        foreach (dynamic row in _reader.ReadAsEnumerable())
-        {
-            ...
-        }
-    }
-~~~
-
-# CsvWriterDynamic
-~~~cs
-    string file = @"C:temp\data.csv");
-
-    using (CsvWriterDynamic _writer = new(file))
-    {
-        dynamic row = new ExpandoObject();
-        row.Id = 124;
-        row.Name = "Name";
-
-        List<dynamic> _data = new List<dynamic>();
-        _data.Add(row);
-
-        _writer.Write(_data);
-    }
-~~~
-
-
-
-
