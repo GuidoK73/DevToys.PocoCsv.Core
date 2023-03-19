@@ -15,13 +15,10 @@ namespace DevToys.PocoCsv.Core
     public class CsvWriter<T> : BaseCsv, IDisposable where T : new()
     {
         private Dictionary<int, PropertyInfo> _Properties = new();
-
         private Dictionary<int, Func<object, object>> _PropertyGetters = new();
-
         private Dictionary<int, string> _Formatters = new();
-
+        private Dictionary<int, string> _OutputNullValues = new();
         private StreamWriter _StreamWriter;
-
         private List<int> _ColumnIndexes;
         private int _MaxColumnIndex = 0;
 
@@ -126,6 +123,7 @@ namespace DevToys.PocoCsv.Core
             {
                 Write(row);
             }
+            _StreamWriter.Flush();
         }
 
         /// <summary>
@@ -145,12 +143,17 @@ namespace DevToys.PocoCsv.Core
                     var _propertyGetter = _PropertyGetters[ii];
                     var _value = _propertyGetter(row);
                     string _formatter = null;
+                    string _outputNullValue = null;
                     if (_Formatters.ContainsKey(ii))
                     {
                         _formatter = _Formatters[ii];
                     }
+                    if (_OutputNullValues.ContainsKey(ii))
+                    {
+                        _outputNullValue = _OutputNullValues[ii];
+                    }
 
-                    Type targetType = Nullable.GetUnderlyingType(_property.PropertyType) ?? _property.PropertyType;
+                    Type targetType = _property.PropertyType;
 
                     if (targetType == typeof(String))
                     {
@@ -232,6 +235,70 @@ namespace DevToys.PocoCsv.Core
                     {
                         WriteUInt64((UInt64)_value, _formatter);
                     }
+                    else if (targetType == typeof(Guid?))
+                    {
+                        WriteGuidNull((Guid?)_value, _outputNullValue);
+                    }
+                    else if (targetType == typeof(Boolean?))
+                    {
+                        WriteBooleanNull((Boolean?)_value, _outputNullValue);
+                    }
+                    else if (targetType == typeof(DateTime?))
+                    {
+                        WriteDateTimeNull((DateTime?)_value, _formatter, _outputNullValue);
+                    }
+                    else if (targetType == typeof(DateTimeOffset?))
+                    {
+                        WriteDateTimeOffsetNull((DateTimeOffset?)_value, _formatter, _outputNullValue);
+                    }
+                    else if (targetType == typeof(TimeSpan?))
+                    {
+                        WriteTimeSpanNull((TimeSpan?)_value, _formatter, _outputNullValue);
+                    }
+                    else if (targetType == typeof(Byte?))
+                    {
+                        WriteByteNull((Byte?)_value, _formatter, _outputNullValue);
+                    }
+                    else if (targetType == typeof(SByte?))
+                    {
+                        WriteSByteNull((SByte?)_value, _formatter, _outputNullValue);
+                    }
+                    else if (targetType == typeof(Int16?))
+                    {
+                        WriteInt16Null((Int16?)_value, _formatter, _outputNullValue);
+                    }
+                    else if (targetType == typeof(Int32?))
+                    {
+                        WriteInt32Null((Int32?)_value, _formatter, _outputNullValue);
+                    }
+                    else if (targetType == typeof(Int64?))
+                    {
+                        WriteInt64Null((Int64?)_value, _formatter, _outputNullValue);
+                    }
+                    else if (targetType == typeof(Single?))
+                    {
+                        WriteSingleNull((Single?)_value, _formatter, _outputNullValue);
+                    }
+                    else if (targetType == typeof(Decimal?))
+                    {
+                        WriteDecimalNull((Decimal?)_value, _formatter, _outputNullValue);
+                    }
+                    else if (targetType == typeof(Double?))
+                    {
+                        WriteDoubleNull((Double?)_value, _formatter, _outputNullValue);
+                    }
+                    else if (targetType == typeof(UInt16?))
+                    {
+                        WriteUInt16Null((UInt16?)_value, _formatter, _outputNullValue);
+                    }
+                    else if (targetType == typeof(UInt32?))
+                    {
+                        WriteUInt32Null((UInt32?)_value, _formatter, _outputNullValue);
+                    }
+                    else if (targetType == typeof(UInt64?))
+                    {
+                        WriteUInt64Null((UInt64?)_value, _formatter, _outputNullValue);
+                    }
                     else
                     {
                         _StreamWriter.Write(TypeUtils.Convert(_value, typeof(string), Culture));
@@ -241,6 +308,360 @@ namespace DevToys.PocoCsv.Core
                         _StreamWriter.Write(Separator);
                     }
                 }
+            }
+        }
+
+        private void WriteGuidNull(Guid? value, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                _StreamWriter.Write(Esc(value.Value.ToString()));
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteBooleanNull(Boolean? value, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                _StreamWriter.Write(value.Value.ToString());
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteDateTimeNull(DateTime? value, string formatter, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                if (!string.IsNullOrEmpty(formatter))
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
+                }
+                else
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
+                }
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteDateTimeOffsetNull(DateTimeOffset? value, string formatter, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                if (!string.IsNullOrEmpty(formatter))
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
+                }
+                else
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
+                }
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteTimeSpanNull(TimeSpan? value, string formatter, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                if (!string.IsNullOrEmpty(formatter))
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
+                }
+                else
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString()));
+                }
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteByteNull(Byte? value, string formatter, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                if (!string.IsNullOrEmpty(formatter))
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
+                }
+                else
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
+                }
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteSByteNull(SByte? value, string formatter, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                if (!string.IsNullOrEmpty(formatter))
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
+                }
+                else
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
+                }
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteInt16Null(Int16? value, string formatter, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                if (!string.IsNullOrEmpty(formatter))
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
+                }
+                else
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
+                }
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteInt32Null(Int32? value, string formatter, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                if (!string.IsNullOrEmpty(formatter))
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
+                }
+                else
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
+                }
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteInt64Null(Int64? value, string formatter, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                if (!string.IsNullOrEmpty(formatter))
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
+                }
+                else
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
+                }
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteSingleNull(Single? value, string formatter, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                if (!string.IsNullOrEmpty(formatter))
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
+                }
+                else
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
+                }
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteDecimalNull(Decimal? value, string formatter, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                if (!string.IsNullOrEmpty(formatter))
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
+                }
+                else
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
+                }
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteDoubleNull(Double? value, string formatter, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                if (!string.IsNullOrEmpty(formatter))
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
+                }
+                else
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
+                }
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteUInt16Null(UInt16? value, string formatter, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                if (!string.IsNullOrEmpty(formatter))
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
+                }
+                else
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
+                }
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteUInt32Null(UInt32? value, string formatter, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                if (!string.IsNullOrEmpty(formatter))
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
+                }
+                else
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
+                }
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
+            }
+        }
+
+        private void WriteUInt64Null(UInt64? value, string formatter, string _nullValueDefault)
+        {
+            if (value.HasValue)
+            {
+                if (!string.IsNullOrEmpty(formatter))
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
+                }
+                else
+                {
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
+                }
+            }
+            else if (_nullValueDefault != null)
+            {
+                _StreamWriter.Write(Esc(_nullValueDefault));
+            }
+            else
+            {
+                _StreamWriter.Write(string.Empty);
             }
         }
 
@@ -461,6 +882,13 @@ namespace DevToys.PocoCsv.Core
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
                 .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, OutputFormat = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).OutputFormat })
                 .ToDictionary(p => p.Key, p => p.OutputFormat);
+
+
+            _OutputNullValues = _type.GetProperties()
+                .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
+                .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, OutputNullValue = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).OutputNullValue })
+                .ToDictionary(p => p.Key, p => p.OutputNullValue);
+
 
             _ColumnIndexes = _Properties.Keys.ToList();
             _MaxColumnIndex = _ColumnIndexes.Max();

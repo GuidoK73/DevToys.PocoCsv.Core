@@ -22,5 +22,10 @@ namespace DevToys.PocoCsv.Core
         /// Only used by CsvWriter
         /// </summary>
         public string OutputFormat { get; set; }
+
+        /// <summary>
+        /// Only used by CsvWriter
+        /// </summary>
+        public string OutputNullValue { get; set; } = string.Empty;
     }
 }

@@ -21,6 +21,16 @@ namespace TestProject2
         [Column(Index = 2, Header = "Test" )]
         public byte[] Collumn3 { get; set; }
 
+
+        [Column(Index = 3)]
+        public DateTime TestDateTime { get; set; }
+        [Column(Index = 4)]
+        public DateTime? TestDateTimeNull { get; set; }
+
+        [Column(Index = 5)]
+        public Int32 TestInt { get; set; }
+        [Column(Index = 6, OutputNullValue = "[NULL]")]
+        public Int32? TestIntNull { get; set; }
     }
 
 
@@ -32,9 +42,39 @@ namespace TestProject2
         {
 
             List<Data> _data = new List<Data>();
-            _data.Add(new Data { Collumn1 = "01", Collumn2 = "AA", Collumn3 = new byte[3] { 2, 4, 6 } });
-            _data.Add(new Data { Collumn1 = "02", Collumn2 = "BB", Collumn3 = new byte[3] { 1, 2, 3 } });
-            _data.Add(new Data { Collumn1 = "03", Collumn2 = "CC", Collumn3 = null});
+            _data.Add(new Data {
+                Collumn1 = "01", 
+                Collumn2 = "AA", 
+                Collumn3 = new byte[3] { 2, 4, 6 } ,
+                TestDateTime = DateTime.Now,
+                TestDateTimeNull = DateTime.Now,
+                //TestInt = 100,
+                //TestIntNull = 200
+
+            });
+            _data.Add(new Data
+            {
+                Collumn1 = "01",
+                Collumn2 = "AA",
+                Collumn3 = new byte[3] { 2, 4, 6 },
+                TestDateTime = DateTime.Now,
+                TestDateTimeNull = DateTime.Now,
+                //TestInt = 100,
+                //TestIntNull = 200
+
+            }); 
+            _data.Add(new Data
+            {
+                Collumn1 = "04",
+                Collumn2 = "BB",
+                Collumn3 = new byte[3] { 8, 9, 10 },
+                TestDateTime = DateTime.Now,
+                TestDateTimeNull = null,
+                //TestInt = 300,
+                //TestIntNull = null
+
+            }); 
+
 
 
             List<Data> _data2 = new List<Data>();
@@ -45,19 +85,19 @@ namespace TestProject2
                 using (CsvWriter<Data> _csvWriter = new CsvWriter<Data>(_stream))
                 using (CsvReader<Data> _csvReader = new CsvReader<Data>(_stream))
                 {
-                    _csvWriter.Separator = ';';
+                    _csvWriter.Separator = ',';
                     _csvWriter.Open();
                     _csvWriter.WriteHeader();
                     _csvWriter.Write(_data);
 
-                    //string _test = StreamToString(_stream);
+                    string _test = StreamToString(_stream);
 
                     _csvReader.Open();
-                    _csvReader.DetectSeparator();
+                    _csvReader.Separator = ',';
                     _data2 = _csvReader
                         .ReadAsEnumerable()
                         .Skip(1) // skip header
-                        .Where(p => p.Collumn1 != "02")
+                        //.Where(p => p.Collumn1 != "02")
                         .ToList();
                 }
             }

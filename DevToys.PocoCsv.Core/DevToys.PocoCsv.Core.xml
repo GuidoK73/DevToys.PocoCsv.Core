@@ -59,6 +59,11 @@
             Only used by CsvWriter
             </summary>
         </member>
+        <member name="P:DevToys.PocoCsv.Core.ColumnAttribute.OutputNullValue">
+            <summary>
+            Only used by CsvWriter
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvColumnInfo">
             <summary>
             CsvUtils.GetCsvSchema result
@@ -109,11 +114,6 @@
             Enumerate Csv Stream Reader over T.
             Properties needs to be marked with ColumnAttribute
             </summary>
-        </member>
-        <member name="F:DevToys.PocoCsv.Core.CsvReader`1._StreamReader">
-             <summary>
-            
-             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.String)">
             <summary>
