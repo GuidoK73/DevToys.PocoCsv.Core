@@ -7,7 +7,7 @@ namespace DevToys.PocoCsv.Core
     /// <summary>
     /// 
     /// </summary>
-    public sealed class CsvStreamer
+    internal sealed class CsvStreamer
     {
         /// <summary>
         /// 
@@ -29,8 +29,8 @@ namespace DevToys.PocoCsv.Core
         /// Read CSV row from stream
         /// </summary>
         /// <param name="stream"></param>
-        /// <param name="columnRead">Action executes for each column</param>
-        public void ReadRow(Stream stream, Action<int, string> columnRead)
+        /// <param name="fieldRead">Action executes for each column</param>
+        public void ReadRow(Stream stream, Action<int, string> fieldRead)
         {
             var _state = State.First;
             _sb.Length = 0;
@@ -47,14 +47,12 @@ namespace DevToys.PocoCsv.Core
                 {
                     if (_trimLast)
                     {
-                        if (_sb.Length > 0 && _sb[_sb.Length] == '"')
+                        if (_sb.Length > 0 && _sb[_sb.Length - 1] == '"')
                         {
                             _sb.Length--;
                         }
-                        _trimLast = false;
                     }
-                    columnRead(_column, _sb.ToString());
-                    _column++;
+                    fieldRead(_column, _sb.ToString());
                     break;
                 }
                 if (_state == State.First)
@@ -75,7 +73,7 @@ namespace DevToys.PocoCsv.Core
                 }
                 if (_state == State.Normal && _char == Separator)
                 {
-                    columnRead(_column, _sb.ToString().Trim('"'));
+                    fieldRead(_column, _sb.ToString().Trim('"'));
                     _column++;
                     _sb.Length = 0;
                     continue;

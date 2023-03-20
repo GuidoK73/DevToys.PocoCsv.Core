@@ -11,6 +11,11 @@ It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader
 ---
 
 Version history:
+1.5.1
+- Updated Readme
+- Fixed bug with Skip(rows)
+- Fixed small bug with ReadAsEnumerable() always started at position 0.
+
 1.5
 - Correct handling Null Types for Reader
 
@@ -69,12 +74,12 @@ Version history:
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.5</Version>
+    <Version>1.5.1</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>Csv - DevToys.PocoCsv.Core</Title>
     <Copyright>2023</Copyright>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
-    <Product>Csv Tools - DevToys.PocoCsv.Core</Product>
+    <Product>DevToys.PocoCsv.Core</Product>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

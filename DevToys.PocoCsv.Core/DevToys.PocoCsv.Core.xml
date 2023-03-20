@@ -46,22 +46,22 @@
         </member>
         <member name="P:DevToys.PocoCsv.Core.ColumnAttribute.Index">
             <summary>
-            Property corresponds to Csv Column Index.
+            Defines the index position within the CSV document. Numbers can be skipped for the reader to ignore certain columns, for the writer numbers can also be skipped which leads to empty columns.
             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.ColumnAttribute.Header">
             <summary>
-            Only used by CsvWriter
+            Defines the header text, this property only applies to the CsvWriter, if not specified, the property name is used.
             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.ColumnAttribute.OutputFormat">
             <summary>
-            Only used by CsvWriter
+            Apply a string format, depending on the Property type. This property is for CsvWriter only.
             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.ColumnAttribute.OutputNullValue">
             <summary>
-            Only used by CsvWriter
+            Defines the value to write as a default for null, This property is for CsvWriter only.
             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvColumnInfo">
@@ -162,7 +162,12 @@
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.DetectSeparator">
             <summary>
-            Detect the separator by sampling first 10 rows.
+            Detect the separator by sampling first 10 rows. Position is moved to start after execution.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.MoveToStart">
+            <summary>
+            Moves the reader to the start position.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadAsEnumerable">
@@ -172,7 +177,7 @@
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Skip(System.Int32)">
             <summary>
-            Use to skip first row without serializing, usefull for skipping header.
+            Use to skip first row without materializing, usefull for skipping header.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Read">
@@ -205,7 +210,7 @@
             Read CSV row from stream
             </summary>
             <param name="stream"></param>
-            <param name="columnRead">Action executes for each column</param>
+            <param name="fieldRead">Action executes for each column</param>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamReader">
             <summary>

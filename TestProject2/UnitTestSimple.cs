@@ -1,5 +1,6 @@
 ﻿using DevToys.PocoCsv.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -42,6 +43,9 @@ namespace TestProject2
         [TestMethod]
         public void TestReaderSimple()
         {
+
+
+
             string file = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "data.csv");
 
             using (CsvReader<CsvSimple> _reader = new(file))

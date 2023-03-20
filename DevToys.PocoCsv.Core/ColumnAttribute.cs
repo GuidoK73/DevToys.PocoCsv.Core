@@ -9,22 +9,22 @@ namespace DevToys.PocoCsv.Core
     public sealed class ColumnAttribute : Attribute
     {
         /// <summary>
-        /// Property corresponds to Csv Column Index.
+        /// Defines the index position within the CSV document. Numbers can be skipped for the reader to ignore certain columns, for the writer numbers can also be skipped which leads to empty columns.
         /// </summary>
         public int Index { get; set; }
 
         /// <summary>
-        /// Only used by CsvWriter
+        /// Defines the header text, this property only applies to the CsvWriter, if not specified, the property name is used.
         /// </summary>
         public string Header { get; set; }
 
         /// <summary>
-        /// Only used by CsvWriter
+        /// Apply a string format, depending on the Property type. This property is for CsvWriter only.
         /// </summary>
         public string OutputFormat { get; set; }
 
         /// <summary>
-        /// Only used by CsvWriter
+        /// Defines the value to write as a default for null, This property is for CsvWriter only.
         /// </summary>
         public string OutputNullValue { get; set; } = string.Empty;
     }

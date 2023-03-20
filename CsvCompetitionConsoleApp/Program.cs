@@ -18,10 +18,10 @@ using TinyCsvParser.Mapping;
 
 
 Console.WriteLine("Csv Reader Competition.");
-Console.WriteLine("Let's read 10 million rows with 9 columns and deserialize it to an object collection. who is the fastest.");
+Console.WriteLine("Let's read 10 million rows with 9 columns and deserialize it to an object collection. Let's compare some existing readers on the market.");
 
 
-StopWatch _w = new StopWatch();
+StopWatch _w = new();
 
 string file = @"D:\largedata.csv";
 if (File.Exists(file))
@@ -35,7 +35,7 @@ _w.Start();
 Console.WriteLine("---------------------");
 Console.WriteLine("Creating Data File");
 
-DevToysHelper _DevToysHelper = new DevToysHelper();
+var _DevToysHelper = new DevToysHelper();
 
 using (CsvWriter<CsvObject> _writer = new(file) { Separator = ',' })
 {
@@ -83,12 +83,12 @@ Console.WriteLine("LinqToCsv by Matt Perdeck");
 
 _w.Start();
 
-CsvFileDescription inputFileDescription = new CsvFileDescription
+var inputFileDescription = new CsvFileDescription
 {
     SeparatorChar = ',',
     FirstLineHasColumnNames = true
 };
-CsvContext cc = new CsvContext();
+var cc = new CsvContext();
 
 IEnumerable<CsvObjectLinqToSql> products = cc.Read<CsvObjectLinqToSql>(file, inputFileDescription);
 
@@ -113,7 +113,7 @@ Console.WriteLine("DevToys.PocoCsv.Core by Guidok73");
 
 _w.Start();
 
-using (CsvReader<CsvObject> _reader = new CsvReader<CsvObject>(file))
+using (var _reader = new CsvReader<CsvObject>(file))
 {
     _reader.Open();
     _reader.Skip();
@@ -131,9 +131,9 @@ Console.WriteLine("TinyCsvParser by Philipp Wagner");
 
 _w.Start();
 
-CsvParserOptions csvParserOptions = new CsvParserOptions(false, ';');
-CsvPersonMapping csvMapper = new CsvPersonMapping();
-CsvParser<CsvObject> csvParser = new CsvParser<CsvObject>(csvParserOptions, csvMapper);
+var csvParserOptions = new CsvParserOptions(false, ';');
+var csvMapper = new CsvPersonMapping();
+var csvParser = new CsvParser<CsvObject>(csvParserOptions, csvMapper);
 
 var result = csvParser
     .ReadFromFile(file, Encoding.ASCII)
@@ -174,7 +174,7 @@ Console.WriteLine("Csv by Steve Hansen");
 
 _w.Start();
 
-SteveHansenCsv _SteveHansenCsv = new SteveHansenCsv();
+var _SteveHansenCsv = new SteveHansenCsv();
 
 using (var fileStream = File.OpenRead(file))
 {
@@ -193,7 +193,7 @@ Console.WriteLine("---------------------");
 Console.WriteLine("LumenWorksCsvReader by Sébastien Lorion, Paul Hatcher");
 
 _w.Start();
-LumenWorksCsvReaderHelper _LumenWorksCsvReaderHelper = new LumenWorksCsvReaderHelper();
+var _LumenWorksCsvReaderHelper = new LumenWorksCsvReaderHelper();
 using (var csv = new CachedCsvReader(new StreamReader(file), true))
 {
     var _LumenWorksCsvReaderResult = _LumenWorksCsvReaderHelper.ReadCsvItems(csv).ToList();

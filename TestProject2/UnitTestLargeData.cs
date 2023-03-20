@@ -32,12 +32,12 @@ namespace TestProject2
         [TestMethod]
         public void TestReaderXL()
         {
-            StopWatch _w = new StopWatch();
+            var _w = new StopWatch();
 
             string file = @"D:\largedata.csv";
             _w.Start();
 
-            using (CsvReader<CsvSimple> _reader = new CsvReader<CsvSimple>(file))
+            using (var _reader = new CsvReader<CsvSimple>(file))
             {
                 _reader.Open();
 
@@ -48,12 +48,44 @@ namespace TestProject2
             _w.Stop();
             Console.WriteLine(_w.Duration);
 
-            // 00:00:21.9864542 No Trimming
+        }
 
-            // 00:00:31.2696500
-            // 00:00:30.6005957
+
+
+        [TestMethod]
+        public void TestReaderXLSkipAndTake()
+        {
+            var _w = new StopWatch();
+
+            List<CsvSimple> _result1;
+            List<CsvSimple> _result2;
+
+            string file = @"D:\largedata.csv";
+            _w.Start();
+
+            using (var _reader = new CsvReader<CsvSimple>(file))
+            {
+                _reader.Open();
+
+                _reader.Skip(); // skip the Header row.
+                _reader.Skip(10); // skip another 10 rows, this skip does not materialize. skip on Enumerable requires T to be materialized.
+                _result1 = _reader.ReadAsEnumerable().Skip(10).Take(10).ToList(); // Materializes 20 records but returns 10.
+                _result1 = _reader.ReadAsEnumerable().Take(10).ToList(); // Only Read 10 sample rows without materializing the entire document.
+                _result2 = _reader.ReadAsEnumerable().Take(10).ToList(); // Read the next 10 sample rows without materializing the entire document.
+            }
+
+            _w.Stop();
+            Console.WriteLine(_w.Duration);
 
         }
+
+
+
+
+
+
+
+
 
         private IEnumerable<CsvSimple> LargeData()
         {

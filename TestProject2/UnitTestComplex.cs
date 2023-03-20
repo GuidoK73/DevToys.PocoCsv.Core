@@ -73,31 +73,6 @@ namespace TestProject2
             }
         }
 
-        [TestMethod]
-        public void TestDelegates()
-        {
-            decimal _x = 0;
-            string _s = _x.ToString();
-
-            Console.WriteLine(_s);
-
-            Type _testClassType = typeof(TestClass);
-            TestClass _testClassInstance = new TestClass();
-            var _action = _testClassType.PropertySet<string>("MyProp");
-            _action(_testClassInstance, "New Test Value");
-
-            var _action2 = _testClassType.PropertySet("MyProp");
-            _action2(_testClassInstance, "New Test Value 2");
-
-            var _funcGet = _testClassType.PropertyGet("MyProp");
-            var _xxx = _funcGet(_testClassInstance);
-
-            Console.Write("X");
-        }
-
-
-
-
 
     }
 }

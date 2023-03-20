@@ -18,7 +18,6 @@ namespace DevToys.PocoCsv.Core
         {
         }
 
-
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamWriter class for the specified file on the specified path, using the specified encoding and buffer size. If the file exists, it can be either overwritten or appended to. If the file does not exist, this constructor creates a new file.
         /// </summary>
@@ -59,7 +58,6 @@ namespace DevToys.PocoCsv.Core
         {
         }
 
-
         /// <summary>
         /// Csv Seperator to use default ','
         /// </summary>
@@ -95,6 +93,13 @@ namespace DevToys.PocoCsv.Core
             BaseStream.Write(Encoding.Default.GetBytes(_sb.ToString()), 0, _sb.Length);
         }
 
-        private string Esc(string s) => (s.IndexOfAny(new char[] { '\r', '\n', '"', Separator }) == -1) ? s : $"\"{s.Replace("\"", "\"\"")}\"";
+        private string Esc(string s)
+        {
+            if (s.IndexOfAny(new char[] { '\r', '\n', '"', Separator }) == -1)
+            {
+                return s;
+            }
+            return $"\"{s.Replace("\"", "\"\"")}\"";
+        }
     }
 }

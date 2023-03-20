@@ -880,13 +880,13 @@ namespace DevToys.PocoCsv.Core
 
             _Formatters = _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
-                .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, OutputFormat = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).OutputFormat })
+                .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).OutputFormat })
                 .ToDictionary(p => p.Key, p => p.OutputFormat);
 
 
             _OutputNullValues = _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
-                .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, OutputNullValue = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).OutputNullValue })
+                .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).OutputNullValue })
                 .ToDictionary(p => p.Key, p => p.OutputNullValue);
 
 

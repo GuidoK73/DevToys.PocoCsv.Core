@@ -10,7 +10,7 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvStreamReader : StreamReader
     {
-        private CsvStreamer _Streamer = new CsvStreamer();
+        private readonly CsvStreamer _Streamer = new();
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamReader class for the specified file name.
