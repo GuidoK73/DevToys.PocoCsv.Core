@@ -74,12 +74,12 @@ Version history:
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.5.1</Version>
+    <Version>1.5.2</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
-    <Title>Csv - DevToys.PocoCsv.Core</Title>
+    <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
-    <Product>DevToys.PocoCsv.Core</Product>
+    <Product>DevToys.Poco.Csv.Core</Product>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

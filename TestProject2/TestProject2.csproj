@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core.csproj" />
+    <ProjectReference Include="..\DevToys.PocoCsv.Core\DevToys.Poco.Csv.Core.csproj" />
   </ItemGroup>
 
 </Project>

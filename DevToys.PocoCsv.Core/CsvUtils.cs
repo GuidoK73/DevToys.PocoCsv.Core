@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace DevToys.PocoCsv.Core
+namespace DevToys.Poco.Csv.Core
 {
     /// <summary>
     /// Csv Utilities.

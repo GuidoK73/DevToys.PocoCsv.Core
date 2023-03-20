@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DevToys.PocoCsv.Core
+namespace DevToys.Poco.Csv.Core
 {
     /// <summary>
     /// Csv Column Attribute to assign to POCO Properties.

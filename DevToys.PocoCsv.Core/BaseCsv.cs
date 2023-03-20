@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace DevToys.PocoCsv.Core
+namespace DevToys.Poco.Csv.Core
 {
     /// <summary>
     /// Base class for BaseCsvReader and BaseCsvWriter

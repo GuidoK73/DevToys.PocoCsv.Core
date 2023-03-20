@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace DevToys.PocoCsv.Core
+namespace DevToys.Poco.Csv.Core
 {
     /// <summary>
     /// Implements a System.IO.TextReader that reads characters from a byte stream in a particular encoding.

@@ -1,4 +1,4 @@
-﻿namespace DevToys.PocoCsv.Core
+﻿namespace DevToys.Poco.Csv.Core
 {
     /// <summary>
     /// Represents a DotNet Type returned by TypeUtils.GetNetType

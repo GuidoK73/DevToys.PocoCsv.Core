@@ -4,7 +4,7 @@ using ConsoleApp1.Objects;
 using Csv;
 using CsvHelper.Configuration;
 using DataAccess;
-using DevToys.PocoCsv.Core;
+using DevToys.Poco.Csv.Core;
 using LINQtoCSV;
 using LumenWorks.Framework.IO.Csv;
 using System;
@@ -104,12 +104,12 @@ Console.WriteLine(_w.Duration);
 
 
 // ############################################################
-// DevToys.PocoCsv.Core by Guidok73
+// DevToys.Poco.Csv.Core by Guidok73
 
 
 
 Console.WriteLine("---------------------");
-Console.WriteLine("DevToys.PocoCsv.Core by Guidok73");
+Console.WriteLine("DevToys.Poco.Csv.Core by Guidok73");
 
 _w.Start();
 
