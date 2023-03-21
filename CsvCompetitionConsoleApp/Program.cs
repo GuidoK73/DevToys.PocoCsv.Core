@@ -4,7 +4,6 @@ using ConsoleApp1.Objects;
 using Csv;
 using CsvHelper.Configuration;
 using DataAccess;
-using DevToys.Poco.Csv.Core;
 using LINQtoCSV;
 using LumenWorks.Framework.IO.Csv;
 using System;
@@ -37,7 +36,7 @@ Console.WriteLine("Creating Data File");
 
 var _DevToysHelper = new DevToysHelper();
 
-using (CsvWriter<CsvObject> _writer = new(file) { Separator = ',' })
+using (DevToys.PocoCsv.Core.CsvWriter<CsvObject> _writer = new(file) { Separator = ',' })
 {
     _writer.Open();
     _writer.WriteHeader();
@@ -104,16 +103,16 @@ Console.WriteLine(_w.Duration);
 
 
 // ############################################################
-// DevToys.Poco.Csv.Core by Guidok73
+// DevToys.PocoCsv.Core by Guidok73
 
 
 
 Console.WriteLine("---------------------");
-Console.WriteLine("DevToys.Poco.Csv.Core by Guidok73");
+Console.WriteLine("DevToys.PocoCsv.Core by Guidok73");
 
 _w.Start();
 
-using (var _reader = new CsvReader<CsvObject>(file))
+using (var _reader = new DevToys.PocoCsv.Core.CsvReader<CsvObject>(file))
 {
     _reader.Open();
     _reader.Skip();

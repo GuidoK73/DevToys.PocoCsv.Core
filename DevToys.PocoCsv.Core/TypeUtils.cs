@@ -3,7 +3,7 @@ using System.Data;
 using System.Globalization;
 using System.Text;
 
-namespace DevToys.Poco.Csv.Core
+namespace DevToys.PocoCsv.Core
 {
     internal static class TypeUtils
     {

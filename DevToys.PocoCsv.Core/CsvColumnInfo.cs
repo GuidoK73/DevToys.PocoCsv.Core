@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace DevToys.Poco.Csv.Core
+namespace DevToys.PocoCsv.Core
 {
     /// <summary>
     /// CsvUtils.GetCsvSchema result

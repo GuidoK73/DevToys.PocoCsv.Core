@@ -1,4 +1,4 @@
-﻿using DevToys.Poco.Csv.Core;
+﻿using DevToys.PocoCsv.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;

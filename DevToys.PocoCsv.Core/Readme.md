@@ -1,8 +1,8 @@
-# DevToys.Poco.Csv.Core 
+# DevToys.PocoCsv.Core 
 
 ## One of the fastest of not the fastest csv reader deserialzer available.
 
-DevToys.Poco.Csv.Core is a class library to read and write to Csv.
+DevToys.PocoCsv.Core is a class library to read and write to Csv.
 It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader<T> and CsvWriter<T>.
 
 - Read/write serialize/deserialize data to and from Csv.

@@ -1,230 +1,230 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>DevToys.Poco.Csv.Core</name>
+        <name>DevToys.PocoCsv.Core</name>
     </assembly>
     <members>
-        <member name="T:DevToys.Poco.Csv.Core.BaseCsv">
+        <member name="T:DevToys.PocoCsv.Core.BaseCsv">
             <summary>
             Base class for BaseCsvReader and BaseCsvWriter
             </summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.BaseCsv._File">
+        <member name="F:DevToys.PocoCsv.Core.BaseCsv._File">
              <summary>
             
              </summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.BaseCsv._Stream">
+        <member name="F:DevToys.PocoCsv.Core.BaseCsv._Stream">
              <summary>
             
              </summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.BaseCsv._Separator">
+        <member name="F:DevToys.PocoCsv.Core.BaseCsv._Separator">
              <summary>
             
              </summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.BaseCsv._BufferSize">
+        <member name="F:DevToys.PocoCsv.Core.BaseCsv._BufferSize">
              <summary>
             
              </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.BaseCsv.Culture">
+        <member name="P:DevToys.PocoCsv.Core.BaseCsv.Culture">
             <summary>
             Culture info to use for serialization.
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.BaseCsv.Encoding">
+        <member name="P:DevToys.PocoCsv.Core.BaseCsv.Encoding">
             <summary>
             The character encoding to use.
             </summary>
         </member>
-        <member name="T:DevToys.Poco.Csv.Core.ColumnAttribute">
+        <member name="T:DevToys.PocoCsv.Core.ColumnAttribute">
             <summary>
             Csv Column Attribute to assign to POCO Properties.
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.ColumnAttribute.Index">
+        <member name="P:DevToys.PocoCsv.Core.ColumnAttribute.Index">
             <summary>
             Defines the index position within the CSV document. Numbers can be skipped for the reader to ignore certain columns, for the writer numbers can also be skipped which leads to empty columns.
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.ColumnAttribute.Header">
+        <member name="P:DevToys.PocoCsv.Core.ColumnAttribute.Header">
             <summary>
             Defines the header text, this property only applies to the CsvWriter, if not specified, the property name is used.
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.ColumnAttribute.OutputFormat">
+        <member name="P:DevToys.PocoCsv.Core.ColumnAttribute.OutputFormat">
             <summary>
             Apply a string format, depending on the Property type. This property is for CsvWriter only.
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.ColumnAttribute.OutputNullValue">
+        <member name="P:DevToys.PocoCsv.Core.ColumnAttribute.OutputNullValue">
             <summary>
             Defines the value to write as a default for null, This property is for CsvWriter only.
             </summary>
         </member>
-        <member name="T:DevToys.Poco.Csv.Core.CsvColumnInfo">
+        <member name="T:DevToys.PocoCsv.Core.CsvColumnInfo">
             <summary>
             CsvUtils.GetCsvSchema result
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvColumnInfo.DatabaseType">
+        <member name="P:DevToys.PocoCsv.Core.CsvColumnInfo.DatabaseType">
             <summary>
             Best Database type
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvColumnInfo.DotNetType">
+        <member name="P:DevToys.PocoCsv.Core.CsvColumnInfo.DotNetType">
             <summary>
             Best C# Type
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvColumnInfo.Index">
+        <member name="P:DevToys.PocoCsv.Core.CsvColumnInfo.Index">
             <summary>
             Column index
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvColumnInfo.IsLast">
+        <member name="P:DevToys.PocoCsv.Core.CsvColumnInfo.IsLast">
             <summary>
             Last Column
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvColumnInfo.Name">
+        <member name="P:DevToys.PocoCsv.Core.CsvColumnInfo.Name">
             <summary>
             Column Name
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvColumnInfo.Nullable">
+        <member name="P:DevToys.PocoCsv.Core.CsvColumnInfo.Nullable">
             <summary>
             Column is Nullable.
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvColumnInfo.SqlDatabaseType">
+        <member name="P:DevToys.PocoCsv.Core.CsvColumnInfo.SqlDatabaseType">
             <summary>
             Best Database type
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvColumnInfo.ToString">
+        <member name="M:DevToys.PocoCsv.Core.CsvColumnInfo.ToString">
             <summary>
             Returns Name
             </summary>
         </member>
-        <member name="T:DevToys.Poco.Csv.Core.CsvReader`1">
+        <member name="T:DevToys.PocoCsv.Core.CsvReader`1">
             <summary>
             Enumerate Csv Stream Reader over T.
             Properties needs to be marked with ColumnAttribute
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvReader`1.#ctor(System.String)">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.String)">
             <summary>
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvReader`1.#ctor(System.IO.Stream)">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.Stream)">
             <summary>
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvReader`1.#ctor(System.IO.Stream,System.Text.Encoding,System.Char,System.Boolean,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.Stream,System.Text.Encoding,System.Char,System.Boolean,System.Int32)">
             <summary>
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvReader`1.#ctor(System.String,System.Text.Encoding,System.Char,System.Boolean,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.String,System.Text.Encoding,System.Char,System.Boolean,System.Int32)">
             <summary>
             Constructor
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvReader`1.Separator">
+        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.Separator">
             <summary>
             Csv Seperator to use default ','
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvReader`1.EndOfStream">
+        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.EndOfStream">
             <summary>
             Indicates the End of the stream.
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvReader`1.DetectEncodingFromByteOrderMarks">
+        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.DetectEncodingFromByteOrderMarks">
             <summary>
             Indicates whether to look for byte order marks at the beginning of the file.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvReader`1.Dispose">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Dispose">
             <summary>
             Releases all resources used by the System.IO.TextReader object.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvReader`1.Close">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Close">
             <summary>
             Close the CSV stream reader
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvReader`1.DetectSeparator">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.DetectSeparator">
             <summary>
             Detect the separator by sampling first 10 rows. Position is moved to start after execution.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvReader`1.MoveToStart">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.MoveToStart">
             <summary>
             Moves the reader to the start position.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvReader`1.ReadAsEnumerable">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadAsEnumerable">
             <summary>
             Each iteration will read the next row from stream or file
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvReader`1.Skip(System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Skip(System.Int32)">
             <summary>
             Use to skip first row without materializing, usefull for skipping header.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvReader`1.Read">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Read">
             <summary>
             reads the CsvLine
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvReader`1.Open">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Open">
             <summary>
             Open the reader
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvReader`1.Init">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Init">
             <summary>
             Initialize the CsvReader
             </summary>
         </member>
-        <member name="T:DevToys.Poco.Csv.Core.CsvStreamer">
+        <member name="T:DevToys.PocoCsv.Core.CsvStreamer">
             <summary>
             
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvStreamer.Separator">
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamer.Separator">
             <summary>
             
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamer.ReadRow(System.IO.Stream,System.Action{System.Int32,System.String})">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamer.ReadRow(System.IO.Stream,System.Action{System.Int32,System.String})">
             <summary>
             Read CSV row from stream
             </summary>
             <param name="stream"></param>
             <param name="fieldRead">Action executes for each column</param>
         </member>
-        <member name="T:DevToys.Poco.Csv.Core.CsvStreamReader">
+        <member name="T:DevToys.PocoCsv.Core.CsvStreamReader">
             <summary>
             Implements a System.IO.TextReader that reads characters from a byte stream in a particular encoding.
             Extended with ReadCsvLine to read a Csv Line conform RFC 4180.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamReader.#ctor(System.String)">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.String)">
             <summary>
             Initializes a new instance of the System.IO.StreamReader class for the specified file name.
             </summary>
             <param name="path">The complete file path to be read.</param>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamReader.#ctor(System.String,System.Text.Encoding,System.Boolean,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.String,System.Text.Encoding,System.Boolean,System.Int32)">
             <summary>
             Initializes a new instance of the System.IO.StreamReader class for the specified file name, with the specified character encoding, byte order mark detection option, and buffer size.
             </summary>
@@ -233,20 +233,20 @@
             <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
             <param name="bufferSize">The minimum buffer size.</param>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamReader.#ctor(System.String,System.IO.FileStreamOptions)">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.String,System.IO.FileStreamOptions)">
              <summary>
             
              </summary>
              <param name="path"></param>
              <param name="options"></param>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamReader.#ctor(System.IO.Stream)">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.IO.Stream)">
             <summary>
             Initializes a new instance of the System.IO.StreamReader class for the specified stream.
             </summary>
             <param name="stream">The stream to be read.</param>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32,System.Boolean)">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32,System.Boolean)">
             <summary>
             Initializes a new instance of the System.IO.StreamReader class for the specified stream based on the specified character encoding, byte order mark detection option, and buffer size, and optionally leaves the stream open.
             </summary>
@@ -256,49 +256,49 @@
             <param name="bufferSize">The minimum buffer size.</param>
             <param name="leaveOpen">true to leave the stream open after the System.IO.StreamReader object is disposed; otherwise, false.</param>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvStreamReader.EndOfCsvStream">
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.EndOfCsvStream">
             <summary>
             Indicates end of Csv Stream.
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvStreamReader.Position">
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.Position">
             <summary>
             Get / Sets the position.
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvStreamReader.Separator">
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.Separator">
             <summary>
             Get / Sets the Separator character to use.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamReader.GetCsvSchema(System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.GetCsvSchema(System.Int32)">
             <summary>
             Returns a schema for the CSV with best fitted types to use.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamReader.GetCsvSeparator(System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.GetCsvSeparator(System.Int32)">
             <summary>
             Detects and sets CSV Separator.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamReader.ReadCsvLine">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadCsvLine">
             <summary>
             reads the CsvLine
             </summary>
         </member>
-        <member name="T:DevToys.Poco.Csv.Core.CsvStreamWriter">
+        <member name="T:DevToys.PocoCsv.Core.CsvStreamWriter">
             <summary>
             Implements a System.IO.TextWriter for writing characters to a stream in a particular encoding.
             Extended with WriteCsvLine to write a Csv Line conform RFC 4180.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamWriter.#ctor(System.String)">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.String)">
             <summary>
             Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the default encoding and buffer size.
             </summary>
             <param name="path">The complete file path to write to. path can be a file name.</param>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamWriter.#ctor(System.String,System.Boolean,System.Text.Encoding,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.String,System.Boolean,System.Text.Encoding,System.Int32)">
             <summary>
             Initializes a new instance of the System.IO.StreamWriter class for the specified file on the specified path, using the specified encoding and buffer size. If the file exists, it can be either overwritten or appended to. If the file does not exist, this constructor creates a new file.
             </summary>
@@ -307,7 +307,7 @@
             <param name="encoding">The character encoding to use.</param>
             <param name="bufferSize">The buffer size, in bytes.</param>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamWriter.#ctor(System.String,System.Text.Encoding,System.IO.FileStreamOptions)">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.String,System.Text.Encoding,System.IO.FileStreamOptions)">
             <summary>
             
             </summary>
@@ -315,13 +315,13 @@
             <param name="encoding"></param>
             <param name="options"></param>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamWriter.#ctor(System.IO.Stream)">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.IO.Stream)">
             <summary>
             Initializes a new instance of the System.IO.StreamWriter class for the specified stream by using UTF-8 encoding and the default buffer size.
             </summary>
             <param name="stream">The stream to write to.</param>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Int32,System.Boolean)">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.IO.Stream,System.Text.Encoding,System.Int32,System.Boolean)">
             <summary>
             Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the default encoding and buffer size.
             </summary>
@@ -330,204 +330,204 @@
             <param name="bufferSize">The buffer size, in bytes.</param>
             <param name="leaveOpen">true to leave the stream open after the System.IO.StreamWriter object is disposed; otherwise, false.</param>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvStreamWriter.Separator">
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamWriter.Separator">
             <summary>
             Csv Seperator to use default ','
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamWriter.WriteCsvLine(System.String[])">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.WriteCsvLine(System.String[])">
             <summary>
             Write an array of strings to the Csv Stream and escapes when nececary.
             </summary>
             <param name="values">Array of strings</param>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvStreamWriter.WriteCsvLine(System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.WriteCsvLine(System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Write an array of strings to the Csv Stream and escapes when nececary.
             </summary>
             <param name="values">Array of strings</param>
         </member>
-        <member name="T:DevToys.Poco.Csv.Core.CsvUtils">
+        <member name="T:DevToys.PocoCsv.Core.CsvUtils">
             <summary>
             Csv Utilities.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvUtils.CsvHeader(System.String,System.Char)">
+        <member name="M:DevToys.PocoCsv.Core.CsvUtils.CsvHeader(System.String,System.Char)">
             <summary>
             Returns first row of CSV
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvUtils.CsvHeader(DevToys.Poco.Csv.Core.CsvStreamReader,System.Char)">
+        <member name="M:DevToys.PocoCsv.Core.CsvUtils.CsvHeader(DevToys.PocoCsv.Core.CsvStreamReader,System.Char)">
             <summary>
             Returns first row of CSV
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvUtils.GetCsvSchema(DevToys.Poco.Csv.Core.CsvStreamReader,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvUtils.GetCsvSchema(DevToys.PocoCsv.Core.CsvStreamReader,System.Int32)">
             <summary>
             Returns a schema for the CSV with best fitted types to use.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvUtils.GetCsvSeparator(DevToys.Poco.Csv.Core.CsvStreamReader,System.Char@,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvUtils.GetCsvSeparator(DevToys.PocoCsv.Core.CsvStreamReader,System.Char@,System.Int32)">
             <summary>
             Retrieves CSV separator from text.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvUtils.GetCsvSeparator(System.String,System.Char@)">
+        <member name="M:DevToys.PocoCsv.Core.CsvUtils.GetCsvSeparator(System.String,System.Char@)">
             <summary>
             Retrieves CSV separator from text.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvUtils.IsCsv(System.String,System.Char,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvUtils.IsCsv(System.String,System.Char,System.Int32)">
             <summary>
             Test whether piece of text is CSV
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvUtils.IsCsv(DevToys.Poco.Csv.Core.CsvStreamReader,System.Char,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvUtils.IsCsv(DevToys.PocoCsv.Core.CsvStreamReader,System.Char,System.Int32)">
             <summary>
             Test whether piece of text is CSV
             </summary>
         </member>
-        <member name="T:DevToys.Poco.Csv.Core.CsvWriter`1">
+        <member name="T:DevToys.PocoCsv.Core.CsvWriter`1">
             <summary>
             Write T to Csv Stream from an IEnumerable source.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvWriter`1.#ctor(System.String)">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String)">
             <summary>
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvWriter`1.#ctor(System.IO.Stream)">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.IO.Stream)">
             <summary>
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvWriter`1.#ctor(System.String,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Int32)">
             <summary>
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvWriter`1.#ctor(System.IO.Stream,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.IO.Stream,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Int32)">
             <summary>
             Constructor
             </summary>
         </member>
-        <member name="P:DevToys.Poco.Csv.Core.CsvWriter`1.Separator">
+        <member name="P:DevToys.PocoCsv.Core.CsvWriter`1.Separator">
             <summary>
             Csv Seperator to use default ','
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvWriter`1.Dispose">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Dispose">
             <summary>
             Releases all resources used by the System.IO.TextReader object.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvWriter`1.Close">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Close">
             <summary>
             Close the CSV stream reader
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvWriter`1.WriteHeader">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.WriteHeader">
             <summary>
             Write header with property names of T.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvWriter`1.Write(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Write(System.Collections.Generic.IEnumerable{`0})">
             <summary>
             Write IEnumerable T to Csv Stream
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvWriter`1.Write(`0)">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Write(`0)">
             <summary>
             Write single row to CSV
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvWriter`1.Open">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Open">
             <summary>
             Initialize and open the CSV Stream Writer.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.CsvWriter`1.Init">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Init">
              <summary>
             
              </summary>
         </member>
-        <member name="T:DevToys.Poco.Csv.Core.NetType">
+        <member name="T:DevToys.PocoCsv.Core.NetType">
             <summary>
             Represents a DotNet Type returned by TypeUtils.GetNetType
             </summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.Unknown">
+        <member name="F:DevToys.PocoCsv.Core.NetType.Unknown">
             <summary>Unknown Net Type</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.String">
+        <member name="F:DevToys.PocoCsv.Core.NetType.String">
             <summary>Type is String</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.Guid">
+        <member name="F:DevToys.PocoCsv.Core.NetType.Guid">
             <summary>Type is Guid</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.Boolean">
+        <member name="F:DevToys.PocoCsv.Core.NetType.Boolean">
             <summary>Type is Bool</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.DateTime">
+        <member name="F:DevToys.PocoCsv.Core.NetType.DateTime">
             <summary>Type is DateTime</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.DateTimeOffset">
+        <member name="F:DevToys.PocoCsv.Core.NetType.DateTimeOffset">
             <summary>Type is DateTime Offset</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.TimeSpan">
+        <member name="F:DevToys.PocoCsv.Core.NetType.TimeSpan">
             <summary>Type is TimeSpan</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.Byte">
+        <member name="F:DevToys.PocoCsv.Core.NetType.Byte">
             <summary>Type is Byte</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.SByte">
+        <member name="F:DevToys.PocoCsv.Core.NetType.SByte">
             <summary>Type is SByte</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.Int16">
+        <member name="F:DevToys.PocoCsv.Core.NetType.Int16">
             <summary>Type is Int16</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.Int32">
+        <member name="F:DevToys.PocoCsv.Core.NetType.Int32">
             <summary>Type is Int32</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.Int64">
+        <member name="F:DevToys.PocoCsv.Core.NetType.Int64">
             <summary>Type is Int64</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.Single">
+        <member name="F:DevToys.PocoCsv.Core.NetType.Single">
             <summary>Type is Single</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.Decimal">
+        <member name="F:DevToys.PocoCsv.Core.NetType.Decimal">
             <summary>Type is Decimal</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.Double">
+        <member name="F:DevToys.PocoCsv.Core.NetType.Double">
             <summary>Type is Double</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.UInt16">
+        <member name="F:DevToys.PocoCsv.Core.NetType.UInt16">
             <summary>Type is UInt16</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.UInt32">
+        <member name="F:DevToys.PocoCsv.Core.NetType.UInt32">
             <summary>Type is UInt32</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.UInt64">
+        <member name="F:DevToys.PocoCsv.Core.NetType.UInt64">
             <summary>Type is UInt64</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.Enum">
+        <member name="F:DevToys.PocoCsv.Core.NetType.Enum">
             <summary>Type is Enum</summary>
         </member>
-        <member name="F:DevToys.Poco.Csv.Core.NetType.Null">
+        <member name="F:DevToys.PocoCsv.Core.NetType.Null">
             <summary>Type is Null</summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.TypeUtils.BestNetType(DevToys.Poco.Csv.Core.NetType,System.String)">
+        <member name="M:DevToys.PocoCsv.Core.TypeUtils.BestNetType(DevToys.PocoCsv.Core.NetType,System.String)">
             <summary>
             For use in array of string values, it can be used to detect the best fitting type for a string value.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.TypeUtils.GetTypedValue(System.String,System.Boolean)">
+        <member name="M:DevToys.PocoCsv.Core.TypeUtils.GetTypedValue(System.String,System.Boolean)">
             <summary>
             Returns a type value for a given string value.
             </summary>
         </member>
-        <member name="M:DevToys.Poco.Csv.Core.TypeUtils.GetDbType(DevToys.Poco.Csv.Core.NetType)">
+        <member name="M:DevToys.PocoCsv.Core.TypeUtils.GetDbType(DevToys.PocoCsv.Core.NetType)">
             <summary>
             Returns SqlDBType for a primitive C# type.
             </summary>

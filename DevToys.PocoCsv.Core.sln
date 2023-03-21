@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevToys.Poco.Csv.Core", "DevToys.PocoCsv.Core\DevToys.Poco.Csv.Core.csproj", "{CAE552CE-5436-4F42-B832-AB1CEE18A93C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevToys.PocoCsv.Core", "DevToys.PocoCsv.Core\DevToys.PocoCsv.Core.csproj", "{CAE552CE-5436-4F42-B832-AB1CEE18A93C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject2", "TestProject2\TestProject2.csproj", "{43A47C41-4123-4770-9578-FA952BA3CD69}"
 EndProject

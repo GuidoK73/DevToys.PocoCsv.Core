@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace DevToys.Poco.Csv.Core
+namespace DevToys.PocoCsv.Core
 {
     /// <summary>
     /// Implements a System.IO.TextWriter for writing characters to a stream in a particular encoding.
