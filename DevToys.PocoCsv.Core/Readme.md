@@ -1,6 +1,6 @@
 # DevToys.PocoCsv.Core 
 
-## One of the fastest of not the fastest csv reader deserialzer available.
+## One of the fastest csv reader deserialzer available.
 
 DevToys.PocoCsv.Core is a class library to read and write to Csv.
 It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader<T> and CsvWriter<T>.
@@ -266,9 +266,12 @@ Defines the value to write as a default for null, This property is for CsvWriter
     {
         _reader.Open();
 
-        _reader.Skip(); // skip header.
-        _result1 = _reader.ReadAsEnumerable().Take(10).ToList(); // Only Read 10 sample rows.
-        _result2 = _reader.ReadAsEnumerable().Take(10).ToList(); // Read the next 10 sample rows.
+        _reader.Skip(); // skip the Header row.
+        _reader.Skip(10); // skip another 10 rows, this skip does not materialize. skip on Enumerable requires T to be materialized.
+        _result1 = _reader.ReadAsEnumerable().Skip(10).Take(10).ToList(); // Materializes 20 records but returns 10.
+        _reader.Skip(10);
+        _result1 = _reader.ReadAsEnumerable().Take(10).ToList();
+        _result2 = _reader.ReadAsEnumerable().Take(10).ToList();
     }
 
 ~~~
