@@ -71,12 +71,15 @@ namespace DevToys.PocoCsv.Core
                         continue;
                     }
                 }
-                if (_state == State.Normal && _char == Separator)
+                if (_char == Separator)
                 {
-                    fieldRead(_column, _sb.ToString().Trim('"'));
-                    _column++;
-                    _sb.Length = 0;
-                    continue;
+                    if (_state == State.Normal)
+                    {
+                        fieldRead(_column, _sb.ToString().Trim('"'));
+                        _column++;
+                        _sb.Length = 0;
+                        continue;
+                    }
                 }
                 if (_char == '"')
                 {

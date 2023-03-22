@@ -213,7 +213,7 @@ namespace DevToys.PocoCsv.Core
         {
             T _result = new();
             int _columnIndex = 0;
-            var _state = State.First;
+            State _state = State.First;
             bool _trimLast = false;
             _sbValue.Length = 0; // Clear
             _byte = 0;
@@ -226,13 +226,16 @@ namespace DevToys.PocoCsv.Core
                 {
                     if (_trimLast)
                     {
-                        if (_sbValue.Length > 0 && _sbValue[_sbValue.Length - 1] == _escape)
+                        if (_sbValue.Length > 0)
                         {
-                            _sbValue.Length--;
+                            if (_sbValue[_sbValue.Length - 1] == _escape)
+                            {
+                                _sbValue.Length--;
+                            }
                         }
                     }
                     SetValue(_columnIndex, _result);
-                    break;
+                    break; // END.
                 }
                 if (_state == State.First)
                 {
@@ -242,20 +245,23 @@ namespace DevToys.PocoCsv.Core
                         continue;
                     }
                 }
-                if (_state == State.Normal && _char == Separator)
+                if (_char == Separator)
                 {
-                    if (_trimLast)
+                    if (_state == State.Normal)
                     {
-                        if (_sbValue.Length > 0)
+                        if (_trimLast)
                         {
-                            _sbValue.Length--;
+                            if (_sbValue.Length > 0)
+                            {
+                                _sbValue.Length--;
+                            }
+                            _trimLast = false;
                         }
-                        _trimLast = false;
+                        SetValue(_columnIndex, _result);
+                        _sbValue.Length = 0;
+                        _columnIndex++;
+                        continue;
                     }
-                    SetValue(_columnIndex, _result);
-                    _sbValue.Length = 0;
-                    _columnIndex++;
-                    continue;
                 }
                 if (_char == _escape)
                 {
@@ -272,6 +278,7 @@ namespace DevToys.PocoCsv.Core
             return _result;
         }
 
+
         #region Value Setters
 
         private void SetValue(int index, T targetObject)
@@ -280,14 +287,22 @@ namespace DevToys.PocoCsv.Core
             {
                 return;
             }
-
-            Type targetType = _Properties[index].PropertyType;
-
-            if (targetType == typeof(string))
+            else
             {
-                _PropertySettersString[index](targetObject, _sbValue.ToString());
-                return;
+                if (_Properties[index].PropertyType == typeof(string))
+                {
+                    _PropertySettersString[index](targetObject, _sbValue.ToString());
+                    return;
+                }
+                else
+                {
+                    SetValueOther(_Properties[index].PropertyType, index, targetObject);
+                }
             }
+        }
+
+        private void SetValueOther(Type targetType, int index, T targetObject)
+        {
             if (!_IsNullable[index])
             {
                 if (targetType == typeof(Decimal))

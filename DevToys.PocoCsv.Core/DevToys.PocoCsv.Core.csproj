@@ -11,6 +11,9 @@ It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader
 ---
 
 Version history:
+1.5.7
+- Small improvements
+
 1.5.1
 - Updated Readme
 - Fixed bug with Skip(rows)
@@ -74,7 +77,7 @@ Version history:
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.5.5</Version>
+    <Version>1.5.7</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
