@@ -196,21 +196,20 @@
             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamer">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStreamer.Separator">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamer.ReadRow(System.IO.Stream,System.Action{System.Int32,System.String})">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamer.ReadRow(System.IO.Stream)">
             <summary>
             Read CSV row from stream
             </summary>
             <param name="stream"></param>
-            <param name="fieldRead">Action executes for each column</param>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamReader">
             <summary>
@@ -256,9 +255,9 @@
             <param name="bufferSize">The minimum buffer size.</param>
             <param name="leaveOpen">true to leave the stream open after the System.IO.StreamReader object is disposed; otherwise, false.</param>
         </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.EndOfCsvStream">
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.EndOfStream">
             <summary>
-            Indicates end of Csv Stream.
+            Indicates end of the stream.
             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.Position">
@@ -279,6 +278,11 @@
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.GetCsvSeparator(System.Int32)">
             <summary>
             Detects and sets CSV Separator.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.Skip(System.Int32)">
+            <summary>
+            Use to skip first row without materializing, usefull for skipping header.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadCsvLine">

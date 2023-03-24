@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -10,7 +11,7 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvStreamReader : StreamReader
     {
-        private readonly CsvStreamer _Streamer = new();
+        private readonly CsvStreamHelper _StreamHelper = new();
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamReader class for the specified file name.
@@ -55,18 +56,28 @@ namespace DevToys.PocoCsv.Core
         public CsvStreamReader(Stream stream, Encoding encoding = null, bool detectEncodingFromByteOrderMarks = true, int bufferSize = -1, bool leaveOpen = false) : base(stream, encoding, detectEncodingFromByteOrderMarks, bufferSize, leaveOpen)
         { }
 
+
         /// <summary>
-        /// Indicates end of Csv Stream.
+        /// Indicates end of the stream.
         /// </summary>
-        public bool EndOfCsvStream => (BaseStream.Position >= BaseStream.Length);
+        public new bool EndOfStream
+        {
+            get
+            {
+                return _StreamHelper.EndOfStream;
+            }
+        }
+
+
 
         /// <summary>
         /// Get / Sets the position.
         /// </summary>
         public long Position
         {
-            get => BaseStream.Position;
+            get => BaseStream.Position;    
             set => BaseStream.Position = value;
+            
         }
 
         /// <summary>
@@ -76,11 +87,11 @@ namespace DevToys.PocoCsv.Core
         {
             get
             {
-                return _Streamer.Separator;
+                return _StreamHelper.Separator;
             }
             set
             {
-                _Streamer.Separator = value;
+                _StreamHelper.Separator = value;
             }
         }
 
@@ -115,15 +126,32 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
+        /// Use to skip first row without materializing, usefull for skipping header.
+        /// </summary>
+        public void Skip(int rows = 1)
+        {
+            int ii = 0;
+
+            while (!_StreamHelper.EndOfStream)
+            {
+                if (ii >= rows)
+                {
+                    break;
+                }
+                _StreamHelper.Skip(BaseStream);
+                ii++;
+            }
+        }
+
+        /// <summary>
         /// reads the CsvLine
         /// </summary>
-        public IList<string> ReadCsvLine()
+        public IEnumerable<string> ReadCsvLine()
         {
-            List<string> _result = new();
-
-            _Streamer.ReadRow(BaseStream, (columnindex, value) => { _result.Add(value); });
-
-            return _result;
+            foreach (string field in _StreamHelper.ReadRow(BaseStream))
+            {
+                yield return field;
+            }
         }
     }
 }

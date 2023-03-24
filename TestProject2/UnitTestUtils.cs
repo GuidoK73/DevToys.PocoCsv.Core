@@ -42,7 +42,7 @@ namespace TestProject2
 
                 _reader.Position = 0;
 
-                while (!_reader.EndOfCsvStream)
+                while (!_reader.EndOfStream)
                 {
                     List<string> _values = _reader.ReadCsvLine().ToList();
                 }

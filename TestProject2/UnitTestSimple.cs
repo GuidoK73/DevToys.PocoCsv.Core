@@ -51,8 +51,9 @@ namespace TestProject2
             using (CsvReader<CsvSimple> _reader = new(file))
             {
                 _reader.Open();
+                _reader.Skip(2);
 
-                var _af = _reader.ReadAsEnumerable().Where(p => p.AfBij == "Af").ToList();
+                var _af = _reader.ReadAsEnumerable().ToList();
             }
         }
 

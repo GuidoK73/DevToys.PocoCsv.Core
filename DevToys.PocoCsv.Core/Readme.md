@@ -17,7 +17,7 @@ It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader
     using (CsvStreamReader _reader = new CsvStreamReader(file))
     {
         _reader.Separator = ',';
-        while (!_reader.EndOfCsvStream)
+        while (!_reader.EndOfStream)
         {
             List<string> _values = _reader.ReadCsvLine().ToList();
         }

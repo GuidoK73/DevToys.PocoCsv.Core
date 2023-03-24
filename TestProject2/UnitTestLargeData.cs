@@ -47,6 +47,7 @@ namespace TestProject2
 
             _w.Stop();
             Console.WriteLine(_w.Duration);
+            // {00:00:22.7595330}
             // {00:00:20.8207722}
             // {00:00:21.0272759}
             // {00:00:21.4931085}
@@ -54,6 +55,49 @@ namespace TestProject2
             // {00:00:26.5723228}
 
 
+        }
+
+        [TestMethod]
+        public void TestReaderXLSkip()
+        {
+            var _w = new StopWatch();
+
+            string file = @"D:\largedata.csv";
+            _w.Start();
+
+            using (var _reader = new CsvReader<CsvSimple>(file))
+            {
+                _reader.Open();
+
+                while(!_reader.EndOfStream)
+                {
+                    _reader.Skip();
+                }
+            }
+            _w.Stop();
+            Console.WriteLine(_w.Duration);
+        }
+
+
+        [TestMethod]
+        public void TestStreamReader()
+        {
+            var _w = new StopWatch();
+
+
+            string file = @"D:\largedata.csv";
+            using (CsvStreamReader _reader = new CsvStreamReader(file))
+            {
+                _reader.Separator = ',';
+
+                while (!_reader.EndOfStream)
+                {
+                    string[] _values = _reader.ReadCsvLine().ToArray();
+                }
+            }
+
+            _w.Stop();
+            Console.WriteLine(_w.Duration);
         }
 
 

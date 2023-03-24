@@ -7,10 +7,23 @@
 
 DevToys.PocoCsv.Core is a very fast reader and writer for Csv.
 It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader&lt;T&gt; and CsvWriter&lt;T&gt;.
+</Description>
+    <PackageProjectUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core/wiki/DevToys.PocoCsv.Core</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <Authors>GuidoK73</Authors>
+    <Company />
+    <Version>1.5.8</Version>
+    <PackageLicenseFile>GPL.txt</PackageLicenseFile>
+    <Title>DevToys.Poco.Csv.Core</Title>
+    <Copyright>2023</Copyright>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <Product>DevToys.Poco.Csv.Core</Product>
+    <PackageReleaseNotes>1.5.8
+- Minor Improvements
+- Added Skip() to CsvStreamReader
+- Changed EndOfStream behaviour
 
----
-
-Version history:
 1.5.7
 - Small improvements
 
@@ -71,18 +84,7 @@ Version history:
 
 1.0.5
 - Read/Write Stream csv lines into a poco object.
-- Query / Read / Write large csv files.</Description>
-    <PackageProjectUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core/wiki/DevToys.PocoCsv.Core</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core</RepositoryUrl>
-    <RepositoryType>Git</RepositoryType>
-    <Authors>GuidoK73</Authors>
-    <Company />
-    <Version>1.5.7</Version>
-    <PackageLicenseFile>GPL.txt</PackageLicenseFile>
-    <Title>DevToys.Poco.Csv.Core</Title>
-    <Copyright>2023</Copyright>
-    <PackageReadmeFile>Readme.md</PackageReadmeFile>
-    <Product>DevToys.Poco.Csv.Core</Product>
+- Query / Read / Write large csv files.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

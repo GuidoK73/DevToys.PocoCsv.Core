@@ -50,7 +50,7 @@ namespace DevToys.PocoCsv.Core
             bool _first = true;
             int _row = 0;
 
-            while (!reader.EndOfCsvStream && (_row < sampleRows))
+            while (!reader.EndOfStream && (_row < sampleRows))
             {
                 string[] _items = reader.ReadCsvLine().ToArray();
                 if (!_first)
@@ -152,7 +152,7 @@ namespace DevToys.PocoCsv.Core
             reader.Separator = separator;
             int _row = 0;
 
-            while (!reader.EndOfCsvStream)
+            while (!reader.EndOfStream)
             {
                 string[] _items = reader.ReadCsvLine().ToArray();
                 int _length = _items.Length == 1 && string.IsNullOrWhiteSpace(_items[0]) ? 0 : _items.Length;

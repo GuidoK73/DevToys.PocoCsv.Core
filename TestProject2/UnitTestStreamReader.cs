@@ -19,9 +19,11 @@ namespace TestProject2
             {
                 _reader.Separator = ',';
 
-                while (!_reader.EndOfCsvStream)
+                _reader.Skip();
+
+                while (!_reader.EndOfStream)
                 {
-                    List<string> _values = _reader.ReadCsvLine().ToList();
+                    string[] _values = _reader.ReadCsvLine().ToArray();
                 }
             }
         }

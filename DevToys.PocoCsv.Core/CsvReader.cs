@@ -16,7 +16,7 @@ namespace DevToys.PocoCsv.Core
     public sealed class CsvReader<T> : BaseCsv, IDisposable where T : new()
     {
         private StreamReader _StreamReader;
-        private readonly CsvStreamer _Streamer = new();
+        private readonly CsvStreamHelper _StreamHelper = new();
         private PropertyInfo[] _Properties = null;
         private Boolean[] _IsNullable = null;
         private Action<object, object>[] _PropertySetters = null;
@@ -90,7 +90,7 @@ namespace DevToys.PocoCsv.Core
         public CsvReader(Stream stream, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int buffersize = 1024)
         {
             _Stream = stream;
-            _Streamer.Separator = separator;
+            _StreamHelper.Separator = separator;
             Encoding = encoding;
             DetectEncodingFromByteOrderMarks = detectEncodingFromByteOrderMarks;
             _BufferSize = buffersize;
@@ -102,9 +102,9 @@ namespace DevToys.PocoCsv.Core
         public CsvReader(string file, Encoding encoding, char separator = ',', bool detectEncodingFromByteOrderMarks = true, int buffersize = 1024)
         {
             _File = file;
-            _Streamer.Separator = separator;
+            _StreamHelper.Separator = separator;
             Encoding = encoding;
-            _Streamer.Separator = separator;
+            _StreamHelper.Separator = separator;
             DetectEncodingFromByteOrderMarks = detectEncodingFromByteOrderMarks;
             _BufferSize = buffersize;
         }
@@ -116,18 +116,19 @@ namespace DevToys.PocoCsv.Core
         {
             get
             {
-                return _Streamer.Separator;
+                return _StreamHelper.Separator;
             }
             set
             {
-                _Streamer.Separator = value;
+                _StreamHelper.Separator = value;
             }
         }
 
         /// <summary>
         /// Indicates the End of the stream.
         /// </summary>
-        public bool EndOfStream => (_StreamReader.BaseStream.Position >= _StreamReader.BaseStream.Length);
+        // public bool EndOfStream => (_StreamReader.BaseStream.Position >= _StreamReader.BaseStream.Length);
+        public bool EndOfStream  => _byte == -1;
 
         /// <summary>
         /// Indicates whether to look for byte order marks at the beginning of the file.
@@ -162,7 +163,7 @@ namespace DevToys.PocoCsv.Core
             {
                 Separator = _Separator;
             }
-            _StreamReader.BaseStream.Position = 0;
+            MoveToStart();
         }
 
         /// <summary>
@@ -195,13 +196,15 @@ namespace DevToys.PocoCsv.Core
         public void Skip(int rows = 1)
         {
             int ii = 0;
+
             while (!EndOfStream)
             {
                 if (ii >= rows)
                 {
                     break;
                 }
-                _Streamer.ReadRow(_StreamReader.BaseStream, (columnIndex, value) => { }); // do nothing with read.
+                _StreamHelper.Skip(_StreamReader.BaseStream);
+                _byte = _StreamHelper._byte;
                 ii++;
             }
         }
@@ -211,16 +214,17 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public T Read()
         {
+            // own implementation of _Streamer.ReadRow to futher improve speed.
             T _result = new();
             int _columnIndex = 0;
             State _state = State.First;
             bool _trimLast = false;
-            _sbValue.Length = 0; // Clear
+            _sbValue.Length = 0; // CLEAR
             _byte = 0;
 
             while (_byte > -1)
             {
-                _byte = _StreamReader.BaseStream.ReadByte();
+                _byte = _StreamReader.BaseStream.ReadByte();               
                 _char = (char)_byte;
                 if (_byte == -1 || (_state == State.Normal && (_char == _r || _char == _n)))
                 {
@@ -235,7 +239,7 @@ namespace DevToys.PocoCsv.Core
                         }
                     }
                     SetValue(_columnIndex, _result);
-                    break; // END.
+                    break; // END ROW.
                 }
                 if (_state == State.First)
                 {
@@ -260,7 +264,7 @@ namespace DevToys.PocoCsv.Core
                         SetValue(_columnIndex, _result);
                         _sbValue.Length = 0;
                         _columnIndex++;
-                        continue;
+                        continue; // NEXT FIELD
                     }
                 }
                 if (_char == _escape)
@@ -268,7 +272,7 @@ namespace DevToys.PocoCsv.Core
                     _state = (_state == State.Normal) ? State.Escaped : State.Normal;
                     if (_sbValue.Length == 0)
                     {
-                        _trimLast = true; // .Trim() is costly on large sets. so we will change the length of the stringbuilder and skip adding first escape char.
+                        _trimLast = true; // .Trim() is costly on large sets.
                         continue;
                     }
                 }
@@ -277,7 +281,6 @@ namespace DevToys.PocoCsv.Core
             }
             return _result;
         }
-
 
         #region Value Setters
 
@@ -305,184 +308,194 @@ namespace DevToys.PocoCsv.Core
         {
             if (!_IsNullable[index])
             {
-                if (targetType == typeof(Decimal))
-                {
-                    SetValueDecimal(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Int32))
-                {
-                    SetValueInt32(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Double))
-                {
-                    SetValueDouble(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(DateTime))
-                {
-                    SetValueDateTime(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Int64))
-                {
-                    SetValueInt64(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Guid))
-                {
-                    SetValueGuid(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Single))
-                {
-                    SetValueSingle(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Boolean))
-                {
-                    SetValueBoolean(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(TimeSpan))
-                {
-                    SetValueTimeSpan(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Int16))
-                {
-                    SetValueInt16(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Byte))
-                {
-                    SetValueByte(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(DateTimeOffset))
-                {
-                    SetValueDateTimeOffset(index, targetObject);
-                    return;
-                }
-                else if (targetType.IsEnum)
-                {
-                    _PropertySetters[index](targetObject, Enum.Parse(targetType, _sbValue.ToString()));
-                    return;
-                }
-                else if (targetType == typeof(byte[]))
-                {
-                    SetValueByteArray(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(SByte))
-                {
-                    SetValueSByte(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(UInt16))
-                {
-                    SetValueUInt16(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(UInt32))
-                {
-                    SetValueUInt32(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(UInt64))
-                {
-                    SetValueUInt64(index, targetObject);
-                    return;
-                }
+                SetValueOtherNonNullable(targetType, index, targetObject);
             }
             else
             {
-                if (targetType == typeof(DateTime?))
-                {
-                    SetValueDateTimeNull(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Guid?))
-                {
-                    SetValueGuidNull(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Boolean?))
-                {
-                    SetValueBooleanNull(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(DateTime?))
-                {
-                    SetValueDateTimeNull(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(DateTimeOffset?))
-                {
-                    SetValueDateTimeOffsetNull(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(TimeSpan?))
-                {
-                    SetValueTimeSpanNull(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Byte?))
-                {
-                    SetValueByteNull(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(SByte?))
-                {
-                    SetValueSByteNull(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Int16?))
-                {
-                    SetValueInt16Null(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Int32?))
-                {
-                    SetValueInt32Null(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Int64?))
-                {
-                    SetValueInt64Null(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Single?))
-                {
-                    SetValueSingleNull(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Decimal?))
-                {
-                    SetValueDecimalNull(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(Double?))
-                {
-                    SetValueDoubleNull(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(UInt16?))
-                {
-                    SetValueUInt16Null(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(UInt32?))
-                {
-                    SetValueUInt32Null(index, targetObject);
-                    return;
-                }
-                else if (targetType == typeof(UInt64?))
-                {
-                    SetValueUInt64Null(index, targetObject);
-                    return;
-                }
+                SetValueOtherNullable(targetType, index, targetObject);
+            }
+        }
+
+        private void SetValueOtherNonNullable(Type targetType, int index, T targetObject)
+        {
+            if (targetType == typeof(Decimal))
+            {
+                SetValueDecimal(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Int32))
+            {
+                SetValueInt32(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Double))
+            {
+                SetValueDouble(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(DateTime))
+            {
+                SetValueDateTime(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Int64))
+            {
+                SetValueInt64(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Guid))
+            {
+                SetValueGuid(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Single))
+            {
+                SetValueSingle(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Boolean))
+            {
+                SetValueBoolean(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(TimeSpan))
+            {
+                SetValueTimeSpan(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Int16))
+            {
+                SetValueInt16(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Byte))
+            {
+                SetValueByte(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(DateTimeOffset))
+            {
+                SetValueDateTimeOffset(index, targetObject);
+                return;
+            }
+            else if (targetType.IsEnum)
+            {
+                _PropertySetters[index](targetObject, Enum.Parse(targetType, _sbValue.ToString()));
+                return;
+            }
+            else if (targetType == typeof(byte[]))
+            {
+                SetValueByteArray(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(SByte))
+            {
+                SetValueSByte(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(UInt16))
+            {
+                SetValueUInt16(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(UInt32))
+            {
+                SetValueUInt32(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(UInt64))
+            {
+                SetValueUInt64(index, targetObject);
+                return;
+            }
+        }
+
+        private void SetValueOtherNullable(Type targetType, int index, T targetObject)
+        {
+            if (targetType == typeof(DateTime?))
+            {
+                SetValueDateTimeNull(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Guid?))
+            {
+                SetValueGuidNull(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Boolean?))
+            {
+                SetValueBooleanNull(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(DateTime?))
+            {
+                SetValueDateTimeNull(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(DateTimeOffset?))
+            {
+                SetValueDateTimeOffsetNull(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(TimeSpan?))
+            {
+                SetValueTimeSpanNull(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Byte?))
+            {
+                SetValueByteNull(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(SByte?))
+            {
+                SetValueSByteNull(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Int16?))
+            {
+                SetValueInt16Null(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Int32?))
+            {
+                SetValueInt32Null(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Int64?))
+            {
+                SetValueInt64Null(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Single?))
+            {
+                SetValueSingleNull(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Decimal?))
+            {
+                SetValueDecimalNull(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(Double?))
+            {
+                SetValueDoubleNull(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(UInt16?))
+            {
+                SetValueUInt16Null(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(UInt32?))
+            {
+                SetValueUInt32Null(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(UInt64?))
+            {
+                SetValueUInt64Null(index, targetObject);
+                return;
             }
         }
 

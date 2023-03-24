@@ -1,16 +1,17 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
-    internal sealed class CsvStreamer
+    internal sealed class CsvStreamHelper
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public char Separator { get; set; } = ',';
 
@@ -23,21 +24,22 @@ namespace DevToys.PocoCsv.Core
 
         private readonly StringBuilder _sb = new(127);
         private char _char;
-        private int _byte;
+        internal int _byte = 0;
+
+
+        public bool EndOfStream => _byte == -1;
 
         /// <summary>
         /// Read CSV row from stream
         /// </summary>
         /// <param name="stream"></param>
-        /// <param name="fieldRead">Action executes for each column</param>
-        public void ReadRow(Stream stream, Action<int, string> fieldRead)
+        public IEnumerable<string> ReadRow(Stream stream)
         {
             var _state = State.First;
             _sb.Length = 0;
             _byte = 0;
             int _column = 0;
             bool _trimLast = false;
-
 
             while (_byte > -1)
             {
@@ -52,8 +54,8 @@ namespace DevToys.PocoCsv.Core
                             _sb.Length--;
                         }
                     }
-                    fieldRead(_column, _sb.ToString());
-                    break;
+                    yield return _sb.ToString();
+                    break; // END
                 }
                 if (_state == State.First)
                 {
@@ -75,10 +77,17 @@ namespace DevToys.PocoCsv.Core
                 {
                     if (_state == State.Normal)
                     {
-                        fieldRead(_column, _sb.ToString().Trim('"'));
+                        if (_trimLast)
+                        {
+                            if (_sb.Length > 0 && _sb[_sb.Length - 1] == '"')
+                            {
+                                _sb.Length--;
+                            }
+                        }
+                        yield return _sb.ToString();
                         _column++;
                         _sb.Length = 0;
-                        continue;
+                        continue; // NEXT FIELD
                     }
                 }
                 if (_char == '"')
@@ -86,12 +95,35 @@ namespace DevToys.PocoCsv.Core
                     _state = (_state == State.Normal) ? State.Escaped : State.Normal;
                     if (_sb.Length == 0)
                     {
-                        _trimLast = true; // .Trim() is costly on large sets. so we will change the length of the stringbuilder and skip adding first escape char.
+                        _trimLast = true; // .Trim() is costly on large sets.
                         continue;
                     }
                 }
-
                 _sb.Append(_char);
+            }
+        }
+
+        /// <summary>
+        /// Skip a CSV row
+        /// </summary>
+        /// <param name="stream"></param>
+        public void Skip(Stream stream)
+        {
+            var _state = State.Normal;
+            _byte = 0;
+
+            while (_byte > -1)
+            {
+                _byte = stream.ReadByte();
+                _char = (char)_byte;
+                if (_byte == -1 || (_state == State.Normal && (_char == '\r' || _char == '\n')))
+                {
+                    break;
+                }
+                if (_char == '"')
+                {
+                    _state = (_state == State.Normal) ? State.Escaped : State.Normal;
+                }
             }
         }
     }
