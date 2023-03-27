@@ -43,17 +43,27 @@ namespace TestProject2
         [TestMethod]
         public void TestReaderSimple()
         {
-
-
-
-            string file = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "data.csv");
+            string file = @"D:\data2.csv";
 
             using (CsvReader<CsvSimple> _reader = new(file))
             {
                 _reader.Open();
-                _reader.Skip(2);
+                _reader.Skip(20);
 
                 var _af = _reader.ReadAsEnumerable().ToList();
+            }
+        }
+
+
+        [TestMethod]
+        public void TestReaderSimpleLast()
+        {
+            string file = @"D:\data2.csv";
+
+            using (CsvReader<CsvSimple> _reader = new(file))
+            {
+                _reader.Open();
+                var  _last10 = _reader.Last(10).ToList();
             }
         }
 
@@ -61,6 +71,11 @@ namespace TestProject2
         public void TestWriter()
         {
             string file = @"D:\data2.csv";
+
+            if (File.Exists(file))
+            {
+                File.Delete(file);
+            }
 
             using (CsvWriter<CsvSimple> _writer = new(file) { Separator = ',' })
             {

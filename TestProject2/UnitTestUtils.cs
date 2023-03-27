@@ -1,5 +1,6 @@
 ﻿using DevToys.PocoCsv.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -47,6 +48,28 @@ namespace TestProject2
                     List<string> _values = _reader.ReadCsvLine().ToList();
                 }
             }
+        }
+
+        [TestMethod]
+        public void TestFixedQueue()
+        {
+
+            FixedQueue<int> _queue = new DevToys.PocoCsv.Core.FixedQueue<int>(5);
+
+            List<int> _test = new List<int>();
+            for(int ii =0; ii < 2; ii++)
+            {
+                _test.Add(ii);
+            }
+
+            foreach (int ii in _test)
+            {
+                _queue.Add(ii);
+            }
+
+            var _result = _queue.GetCollection();
+
+            Console.WriteLine("X");
         }
     }
 }

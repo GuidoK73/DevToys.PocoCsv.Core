@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -26,8 +25,11 @@ namespace DevToys.PocoCsv.Core
         private char _char;
         internal int _byte = 0;
 
-
         public bool EndOfStream => _byte == -1;
+
+        //  \r = CR(Carriage Return) → Used as a new line character in Mac OS before X
+        //  \n = LF(Line Feed) → Used as a new line character in Unix/Mac OS X
+        //  \r\n = CR + LF → Used as a new line character in Windows
 
         /// <summary>
         /// Read CSV row from stream
@@ -40,12 +42,32 @@ namespace DevToys.PocoCsv.Core
             _byte = 0;
             int _column = 0;
             bool _trimLast = false;
+            bool _rowEnd = false;
 
             while (_byte > -1)
             {
                 _byte = stream.ReadByte();
                 _char = (char)_byte;
-                if (_byte == -1 || (_state == State.Normal && (_char == '\r' || _char == '\n')))
+                if (_byte == -1)
+                {
+                    _rowEnd = true;
+                }
+                if ((_state == State.Normal && _char == '\r'))
+                {
+                    // PEEK
+                    _byte = stream.ReadByte();
+                    _char = (char)_byte;
+                    if (_char != '\n')
+                    {
+                        _rowEnd = true; // We have a single \r without following \n.
+                    }
+                    // IF char is a normal char we can just continue from this point.
+                }
+                if ((_state == State.Normal && _char == '\n'))
+                {
+                    _rowEnd = true; // WE HAVE A SINGLE \n either preceded or not by \r
+                }
+                if (_rowEnd)
                 {
                     if (_trimLast)
                     {
@@ -116,7 +138,21 @@ namespace DevToys.PocoCsv.Core
             {
                 _byte = stream.ReadByte();
                 _char = (char)_byte;
-                if (_byte == -1 || (_state == State.Normal && (_char == '\r' || _char == '\n')))
+                if (_byte == -1)
+                {
+                    break;
+                }
+                if ((_state == State.Normal && _char == '\r'))
+                {
+                    // PEEK
+                    _byte = stream.ReadByte();
+                    _char = (char)_byte;
+                    if (_char != '\n')
+                    {
+                        break;
+                    }
+                }
+                if ((_state == State.Normal && _char == '\n'))
                 {
                     break;
                 }
@@ -125,6 +161,49 @@ namespace DevToys.PocoCsv.Core
                     _state = (_state == State.Normal) ? State.Escaped : State.Normal;
                 }
             }
+        }
+
+        private FixedQueue<long> _takeLastQueue;
+
+        public void SeekLast(Stream stream, int rows)
+        {
+            _takeLastQueue = new FixedQueue<long>(rows);
+
+            var _state = State.Normal;
+            _byte = 0;
+
+            while (_byte > -1)
+            {
+                _byte = stream.ReadByte();
+
+                _char = (char)_byte;
+                if (_byte == -1)
+                {
+                    break;
+                }
+                if ((_state == State.Normal && _char == '\r'))
+                {
+                    // PEEK
+                    _byte = stream.ReadByte();
+                    _char = (char)_byte;
+                    if (_char != '\n')
+                    {
+                        _takeLastQueue.Add(stream.Position);
+                    }
+                }
+                if ((_state == State.Normal && _char == '\n'))
+                {
+                    _takeLastQueue.Add(stream.Position);
+                    continue;
+                }
+
+                if (_char == '"')
+                {
+                    _state = (_state == State.Normal) ? State.Escaped : State.Normal;
+                }
+            }
+
+            stream.Position = _takeLastQueue.GetCollection()[0];
         }
     }
 }

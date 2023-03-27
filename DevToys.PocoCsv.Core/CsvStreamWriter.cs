@@ -10,6 +10,8 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvStreamWriter : StreamWriter
     {
+        private StringBuilder _sb = new StringBuilder();
+
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the default encoding and buffer size.
         /// </summary>
@@ -30,7 +32,7 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="path"></param>
         /// <param name="encoding"></param>
@@ -64,15 +66,39 @@ namespace DevToys.PocoCsv.Core
         public char Separator { get; set; } = ',';
 
         /// <summary>
+        /// \r\n = CR + LF → Used as a new line character in Windows.
+        /// \r = CR(Carriage Return) → Used as a new line character in Mac OS before X.
+        /// \n = LF(Line Feed) → Used as a new line character in Unix/Mac OS X
+        /// </summary>
+        public CRLFMode CRLFMode { get; set; } = CRLFMode.CRLF;
+
+        /// <summary>
         /// Write an array of strings to the Csv Stream and escapes when nececary.
         /// </summary>
         /// <param name="values">Array of strings</param>
         public void WriteCsvLine(params string[] values)
         {
-            var _sb = new StringBuilder().Append((BaseStream.Position > 0) ? "\r\n" : "");
+            _sb.Length = 0;
+
+            if (BaseStream.Position > 0)
+            {
+                if (CRLFMode == CRLFMode.CRLF)
+                {
+                    _sb.Append("\r\n");
+                }
+                else if (CRLFMode == CRLFMode.CR)
+                {
+                    _sb.Append('\r');
+                }
+                else if (CRLFMode == CRLFMode.LF)
+                {
+                    _sb.Append('\n');
+                }
+            }
+
             for (int ii = 0; ii < values.Length; ii++)
             {
-                _sb.Append(Esc(values[ii] ?? "")).Append(Separator);
+                _sb.Append(CsvUtils.Esc(Separator, values[ii] ?? "")).Append(Separator);
             }
             _sb.Length--;
             BaseStream.Write(Encoding.Default.GetBytes(_sb.ToString()), 0, _sb.Length);
@@ -84,22 +110,30 @@ namespace DevToys.PocoCsv.Core
         /// <param name="values">Array of strings</param>
         public void WriteCsvLine(IEnumerable<string> values)
         {
-            var _sb = new StringBuilder().Append((BaseStream.Position > 0) ? "\r\n" : "");
+            _sb.Length = 0;
+
+            if (BaseStream.Position > 0)
+            {
+                if (CRLFMode == CRLFMode.CRLF)
+                {
+                    _sb.Append("\r\n");
+                }
+                else if (CRLFMode == CRLFMode.CR)
+                {
+                    _sb.Append('\r');
+                }
+                else if (CRLFMode == CRLFMode.LF)
+                {
+                    _sb.Append('\n');
+                }
+            }
+
             foreach (string value in values)
             {
-                _sb.Append(Esc(value ?? "")).Append(Separator);
+                _sb.Append(CsvUtils.Esc(Separator, value ?? "")).Append(Separator);
             }
             _sb.Length--;
             BaseStream.Write(Encoding.Default.GetBytes(_sb.ToString()), 0, _sb.Length);
-        }
-
-        private string Esc(string s)
-        {
-            if (s.IndexOfAny(new char[] { '\r', '\n', '"', Separator }) == -1)
-            {
-                return s;
-            }
-            return $"\"{s.Replace("\"", "\"\"")}\"";
         }
     }
 }

@@ -1,4 +1,4 @@
-# DevToys.PocoCsv.Core 
+﻿# DevToys.PocoCsv.Core 
 
 ## One of the fastest csv reader deserialzer available.
 
@@ -9,7 +9,6 @@ It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader
 - Use Linq to query large CSV files with CsvReader<T>.ReadAsEnumerable().
 - Use CsvWriter<T>.Write() to write large data tables to Csv.
 - Retrieve schema for a csv file with CsvUtils.GetCsvSchema() which can be used to create a poco object.
-
 
 # CsvStreamReader
 ~~~cs
@@ -70,8 +69,10 @@ Set the separator to use (default ',');
 Reads and deserializes each csv file line per iteration in the collection, this allows for querying mega sized files.
 - **DetectSeparator()**\
 To auto set the separator (looks for commonly used separators in first 10 lines).
-- **Skip()**\
-Skip and advances the reader to the next row without interpret it. 
+- **Skip(int rows)**\
+Skip and advances the reader to the next row without interpret it. This is much faster then IEnumerable.Skip(). 
+- **Last(int rows)**\
+Last seeks the csv document for the last x entries. this is much faster then IEnumerable.Last().
 - **Read()**\
 Reads current row into T and advances the reader to the next row. 
 - **MoveToStart()**\
@@ -116,8 +117,11 @@ Set the separator to use (default ',');
 Write header with property names of T.
 - **Write(IEnumerable<T> rows)**\
 Writes data to Csv while consuming rows.
-
-
+- **CRLFMode**\
+Determine which mode to use for new lines.
+    - CR + LF → Used as a new line character in Windows.
+    - CR(Carriage Return) → Used as a new line character in Mac OS before X.
+    - LF(Line Feed) → Used as a new line character in Unix/Mac OS X
 
 # ColumnAttribute
 
@@ -267,11 +271,16 @@ Defines the value to write as a default for null, This property is for CsvWriter
         _reader.Open();
 
         _reader.Skip(); // skip the Header row.
-        _reader.Skip(10); // skip another 10 rows, this skip does not materialize. skip on Enumerable requires T to be materialized.
-        _result1 = _reader.ReadAsEnumerable().Skip(10).Take(10).ToList(); // Materializes 20 records but returns 10.
+
+        // Materializes 20 records but returns 10.
+        _result1 = _reader.ReadAsEnumerable().Skip(10).Take(10).ToList(); 
+        
+        // Materialize only 10 records.
         _reader.Skip(10);
         _result1 = _reader.ReadAsEnumerable().Take(10).ToList();
-        _result2 = _reader.ReadAsEnumerable().Take(10).ToList();
+
+        // Take last 10 records.
+        _result1 = _reader.Last(10).ToList();
     }
 
 ~~~
@@ -280,3 +289,5 @@ Mind you on the fact that Skip and Take andvances the reader to the next positio
 executing another _reader.ReadAsEnumerable().Where(p => p...).ToList() will Query from position 21. 
 
 Use MoveToStart() to move the reader to the starting position.
+
+_reader.Skip() is different then _reader.ReadAsEnumerable().Skip() as the first does not materialize to T and is faster.

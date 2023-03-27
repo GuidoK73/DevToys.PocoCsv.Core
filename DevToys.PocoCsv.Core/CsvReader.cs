@@ -53,6 +53,7 @@ namespace DevToys.PocoCsv.Core
         private Action<T, UInt16?>[] _PropertySettersUInt16Null = null;
         private Action<T, UInt32?>[] _PropertySettersUInt32Null = null;
         private Action<T, UInt64?>[] _PropertySettersUInt64Null = null;
+        private List<CsvReadError> _Errors = new();
 
         private readonly StringBuilder _sbValue = new(127);
         private char _char;
@@ -125,6 +126,18 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
+        /// Indicates there are read conversion errors.
+        /// </summary>
+        public bool HasErrors => _Errors.Count > 0;
+
+
+        /// <summary>
+        /// Returns collection of error messages.
+        /// </summary>
+        public IEnumerable<CsvReadError> Errors => _Errors;
+
+
+        /// <summary>
         /// Indicates the End of the stream.
         /// </summary>
         // public bool EndOfStream => (_StreamReader.BaseStream.Position >= _StreamReader.BaseStream.Length);
@@ -149,6 +162,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void Close()
         {
+            _StreamReader.BaseStream.Flush();
             _StreamReader.Close();
         }
 
@@ -210,6 +224,29 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
+        /// Returns Last X records in the Csv Document. This one is much faster then ReadAsEnumerable().Last().
+        /// </summary>
+        public IEnumerable<T> Last(int rows = 1)
+        {
+            if (_StreamReader == null)
+            {
+                throw new IOException("Reader is closed!");
+            }
+
+            _StreamHelper.SeekLast(_StreamReader.BaseStream, rows);
+
+            while (!EndOfStream)
+            {
+                yield return Read();
+            }
+        }
+
+
+        //  \r = CR(Carriage Return) → Used as a new line character in Mac OS before X
+        //  \n = LF(Line Feed) → Used as a new line character in Unix/Mac OS X
+        //  \r\n = CR + LF → Used as a new line character in Windows
+
+        /// <summary>
         /// reads the CsvLine
         /// </summary>
         public T Read()
@@ -221,12 +258,32 @@ namespace DevToys.PocoCsv.Core
             bool _trimLast = false;
             _sbValue.Length = 0; // CLEAR
             _byte = 0;
+            bool _rowEnd = false;
 
             while (_byte > -1)
             {
                 _byte = _StreamReader.BaseStream.ReadByte();               
                 _char = (char)_byte;
-                if (_byte == -1 || (_state == State.Normal && (_char == _r || _char == _n)))
+
+                if (_byte == -1)
+                {
+                    _rowEnd = true;
+                }
+                if ((_state == State.Normal && _char == '\r'))
+                {
+                    // PEEK 
+                    _byte = _StreamReader.BaseStream.ReadByte();
+                    _char = (char)_byte;
+                    if (_char != '\n')
+                    {
+                        _rowEnd = true;
+                    }
+                }
+                if ((_state == State.Normal && _char == '\n'))
+                {
+                    _rowEnd = true;
+                }
+                if (_rowEnd)
                 {
                     if (_trimLast)
                     {
@@ -506,6 +563,10 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersDecimal[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
         }
 
         private void SetValueInt32(int index, T targetObject)
@@ -514,6 +575,10 @@ namespace DevToys.PocoCsv.Core
             if (succes)
             {
                 _PropertySettersInt32[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
             }
         }
 
@@ -524,6 +589,10 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersInt64[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
         }
 
         private void SetValueDouble(int index, T targetObject)
@@ -532,6 +601,10 @@ namespace DevToys.PocoCsv.Core
             if (succes)
             {
                 _PropertySettersDouble[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
             }
         }
 
@@ -542,6 +615,10 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersDateTime[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
         }
 
         private void SetValueGuid(int index, T targetObject)
@@ -550,6 +627,10 @@ namespace DevToys.PocoCsv.Core
             if (succes)
             {
                 _PropertySettersGuid[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
             }
         }
 
@@ -569,6 +650,10 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersBoolean[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
         }
 
         private void SetValueTimeSpan(int index, T targetObject)
@@ -578,6 +663,11 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersTimeSpan[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
+
         }
 
         private void SetValueInt16(int index, T targetObject)
@@ -587,6 +677,11 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersInt16[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
+
         }
 
         private void SetValueByte(int index, T targetObject)
@@ -620,6 +715,10 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersSByte[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
         }
 
         private void SetValueUInt16(int index, T targetObject)
@@ -638,6 +737,10 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersUInt32[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
         }
 
         private void SetValueUInt64(int index, T targetObject)
@@ -646,6 +749,10 @@ namespace DevToys.PocoCsv.Core
             if (succes)
             {
                 _PropertySettersUInt64[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
             }
         }
 
@@ -656,6 +763,10 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersDateTimeNull[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
         }
 
         private void SetValueGuidNull(int index, T targetObject)
@@ -664,6 +775,10 @@ namespace DevToys.PocoCsv.Core
             if (succes)
             {
                 _PropertySettersGuidNull[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
             }
         }
 
@@ -674,6 +789,10 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersBooleanNull[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
         }
 
         private void SetValueDateTimeOffsetNull(int index, T targetObject)
@@ -682,6 +801,10 @@ namespace DevToys.PocoCsv.Core
             if (succes)
             {
                 _PropertySettersDateTimeOffsetNull[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
             }
         }
 
@@ -692,6 +815,10 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersTimeSpanNull[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
         }
 
         private void SetValueByteNull(int index, T targetObject)
@@ -700,6 +827,10 @@ namespace DevToys.PocoCsv.Core
             if (succes)
             {
                 _PropertySettersByteNull[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
             }
         }
 
@@ -710,6 +841,10 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersSByteNull[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
         }
 
         private void SetValueInt16Null(int index, T targetObject)
@@ -718,6 +853,10 @@ namespace DevToys.PocoCsv.Core
             if (succes)
             {
                 _PropertySettersInt16Null[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
             }
         }
 
@@ -728,6 +867,10 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersInt32Null[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
         }
 
         private void SetValueInt64Null(int index, T targetObject)
@@ -736,6 +879,10 @@ namespace DevToys.PocoCsv.Core
             if (succes)
             {
                 _PropertySettersInt64Null[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
             }
         }
 
@@ -746,6 +893,10 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersSingleNull[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
         }
 
         private void SetValueDecimalNull(int index, T targetObject)
@@ -755,6 +906,10 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersDecimalNull[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
         }
 
         private void SetValueDoubleNull(int index, T targetObject)
@@ -763,6 +918,10 @@ namespace DevToys.PocoCsv.Core
             if (succes)
             {
                 _PropertySettersDoubleNull[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
             }
         }
 
@@ -782,6 +941,10 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersUInt32Null[index](targetObject, _value);
             }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
         }
 
         private void SetValueUInt64Null(int index, T targetObject)
@@ -791,7 +954,11 @@ namespace DevToys.PocoCsv.Core
             {
                 _PropertySettersUInt64Null[index](targetObject, _value);
             }
-        }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+            }
+        }   
 
         #endregion Value Setters
 

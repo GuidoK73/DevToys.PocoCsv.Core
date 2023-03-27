@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -56,7 +55,6 @@ namespace DevToys.PocoCsv.Core
         public CsvStreamReader(Stream stream, Encoding encoding = null, bool detectEncodingFromByteOrderMarks = true, int bufferSize = -1, bool leaveOpen = false) : base(stream, encoding, detectEncodingFromByteOrderMarks, bufferSize, leaveOpen)
         { }
 
-
         /// <summary>
         /// Indicates end of the stream.
         /// </summary>
@@ -68,16 +66,13 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
-
         /// <summary>
         /// Get / Sets the position.
         /// </summary>
         public long Position
         {
-            get => BaseStream.Position;    
+            get => BaseStream.Position;
             set => BaseStream.Position = value;
-            
         }
 
         /// <summary>

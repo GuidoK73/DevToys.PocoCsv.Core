@@ -57,6 +57,42 @@ namespace TestProject2
 
         }
 
+
+
+        [TestMethod]
+        public void TestReaderSimpleLast()
+        {
+            var _w = new StopWatch();
+
+            string file = @"D:\largedata.csv";
+
+            _w.Start();
+
+            using (CsvReader<CsvSimple> _reader = new(file))
+            {
+                _reader.Open();
+                var _last10 = _reader.Last(10).ToList();
+            }
+
+            _w.Stop();
+            Console.WriteLine(_w.Duration);
+
+            _w.Start();
+
+            using (CsvReader<CsvSimple> _reader = new(file))
+            {
+                _reader.Open();
+                var _last = _reader.ReadAsEnumerable().Last();
+            }
+
+            _w.Stop();
+            Console.WriteLine(_w.Duration);
+
+
+        }
+
+
+
         [TestMethod]
         public void TestReaderXLSkip()
         {

@@ -13,13 +13,23 @@ It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.5.8</Version>
+    <Version>1.6.0</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>1.5.8
+    <PackageReleaseNotes>1.6.0
+- Added Last(int rows) function to Reader&lt;T&gt;.
+- Added IEnumerable&lt;CsvReadError&gt; Errors to CsvReader&lt;T&gt;.
+-Fixed Skip() counter.
+- Correct handling for CRLF in CsvStreamReader and CsvReader&lt;T&gt;
+    -  \r = CR(Carriage Return) → Used as a new line character in Mac OS before X
+    -  \n = LF(Line Feed) → Used as a new line character in Unix/Mac OS X
+    -  \r\n = CR + LF → Used as a new line character in Windows
+- Added  CRLFMode to CsvStreamWriter and CsvWriter&lt;T&gt;
+
+1.5.8
 - Minor Improvements
 - Added Skip() to CsvStreamReader
 - Changed EndOfStream behaviour

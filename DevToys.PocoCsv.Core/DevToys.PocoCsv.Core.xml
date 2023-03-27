@@ -140,6 +140,16 @@
             Csv Seperator to use default ','
             </summary>
         </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.HasErrors">
+            <summary>
+            Indicates there are read conversion errors.
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.Errors">
+            <summary>
+            Returns collection of error messages.
+            </summary>
+        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.EndOfStream">
             <summary>
             Indicates the End of the stream.
@@ -180,6 +190,11 @@
             Use to skip first row without materializing, usefull for skipping header.
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Last(System.Int32)">
+            <summary>
+            Returns Last X records in the Csv Document. This one is much faster then ReadAsEnumerable().Last().
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Read">
             <summary>
             reads the CsvLine
@@ -195,19 +210,25 @@
             Initialize the CsvReader
             </summary>
         </member>
-        <member name="T:DevToys.PocoCsv.Core.CsvStreamer">
+        <member name="T:DevToys.PocoCsv.Core.CsvStreamHelper">
              <summary>
             
              </summary>
         </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvStreamer.Separator">
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamHelper.Separator">
              <summary>
             
              </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamer.ReadRow(System.IO.Stream)">
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamHelper.ReadRow(System.IO.Stream)">
             <summary>
             Read CSV row from stream
+            </summary>
+            <param name="stream"></param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamHelper.Skip(System.IO.Stream)">
+            <summary>
+            Skip a CSV row
             </summary>
             <param name="stream"></param>
         </member>
@@ -312,12 +333,12 @@
             <param name="bufferSize">The buffer size, in bytes.</param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.String,System.Text.Encoding,System.IO.FileStreamOptions)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="path"></param>
-            <param name="encoding"></param>
-            <param name="options"></param>
+             </summary>
+             <param name="path"></param>
+             <param name="encoding"></param>
+             <param name="options"></param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.IO.Stream)">
             <summary>
@@ -339,6 +360,13 @@
             Csv Seperator to use default ','
             </summary>
         </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamWriter.CRLFMode">
+            <summary>
+            \r\n = CR + LF → Used as a new line character in Windows.
+            \r = CR(Carriage Return) → Used as a new line character in Mac OS before X.
+            \n = LF(Line Feed) → Used as a new line character in Unix/Mac OS X
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.WriteCsvLine(System.String[])">
             <summary>
             Write an array of strings to the Csv Stream and escapes when nececary.
@@ -354,6 +382,11 @@
         <member name="T:DevToys.PocoCsv.Core.CsvUtils">
             <summary>
             Csv Utilities.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvUtils.Esc(System.Char,System.String)">
+            <summary>
+            Escape string
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvUtils.CsvHeader(System.String,System.Char)">
@@ -421,6 +454,13 @@
             Csv Seperator to use default ','
             </summary>
         </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvWriter`1.CRLFMode">
+            <summary>
+            \r\n = CR + LF → Used as a new line character in Windows.
+            \r = CR(Carriage Return) → Used as a new line character in Mac OS before X.
+            \n = LF(Line Feed) → Used as a new line character in Unix/Mac OS X
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Dispose">
             <summary>
             Releases all resources used by the System.IO.TextReader object.
@@ -455,6 +495,21 @@
              <summary>
             
              </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.CRLFMode.CRLF">
+            <summary>
+            \r\n = CR + LF → Used as a new line character in Windows
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.CRLFMode.CR">
+            <summary>
+            \r = CR(Carriage Return) → Used as a new line character in Mac OS before X
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.CRLFMode.LF">
+            <summary>
+             \n = LF(Line Feed) → Used as a new line character in Unix/Mac OS X
+            </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.NetType">
             <summary>
