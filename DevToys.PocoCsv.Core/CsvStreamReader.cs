@@ -72,8 +72,13 @@ namespace DevToys.PocoCsv.Core
         public long Position
         {
             get => BaseStream.Position;
-            set => BaseStream.Position = value;
+            set
+            {
+                _StreamHelper.MoveToPosition(BaseStream, value);
+            }
         }
+
+
 
         /// <summary>
         /// Get / Sets the Separator character to use.
@@ -136,6 +141,14 @@ namespace DevToys.PocoCsv.Core
                 _StreamHelper.Skip(BaseStream);
                 ii++;
             }
+        }
+
+        /// <summary>
+        /// Moves to the last X rows, use ReadCsvLine after this call.
+        /// </summary>
+        public void MoveToLast(int rows = 1)
+        {
+            _StreamHelper.MoveToLast(BaseStream, rows);
         }
 
         /// <summary>

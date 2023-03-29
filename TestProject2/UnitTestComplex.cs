@@ -55,7 +55,7 @@ namespace TestProject2
         public void TestReaderComplex()
         {
 
-            string file = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "data.csv");
+            string file = @"F:\DEV\GIT\DevToys.PocoCsv.Core\TestProject2\data.csv";
 
             using (CsvReader<Csv> _reader = new(file))
             {
@@ -63,12 +63,13 @@ namespace TestProject2
 
                 _reader.Culture = CultureInfo.GetCultureInfo("nl-NL");
 
-                foreach (Csv csv in _reader.ReadAsEnumerable())
-                {
-                    Console.WriteLine(csv.Bedrag);
-                }
+                _reader.Skip(1);
 
                 var _x = _reader.ReadAsEnumerable().ToList();
+
+                _reader.MoveToStart();
+                _reader.Skip(1);
+
                 var _bij = _reader.ReadAsEnumerable().Where(p => p.AfBij == "Af").ToList();
             }
         }

@@ -13,13 +13,21 @@ It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.6.0</Version>
+    <Version>1.6.2</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>1.6.0
+    <PackageReleaseNotes>1.6.2
+- Minor bugfix with CR only ending.
+
+1.6.1
+- Fixed bug with AutoDetectSeparator.
+- Added EmptyLineBehaviour to CsvReader&lt;T&gt;
+- Refactoring
+
+1.6.0
 - Added Last(int rows) function to Reader&lt;T&gt;.
 - Added IEnumerable&lt;CsvReadError&gt; Errors to CsvReader&lt;T&gt;.
 -Fixed Skip() counter.

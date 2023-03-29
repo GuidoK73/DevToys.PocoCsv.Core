@@ -1,16 +1,25 @@
 ﻿namespace DevToys.PocoCsv.Core
 {
-    public class FixedQueue<T>
+    /// <summary>
+    /// A Queue that only holds last x items of T
+    /// </summary>
+    public class InfiniteLoopQueue<T>
     {
-        private T[] _Collection;
+        private readonly T[] _Collection;
         private int _Position;
         private bool _Round = false;
 
-        public FixedQueue(int size)
+        /// <summary>
+        /// Construct the Queue with it's size.
+        /// </summary>
+        public InfiniteLoopQueue(int size)
         {
             _Collection = new T[size];
         }
 
+        /// <summary>
+        /// Add item to the Queue
+        /// </summary>
         public void Add(T item)
         {
             _Collection[_Position] = item;
@@ -22,7 +31,10 @@
             }
         }
 
-        public T[] GetCollection()
+        /// <summary>
+        /// Materialize the Queue
+        /// </summary>
+        public T[] GetQueue()
         {
             T[] _result = new T[_Collection.Length];
             if (!_Round)
@@ -41,7 +53,6 @@
                 _result[_xx] = _Collection[ii];
                 _xx++;
             }
-
 
             return _result;
         }

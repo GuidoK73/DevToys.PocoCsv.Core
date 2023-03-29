@@ -54,7 +54,7 @@ namespace TestProject2
         public void TestFixedQueue()
         {
 
-            FixedQueue<int> _queue = new DevToys.PocoCsv.Core.FixedQueue<int>(5);
+            InfiniteLoopQueue<int> _queue = new DevToys.PocoCsv.Core.InfiniteLoopQueue<int>(5);
 
             List<int> _test = new List<int>();
             for(int ii =0; ii < 2; ii++)
@@ -67,7 +67,7 @@ namespace TestProject2
                 _queue.Add(ii);
             }
 
-            var _result = _queue.GetCollection();
+            var _result = _queue.GetQueue();
 
             Console.WriteLine("X");
         }

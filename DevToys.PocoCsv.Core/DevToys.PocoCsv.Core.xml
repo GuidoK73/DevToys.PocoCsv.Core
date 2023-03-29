@@ -10,24 +10,24 @@
             </summary>
         </member>
         <member name="F:DevToys.PocoCsv.Core.BaseCsv._File">
-             <summary>
-            
-             </summary>
+            <summary>
+            Property Set by contructor, either File or Stream is used.
+            </summary>
         </member>
         <member name="F:DevToys.PocoCsv.Core.BaseCsv._Stream">
-             <summary>
-            
-             </summary>
+            <summary>
+            Property Set by contructor, either File or Stream is used.
+            </summary>
         </member>
         <member name="F:DevToys.PocoCsv.Core.BaseCsv._Separator">
-             <summary>
-            
-             </summary>
+            <summary>
+            Separator to use. Default: ','
+            </summary>
         </member>
         <member name="F:DevToys.PocoCsv.Core.BaseCsv._BufferSize">
-             <summary>
-            
-             </summary>
+            <summary>
+            Stream buffer size, Default: 1024
+            </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.BaseCsv.Culture">
             <summary>
@@ -140,6 +140,11 @@
             Csv Seperator to use default ','
             </summary>
         </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.EmptyLineBehaviour">
+            <summary>
+            How should empty lines be treated.
+            </summary>
+        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.HasErrors">
             <summary>
             Indicates there are read conversion errors.
@@ -210,15 +215,55 @@
             Initialize the CsvReader
             </summary>
         </member>
+        <member name="T:DevToys.PocoCsv.Core.CsvReadError">
+            <summary>
+            Read error info, only when type conversions take place.
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReadError.ColumnIndex">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReadError.PropertyName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReadError.PropertyType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReadError.Value">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamHelper">
              <summary>
             
              </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStreamHelper.Separator">
-             <summary>
-            
-             </summary>
+            <summary>
+            Char separator to use default: ','
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamHelper.EndOfStream">
+            <summary>
+            Indicates the stream has ended.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamHelper.MoveToPosition(System.IO.Stream,System.Int64)">
+            <summary>
+            Move stream to a position.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamHelper.MoveToStart(System.IO.Stream)">
+            <summary>
+            Move stream to start position.
+            </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamHelper.ReadRow(System.IO.Stream)">
             <summary>
@@ -231,6 +276,11 @@
             Skip a CSV row
             </summary>
             <param name="stream"></param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamHelper.MoveToLast(System.IO.Stream,System.Int32)">
+            <summary>
+            Move to a last row position before number of rows.
+            </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamReader">
             <summary>
@@ -304,6 +354,11 @@
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.Skip(System.Int32)">
             <summary>
             Use to skip first row without materializing, usefull for skipping header.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.MoveToLast(System.Int32)">
+            <summary>
+            Moves to the last X rows, use ReadCsvLine after this call.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadCsvLine">
@@ -492,9 +547,29 @@
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Init">
-             <summary>
-            
-             </summary>
+            <summary>
+            Initialize
+            </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.EmptyLineBehaviour">
+            <summary>
+            How should empty lines be treated.
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.EmptyLineBehaviour.DefaultInstance">
+            <summary>
+            Return a new instance of T
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.EmptyLineBehaviour.NullValue">
+            <summary>
+            Return Null value for object.
+            </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.CRLFMode">
+            <summary>
+            Indicate how lines are ended when writing CSV Files.
+            </summary>
         </member>
         <member name="F:DevToys.PocoCsv.Core.CRLFMode.CRLF">
             <summary>
@@ -575,6 +650,26 @@
         </member>
         <member name="F:DevToys.PocoCsv.Core.NetType.Null">
             <summary>Type is Null</summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.InfiniteLoopQueue`1">
+            <summary>
+            A Queue that only holds last x items of T
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.InfiniteLoopQueue`1.#ctor(System.Int32)">
+            <summary>
+            Construct the Queue with it's size.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.InfiniteLoopQueue`1.Add(`0)">
+            <summary>
+            Add item to the Queue
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.InfiniteLoopQueue`1.GetQueue">
+            <summary>
+            Materialize the Queue
+            </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.TypeUtils.BestNetType(DevToys.PocoCsv.Core.NetType,System.String)">
             <summary>

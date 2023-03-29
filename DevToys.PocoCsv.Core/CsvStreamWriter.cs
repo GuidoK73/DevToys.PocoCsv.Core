@@ -10,7 +10,11 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvStreamWriter : StreamWriter
     {
-        private StringBuilder _sb = new StringBuilder();
+        private const char _CR = '\r';
+        private const char _LF = '\n';
+        private const string _CRLF = "\r\n";
+
+        private readonly StringBuilder _sb = new();
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the default encoding and buffer size.
@@ -84,15 +88,15 @@ namespace DevToys.PocoCsv.Core
             {
                 if (CRLFMode == CRLFMode.CRLF)
                 {
-                    _sb.Append("\r\n");
+                    _sb.Append(_CRLF);
                 }
                 else if (CRLFMode == CRLFMode.CR)
                 {
-                    _sb.Append('\r');
+                    _sb.Append(_CR);
                 }
                 else if (CRLFMode == CRLFMode.LF)
                 {
-                    _sb.Append('\n');
+                    _sb.Append(_LF);
                 }
             }
 
@@ -116,15 +120,15 @@ namespace DevToys.PocoCsv.Core
             {
                 if (CRLFMode == CRLFMode.CRLF)
                 {
-                    _sb.Append("\r\n");
+                    _sb.Append(_CRLF);
                 }
                 else if (CRLFMode == CRLFMode.CR)
                 {
-                    _sb.Append('\r');
+                    _sb.Append(_CR);
                 }
                 else if (CRLFMode == CRLFMode.LF)
                 {
-                    _sb.Append('\n');
+                    _sb.Append(_LF);
                 }
             }
 

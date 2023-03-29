@@ -9,8 +9,6 @@ using System.Text;
 
 namespace DevToys.PocoCsv.Core
 {
-
-
     /// <summary>
     /// Write T to Csv Stream from an IEnumerable source.
     /// </summary>
@@ -23,6 +21,10 @@ namespace DevToys.PocoCsv.Core
         private StreamWriter _StreamWriter;
         private List<int> _ColumnIndexes;
         private int _MaxColumnIndex = 0;
+
+        private const char _CR = '\r';
+        private const char _LF = '\n';
+        private const string _CRLF = "\r\n";
 
         /// <summary>
         /// Constructor
@@ -144,15 +146,15 @@ namespace DevToys.PocoCsv.Core
             {
                 if (CRLFMode == CRLFMode.CRLF)
                 {
-                    _StreamWriter.Write("\r\n");
+                    _StreamWriter.Write(_CRLF);
                 }
                 else if (CRLFMode == CRLFMode.CR)
                 {
-                    _StreamWriter.Write('\r');
+                    _StreamWriter.Write(_CR);
                 }
                 else if (CRLFMode == CRLFMode.LF)
                 {
-                    _StreamWriter.Write('\n');
+                    _StreamWriter.Write(_LF);
                 }
             }
             for (int ii = 0; ii <= _MaxColumnIndex; ii++)
@@ -872,7 +874,7 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
-        ///
+        /// Initialize
         /// </summary>
         private void Init()
         {

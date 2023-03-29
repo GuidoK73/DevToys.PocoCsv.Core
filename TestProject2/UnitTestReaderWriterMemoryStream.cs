@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TestProject2
 {
@@ -72,7 +73,7 @@ namespace TestProject2
                 TestDateTime = DateTime.Now,
                 TestDateTimeNull = null,
                 TestInt = 300,
-                TestIntNull = null
+                TestIntNull = 600
             };
         }
 
@@ -109,6 +110,7 @@ namespace TestProject2
                 using (CsvWriter<Data> _csvWriter = new CsvWriter<Data>(_stream))
                 using (CsvReader<Data> _csvReader = new CsvReader<Data>(_stream))
                 {
+                    _csvWriter.CRLFMode = CRLFMode.CRLF; // Default
                     _csvWriter.Separator = ';';
                     _csvWriter.Open();
                     _csvWriter.WriteHeader();
@@ -121,6 +123,114 @@ namespace TestProject2
                 }
             }
        }
+
+        [TestMethod]
+        public void TestReaderWriterMemoryStream3()
+        {
+            List<Data> _result = new List<Data>();
+
+            using (MemoryStream _stream = new MemoryStream())
+            {
+
+                using (CsvWriter<Data> _csvWriter = new CsvWriter<Data>(_stream))
+                using (CsvReader<Data> _csvReader = new CsvReader<Data>(_stream))
+                {
+                    _csvWriter.CRLFMode = CRLFMode.CR;
+                    _csvWriter.Separator = ';';
+                    _csvWriter.Open();
+                    _csvWriter.WriteHeader();
+                    _csvWriter.Write(GetTestData());
+
+                    _csvReader.Open();
+                    _csvReader.DetectSeparator();
+                    _csvReader.Skip();
+                    _result = _csvReader.ReadAsEnumerable().ToList();
+                }
+            }
+        }
+
+        [TestMethod]
+        public void TestReaderWriterMemoryStream4()
+        {
+            List<Data> _result = new List<Data>();
+
+            using (MemoryStream _stream = new MemoryStream())
+            {
+
+                using (CsvWriter<Data> _csvWriter = new CsvWriter<Data>(_stream))
+                using (CsvReader<Data> _csvReader = new CsvReader<Data>(_stream))
+                {
+                    _csvWriter.CRLFMode = CRLFMode.LF;
+                    _csvWriter.Separator = ';';
+                    _csvWriter.Open();
+                    _csvWriter.WriteHeader();
+                    _csvWriter.Write(GetTestData());
+
+                    _csvReader.Open();
+                    _csvReader.DetectSeparator();
+                    _csvReader.Skip();
+                    _result = _csvReader.ReadAsEnumerable().ToList();
+                }
+            }
+        }
+
+        private string _distortedData = @"Collumn1,Collumn2,Test,TestDateTime,TestDateTimeNull,TestInt,TestIntNull
+
+
+01,AA,AgQG,29/03/2023 14:21:39,29/03/2023 14:21:39,100,200
+01,AA,AgQG,29/03/2023 14:21:39,29/03/2023 14:21:39,100,200
+04,BB,CAkK,29/03/2023 14:21:39,,300,600";
+
+
+        [TestMethod]
+        public void TestReaderWriterMemoryStream5()
+        {
+            List<Data> _result = new List<Data>();
+
+            byte[] byteArray = Encoding.Default.GetBytes(_distortedData);
+
+            using (MemoryStream _stream = new MemoryStream(byteArray))
+            {
+                using (CsvReader<Data> _csvReader = new CsvReader<Data>(_stream))
+                {
+                    _csvReader.EmptyLineBehaviour = EmptyLineBehaviour.NullValue;
+                    _csvReader.Open();
+                    _csvReader.DetectSeparator();
+                    _csvReader.Skip();
+                    _result = _csvReader.ReadAsEnumerable().ToList();
+                }
+                
+            }
+        }
+
+
+
+        private string _distortedData2 = @"
+
+
+";
+
+
+        [TestMethod]
+        public void TestReaderWriterMemoryStream6()
+        {
+            List<Data> _result = new List<Data>();
+
+            byte[] byteArray = Encoding.Default.GetBytes(_distortedData2);
+
+            using (MemoryStream _stream = new MemoryStream(byteArray))
+            {
+                using (CsvReader<Data> _csvReader = new CsvReader<Data>(_stream))
+                {
+                    _csvReader.Open();
+                    _csvReader.DetectSeparator();
+                    _csvReader.Skip();
+                    _result = _csvReader.ReadAsEnumerable().ToList();
+                }
+
+            }
+        }
+
 
 
         public static string StreamToString(Stream stream)

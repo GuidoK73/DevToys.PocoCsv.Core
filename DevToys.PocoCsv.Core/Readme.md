@@ -77,7 +77,9 @@ Last seeks the csv document for the last x entries. this is much faster then IEn
 Reads current row into T and advances the reader to the next row. 
 - **MoveToStart()**\
 Moves the reader to the start position, Skip() and Take() alter the start positions use MoveToStart() to reset the position.
-
+- **EmptyLineBehaviour**\
+    -   EmptyLineBehaviour: Return a new instance of T (Default)
+    -   NullValue: Return Null value for object.
 
 # CsvWriter\<T\>
 ~~~cs

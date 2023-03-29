@@ -178,6 +178,10 @@ namespace DevToys.PocoCsv.Core
                     break;
                 }
             }
+            if (_columnCount.Count == 0)
+            {
+                return false;
+            }
             int prevcount = _columnCount.First();
             foreach (int count in _columnCount)
             {

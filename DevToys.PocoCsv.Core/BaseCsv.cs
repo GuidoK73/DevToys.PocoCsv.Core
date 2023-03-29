@@ -10,22 +10,22 @@ namespace DevToys.PocoCsv.Core
     public abstract class BaseCsv
     {
         /// <summary>
-        ///
+        /// Property Set by contructor, either File or Stream is used.
         /// </summary>
         protected string _File = null;
 
         /// <summary>
-        ///
+        /// Property Set by contructor, either File or Stream is used.
         /// </summary>
         protected Stream _Stream = null;
 
         /// <summary>
-        ///
+        /// Separator to use. Default: ','
         /// </summary>
         protected char _Separator = ',';
 
         /// <summary>
-        ///
+        /// Stream buffer size, Default: 1024
         /// </summary>
         protected int _BufferSize = 1024;
 

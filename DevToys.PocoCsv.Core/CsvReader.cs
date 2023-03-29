@@ -53,21 +53,13 @@ namespace DevToys.PocoCsv.Core
         private Action<T, UInt16?>[] _PropertySettersUInt16Null = null;
         private Action<T, UInt32?>[] _PropertySettersUInt32Null = null;
         private Action<T, UInt64?>[] _PropertySettersUInt64Null = null;
-        private List<CsvReadError> _Errors = new();
-
+        private readonly List<CsvReadError> _Errors = new();
         private readonly StringBuilder _sbValue = new(127);
         private char _char;
         private int _byte;
-        private const char _r = '\r';
-        private const char _n = '\n';
-        private const char _escape = '"';
-
-        private enum State
-        {
-            First = 0,
-            Normal = 1,
-            Escaped = 2
-        }
+        private const char _CR = '\r';
+        private const char _LF = '\n';
+        private const char _ESCAPE = '"';
 
         /// <summary>
         /// Constructor
@@ -126,22 +118,24 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
+        /// How should empty lines be treated.
+        /// </summary>
+        public EmptyLineBehaviour EmptyLineBehaviour { get; set; } = EmptyLineBehaviour.DefaultInstance;
+
+        /// <summary>
         /// Indicates there are read conversion errors.
         /// </summary>
         public bool HasErrors => _Errors.Count > 0;
-
 
         /// <summary>
         /// Returns collection of error messages.
         /// </summary>
         public IEnumerable<CsvReadError> Errors => _Errors;
 
-
         /// <summary>
         /// Indicates the End of the stream.
         /// </summary>
-        // public bool EndOfStream => (_StreamReader.BaseStream.Position >= _StreamReader.BaseStream.Length);
-        public bool EndOfStream  => _byte == -1;
+        public bool EndOfStream => _byte == -1;
 
         /// <summary>
         /// Indicates whether to look for byte order marks at the beginning of the file.
@@ -185,6 +179,8 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void MoveToStart()
         {
+            _byte = 0;
+            _StreamHelper._byte = 0;
             _StreamReader.BaseStream.Position = 0;
         }
 
@@ -233,14 +229,13 @@ namespace DevToys.PocoCsv.Core
                 throw new IOException("Reader is closed!");
             }
 
-            _StreamHelper.SeekLast(_StreamReader.BaseStream, rows);
+            _StreamHelper.MoveToLast(_StreamReader.BaseStream, rows);
 
             while (!EndOfStream)
             {
                 yield return Read();
             }
         }
-
 
         //  \r = CR(Carriage Return) → Used as a new line character in Mac OS before X
         //  \n = LF(Line Feed) → Used as a new line character in Unix/Mac OS X
@@ -254,34 +249,35 @@ namespace DevToys.PocoCsv.Core
             // own implementation of _Streamer.ReadRow to futher improve speed.
             T _result = new();
             int _columnIndex = 0;
-            State _state = State.First;
+            State _state = State.Normal;
             bool _trimLast = false;
-            _sbValue.Length = 0; // CLEAR
+            _sbValue.Length = 0; // Clear the string buffer.
             _byte = 0;
             bool _rowEnd = false;
+            int lineLength = 0;
 
             while (_byte > -1)
             {
-                _byte = _StreamReader.BaseStream.ReadByte();               
+                _byte = _StreamReader.BaseStream.ReadByte();
                 _char = (char)_byte;
 
                 if (_byte == -1)
                 {
-                    _rowEnd = true;
+                    _rowEnd = true; // End of the document. execute the row end.
                 }
-                if ((_state == State.Normal && _char == '\r'))
+                else if ((_state == State.Normal && _char == _CR))
                 {
-                    // PEEK 
-                    _byte = _StreamReader.BaseStream.ReadByte();
+                    _byte = _StreamReader.BaseStream.ReadByte(); // Read next byte to see if it is LF.
                     _char = (char)_byte;
-                    if (_char != '\n')
+                    if (_char != _LF)
                     {
-                        _rowEnd = true;
-                    }
+                        _StreamReader.BaseStream.Position--;
+                        _rowEnd = true; // Indipendend CR, this means: end the row.
+                    } // in case of LF: see next if statement below.
                 }
-                if ((_state == State.Normal && _char == '\n'))
+                if ((_state == State.Normal && _char == _LF))
                 {
-                    _rowEnd = true;
+                    _rowEnd = true; // LF always leeds to row end.
                 }
                 if (_rowEnd)
                 {
@@ -289,7 +285,7 @@ namespace DevToys.PocoCsv.Core
                     {
                         if (_sbValue.Length > 0)
                         {
-                            if (_sbValue[_sbValue.Length - 1] == _escape)
+                            if (_sbValue[_sbValue.Length - 1] == _ESCAPE)
                             {
                                 _sbValue.Length--;
                             }
@@ -297,14 +293,6 @@ namespace DevToys.PocoCsv.Core
                     }
                     SetValue(_columnIndex, _result);
                     break; // END ROW.
-                }
-                if (_state == State.First)
-                {
-                    _state = State.Normal;
-                    if (_char == _n)
-                    {
-                        continue;
-                    }
                 }
                 if (_char == Separator)
                 {
@@ -314,27 +302,37 @@ namespace DevToys.PocoCsv.Core
                         {
                             if (_sbValue.Length > 0)
                             {
-                                _sbValue.Length--;
+                                if (_sbValue[_sbValue.Length - 1] == _ESCAPE)
+                                {
+                                    _sbValue.Length--;
+                                }
                             }
                             _trimLast = false;
                         }
                         SetValue(_columnIndex, _result);
-                        _sbValue.Length = 0;
+                        _sbValue.Length = 0; // Clear the string buffer.
                         _columnIndex++;
                         continue; // NEXT FIELD
                     }
                 }
-                if (_char == _escape)
+                else if (_char == _ESCAPE)
                 {
-                    _state = (_state == State.Normal) ? State.Escaped : State.Normal;
+                    _state = (_state == State.Normal) ? State.Escaped : State.Normal; // Switch state
                     if (_sbValue.Length == 0)
                     {
                         _trimLast = true; // .Trim() is costly on large sets.
-                        continue;
+                        continue; // NEXT FIELD
                     }
                 }
-
+                lineLength++;
                 _sbValue.Append(_char);
+            }
+            if (lineLength == 0)
+            {
+                if (EmptyLineBehaviour == EmptyLineBehaviour.NullValue)
+                {
+                    return default;
+                }
             }
             return _result;
         }
@@ -667,7 +665,6 @@ namespace DevToys.PocoCsv.Core
             {
                 _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
             }
-
         }
 
         private void SetValueInt16(int index, T targetObject)
@@ -681,7 +678,6 @@ namespace DevToys.PocoCsv.Core
             {
                 _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
             }
-
         }
 
         private void SetValueByte(int index, T targetObject)
@@ -958,7 +954,7 @@ namespace DevToys.PocoCsv.Core
             {
                 _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
             }
-        }   
+        }
 
         #endregion Value Setters
 
