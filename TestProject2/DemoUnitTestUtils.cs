@@ -9,7 +9,7 @@ using System.Text;
 namespace TestProject2
 {
     [TestClass]
-    public class UnitTestUtils
+    public class DemoUnitTestUtils
     {
         [TestMethod]
         public void TestUtils()
@@ -33,15 +33,15 @@ namespace TestProject2
             {
                 bool _succes = CsvUtils.GetCsvSeparator(_reader, out char _separator, _sampleRows);
 
-                _reader.Position = 0;
+                _reader.MoveToStart();
 
                 string[] _header = CsvUtils.CsvHeader(_reader, _separator);
 
-                _reader.Position = 0;
+                _reader.MoveToStart();
 
                 List<CsvColumnInfo> _schema = CsvUtils.GetCsvSchema(_reader, _sampleRows).ToList();
 
-                _reader.Position = 0;
+                _reader.MoveToStart();
 
                 while (!_reader.EndOfStream)
                 {

@@ -40,7 +40,7 @@ namespace TestProject2
 
 
     [TestClass]
-    public class UnitTestReaderWriterMemoryStream
+    public class DemoUnitTestReaderWriterMemoryStream
     {
 
         private IEnumerable<Data> GetTestData()

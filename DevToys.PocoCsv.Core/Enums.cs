@@ -23,6 +23,22 @@
     }
 
     /// <summary>
+    /// How will the write behave with null objects.
+    /// </summary>
+    public enum WriteNullValueBehaviour
+    {
+        /// <summary>
+        /// Ignore the value
+        /// </summary>
+        Skip = 0,
+
+        /// <summary>
+        /// Write an empty line
+        /// </summary>
+        EmptyLine = 1,
+    }
+
+    /// <summary>
     /// Indicate how lines are ended when writing CSV Files.
     /// </summary>
     public enum CRLFMode

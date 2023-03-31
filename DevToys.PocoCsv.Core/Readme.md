@@ -5,10 +5,14 @@
 DevToys.PocoCsv.Core is a class library to read and write to Csv.
 It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader<T> and CsvWriter<T>.
 
-- Read/write serialize/deserialize data to and from Csv.
-- Use Linq to query large CSV files with CsvReader<T>.ReadAsEnumerable().
-- Use CsvWriter<T>.Write() to write large data tables to Csv.
-- Retrieve schema for a csv file with CsvUtils.GetCsvSchema() which can be used to create a poco object.
+Read/write serialize/deserialize data to and from Csv.
+
+- Conform RFC 4180.
+- Auto separator detection.
+- Auto line feed/break detection.
+- Sequential read with ReadAsEnumerable().
+- Csv schema Retrieval with CsvUtils.GetCsvSchema().
+- Casting Error log.
 
 # CsvStreamReader
 ~~~cs
@@ -70,16 +74,20 @@ Reads and deserializes each csv file line per iteration in the collection, this 
 - **DetectSeparator()**\
 To auto set the separator (looks for commonly used separators in first 10 lines).
 - **Skip(int rows)**\
-Skip and advances the reader to the next row without interpret it. This is much faster then IEnumerable.Skip(). 
+Skip and advances the reader to the next row without interpreting it. This is much faster then IEnumerable.Skip(). 
 - **Last(int rows)**\
 Last seeks the csv document for the last x entries. this is much faster then IEnumerable.Last().
 - **Read()**\
 Reads current row into T and advances the reader to the next row. 
 - **MoveToStart()**\
 Moves the reader to the start position, Skip() and Take() alter the start positions use MoveToStart() to reset the position.
-- **EmptyLineBehaviour**\
+- **EmptyLineBehaviour**
     -   EmptyLineBehaviour: Return a new instance of T (Default)
     -   NullValue: Return Null value for object.
+- **CurrentLine**\
+Return the current line number.
+- **Flush()**
+Flushes all buffers.
 
 # CsvWriter\<T\>
 ~~~cs
@@ -124,6 +132,12 @@ Determine which mode to use for new lines.
     - CR + LF → Used as a new line character in Windows.
     - CR(Carriage Return) → Used as a new line character in Mac OS before X.
     - LF(Line Feed) → Used as a new line character in Unix/Mac OS X
+- **NullValueBehaviour**
+Determine what to do with writing null objects.
+    - Skip, Ignore the object
+    - Empty Line, Write an empty line
+- **Flush()**
+Flushes all buffers.
 
 # ColumnAttribute
 

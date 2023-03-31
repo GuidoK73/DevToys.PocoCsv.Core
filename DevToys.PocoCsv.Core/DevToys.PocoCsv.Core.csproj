@@ -7,19 +7,36 @@
 
 DevToys.PocoCsv.Core is a very fast reader and writer for Csv.
 It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader&lt;T&gt; and CsvWriter&lt;T&gt;.
+
+Read/write serialize/deserialize data to and from Csv.
+
+- Conform RFC 4180.
+- Auto separator detection.
+- Auto line feed/break detection.
+- Sequential read/materializing with ReadAsEnumerable().
+- Csv schema Retrieval with CsvUtils.GetCsvSchema().
+- Casting Error log.
+
 </Description>
     <PackageProjectUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core/wiki/DevToys.PocoCsv.Core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.6.2</Version>
+    <Version>1.6.3</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>1.6.2
+    <PackageReleaseNotes>1.6.3
+- Added NullValueBehaviour to CsvWriter&lt;T&gt;
+- Added CurrentLine to Reader
+- Added LineNumber to Error log
+- Added Flush() to Reader&lt;T&gt; and Writer&lt;T&gt;
+- Refactored UnitTests in GitHub code Demo Tests and Validate Tests.
+
+1.6.2
 - Minor bugfix with CR only ending.
 
 1.6.1

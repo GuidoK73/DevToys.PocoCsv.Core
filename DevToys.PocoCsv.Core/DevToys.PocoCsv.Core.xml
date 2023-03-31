@@ -160,6 +160,11 @@
             Indicates the End of the stream.
             </summary>
         </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.CurrentLine">
+            <summary>
+            Returns current Line position.
+            </summary>
+        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.DetectEncodingFromByteOrderMarks">
             <summary>
             Indicates whether to look for byte order marks at the beginning of the file.
@@ -173,6 +178,11 @@
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Close">
             <summary>
             Close the CSV stream reader
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Flush">
+            <summary>
+            Flush all buffers.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.DetectSeparator">
@@ -240,6 +250,16 @@
             
             </summary>
         </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReadError.LineNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReadError.ToString">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamHelper">
              <summary>
             
@@ -253,6 +273,11 @@
         <member name="P:DevToys.PocoCsv.Core.CsvStreamHelper.EndOfStream">
             <summary>
             Indicates the stream has ended.
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamHelper.CurrentLine">
+            <summary>
+            Current Line
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamHelper.MoveToPosition(System.IO.Stream,System.Int64)">
@@ -336,6 +361,11 @@
             Get / Sets the position.
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.MoveToStart">
+            <summary>
+            Move reader to the start position 0
+            </summary>
+        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.Separator">
             <summary>
             Get / Sets the Separator character to use.
@@ -344,6 +374,11 @@
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.GetCsvSchema(System.Int32)">
             <summary>
             Returns a schema for the CSV with best fitted types to use.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.DetectSeparator">
+            <summary>
+            Detects and sets CSV Separator. over 10 sample rows
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.GetCsvSeparator(System.Int32)">
@@ -516,6 +551,11 @@
             \n = LF(Line Feed) → Used as a new line character in Unix/Mac OS X
             </summary>
         </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvWriter`1.NullValueBehaviour">
+            <summary>
+            How will the write behave with null objects.
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Dispose">
             <summary>
             Releases all resources used by the System.IO.TextReader object.
@@ -524,6 +564,11 @@
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Close">
             <summary>
             Close the CSV stream reader
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Flush">
+            <summary>
+            Flush all buffers.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.WriteHeader">
@@ -564,6 +609,21 @@
         <member name="F:DevToys.PocoCsv.Core.EmptyLineBehaviour.NullValue">
             <summary>
             Return Null value for object.
+            </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.WriteNullValueBehaviour">
+            <summary>
+            How will the write behave with null objects.
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.WriteNullValueBehaviour.Skip">
+            <summary>
+            Ignore the value
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.WriteNullValueBehaviour.EmptyLine">
+            <summary>
+            Write an empty line
             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CRLFMode">

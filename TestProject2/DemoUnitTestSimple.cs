@@ -38,14 +38,21 @@ namespace TestProject2
     }
 
     [TestClass]
-    public class UnitTestSimple
+    public class DemoUnitTestSimple
     {
         [TestMethod]
         public void TestReaderSimple()
         {
-            string file = @"D:\data2.csv";
+            string _file = System.IO.Path.GetTempFileName();
 
-            using (CsvReader<CsvSimple> _reader = new(file))
+            using (CsvWriter<CsvSimple> _writer = new(_file) { Separator = ',' })
+            {
+                _writer.Open();
+                _writer.WriteHeader();
+                _writer.Write(Data());
+            }
+
+            using (CsvReader<CsvSimple> _reader = new(_file))
             {
                 _reader.Open();
                 _reader.Skip(20);
@@ -58,32 +65,23 @@ namespace TestProject2
         [TestMethod]
         public void TestReaderSimpleLast()
         {
-            string file = @"D:\data2.csv";
+            string _file = System.IO.Path.GetTempFileName();
 
-            using (CsvReader<CsvSimple> _reader = new(file))
+            using (CsvWriter<CsvSimple> _writer = new(_file) { Separator = ',' })
+            {
+                _writer.Open();
+                _writer.WriteHeader();
+                _writer.Write(Data());
+            }
+
+
+            using (CsvReader<CsvSimple> _reader = new(_file))
             {
                 _reader.Open();
                 var  _last10 = _reader.Last(10).ToList();
             }
         }
 
-        [TestMethod]
-        public void TestWriter()
-        {
-            string file = @"D:\data2.csv";
-
-            if (File.Exists(file))
-            {
-                File.Delete(file);
-            }
-
-            using (CsvWriter<CsvSimple> _writer = new(file) { Separator = ',' })
-            {
-                _writer.Open();
-                _writer.WriteHeader();
-                _writer.Write(Data());
-            }
-        }
 
         private IEnumerable<CsvSimple> Data()
         {

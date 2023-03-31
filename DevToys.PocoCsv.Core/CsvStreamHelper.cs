@@ -16,6 +16,7 @@ namespace DevToys.PocoCsv.Core
         private const char _LF = '\n';
         private const char _ESCAPE = '"';
         private InfiniteLoopQueue<long> _takeLastQueue;
+       
 
         /// <summary>
         /// Char separator to use default: ','
@@ -31,11 +32,15 @@ namespace DevToys.PocoCsv.Core
         //  \n = LF(Line Feed) → Used as a new line character in Unix/Mac OS X
         //  \r\n = CR + LF → Used as a new line character in Windows
 
-        
+        /// <summary>
+        /// Current Line
+        /// </summary>
+        public int CurrentLine { get; set; }
+
         /// <summary>
         /// Move stream to a position.
         /// </summary>
-        public void MoveToPosition(Stream stream, long position)
+        internal void MoveToPosition(Stream stream, long position)
         {
             stream.Position = position;
             _byte = 0;
@@ -96,6 +101,7 @@ namespace DevToys.PocoCsv.Core
                         }
                     }
                     yield return _sbValue.ToString();
+                    CurrentLine++;
                     break; // END
                 }
                 if (_char == Separator)
@@ -152,11 +158,14 @@ namespace DevToys.PocoCsv.Core
                     _char = (char)_byte;
                     if (_char != _LF)
                     {
+                        stream.Position--;
+                        CurrentLine++;
                         break;
                     }
                 }
                 if ((_state == State.Normal && _char == _LF))
                 {
+                    CurrentLine++;
                     break;
                 }
                 if (_char == _ESCAPE)
@@ -174,12 +183,11 @@ namespace DevToys.PocoCsv.Core
             _takeLastQueue = new InfiniteLoopQueue<long>(rows);
 
             var _state = State.Normal;
-            _byte = 0;
+            MoveToStart(stream);
 
             while (_byte > -1)
             {
                 _byte = stream.ReadByte();
-
                 _char = (char)_byte;
                 if (_byte == -1)
                 {
@@ -192,22 +200,28 @@ namespace DevToys.PocoCsv.Core
                     _char = (char)_byte;
                     if (_char != _LF)
                     {
+                        stream.Position--;
+                        CurrentLine++;
                         _takeLastQueue.Add(stream.Position);
                     }
                 }
                 if ((_state == State.Normal && _char == _LF))
                 {
                     _takeLastQueue.Add(stream.Position);
+                    CurrentLine++;
                     continue;
                 }
-
                 if (_char == _ESCAPE)
                 {
                     _state = (_state == State.Normal) ? State.Escaped : State.Normal;
                 }
             }
+            _byte = -2;
 
-            stream.Position = _takeLastQueue.GetQueue()[0]; // Get first position of Queue to move to the file position of last x rows.
+
+            var _queuePosition = _takeLastQueue.GetQueue();
+            CurrentLine -= _queuePosition.Length;
+            stream.Position = _queuePosition[0]; // Get first position of Queue to move to the file position of last x rows.
         }
     }
 }

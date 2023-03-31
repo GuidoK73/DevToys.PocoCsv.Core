@@ -72,13 +72,19 @@ namespace DevToys.PocoCsv.Core
         public long Position
         {
             get => BaseStream.Position;
-            set
+            internal set
             {
                 _StreamHelper.MoveToPosition(BaseStream, value);
             }
         }
 
-
+        /// <summary>
+        /// Move reader to the start position 0
+        /// </summary>
+        public void MoveToStart()
+        {
+            _StreamHelper.MoveToPosition(BaseStream, 0);
+        }
 
         /// <summary>
         /// Get / Sets the Separator character to use.
@@ -104,6 +110,15 @@ namespace DevToys.PocoCsv.Core
             var _schema = CsvUtils.GetCsvSchema(this, sampleRows);
             Position = 0;
             return _schema;
+        }
+
+
+        /// <summary>
+        /// Detects and sets CSV Separator. over 10 sample rows
+        /// </summary>
+        public void DetectSeparator()
+        {
+            GetCsvSeparator(10);
         }
 
         /// <summary>

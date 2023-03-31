@@ -78,6 +78,12 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public CRLFMode CRLFMode { get; set; } = CRLFMode.CRLF;
 
+
+        /// <summary>
+        /// How will the write behave with null objects.
+        /// </summary>
+        public WriteNullValueBehaviour NullValueBehaviour { get; set; } = WriteNullValueBehaviour.Skip;
+
         /// <summary>
         /// Releases all resources used by the System.IO.TextReader object.
         /// </summary>
@@ -93,6 +99,14 @@ namespace DevToys.PocoCsv.Core
         public virtual void Close()
         {
             _StreamWriter.Close();
+        }
+
+        /// <summary>
+        /// Flush all buffers.
+        /// </summary>
+        public void Flush()
+        {
+            _StreamWriter.Flush();
         }
 
         /// <summary>
@@ -142,6 +156,11 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void Write(T row)
         {
+            if (row == null && NullValueBehaviour == WriteNullValueBehaviour.Skip)
+            {
+                return;
+            }
+
             if (_StreamWriter.BaseStream.Position > 0)
             {
                 if (CRLFMode == CRLFMode.CRLF)
@@ -157,6 +176,11 @@ namespace DevToys.PocoCsv.Core
                     _StreamWriter.Write(_LF);
                 }
             }
+            if (row == null && NullValueBehaviour == WriteNullValueBehaviour.EmptyLine)
+            {
+                return;
+            }
+
             for (int ii = 0; ii <= _MaxColumnIndex; ii++)
             {
                 if (_Properties.ContainsKey(ii))
@@ -210,8 +234,11 @@ namespace DevToys.PocoCsv.Core
                     }
                     else if (targetType == typeof(byte[]))
                     {
-                        var _byteVakye = (byte[])_value;
-                        _StreamWriter.Write(Convert.ToBase64String(_byteVakye));
+                        var _byteValue = (byte[])_value;
+                        if (_byteValue != null)
+                        {
+                            _StreamWriter.Write(Convert.ToBase64String(_byteValue));
+                        }
                     }
                     else if (targetType == typeof(DateTime))
                     {

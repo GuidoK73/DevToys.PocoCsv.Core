@@ -27,5 +27,18 @@ namespace DevToys.PocoCsv.Core
         /// 
         /// </summary>
         public string Value { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int LineNumber { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override string ToString()
+        {
+            return $"Line: {LineNumber}, Column: {ColumnIndex}, Property: {PropertyName}, Value: {Value}";
+        }
     }
 }

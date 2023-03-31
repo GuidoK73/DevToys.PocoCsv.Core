@@ -56,7 +56,6 @@ namespace DevToys.PocoCsv.Core
         private readonly List<CsvReadError> _Errors = new();
         private readonly StringBuilder _sbValue = new(127);
         private char _char;
-        private int _byte;
         private const char _CR = '\r';
         private const char _LF = '\n';
         private const char _ESCAPE = '"';
@@ -135,7 +134,12 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Indicates the End of the stream.
         /// </summary>
-        public bool EndOfStream => _byte == -1;
+        public bool EndOfStream => _StreamHelper.EndOfStream;
+
+        /// <summary>
+        /// Returns current Line position.
+        /// </summary>
+        public int CurrentLine { get => _StreamHelper.CurrentLine; }
 
         /// <summary>
         /// Indicates whether to look for byte order marks at the beginning of the file.
@@ -161,6 +165,15 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
+        /// Flush all buffers.
+        /// </summary>
+        public void Flush()
+        {
+            _StreamReader.BaseStream.Flush();
+        }
+
+
+        /// <summary>
         /// Detect the separator by sampling first 10 rows. Position is moved to start after execution.
         /// </summary>
         public void DetectSeparator()
@@ -179,7 +192,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void MoveToStart()
         {
-            _byte = 0;
+            _StreamHelper.CurrentLine = 0;
             _StreamHelper._byte = 0;
             _StreamReader.BaseStream.Position = 0;
         }
@@ -205,6 +218,11 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void Skip(int rows = 1)
         {
+            if (_StreamReader == null)
+            {
+                throw new IOException("Reader is closed!");
+            }
+
             int ii = 0;
 
             while (!EndOfStream)
@@ -214,7 +232,6 @@ namespace DevToys.PocoCsv.Core
                     break;
                 }
                 _StreamHelper.Skip(_StreamReader.BaseStream);
-                _byte = _StreamHelper._byte;
                 ii++;
             }
         }
@@ -252,23 +269,23 @@ namespace DevToys.PocoCsv.Core
             State _state = State.Normal;
             bool _trimLast = false;
             _sbValue.Length = 0; // Clear the string buffer.
-            _byte = 0;
+            _StreamHelper._byte = 0;
             bool _rowEnd = false;
             int lineLength = 0;
 
-            while (_byte > -1)
+            while (_StreamHelper._byte > -1)
             {
-                _byte = _StreamReader.BaseStream.ReadByte();
-                _char = (char)_byte;
+                _StreamHelper._byte = _StreamReader.BaseStream.ReadByte();
+                _char = (char)_StreamHelper._byte;
 
-                if (_byte == -1)
+                if (_StreamHelper._byte == -1)
                 {
                     _rowEnd = true; // End of the document. execute the row end.
                 }
                 else if ((_state == State.Normal && _char == _CR))
                 {
-                    _byte = _StreamReader.BaseStream.ReadByte(); // Read next byte to see if it is LF.
-                    _char = (char)_byte;
+                    _StreamHelper._byte = _StreamReader.BaseStream.ReadByte(); // Read next byte to see if it is LF.
+                    _char = (char)_StreamHelper._byte;
                     if (_char != _LF)
                     {
                         _StreamReader.BaseStream.Position--;
@@ -292,6 +309,7 @@ namespace DevToys.PocoCsv.Core
                         }
                     }
                     SetValue(_columnIndex, _result);
+                    _StreamHelper.CurrentLine++;
                     break; // END ROW.
                 }
                 if (_char == Separator)
@@ -337,8 +355,6 @@ namespace DevToys.PocoCsv.Core
             return _result;
         }
 
-        #region Value Setters
-
         private void SetValue(int index, T targetObject)
         {
             if (_Properties[index] == null)
@@ -358,6 +374,8 @@ namespace DevToys.PocoCsv.Core
                 }
             }
         }
+
+        #region Value Setters
 
         private void SetValueOther(Type targetType, int index, T targetObject)
         {
@@ -554,405 +572,582 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
+        private string PreParse(int index)
+        {
+            return _sbValue.ToString();
+        }
+
         private void SetValueDecimal(int index, T targetObject)
         {
-            bool succes = Decimal.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out decimal _value);
+            bool succes = Decimal.TryParse(PreParse(index), NumberStyles.Any, Culture, out decimal _value);
             if (succes)
             {
                 _PropertySettersDecimal[index](targetObject, _value);
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueInt32(int index, T targetObject)
         {
-            bool succes = Int32.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out int _value);
+            bool succes = Int32.TryParse(PreParse(index), NumberStyles.Any, Culture, out int _value);
             if (succes)
             {
                 _PropertySettersInt32[index](targetObject, _value);
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueInt64(int index, T targetObject)
         {
-            bool succes = Int64.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out long _value);
+            bool succes = Int64.TryParse(PreParse(index), NumberStyles.Any, Culture, out long _value);
             if (succes)
             {
                 _PropertySettersInt64[index](targetObject, _value);
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueDouble(int index, T targetObject)
         {
-            bool succes = Double.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out double _value);
+            bool succes = Double.TryParse(PreParse(index), NumberStyles.Any, Culture, out double _value);
             if (succes)
             {
                 _PropertySettersDouble[index](targetObject, _value);
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueDateTime(int index, T targetObject)
         {
-            bool succes = DateTime.TryParse(_sbValue.ToString(), Culture, DateTimeStyles.None, out DateTime _value);
+            bool succes = DateTime.TryParse(PreParse(index), Culture, DateTimeStyles.None, out DateTime _value);
             if (succes)
             {
                 _PropertySettersDateTime[index](targetObject, _value);
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueGuid(int index, T targetObject)
         {
-            bool succes = Guid.TryParse(_sbValue.ToString(), out Guid _value);
+            bool succes = Guid.TryParse(PreParse(index), out Guid _value);
             if (succes)
             {
                 _PropertySettersGuid[index](targetObject, _value);
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueSingle(int index, T targetObject)
         {
-            bool succes = Single.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out float _value);
+            bool succes = Single.TryParse(PreParse(index), NumberStyles.Any, Culture, out float _value);
             if (succes)
             {
                 _PropertySettersSingle[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueBoolean(int index, T targetObject)
         {
-            bool succes = Boolean.TryParse(_sbValue.ToString(), out Boolean _value);
+            bool succes = Boolean.TryParse(PreParse(index), out Boolean _value);
             if (succes)
             {
                 _PropertySettersBoolean[index](targetObject, _value);
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueTimeSpan(int index, T targetObject)
         {
-            bool succes = TimeSpan.TryParse(_sbValue.ToString(), Culture, out TimeSpan _value);
+            bool succes = TimeSpan.TryParse(PreParse(index), Culture, out TimeSpan _value);
             if (succes)
             {
                 _PropertySettersTimeSpan[index](targetObject, _value);
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueInt16(int index, T targetObject)
         {
-            bool succes = Int16.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out Int16 _value);
+            bool succes = Int16.TryParse(PreParse(index), NumberStyles.Any, Culture, out Int16 _value);
             if (succes)
             {
                 _PropertySettersInt16[index](targetObject, _value);
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueByte(int index, T targetObject)
         {
-            bool succes = Byte.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out Byte _value);
+            bool succes = Byte.TryParse(PreParse(index), NumberStyles.Any, Culture, out Byte _value);
             if (succes)
             {
                 _PropertySettersByte[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueDateTimeOffset(int index, T targetObject)
         {
-            bool succes = DateTimeOffset.TryParse(_sbValue.ToString(), Culture, DateTimeStyles.None, out DateTimeOffset _value);
+            bool succes = DateTimeOffset.TryParse(PreParse(index), Culture, DateTimeStyles.None, out DateTimeOffset _value);
             if (succes)
             {
                 _PropertySettersDateTimeOffset[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueByteArray(int index, T targetObject)
         {
-            byte[] _byteValue = Convert.FromBase64String(_sbValue.ToString());
+            byte[] _byteValue = null;
+            try
+            {
+                _byteValue = Convert.FromBase64String(_sbValue.ToString());
+            }
+            catch
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+            }
             _PropertySetters[index](targetObject, _byteValue);
         }
 
         private void SetValueSByte(int index, T targetObject)
         {
-            bool succes = SByte.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out SByte _value);
+            bool succes = SByte.TryParse(PreParse(index), NumberStyles.Any, Culture, out SByte _value);
             if (succes)
             {
                 _PropertySettersSByte[index](targetObject, _value);
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueUInt16(int index, T targetObject)
         {
-            bool succes = UInt16.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out UInt16 _value);
+            bool succes = UInt16.TryParse(PreParse(index), NumberStyles.Any, Culture, out UInt16 _value);
             if (succes)
             {
                 _PropertySettersUInt16[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueUInt32(int index, T targetObject)
         {
-            bool succes = UInt32.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out UInt32 _value);
+            bool succes = UInt32.TryParse(PreParse(index), NumberStyles.Any, Culture, out UInt32 _value);
             if (succes)
             {
                 _PropertySettersUInt32[index](targetObject, _value);
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueUInt64(int index, T targetObject)
         {
-            bool succes = UInt64.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out UInt64 _value);
+            bool succes = UInt64.TryParse(PreParse(index), NumberStyles.Any, Culture, out UInt64 _value);
             if (succes)
             {
                 _PropertySettersUInt64[index](targetObject, _value);
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
-            }
-        }
-
-        private void SetValueDateTimeNull(int index, T targetObject)
-        {
-            bool succes = DateTime.TryParse(_sbValue.ToString(), Culture, DateTimeStyles.None, out DateTime _value);
-            if (succes)
-            {
-                _PropertySettersDateTimeNull[index](targetObject, _value);
-            }
-            else
-            {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
         private void SetValueGuidNull(int index, T targetObject)
         {
-            bool succes = Guid.TryParse(_sbValue.ToString(), out Guid _value);
-            if (succes)
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersGuidNull[index](targetObject, _value);
+                bool succes = Guid.TryParse(_valueRead, out Guid _value);
+                if (succes)
+                {
+                    _PropertySettersGuidNull[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _PropertySettersGuidNull[index](targetObject, null);
             }
         }
 
         private void SetValueBooleanNull(int index, T targetObject)
         {
-            bool succes = Boolean.TryParse(_sbValue.ToString(), out Boolean _value);
-            if (succes)
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersBooleanNull[index](targetObject, _value);
+                bool succes = Boolean.TryParse(_valueRead, out Boolean _value);
+                if (succes)
+                {
+                    _PropertySettersBooleanNull[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _PropertySettersBooleanNull[index](targetObject, null);
+            }
+        }
+
+        private void SetValueDateTimeNull(int index, T targetObject)
+        {
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
+            {
+                bool succes = DateTime.TryParse(_valueRead, out DateTime _value);
+                if (succes)
+                {
+                    _PropertySettersDateTimeNull[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+            }
+            else
+            {
+                _PropertySettersDateTimeNull[index](targetObject, null);
             }
         }
 
         private void SetValueDateTimeOffsetNull(int index, T targetObject)
         {
-            bool succes = DateTimeOffset.TryParse(_sbValue.ToString(), Culture, DateTimeStyles.None, out DateTimeOffset _value);
-            if (succes)
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersDateTimeOffsetNull[index](targetObject, _value);
+                bool succes = DateTimeOffset.TryParse(_valueRead, out DateTimeOffset _value);
+                if (succes)
+                {
+                    _PropertySettersDateTimeOffsetNull[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _PropertySettersDateTimeOffsetNull[index](targetObject, null);
             }
         }
 
         private void SetValueTimeSpanNull(int index, T targetObject)
         {
-            bool succes = TimeSpan.TryParse(_sbValue.ToString(), out TimeSpan _value);
-            if (succes)
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersTimeSpanNull[index](targetObject, _value);
+                bool succes = TimeSpan.TryParse(_valueRead, out TimeSpan _value);
+                if (succes)
+                {
+                    _PropertySettersTimeSpanNull[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _PropertySettersTimeSpanNull[index](targetObject, null);
             }
         }
 
         private void SetValueByteNull(int index, T targetObject)
         {
-            bool succes = Byte.TryParse(_sbValue.ToString(), out Byte _value);
-            if (succes)
+            string _valueRead = _sbValue.ToString();
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersByteNull[index](targetObject, _value);
+                bool succes = Byte.TryParse(_valueRead, out Byte _value);
+                if (succes)
+                {
+                    _PropertySettersByteNull[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _PropertySettersByteNull[index](targetObject, null);
             }
         }
 
         private void SetValueSByteNull(int index, T targetObject)
         {
-            bool succes = SByte.TryParse(_sbValue.ToString(), out SByte _value);
-            if (succes)
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersSByteNull[index](targetObject, _value);
+                bool succes = SByte.TryParse(_valueRead, out SByte _value);
+                if (succes)
+                {
+                    _PropertySettersSByteNull[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _PropertySettersSByteNull[index](targetObject, null);
             }
         }
 
         private void SetValueInt16Null(int index, T targetObject)
         {
-            bool succes = Int16.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out Int16 _value);
-            if (succes)
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersInt16Null[index](targetObject, _value);
+                bool succes = Int16.TryParse(_valueRead, out Int16 _value);
+                if (succes)
+                {
+                    _PropertySettersInt16Null[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _PropertySettersInt16Null[index](targetObject, null);
             }
         }
 
         private void SetValueInt32Null(int index, T targetObject)
         {
-            bool succes = Int32.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out Int32 _value);
-            if (succes)
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersInt32Null[index](targetObject, _value);
+                bool succes = Int32.TryParse(_valueRead, out Int32 _value);
+                if (succes)
+                {
+                    _PropertySettersInt32Null[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _PropertySettersInt32Null[index](targetObject, null);
             }
         }
 
         private void SetValueInt64Null(int index, T targetObject)
         {
-            bool succes = Int64.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out Int64 _value);
-            if (succes)
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersInt64Null[index](targetObject, _value);
+                bool succes = Int64.TryParse(_valueRead, out Int64 _value);
+                if (succes)
+                {
+                    _PropertySettersInt64Null[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _PropertySettersInt64Null[index](targetObject, null);
             }
         }
 
         private void SetValueSingleNull(int index, T targetObject)
         {
-            bool succes = Single.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out Single _value);
-            if (succes)
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersSingleNull[index](targetObject, _value);
+                bool succes = Single.TryParse(_valueRead, out Single _value);
+                if (succes)
+                {
+                    _PropertySettersSingleNull[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _PropertySettersSingleNull[index](targetObject, null);
             }
         }
 
         private void SetValueDecimalNull(int index, T targetObject)
         {
-            bool succes = Decimal.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out Decimal _value);
-            if (succes)
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersDecimalNull[index](targetObject, _value);
+                bool succes = Decimal.TryParse(_valueRead, out Decimal _value);
+                if (succes)
+                {
+                    _PropertySettersDecimalNull[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _PropertySettersDecimalNull[index](targetObject, null);
             }
         }
 
         private void SetValueDoubleNull(int index, T targetObject)
         {
-            bool succes = Double.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out Double _value);
-            if (succes)
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersDoubleNull[index](targetObject, _value);
+                bool succes = Double.TryParse(_valueRead, out Double _value);
+                if (succes)
+                {
+                    _PropertySettersDoubleNull[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _PropertySettersDoubleNull[index](targetObject, null);
             }
         }
 
         private void SetValueUInt16Null(int index, T targetObject)
         {
-            bool succes = UInt16.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out UInt16 _value);
-            if (succes)
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersUInt16Null[index](targetObject, _value);
+                bool succes = UInt16.TryParse(_valueRead, out UInt16 _value);
+                if (succes)
+                {
+                    _PropertySettersUInt16Null[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+            }
+            else
+            {
+                _PropertySettersUInt16Null[index](targetObject, null);
             }
         }
 
         private void SetValueUInt32Null(int index, T targetObject)
         {
-            bool succes = UInt32.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out UInt32 _value);
-            if (succes)
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersUInt32Null[index](targetObject, _value);
+                bool succes = UInt32.TryParse(_valueRead, out UInt32 _value);
+                if (succes)
+                {
+                    _PropertySettersUInt32Null[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _PropertySettersUInt32Null[index](targetObject, null);
             }
         }
 
         private void SetValueUInt64Null(int index, T targetObject)
         {
-            bool succes = UInt64.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out UInt64 _value);
-            if (succes)
+            string _valueRead = PreParse(index);
+
+            if (!string.IsNullOrEmpty(_valueRead))
             {
-                _PropertySettersUInt64Null[index](targetObject, _value);
+                bool succes = UInt64.TryParse(_valueRead, out UInt64 _value);
+                if (succes)
+                {
+                    _PropertySettersUInt64Null[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
             }
             else
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString() });
+                _PropertySettersUInt64Null[index](targetObject, null);
             }
         }
 
