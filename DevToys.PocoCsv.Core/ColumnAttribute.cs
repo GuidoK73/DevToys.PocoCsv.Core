@@ -27,5 +27,10 @@ namespace DevToys.PocoCsv.Core
         /// Defines the value to write as a default for null, This property is for CsvWriter only.
         /// </summary>
         public string OutputNullValue { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Type implementing ICustomCsvParse
+        /// </summary>
+        public Type CustomParserType { get; set; }
     }
 }

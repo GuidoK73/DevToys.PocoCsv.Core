@@ -64,6 +64,11 @@
             Defines the value to write as a default for null, This property is for CsvWriter only.
             </summary>
         </member>
+        <member name="P:DevToys.PocoCsv.Core.ColumnAttribute.CustomParserType">
+            <summary>
+            Type implementing ICustomCsvParse
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvColumnInfo">
             <summary>
             CsvUtils.GetCsvSchema result
@@ -710,6 +715,17 @@
         </member>
         <member name="F:DevToys.PocoCsv.Core.NetType.Null">
             <summary>Type is Null</summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.ICustomCsvParse">
+            <summary>
+            Implement Custom parser by assigning the CustomParserType on ColumnAttribute
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.ICustomCsvParse.Parse(System.Text.StringBuilder)">
+            <summary>
+            Implement custom parse.
+            </summary>
+            <returns>Return value must be the same as the property type the CustomParser is placed on.</returns>
         </member>
         <member name="T:DevToys.PocoCsv.Core.InfiniteLoopQueue`1">
             <summary>

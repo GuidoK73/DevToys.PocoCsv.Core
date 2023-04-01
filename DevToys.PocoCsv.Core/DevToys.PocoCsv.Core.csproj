@@ -16,6 +16,7 @@ Read/write serialize/deserialize data to and from Csv.
 - Sequential read/materializing with ReadAsEnumerable().
 - Csv schema Retrieval with CsvUtils.GetCsvSchema().
 - Casting Error log.
+- Ability to add custom parsers.
 
 </Description>
     <PackageProjectUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core/wiki/DevToys.PocoCsv.Core</PackageProjectUrl>
@@ -23,13 +24,16 @@ Read/write serialize/deserialize data to and from Csv.
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.6.3</Version>
+    <Version>1.7</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>1.6.3
+    <PackageReleaseNotes>1.7
+- Added CustomParserType to ColumnAttribute
+
+1.6.3
 - Added NullValueBehaviour to CsvWriter&lt;T&gt;
 - Added CurrentLine to Reader
 - Added LineNumber to Error log

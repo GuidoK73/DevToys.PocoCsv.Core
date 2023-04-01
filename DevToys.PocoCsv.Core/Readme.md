@@ -151,9 +151,50 @@ Defines the header text, this property only applies to the CsvWriter, if not spe
 Apply a string format, depending on the Property type. This property is for CsvWriter only.
 - **OutputNullValue**\
 Defines the value to write as a default for null, This property is for CsvWriter only.
+- **CustomParserType**\
+CustomParserType allows for custom parsing of values to a specific type.
+
+# CustomParserType
+CustomParserType allows for custom parsing of values to a specific type.
+
+~~~cs
+
+    public class ParseBoolean : ICustomCsvParse
+    {
+        public object Parse(StringBuilder value)
+        {
+            switch (value.ToString().ToLower())
+            {
+                case "on":
+                case "true":
+                case "yes":
+                case "1":
+                    return true;
+                case "off":
+                case "false":
+                case "no":
+                case "0":
+                    return false;
+            }
+            return null;
+        }
+    }
+
+    public sealed class CsvPreParseTestObject
+    {
+        [Column(Index = 0, CustomParserType = typeof(ParseBoolean) )]
+        public Boolean? IsOk { get; set; }
+
+        [Column(Index = 1)]
+        public string Name { get; set; }
+    }
+
+~~~
+
+Custom Parsers will run as singleton per specified column in the specific Reader<T>.
+
 
 # Other Examples
-
 
 ~~~cs
 

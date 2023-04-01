@@ -92,7 +92,7 @@ namespace TestProject2
             ByteArray = null,
         };
 
-        #endregion
+        #endregion Data
 
         /// <summary>
         /// This TestMethod tests the CsvStreamReader and the CsvStreamWriter
@@ -111,7 +111,7 @@ namespace TestProject2
                 _writer.Separator = ';'; // Alternate separator
 
                 _writer.CRLFMode = CRLFMode.CRLF;
-                _writer.WriteCsvLine("Row 1", "Row A,A\rA", "A", "A1");                
+                _writer.WriteCsvLine("Row 1", "Row A,A\rA", "A", "A1");
                 _writer.WriteCsvLine("Row 2", "Row B,B\nB", "B", "B2");
                 _writer.CRLFMode = CRLFMode.LF;
                 _writer.WriteCsvLine("Row 3", "Row C;C", "C", "C3");
@@ -229,7 +229,6 @@ namespace TestProject2
                 CsvTypesData _row = _reader.Read();
                 Assert.AreEqual(2, _reader.CurrentLine);
 
-
                 Assert.AreEqual("Line 1", _row.StringValue);
                 Assert.AreEqual(Guid.Parse("94a6bfe9-abb4-46b6-bd7d-8f047b9ba480"), _row.GuidValue);
                 Assert.AreEqual(Guid.Parse("94a6bfe9-abb4-46b6-bd7d-8f047b9ba480"), _row.GuidValueNullable);
@@ -262,11 +261,9 @@ namespace TestProject2
                 Assert.AreEqual(null, _row);
                 Assert.AreEqual(3, _reader.CurrentLine);
 
-
                 // Skip 2 more empty rows.
                 _reader.Skip(2);
                 Assert.AreEqual(5, _reader.CurrentLine);
-
 
                 _row = _reader.Read();
                 Assert.AreEqual("Line 2", _row.StringValue);
@@ -300,7 +297,7 @@ namespace TestProject2
                 _reader.MoveToStart();
 
                 // Reading the header into object should not crash. regardless all type conversion.
-                _row = _reader.Read(); 
+                _row = _reader.Read();
                 Assert.AreEqual("StringValue", _row.StringValue);
 
                 _reader.Skip();
@@ -310,7 +307,6 @@ namespace TestProject2
                 _row = _reader.Read();
                 Assert.AreEqual(Guid.Empty, _row.GuidValue); // Testing empty
 
-
                 _reader.MoveToStart();
                 _reader.EmptyLineBehaviour = EmptyLineBehaviour.NullValue;
 
@@ -319,7 +315,6 @@ namespace TestProject2
                 Assert.AreEqual(null, _rows[0]);
                 Assert.AreEqual("Line 2", _rows[1].StringValue);
 
-
                 _reader.MoveToStart();
 
                 _reader.Skip();
@@ -327,14 +322,10 @@ namespace TestProject2
                 Assert.AreEqual("Line 1", _data[0].StringValue);
                 Assert.AreEqual("Line 2", _data[1].StringValue);
 
-
-
                 string _testData = @"StringValue,GuidValue,BooleanValue,DateTimeValue,DateTimeOffsetValue,TimeSpanValue,ByteValue,SByteValue,Int16Value,Int32Value,Int64Value,SingleValue,DecimalValue,DoubleValue,UInt16Value,UInt32Value,UInt64Value,GuidValueNullable,BooleanValueNullable,DateTimeValueNullable,DateTimeOffsetValueNullable,TimeSpanValueNullable,ByteValueNullable,SByteValueNullable,Int16ValueNullable,Int32ValueNullable,Int64ValueNullable,SingleValueNullable,DecimalValueNullable,DoubleValueNullable,UInt16ValueNullable,UInt32ValueNullable,UInt64ValueNullable,ByteArray
 Line 1,Guid Value?,Is this yes?,31/31/2023 00:00:00,31/03/2023 00:00:00 +02:00,1.02:03:04.0050000,3,5,8,10,12,15,""10,00"",""10,5"",22,24,26,94a6bfe9-abb4-46b6-bd7d-8f047b9ba480,False,31/03/2023 00:00:00,31/03/2023 00:00:00 +02:00,6.07:08:09.0100000,4,6,9,11,13,16,""11,23"",""10,45"",23,25,29,AQID
 
-
 Line 2,94a6bfe9-abb4-46b6-bd7d-8f047b9ba480,True,31/03/2023 00:00:00,31/03/2023 00:00:00 +02:00,Wrong Time,3,5,8,10,12,15,""10,00"",""10,5"",22,24,26,,,,,,,,,,,,,,,,,";
-
 
                 List<CsvTypesData> _result = new List<CsvTypesData>();
 
@@ -352,24 +343,16 @@ Line 2,94a6bfe9-abb4-46b6-bd7d-8f047b9ba480,True,31/03/2023 00:00:00,31/03/2023 
 
                         Assert.AreEqual(4, _csvReader.Errors.Count());
                     }
-
                 }
-
-
-
             }
-
         }
-
-
-
     }
-
 
     public class CsvTypesData
     {
         [Column(Index = 0, Header = "StringValue")]
         public string StringValue { get; set; }
+
         [Column(Index = 1, Header = "GuidValue")]
         public Guid GuidValue { get; set; }
 
@@ -459,16 +442,16 @@ Line 2,94a6bfe9-abb4-46b6-bd7d-8f047b9ba480,True,31/03/2023 00:00:00,31/03/2023 
 
         [Column(Index = 30, Header = "UInt16ValueNullable")]
         public UInt16? UInt16ValueNullable { get; set; }
+
         [Column(Index = 31, Header = "UInt32ValueNullable")]
         public UInt32? UInt32ValueNullable { get; set; }
+
         [Column(Index = 32, Header = "UInt64ValueNullable")]
         public UInt64? UInt64ValueNullable { get; set; }
 
         [Column(Index = 33, Header = "ByteArray")]
         public byte[] ByteArray { get; set; }
-
     }
-
 
     public class CsvSimpleRow
     {
@@ -481,6 +464,4 @@ Line 2,94a6bfe9-abb4-46b6-bd7d-8f047b9ba480,True,31/03/2023 00:00:00,31/03/2023 
         [Column(Index = 10, Header = "Row 10")]
         public string Row10 { get; set; }
     }
-
-
 }

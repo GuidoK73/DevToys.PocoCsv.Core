@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -9,6 +10,8 @@ namespace DevToys.PocoCsv.Core
     {
         public const char _DOUBLEQUOTE = '"';
         public const char _SINGLEQUOTE = '\'';
+
+        public static bool HasInterface(Type type, Type interfacetype) => (type.GetInterfaces().Where(p => p == interfacetype).FirstOrDefault() != null);
 
         public static bool IsNumericType(Type type) => IsNumericType(GetNetType(type));
 

@@ -19,6 +19,10 @@ namespace DevToys.PocoCsv.Core
         private readonly CsvStreamHelper _StreamHelper = new();
         private PropertyInfo[] _Properties = null;
         private Boolean[] _IsNullable = null;
+
+        private ICustomCsvParse[] _CustomParser = null;
+        private Func<object, object[], object>[] _CustomParserCall = null;
+
         private Action<object, object>[] _PropertySetters = null;
         private Action<T, string>[] _PropertySettersString = null;
         private Action<T, Guid>[] _PropertySettersGuid = null;
@@ -375,6 +379,15 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
+        private object CustomParse(int index)
+        {
+            if (_CustomParser[index] == null)
+            {
+                return _sbValue.ToString();
+            }
+            return _CustomParserCall[index](_CustomParser[index], new object[] { _sbValue });
+        }
+
         #region Value Setters
 
         private void SetValueOther(Type targetType, int index, T targetObject)
@@ -572,14 +585,23 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        private string PreParse(int index)
-        {
-            return _sbValue.ToString();
-        }
-
         private void SetValueDecimal(int index, T targetObject)
         {
-            bool succes = Decimal.TryParse(PreParse(index), NumberStyles.Any, Culture, out decimal _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Decimal _customParserValue = (Decimal)CustomParse(index);
+                    _PropertySettersDecimal[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            bool succes = Decimal.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out decimal _value);
             if (succes)
             {
                 _PropertySettersDecimal[index](targetObject, _value);
@@ -592,7 +614,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt32(int index, T targetObject)
         {
-            bool succes = Int32.TryParse(PreParse(index), NumberStyles.Any, Culture, out int _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Int32 _customParserValue = (Int32)CustomParse(index);
+                    _PropertySettersInt32[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            bool succes = Int32.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out int _value);
             if (succes)
             {
                 _PropertySettersInt32[index](targetObject, _value);
@@ -605,7 +641,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt64(int index, T targetObject)
         {
-            bool succes = Int64.TryParse(PreParse(index), NumberStyles.Any, Culture, out long _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Int64 _customParserValue = (Int64)CustomParse(index);
+                    _PropertySettersInt64[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            bool succes = Int64.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out long _value);
             if (succes)
             {
                 _PropertySettersInt64[index](targetObject, _value);
@@ -618,7 +668,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDouble(int index, T targetObject)
         {
-            bool succes = Double.TryParse(PreParse(index), NumberStyles.Any, Culture, out double _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Double _customParserValue = (Double)CustomParse(index);
+                    _PropertySettersDouble[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            bool succes = Double.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out double _value);
             if (succes)
             {
                 _PropertySettersDouble[index](targetObject, _value);
@@ -631,7 +695,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDateTime(int index, T targetObject)
         {
-            bool succes = DateTime.TryParse(PreParse(index), Culture, DateTimeStyles.None, out DateTime _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    DateTime _customParserValue = (DateTime)CustomParse(index);
+                    _PropertySettersDateTime[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }                
+                return;
+            }
+            
+            bool succes = DateTime.TryParse(_sbValue.ToString(), Culture, DateTimeStyles.None, out DateTime _value);
             if (succes)
             {
                 _PropertySettersDateTime[index](targetObject, _value);
@@ -644,7 +722,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueGuid(int index, T targetObject)
         {
-            bool succes = Guid.TryParse(PreParse(index), out Guid _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Guid _customParserValue = (Guid)CustomParse(index);
+                    _PropertySettersGuid[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            bool succes = Guid.TryParse(_sbValue.ToString(), out Guid _value);
             if (succes)
             {
                 _PropertySettersGuid[index](targetObject, _value);
@@ -657,7 +749,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueSingle(int index, T targetObject)
         {
-            bool succes = Single.TryParse(PreParse(index), NumberStyles.Any, Culture, out float _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Single _customParserValue = (Single)CustomParse(index);
+                    _PropertySettersSingle[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            bool succes = Single.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out float _value);
             if (succes)
             {
                 _PropertySettersSingle[index](targetObject, _value);
@@ -670,7 +776,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueBoolean(int index, T targetObject)
         {
-            bool succes = Boolean.TryParse(PreParse(index), out Boolean _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    bool _customParserValue = (bool)CustomParse(index);
+                    _PropertySettersBoolean[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            bool succes = Boolean.TryParse(_sbValue.ToString(), out Boolean _value);
             if (succes)
             {
                 _PropertySettersBoolean[index](targetObject, _value);
@@ -683,7 +803,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueTimeSpan(int index, T targetObject)
         {
-            bool succes = TimeSpan.TryParse(PreParse(index), Culture, out TimeSpan _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    TimeSpan _customParserValue = (TimeSpan)CustomParse(index);
+                    _PropertySettersTimeSpan[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            bool succes = TimeSpan.TryParse(_sbValue.ToString(), Culture, out TimeSpan _value);
             if (succes)
             {
                 _PropertySettersTimeSpan[index](targetObject, _value);
@@ -696,7 +830,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt16(int index, T targetObject)
         {
-            bool succes = Int16.TryParse(PreParse(index), NumberStyles.Any, Culture, out Int16 _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Int16 _customParserValue = (Int16)CustomParse(index);
+                    _PropertySettersInt16[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            bool succes = Int16.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out Int16 _value);
             if (succes)
             {
                 _PropertySettersInt16[index](targetObject, _value);
@@ -709,7 +857,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueByte(int index, T targetObject)
         {
-            bool succes = Byte.TryParse(PreParse(index), NumberStyles.Any, Culture, out Byte _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Byte _customParserValue = (Byte)CustomParse(index);
+                    _PropertySettersByte[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            bool succes = Byte.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out Byte _value);
             if (succes)
             {
                 _PropertySettersByte[index](targetObject, _value);
@@ -722,7 +884,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDateTimeOffset(int index, T targetObject)
         {
-            bool succes = DateTimeOffset.TryParse(PreParse(index), Culture, DateTimeStyles.None, out DateTimeOffset _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    DateTimeOffset _customParserValue = (DateTimeOffset)CustomParse(index);
+                    _PropertySettersDateTimeOffset[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            bool succes = DateTimeOffset.TryParse(_sbValue.ToString(), Culture, DateTimeStyles.None, out DateTimeOffset _value);
             if (succes)
             {
                 _PropertySettersDateTimeOffset[index](targetObject, _value);
@@ -749,7 +925,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueSByte(int index, T targetObject)
         {
-            bool succes = SByte.TryParse(PreParse(index), NumberStyles.Any, Culture, out SByte _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    SByte _customParserValue = (SByte)CustomParse(index);
+                    _PropertySettersSByte[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            bool succes = SByte.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out SByte _value);
             if (succes)
             {
                 _PropertySettersSByte[index](targetObject, _value);
@@ -762,7 +952,20 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt16(int index, T targetObject)
         {
-            bool succes = UInt16.TryParse(PreParse(index), NumberStyles.Any, Culture, out UInt16 _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    UInt16 _customParserValue = (UInt16)CustomParse(index);
+                    _PropertySettersUInt16[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+            bool succes = UInt16.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out UInt16 _value);
             if (succes)
             {
                 _PropertySettersUInt16[index](targetObject, _value);
@@ -775,7 +978,20 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt32(int index, T targetObject)
         {
-            bool succes = UInt32.TryParse(PreParse(index), NumberStyles.Any, Culture, out UInt32 _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    UInt32 _customParserValue = (UInt32)CustomParse(index);
+                    _PropertySettersUInt32[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+            bool succes = UInt32.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out UInt32 _value);
             if (succes)
             {
                 _PropertySettersUInt32[index](targetObject, _value);
@@ -788,7 +1004,20 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt64(int index, T targetObject)
         {
-            bool succes = UInt64.TryParse(PreParse(index), NumberStyles.Any, Culture, out UInt64 _value);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    UInt64 _customParserValue = (UInt64)CustomParse(index);
+                    _PropertySettersUInt64[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+            bool succes = UInt64.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out UInt64 _value);
             if (succes)
             {
                 _PropertySettersUInt64[index](targetObject, _value);
@@ -801,7 +1030,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueGuidNull(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Guid? _customParserValue = (Guid?)CustomParse(index);
+                    _PropertySettersGuidNull[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -823,7 +1066,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueBooleanNull(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    bool? _customParserValue = (bool?)CustomParse(index);
+                    _PropertySettersBooleanNull[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -845,7 +1102,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDateTimeNull(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    DateTime? _customParserValue = (DateTime?)CustomParse(index);
+                    _PropertySettersDateTimeNull[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -867,7 +1138,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDateTimeOffsetNull(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    DateTimeOffset? _customParserValue = (DateTimeOffset?)CustomParse(index);
+                    _PropertySettersDateTimeOffsetNull[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -889,7 +1174,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueTimeSpanNull(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    TimeSpan? _customParserValue = (TimeSpan?)CustomParse(index);
+                    _PropertySettersTimeSpanNull[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -911,6 +1210,20 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueByteNull(int index, T targetObject)
         {
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    byte? _customParserValue = (byte?)CustomParse(index);
+                    _PropertySettersByteNull[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
             string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
@@ -933,7 +1246,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueSByteNull(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    SByte? _customParserValue = (SByte?)CustomParse(index);
+                    _PropertySettersSByteNull[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -955,7 +1282,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt16Null(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Int16? _customParserValue = (Int16?)CustomParse(index);
+                    _PropertySettersInt16Null[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -977,7 +1318,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt32Null(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Int32? _customParserValue = (Int32?)CustomParse(index);
+                    _PropertySettersInt32Null[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -999,7 +1354,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt64Null(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Int64? _customParserValue = (Int64?)CustomParse(index);
+                    _PropertySettersInt64Null[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -1021,7 +1390,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueSingleNull(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Single? _customParserValue = (Single?)CustomParse(index);
+                    _PropertySettersSingleNull[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -1043,7 +1426,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDecimalNull(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Decimal? _customParserValue = (Decimal?)CustomParse(index);
+                    _PropertySettersDecimalNull[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -1065,7 +1462,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDoubleNull(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    Double? _customParserValue = (Double?)CustomParse(index);
+                    _PropertySettersDoubleNull[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -1087,7 +1498,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt16Null(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    UInt16? _customParserValue = (UInt16?)CustomParse(index);
+                    _PropertySettersUInt16Null[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -1109,7 +1534,21 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt32Null(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    UInt32? _customParserValue = (UInt32?)CustomParse(index);
+                    _PropertySettersUInt32Null[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -1131,7 +1570,22 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt64Null(int index, T targetObject)
         {
-            string _valueRead = PreParse(index);
+            if (_CustomParser[index] != null)
+            {
+                try
+                {
+                    UInt64? _customParserValue = (UInt64?)CustomParse(index);
+                    _PropertySettersUInt64Null[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+
+            string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
             {
@@ -1202,6 +1656,10 @@ namespace DevToys.PocoCsv.Core
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
                 .Select(p => (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index).Max();
 
+
+            _CustomParser = new ICustomCsvParse[_max + 1];
+            _CustomParserCall = new Func<object, object[], object>[_max + 1];
+
             _Properties = new PropertyInfo[_max + 1];
             _PropertySetters = new Action<object, object>[_max + 1];
             _IsNullable = new Boolean[_max + 1];
@@ -1241,12 +1699,24 @@ namespace DevToys.PocoCsv.Core
 
             foreach (var _property in _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
-                .Select(p => new { Property = p, (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index })
+                .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) })
                 )
             {
                 Type propertyType = _property.Property.PropertyType;
 
+
                 _IsNullable[_property.Index] = Nullable.GetUnderlyingType(propertyType) != null;
+
+
+                if (_property.Attrib.CustomParserType != null)
+                {
+                    if (!TypeUtils.HasInterface(_property.Attrib.CustomParserType, typeof(ICustomCsvParse)))
+                    {
+                        throw new TypeLoadException($"PreParser type must implement PreParse interface. Property: {_property.Property.Name}");
+                    }
+                    _CustomParser[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse;
+                    _CustomParserCall[_property.Index] = DelegateFactory.InstanceMethod(_property.Attrib.CustomParserType, "Parse", typeof(StringBuilder) );
+                }
 
                 if (propertyType == typeof(string))
                 {

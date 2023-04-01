@@ -20,11 +20,8 @@ namespace TestProject2
                 char c = (char)ii;
 
                 sb.Append($"{ii} - {c}\r\n");
-                
-
             }
             string _text = sb.ToString();
-
 
             string _file = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "data.csv");
             int _sampleRows = 20;
@@ -50,26 +47,5 @@ namespace TestProject2
             }
         }
 
-        [TestMethod]
-        public void TestFixedQueue()
-        {
-
-            InfiniteLoopQueue<int> _queue = new DevToys.PocoCsv.Core.InfiniteLoopQueue<int>(5);
-
-            List<int> _test = new List<int>();
-            for(int ii =0; ii < 2; ii++)
-            {
-                _test.Add(ii);
-            }
-
-            foreach (int ii in _test)
-            {
-                _queue.Add(ii);
-            }
-
-            var _result = _queue.GetQueue();
-
-            Console.WriteLine("X");
-        }
     }
 }

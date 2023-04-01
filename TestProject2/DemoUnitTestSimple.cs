@@ -1,8 +1,6 @@
 ﻿using DevToys.PocoCsv.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace TestProject2
@@ -61,7 +59,6 @@ namespace TestProject2
             }
         }
 
-
         [TestMethod]
         public void TestReaderSimpleLast()
         {
@@ -74,14 +71,12 @@ namespace TestProject2
                 _writer.Write(Data());
             }
 
-
             using (CsvReader<CsvSimple> _reader = new(_file))
             {
                 _reader.Open();
-                var  _last10 = _reader.Last(10).ToList();
+                var _last10 = _reader.Last(10).ToList();
             }
         }
-
 
         private IEnumerable<CsvSimple> Data()
         {

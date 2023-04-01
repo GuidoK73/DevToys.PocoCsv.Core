@@ -15,7 +15,7 @@ namespace TestProject2
         {
             string _file = System.IO.Path.GetTempFileName();
 
-            using (CsvWriter<CsvSimple> _writer = new(_file) { Separator = ','})
+            using (CsvWriter<CsvSimple> _writer = new(_file) { Separator = ',' })
             {
                 _writer.Open();
                 _writer.WriteHeader();
@@ -35,9 +35,7 @@ namespace TestProject2
 
             _w.Stop();
             Console.WriteLine(_w.Duration);
-
         }
-
 
         private IEnumerable<CsvSimple> LargeData()
         {
