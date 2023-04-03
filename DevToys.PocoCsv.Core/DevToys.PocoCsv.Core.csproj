@@ -23,9 +23,9 @@ Read/write serialize/deserialize data to and from Csv.
     <RepositoryUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
-	<PackageTags>csv, export, import, comma separated, 4180</PackageTags>
+	<PackageTags>csv;export;import;comma separated;4180;delimited;poco;csv parser;parse csv</PackageTags>
     <Company />
-    <Version>1.7.41</Version>
+    <Version>1.7.43</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
