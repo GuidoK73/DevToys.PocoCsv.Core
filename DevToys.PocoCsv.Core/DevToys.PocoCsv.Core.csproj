@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+	  <TargetFrameworks>netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>One of the fastest Csv reader deserialzer available.
 
@@ -24,13 +24,15 @@ Read/write serialize/deserialize data to and from Csv.
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
     <Company />
-    <Version>1.7</Version>
+    <Version>1.7.3</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
-    <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>1.7
+    <PackageReleaseNotes>1.7.1
+- Changed ICustomCsvParse to generic ICustomCsvParse
+
+1.7
 - Added CustomParserType to ColumnAttribute
 
 1.6.3

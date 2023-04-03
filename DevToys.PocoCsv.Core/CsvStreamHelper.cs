@@ -9,7 +9,7 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     internal sealed class CsvStreamHelper
     {
-        private readonly StringBuilder _sbValue = new(127);
+        private readonly StringBuilder _sbValue = new StringBuilder(127);
         private char _char;
         internal int _byte = 0;
         private const char _CR = '\r';

@@ -333,13 +333,6 @@
             <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
             <param name="bufferSize">The minimum buffer size.</param>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.String,System.IO.FileStreamOptions)">
-             <summary>
-            
-             </summary>
-             <param name="path"></param>
-             <param name="options"></param>
-        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.#ctor(System.IO.Stream)">
             <summary>
             Initializes a new instance of the System.IO.StreamReader class for the specified stream.
@@ -426,14 +419,6 @@
             <param name="append">true to append data to the file; false to overwrite the file. If the specified file does not exist, this parameter has no effect, and the constructor creates a new file.</param>
             <param name="encoding">The character encoding to use.</param>
             <param name="bufferSize">The buffer size, in bytes.</param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.String,System.Text.Encoding,System.IO.FileStreamOptions)">
-             <summary>
-            
-             </summary>
-             <param name="path"></param>
-             <param name="encoding"></param>
-             <param name="options"></param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.#ctor(System.IO.Stream)">
             <summary>
@@ -716,12 +701,12 @@
         <member name="F:DevToys.PocoCsv.Core.NetType.Null">
             <summary>Type is Null</summary>
         </member>
-        <member name="T:DevToys.PocoCsv.Core.ICustomCsvParse">
+        <member name="T:DevToys.PocoCsv.Core.ICustomCsvParse`1">
             <summary>
             Implement Custom parser by assigning the CustomParserType on ColumnAttribute
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.ICustomCsvParse.Parse(System.Text.StringBuilder)">
+        <member name="M:DevToys.PocoCsv.Core.ICustomCsvParse`1.Parse(System.Text.StringBuilder)">
             <summary>
             Implement custom parse.
             </summary>

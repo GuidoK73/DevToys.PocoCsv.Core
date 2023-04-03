@@ -14,10 +14,10 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public class CsvWriter<T> : BaseCsv, IDisposable where T : new()
     {
-        private Dictionary<int, PropertyInfo> _Properties = new();
-        private Dictionary<int, Func<object, object>> _PropertyGetters = new();
-        private Dictionary<int, string> _Formatters = new();
-        private Dictionary<int, string> _OutputNullValues = new();
+        private Dictionary<int, PropertyInfo> _Properties = new Dictionary<int, PropertyInfo>();
+        private Dictionary<int, Func<object, object>> _PropertyGetters = new Dictionary<int, Func<object, object>>();
+        private Dictionary<int, string> _Formatters = new Dictionary<int, string>();
+        private Dictionary<int, string> _OutputNullValues = new Dictionary<int, string>();
         private StreamWriter _StreamWriter;
         private List<int> _ColumnIndexes;
         private int _MaxColumnIndex = 0;

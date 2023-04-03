@@ -155,13 +155,13 @@ Defines the value to write as a default for null, This property is for CsvWriter
 CustomParserType allows for custom parsing of values to a specific type.
 
 # CustomParserType
-CustomParserType allows for custom parsing of values to a specific type.
+CustomParserType allows the Reader to use a custom parsing for a specific field.
 
 ~~~cs
 
-    public class ParseBoolean : ICustomCsvParse
+    public sealed class ParseBoolean : ICustomCsvParse<bool?>
     {
-        public object Parse(StringBuilder value)
+        public bool? Parse(StringBuilder value)
         {
             switch (value.ToString().ToLower())
             {
@@ -187,6 +187,14 @@ CustomParserType allows for custom parsing of values to a specific type.
 
         [Column(Index = 1)]
         public string Name { get; set; }
+    }
+
+
+    using (var _reader = new CsvReader<CsvPreParseTestObject>(_file))
+    {
+        _reader.Open();
+        _reader.Skip(); // Slip header.
+        var _rows = _reader.ReadAsEnumerable().ToArray(); // Materialize.
     }
 
 ~~~

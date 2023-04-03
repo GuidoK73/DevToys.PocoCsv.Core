@@ -6,9 +6,9 @@ using System.Text;
 
 namespace TestProject2
 {
-    public class ParseBoolean : ICustomCsvParse
+    public class ParseBoolean : ICustomCsvParse<bool?>
     {
-        public object Parse(StringBuilder value)
+        public bool? Parse(StringBuilder value)
         {
             switch (value.ToString().ToLower())
             {
@@ -22,8 +22,21 @@ namespace TestProject2
                 case "no":
                 case "0":
                     return false;
+                default:
+                    return null;
             }
-            return null;
+        }
+    }
+
+    public class ParseText : ICustomCsvParse<string>
+    {
+        public string Parse(StringBuilder value)
+        {
+            if (value.ToString() == "Test")
+            {
+                return "XXX";
+            }
+            return value.ToString();
         }
     }
 
@@ -34,22 +47,25 @@ namespace TestProject2
 
         [Column(Index = 1)]
         public string Name { get; set; }
+
+        [Column(Index = 2, CustomParserType = typeof(ParseText))]
+        public string Text { get; set; }
     }
 
     [TestClass]
     public class DemoUnitTestCustomParser
     {
         [TestMethod]
-        public void PreParseDemo()
+        public void CustomParseTest()
         {
             string _file = System.IO.Path.GetTempFileName();
 
             using (CsvStreamWriter _writer = new CsvStreamWriter(_file))
             {
-                _writer.WriteCsvLine("IsOk", "Name");
-                _writer.WriteCsvLine("Yes", "name 1");
-                _writer.WriteCsvLine("no", "name 2");
-                _writer.WriteCsvLine("", "name 3");
+                _writer.WriteCsvLine("IsOk", "Name", "Text");
+                _writer.WriteCsvLine("Yes", "name 1", "Test");
+                _writer.WriteCsvLine("no", "name 2", "Ok");
+                _writer.WriteCsvLine("", "name 3", "AAA");
                 _writer.Flush();
             }
 
@@ -63,7 +79,7 @@ namespace TestProject2
                 Assert.AreEqual(true, _rows[0].IsOk);
                 Assert.AreEqual(false, _rows[1].IsOk);
                 Assert.AreEqual(null, _rows[2].IsOk);
-
+                Assert.AreEqual("XXX", _rows[0].Text);
             }
         }
     }

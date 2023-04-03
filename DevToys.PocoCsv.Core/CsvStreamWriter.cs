@@ -14,7 +14,7 @@ namespace DevToys.PocoCsv.Core
         private const char _LF = '\n';
         private const string _CRLF = "\r\n";
 
-        private readonly StringBuilder _sb = new();
+        private readonly StringBuilder _sb = new StringBuilder();
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the default encoding and buffer size.
@@ -35,6 +35,7 @@ namespace DevToys.PocoCsv.Core
         {
         }
 
+#if NET60 || NET70
         /// <summary>
         ///
         /// </summary>
@@ -44,6 +45,8 @@ namespace DevToys.PocoCsv.Core
         public CsvStreamWriter(string path, Encoding encoding, FileStreamOptions options) : base(path, encoding, options)
         {
         }
+#endif
+
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamWriter class for the specified stream by using UTF-8 encoding and the default buffer size.

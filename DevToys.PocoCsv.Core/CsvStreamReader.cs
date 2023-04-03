@@ -10,7 +10,7 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvStreamReader : StreamReader
     {
-        private readonly CsvStreamHelper _StreamHelper = new();
+        private readonly CsvStreamHelper _StreamHelper = new CsvStreamHelper();
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamReader class for the specified file name.
@@ -29,6 +29,8 @@ namespace DevToys.PocoCsv.Core
         public CsvStreamReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize) : base(path, encoding, detectEncodingFromByteOrderMarks, bufferSize)
         { }
 
+
+#if NET60 || NET70
         /// <summary>
         ///
         /// </summary>
@@ -36,6 +38,7 @@ namespace DevToys.PocoCsv.Core
         /// <param name="options"></param>
         public CsvStreamReader(string path, FileStreamOptions options) : base(path, Encoding.UTF8, true, options)
         { }
+#endif
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamReader class for the specified stream.

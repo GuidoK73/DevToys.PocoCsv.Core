@@ -30,9 +30,13 @@ namespace DevToys.PocoCsv.Core
         {
             byte[] byteArray = Encoding.Default.GetBytes(text);
             
-            using MemoryStream _stream = new(byteArray);
-            using CsvStreamReader _reader = new(_stream);
-                return CsvHeader(_reader, separator);
+            using MemoryStream _stream = new MemoryStream(byteArray);
+            {
+                using CsvStreamReader _reader = new CsvStreamReader(_stream);
+                {
+                    return CsvHeader(_reader, separator);
+                }
+            }
         }
 
         /// <summary>
@@ -148,8 +152,8 @@ namespace DevToys.PocoCsv.Core
         {
             byte[] byteArray = Encoding.Default.GetBytes(text);
 
-            using MemoryStream _stream = new(byteArray);
-            using CsvStreamReader _reader = new(_stream);
+            using MemoryStream _stream = new MemoryStream(byteArray);
+            using CsvStreamReader _reader = new CsvStreamReader(_stream);
                 return IsCsv(_reader, separator, sampleRows);
         }
 
