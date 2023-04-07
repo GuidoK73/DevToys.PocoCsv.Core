@@ -453,6 +453,12 @@
             </summary>
             <param name="values">Array of strings</param>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.WriteCsvLine(System.Object[])">
+            <summary>
+            Write an array of strings to the Csv Stream and escapes when nececary.
+            </summary>
+            <param name="values">Array of objects</param>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.WriteCsvLine(System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Write an array of strings to the Csv Stream and escapes when nececary.
@@ -585,6 +591,24 @@
             <summary>
             Initialize
             </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.Extensions.DataTableExtensions.ImportCsv(System.Data.DataTable,System.String,System.Nullable{System.Char},System.Boolean,System.Int32)">
+            <summary>
+            Import Csv into DataTable
+            </summary>
+            <param name="table"></param>
+            <param name="file"></param>
+            <param name="separator">null for auto detect.</param>
+            <param name="setSchema">default true, in case of importing multiple of the same documents set it to false on the second call.</param>
+            <param name="skipRows">First row is usually the header.</param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.Extensions.DataTableExtensions.ExportCsv(System.Data.DataTable,System.String,System.Char)">
+            <summary>
+            Export datatable to Csv file
+            </summary>
+            <param name="table"></param>
+            <param name="file"></param>
+            <param name="separator"></param>
         </member>
         <member name="T:DevToys.PocoCsv.Core.EmptyLineBehaviour">
             <summary>

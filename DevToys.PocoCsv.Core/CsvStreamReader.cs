@@ -61,13 +61,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Indicates end of the stream.
         /// </summary>
-        public new bool EndOfStream
-        {
-            get
-            {
-                return _StreamHelper.EndOfStream;
-            }
-        }
+        public new bool EndOfStream => _StreamHelper.EndOfStream;
 
         /// <summary>
         /// Get / Sets the position.
@@ -84,11 +78,8 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Move reader to the start position 0
         /// </summary>
-        public void MoveToStart()
-        {
-            _StreamHelper.MoveToPosition(BaseStream, 0);
-        }
-
+        public void MoveToStart() => _StreamHelper.MoveToPosition(BaseStream, 0);
+        
         /// <summary>
         /// Get / Sets the Separator character to use.
         /// </summary>
@@ -119,10 +110,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Detects and sets CSV Separator. over 10 sample rows
         /// </summary>
-        public void DetectSeparator()
-        {
-            GetCsvSeparator(10);
-        }
+        public void DetectSeparator() => GetCsvSeparator(10);
 
         /// <summary>
         /// Detects and sets CSV Separator.
@@ -164,20 +152,12 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Moves to the last X rows, use ReadCsvLine after this call.
         /// </summary>
-        public void MoveToLast(int rows = 1)
-        {
-            _StreamHelper.MoveToLast(BaseStream, rows);
-        }
+        public void MoveToLast(int rows = 1) => _StreamHelper.MoveToLast(BaseStream, rows);
 
         /// <summary>
         /// reads the CsvLine
         /// </summary>
-        public IEnumerable<string> ReadCsvLine()
-        {
-            foreach (string field in _StreamHelper.ReadRow(BaseStream))
-            {
-                yield return field;
-            }
-        }
+        public IEnumerable<string> ReadCsvLine() => _StreamHelper.ReadRow(BaseStream);
+
     }
 }

@@ -356,3 +356,19 @@ executing another _reader.ReadAsEnumerable().Where(p => p...).ToList() will Quer
 Use MoveToStart() to move the reader to the starting position.
 
 _reader.Skip() is different then _reader.ReadAsEnumerable().Skip() as the first does not materialize to T and is faster.
+
+
+# DataTable Import / Export
+
+~~~cs
+
+    // Import
+    var _file = @"C:\data.csv";
+    var _table = new DataTable();
+    _table.ImportCsv(_file, ',', true);
+
+    // Export
+    _file = @"C:\data2.csv";
+    _table.ExportCsv(_file, ',');
+
+~~~

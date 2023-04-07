@@ -17,20 +17,27 @@ Read/write serialize/deserialize data to and from Csv.
 - Csv schema Retrieval with CsvUtils.GetCsvSchema().
 - Casting Error log.
 - Ability to add custom parsers.
+- Import to DataTable
 
-</Description>
+Readme:
+https://www.nuget.org/packages/DevToys.PocoCsv.Core/
+
+	</Description>
     <PackageProjectUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core/wiki/DevToys.PocoCsv.Core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GuidoK73/DevToys.PocoCsv.Core</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <Authors>GuidoK73</Authors>
-	<PackageTags>csv;export;import;comma separated;4180;delimited;poco;csv parser;parse csv</PackageTags>
+	<PackageTags>csv;export;import;comma separated;4180;delimited;poco;csv parser;parse csv;DataTable;Import Csv;Export Csv;Csv Object</PackageTags>
     <Company />
-    <Version>1.7.43</Version>
+    <Version>1.7.5</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>1.7.1
+    <PackageReleaseNotes>1.7.5
+- Added DataTable extensions ImportCsv / ExportCsv
+		
+1.7.1
 - Changed ICustomCsvParse to generic ICustomCsvParse
 
 1.7

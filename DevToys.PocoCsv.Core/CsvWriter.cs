@@ -12,7 +12,7 @@ namespace DevToys.PocoCsv.Core
     /// <summary>
     /// Write T to Csv Stream from an IEnumerable source.
     /// </summary>
-    public class CsvWriter<T> : BaseCsv, IDisposable where T : new()
+    public sealed class CsvWriter<T> : BaseCsv, IDisposable where T : new()
     {
         private Dictionary<int, PropertyInfo> _Properties = new Dictionary<int, PropertyInfo>();
         private Dictionary<int, Func<object, object>> _PropertyGetters = new Dictionary<int, Func<object, object>>();
@@ -96,7 +96,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Close the CSV stream reader
         /// </summary>
-        public virtual void Close()
+        public void Close()
         {
             _StreamWriter.Close();
         }

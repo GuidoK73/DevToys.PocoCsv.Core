@@ -15,7 +15,6 @@ namespace DevToys.PocoCsv.Core
 
         public static bool HasInterface<T>(Type type) => (type.GetInterfaces().Where(p => p == typeof(T)).FirstOrDefault() != null);
 
-
         public static bool IsNumericType(Type type) => IsNumericType(GetNetType(type));
 
         public static bool IsNumericType(NetType netType)

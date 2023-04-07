@@ -111,6 +111,39 @@ namespace DevToys.PocoCsv.Core
             BaseStream.Write(Encoding.Default.GetBytes(_sb.ToString()), 0, _sb.Length);
         }
 
+
+        /// <summary>
+        /// Write an array of strings to the Csv Stream and escapes when nececary.
+        /// </summary>
+        /// <param name="values">Array of objects</param>
+        public void WriteCsvLine(params object[] values)
+        {
+            _sb.Length = 0;
+
+            if (BaseStream.Position > 0)
+            {
+                if (CRLFMode == CRLFMode.CRLF)
+                {
+                    _sb.Append(_CRLF);
+                }
+                else if (CRLFMode == CRLFMode.CR)
+                {
+                    _sb.Append(_CR);
+                }
+                else if (CRLFMode == CRLFMode.LF)
+                {
+                    _sb.Append(_LF);
+                }
+            }
+
+            for (int ii = 0; ii < values.Length; ii++)
+            {
+                _sb.Append(CsvUtils.Esc(Separator, values[ii].ToString() ?? "")).Append(Separator);
+            }
+            _sb.Length--;
+            BaseStream.Write(Encoding.Default.GetBytes(_sb.ToString()), 0, _sb.Length);
+        }
+
         /// <summary>
         /// Write an array of strings to the Csv Stream and escapes when nececary.
         /// </summary>

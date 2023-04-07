@@ -3,7 +3,7 @@
     /// <summary>
     /// A Queue that only holds last x items of T
     /// </summary>
-    internal class InfiniteLoopQueue<T>
+    internal sealed class InfiniteLoopQueue<T>
     {
         private readonly T[] _Collection;
         private int _Position;
