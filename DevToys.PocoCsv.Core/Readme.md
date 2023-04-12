@@ -22,7 +22,7 @@ Read/write serialize/deserialize data to and from Csv.
         _reader.Separator = ',';
         while (!_reader.EndOfStream)
         {
-            List<string> _values = _reader.ReadCsvLine().ToList();
+            string[] _values = _reader.ReadCsvLine();
         }
     }
 ~~~

@@ -12,9 +12,9 @@ namespace DevToys.PocoCsv.Core
         private readonly StringBuilder _sbValue = new StringBuilder(127);
         private char _char;
         internal int _byte = 0;
-        private const char _CR = '\r';
-        private const char _LF = '\n';
-        private const char _ESCAPE = '"';
+        const char _CR = '\r';
+        const char _LF = '\n';
+        const char _ESCAPE = '"';
         private InfiniteLoopQueue<long> _takeLastQueue;
        
 

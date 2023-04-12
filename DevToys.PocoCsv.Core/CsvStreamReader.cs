@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -10,6 +12,13 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvStreamReader : StreamReader
     {
+
+        private readonly StringBuilder _sbValue = new StringBuilder(127);
+        private char _char;
+        const char _CR = '\r';
+        const char _LF = '\n';
+        const char _ESCAPE = '"';
+
         private readonly CsvStreamHelper _StreamHelper = new CsvStreamHelper();
 
         /// <summary>
@@ -154,10 +163,89 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void MoveToLast(int rows = 1) => _StreamHelper.MoveToLast(BaseStream, rows);
 
-        /// <summary>
-        /// reads the CsvLine
-        /// </summary>
-        public IEnumerable<string> ReadCsvLine() => _StreamHelper.ReadRow(BaseStream);
+        private List<string> _result = new List<string>();
+
+
+        public string[] ReadCsvLine()
+        {
+            // twice as fast on 10mln rows as _StreamHelper.ReadRow()
+            _result.Clear();
+            State _state = State.Normal;
+            int _column = 0;
+            bool _trimLast = false;
+            bool _rowEnd = false;
+
+            _sbValue.Length = 0;
+            _StreamHelper._byte = 0;
+
+            while (_StreamHelper._byte > -1)
+            {
+                _StreamHelper._byte = BaseStream.ReadByte();
+                _char = (char)_StreamHelper._byte;
+                if (_StreamHelper._byte == -1)
+                {
+                    _rowEnd = true;
+                }
+                else if ((_state == State.Normal && _char == _CR))
+                {
+                    // PEEK
+                    _StreamHelper._byte = BaseStream.ReadByte();
+                    _char = (char)_StreamHelper._byte;
+                    if (_char != _LF)
+                    {
+                        BaseStream.Position--;
+                        _rowEnd = true; // We have a single \r without following \n.
+                    }
+                    // IF char is a normal char we can just continue from this point.
+                }
+                if ((_state == State.Normal && _char == _LF))
+                {
+                    _rowEnd = true; // WE HAVE A SINGLE \n either preceded or not by \r
+                }
+                if (_rowEnd)
+                {
+                    if (_trimLast)
+                    {
+                        if (_sbValue.Length > 0 && _sbValue[_sbValue.Length - 1] == _ESCAPE)
+                        {
+                            _sbValue.Length--;
+                        }
+                    }
+                    _result.Add(_sbValue.ToString());
+                    _StreamHelper.CurrentLine++;
+                    return _result.ToArray();
+                }
+                if (_char == Separator)
+                {
+                    if (_state == State.Normal)
+                    {
+                        if (_trimLast)
+                        {
+                            if (_sbValue.Length > 0 && _sbValue[_sbValue.Length - 1] == _ESCAPE)
+                            {
+                                _sbValue.Length--;
+                            }
+                        }
+                        _result.Add(_sbValue.ToString());
+                        _column++;
+                        _sbValue.Length = 0;
+                        continue; // NEXT FIELD
+                    }
+                }
+                else if (_char == _ESCAPE)
+                {
+                    _state = (_state == State.Normal) ? State.Escaped : State.Normal;
+                    if (_sbValue.Length == 0)
+                    {
+                        _trimLast = true; // .Trim() is costly on large sets.
+                        continue;
+                    }
+                }
+                _sbValue.Append(_char);
+            }
+
+            return _result.ToArray();
+        }
 
     }
 }

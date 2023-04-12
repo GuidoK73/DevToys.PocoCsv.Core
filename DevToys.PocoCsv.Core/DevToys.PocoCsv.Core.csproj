@@ -29,12 +29,15 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Authors>GuidoK73</Authors>
 	<PackageTags>csv;export;import;comma separated;4180;delimited;poco;csv parser;parse csv;DataTable;Import Csv;Export Csv;Csv Object</PackageTags>
     <Company />
-    <Version>1.7.5</Version>
+    <Version>1.7.52</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>1.7.5
+    <PackageReleaseNotes>1.7.52
+- Improved CsvStreamReader speed.
+
+1.7.51
 - Added DataTable extensions ImportCsv / ExportCsv
 		
 1.7.1

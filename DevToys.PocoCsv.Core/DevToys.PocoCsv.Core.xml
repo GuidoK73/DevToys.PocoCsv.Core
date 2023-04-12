@@ -394,11 +394,6 @@
             Moves to the last X rows, use ReadCsvLine after this call.
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadCsvLine">
-            <summary>
-            reads the CsvLine
-            </summary>
-        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamWriter">
             <summary>
             Implements a System.IO.TextWriter for writing characters to a stream in a particular encoding.
