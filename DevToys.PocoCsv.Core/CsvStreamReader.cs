@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -94,14 +92,8 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public char Separator
         {
-            get
-            {
-                return _StreamHelper.Separator;
-            }
-            set
-            {
-                _StreamHelper.Separator = value;
-            }
+            get => _StreamHelper.Separator; 
+            set => _StreamHelper.Separator = value;
         }
 
         /// <summary>
@@ -165,7 +157,9 @@ namespace DevToys.PocoCsv.Core
 
         private List<string> _result = new List<string>();
 
-
+        /// <summary>
+        /// Reads a single CSV line into string array.
+        /// </summary>
         public string[] ReadCsvLine()
         {
             // twice as fast on 10mln rows as _StreamHelper.ReadRow()
@@ -247,5 +241,20 @@ namespace DevToys.PocoCsv.Core
             return _result.ToArray();
         }
 
+        /// <summary>
+        /// Perform ReadCsvLine.
+        /// </summary>
+        public new string[] ReadLine() => ReadCsvLine();
+
+        /// <summary>
+        /// Each iteration will read the next row from stream or file
+        /// </summary>
+        public IEnumerable<string[]> ReadAsEnumerable()
+        {
+            while (_StreamHelper._byte > -1)
+            {
+                yield return ReadCsvLine();
+            }
+        }
     }
 }

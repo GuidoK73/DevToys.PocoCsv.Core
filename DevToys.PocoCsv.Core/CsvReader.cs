@@ -144,14 +144,8 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public char Separator
         {
-            get
-            {
-                return _StreamHelper.Separator;
-            }
-            set
-            {
-                _StreamHelper.Separator = value;
-            }
+            get => _StreamHelper.Separator;
+            set => _StreamHelper.Separator = value;
         }
 
         /// <summary>

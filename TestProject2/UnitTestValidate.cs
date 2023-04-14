@@ -129,7 +129,7 @@ namespace TestProject2
                 int _row = 0;
                 while (!_reader.EndOfStream)
                 {
-                    string[] _values = _reader.ReadCsvLine().ToArray();
+                    string[] _values = _reader.ReadCsvLine();
 
                     if (_row == 0)
                     {

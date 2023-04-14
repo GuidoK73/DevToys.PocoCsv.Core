@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace DevToys.PocoCsv.Core.Extensions
 {
+    /// <summary>
+    /// Cv extensions for DataTable.
+    /// </summary>
     public static class DataTableExtensions
     {
         /// <summary>
@@ -44,7 +47,7 @@ namespace DevToys.PocoCsv.Core.Extensions
                 table.BeginLoadData();
                 while (!_reader.EndOfStream)
                 {
-                    var _values = _reader.ReadCsvLine().ToArray();
+                    var _values = _reader.ReadCsvLine();
                     if (_rowcounter >= skipRows)
                     {
                         table.Rows.Add(_values);

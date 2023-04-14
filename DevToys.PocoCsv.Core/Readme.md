@@ -27,6 +27,21 @@ Read/write serialize/deserialize data to and from Csv.
     }
 ~~~
 
+or 
+
+~~~cs
+    string file = "C:\Temp\data.csv";
+    using (CsvStreamReader _reader = new CsvStreamReader(file))
+    {
+        _reader.Separator = ',';
+        foreach (string[] items in _reader.ReadAsEnumerable())
+        {
+            
+        }
+    }
+~~~
+
+
 # CsvStreamWriter
 ~~~cs
     string file = @"D:\Temp\test.csv";
@@ -91,19 +106,33 @@ Flushes all buffers.
 
 # CsvWriter\<T\>
 ~~~cs
+    public class Data
+    {
+        [Column(Index = 0)]
+        public string Column1 { get; set; }
+
+        [Column(Index = 1)]
+        public string Column2 { get; set; }
+
+        [Column(Index = 2)]
+        public string Column3 { get; set; }
+
+        [Column(Index = 5)]
+        public string Column5 { get; set; }
+    }
+
+
     private IEnumerable<CsvSimple> LargeData()
     {
         for (int ii = 0; ii < 10000000; ii++)
         {
-            CsvSimple _line = new()
+            Data _line = new()
             {
-                AfBij = "bij",
-                Bedrag = "100",
-                Code = "test",
-                Datum = "20200203",
-                Mededelingen = $"test {ii}",
-                Rekening = "3434",
-                Tegenrekening = "3423424"
+                Column1 = "bij",
+                Column2 = "100",
+                Column3 = "test",
+                Column5 = $"{ii}",
+                
             };
             yield return _line;
         }
@@ -344,7 +373,7 @@ Custom Parsers will run as singleton per specified column in the specific Reader
         _reader.Skip(10);
         _result1 = _reader.ReadAsEnumerable().Take(10).ToList();
 
-        // Take last 10 records.
+        // Take last 10 records. Without serializing everything before it.
         _result1 = _reader.Last(10).ToList();
     }
 

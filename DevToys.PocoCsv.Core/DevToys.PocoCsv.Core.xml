@@ -295,12 +295,6 @@
             Move stream to start position.
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamHelper.ReadRow(System.IO.Stream)">
-            <summary>
-            Read CSV row from stream
-            </summary>
-            <param name="stream"></param>
-        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamHelper.Skip(System.IO.Stream)">
             <summary>
             Skip a CSV row
@@ -392,6 +386,21 @@
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.MoveToLast(System.Int32)">
             <summary>
             Moves to the last X rows, use ReadCsvLine after this call.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadCsvLine">
+            <summary>
+            Reads a single CSV line into string array.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadLine">
+            <summary>
+            Perform ReadCsvLine.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadAsEnumerable">
+            <summary>
+            Each iteration will read the next row from stream or file
             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamWriter">
@@ -585,6 +594,11 @@
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Init">
             <summary>
             Initialize
+            </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.Extensions.DataTableExtensions">
+            <summary>
+            Cv extensions for DataTable.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.Extensions.DataTableExtensions.ImportCsv(System.Data.DataTable,System.String,System.Nullable{System.Char},System.Boolean,System.Int32)">
