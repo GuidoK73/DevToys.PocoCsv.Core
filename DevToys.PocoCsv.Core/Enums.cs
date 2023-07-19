@@ -124,4 +124,45 @@
         /// <summary>Type is Null</summary>
         Null = 99
     }
+
+
+    internal enum NetTypeComplete
+    {
+        String = 0,
+        Guid = 1,
+        Boolean = 2,
+        DateTime = 3,
+        DateTimeOffset = 4,
+        TimeSpan = 5,
+        Byte = 6,
+        SByte = 7,
+        Int16 = 8,
+        Int32 = 9,
+        Int64 = 10,
+        Single = 11, 
+        Decimal = 12,    
+        Double = 13,    
+        UInt16 = 14,
+        UInt32 = 15,
+        UInt64 = 16,
+        GuidNullable = 17,
+        BooleanNullable = 18,
+        DateTimeNullable = 19,
+        DateTimeOffsetNullable = 20,
+        TimeSpanNullable = 21,
+        ByteNullable = 22,
+        SByteNullable = 23,
+        Int16Nullable = 24,
+        Int32Nullable = 25,
+        Int64Nullable = 26,
+        SingleNullable = 27,
+        DecimalNullable = 28,
+        DoubleNullable = 29,
+        UInt16Nullable = 30,
+        UInt32Nullable = 31,
+        UInt64Nullable = 32,
+        ByteArray = 33,
+        BigInteger = 34,
+        BigIntegerNullable = 35
+    }
 }

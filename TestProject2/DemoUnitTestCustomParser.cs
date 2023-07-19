@@ -6,10 +6,10 @@ using System.Text;
 
 namespace TestProject2
 {
-    public class ParseBoolean : ICustomCsvParse<bool?>
+    public class ParseBooleanNullable : ICustomCsvParse<bool?>
     {
-        public bool? Parse(StringBuilder value)
-        {
+        public bool? Read(StringBuilder value)
+        {           
             switch (value.ToString().ToLower())
             {
                 case "on":
@@ -26,11 +26,24 @@ namespace TestProject2
                     return null;
             }
         }
+
+        public string Write(bool? value)
+        {
+            if (value.HasValue)
+            {
+                if (value == true)
+                {
+                    return "yes";
+                }
+                return "no";
+            }
+            return string.Empty;
+        }
     }
 
     public class ParseText : ICustomCsvParse<string>
     {
-        public string Parse(StringBuilder value)
+        public string Read(StringBuilder value)
         {
             if (value.ToString() == "Test")
             {
@@ -38,11 +51,16 @@ namespace TestProject2
             }
             return value.ToString();
         }
+
+        public string Write(string value)
+        {
+            return value;
+        }
     }
 
     public sealed class CsvPreParseTestObject
     {
-        [Column(Index = 0, CustomParserType = typeof(ParseBoolean))]
+        [Column(Index = 0, CustomParserType = typeof(ParseBooleanNullable))]
         public Boolean? IsOk { get; set; }
 
         [Column(Index = 1)]

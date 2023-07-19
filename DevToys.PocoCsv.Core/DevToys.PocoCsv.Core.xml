@@ -69,6 +69,186 @@
             Type implementing ICustomCsvParse
             </summary>
         </member>
+        <member name="T:DevToys.PocoCsv.Core.CsvAttribute">
+            <summary>
+            Csv Class Attribute, use this to set default custom parsers.
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeString">
+            <summary>
+            Type implementing ICustomCsvParse string
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeGuid">
+            <summary>
+            Type implementing ICustomCsvParse Guid
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeBoolean">
+            <summary>
+            Type implementing ICustomCsvParse Boolean
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeDateTime">
+            <summary>
+            Type implementing ICustomCsvParse DateTime
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeDateTimeOffset">
+            <summary>
+            Type implementing ICustomCsvParse DateTimeOffset
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeTimeSpan">
+            <summary>
+            Type implementing ICustomCsvParse TimeSpan
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeByte">
+            <summary>
+            Type implementing ICustomCsvParse Byte
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeSByte">
+            <summary>
+            Type implementing ICustomCsvParse SByte
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeInt16">
+            <summary>
+            Type implementing ICustomCsvParse Int16
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeInt32">
+            <summary>
+            Type implementing ICustomCsvParse Int32
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeInt64">
+            <summary>
+            Type implementing ICustomCsvParse Int64
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeSingle">
+            <summary>
+            Type implementing ICustomCsvParse Single
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeDecimal">
+            <summary>
+            Type implementing ICustomCsvParse Decimal
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeDouble">
+            <summary>
+            Type implementing ICustomCsvParse Double
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeUInt16">
+            <summary>
+            Type implementing ICustomCsvParse UInt16
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeUInt32">
+            <summary>
+            Type implementing ICustomCsvParse UInt32
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeUInt64">
+            <summary>
+            Type implementing ICustomCsvParse UInt64
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeBigInteger">
+            <summary>
+            Type implementing ICustomCsvParse BigInteger
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeGuidNullable">
+            <summary>
+            Type implementing ICustomCsvParse Guid?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeBooleanNullable">
+            <summary>
+            Type implementing ICustomCsvParse Boolean?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeDateTimeNullable">
+            <summary>
+            Type implementing ICustomCsvParse DateTime?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeDateTimeOffsetNullable">
+            <summary>
+            Type implementing ICustomCsvParse DateTimeOffset?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeTimeSpanNullable">
+            <summary>
+            Type implementing ICustomCsvParse TimeSpan?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeByteNullable">
+            <summary>
+            Type implementing ICustomCsvParse Byte?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeSByteNullable">
+            <summary>
+            Type implementing ICustomCsvParse SByte?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeInt16Nullable">
+            <summary>
+            Type implementing ICustomCsvParse Int16?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeInt32Nullable">
+            <summary>
+            Type implementing ICustomCsvParse Int32?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeInt64Nullable">
+            <summary>
+            Type implementing ICustomCsvParse Int64?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeSingleNullable">
+            <summary>
+            Type implementing ICustomCsvParse Single?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeDecimalNullable">
+            <summary>
+            Type implementing ICustomCsvParse Decimal?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeDoubleNullable">
+            <summary>
+            Type implementing ICustomCsvParse Double?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeUInt16Nullable">
+            <summary>
+            Type implementing ICustomCsvParse UInt16?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeUInt32Nullable">
+            <summary>
+            Type implementing ICustomCsvParse UInt32?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeUInt64Nullable">
+            <summary>
+            Type implementing ICustomCsvParse UInt64?
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeBigIntegerNullable">
+            <summary>
+            Type implementing ICustomCsvParse BigInteger?
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvColumnInfo">
             <summary>
             CsvUtils.GetCsvSchema result
@@ -739,11 +919,17 @@
             Implement Custom parser by assigning the CustomParserType on ColumnAttribute
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.ICustomCsvParse`1.Parse(System.Text.StringBuilder)">
+        <member name="M:DevToys.PocoCsv.Core.ICustomCsvParse`1.Read(System.Text.StringBuilder)">
             <summary>
-            Implement custom parse.
+            This method is called when using CsvReader
             </summary>
             <returns>Return value must be the same as the property type the CustomParser is placed on.</returns>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.ICustomCsvParse`1.Write(`0)">
+            <summary>
+            This method is called when using CsvWriter
+            T value must be the same as the property type the CustomParser is placed on.
+            </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.InfiniteLoopQueue`1">
             <summary>

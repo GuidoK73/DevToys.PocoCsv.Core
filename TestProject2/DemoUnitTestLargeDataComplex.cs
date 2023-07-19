@@ -9,14 +9,16 @@ using TestProject2.Models;
 namespace TestProject2
 {
     [TestClass]
-    public class DemoUnitTestLargeData
+    public class DemoUnitTestLargeDataComplex
     {
         [TestMethod]
         public void TestLargeData()
         {
             string _file = System.IO.Path.GetTempFileName();
 
-            using (CsvWriter<CsvSimple> _writer = new(_file) { Separator = ',' })
+
+
+            using (CsvWriter<CsvComplex> _writer = new(_file) { Separator = ',' })
             {
                 _writer.Open();
                 _writer.WriteHeader();
@@ -27,27 +29,35 @@ namespace TestProject2
 
             _w.Start();
 
-            using (var _reader = new CsvReader<CsvSimple>(_file))
+            using (var _reader = new CsvReader<CsvComplex>(_file))
             {
                 _reader.Open();
 
-                var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
+
+                while (!_reader.EndOfStream)
+                {
+                    CsvComplex _data = _reader.Read();
+                    Console.WriteLine("X");
+                }
+
+
+                //var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
             }
 
             _w.Stop();
             Console.WriteLine(_w.Duration);
         }
 
-        private IEnumerable<CsvSimple> LargeData()
+        private IEnumerable<CsvComplex> LargeData()
         {
-            for (int ii = 0; ii < 10000000; ii++)
+            for (int ii = 0; ii < 100000; ii++)
             {
-                CsvSimple _line = new()
+                CsvComplex _line = new()
                 {
                     AfBij = "bij",
-                    Bedrag = "100",
+                    Bedrag = 100.59M,
                     Code = "test",
-                    Datum = "20200203",
+                    Datum = new DateTime(2023,7,14),
                     Mededelingen = $"test {ii}",
                     Rekening = "3434",
                     Tegenrekening = "3423424",

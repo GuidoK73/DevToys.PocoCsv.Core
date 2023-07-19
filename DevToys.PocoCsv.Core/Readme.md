@@ -53,6 +53,8 @@ or
 ~~~
 
 # CsvReader\<T\>
+this reader is faster then CsvStreamReader, it is optamized to deserialize the rows to objects.
+
 ~~~cs
     public class Data
     {
@@ -105,6 +107,8 @@ Return the current line number.
 Flushes all buffers.
 
 # CsvWriter\<T\>
+this writer is faster then CsvStreamWriter, it is optamized to serialize the objects to rows.
+
 ~~~cs
     public class Data
     {
@@ -184,13 +188,15 @@ Defines the value to write as a default for null, This property is for CsvWriter
 CustomParserType allows for custom parsing of values to a specific type.
 
 # CustomParserType
-CustomParserType allows the Reader to use a custom parsing for a specific field.
+CustomParserType allows the Reader<T> and Writer<T> to use a custom parsing for a specific field.
+
 
 ~~~cs
 
     public sealed class ParseBoolean : ICustomCsvParse<bool?>
     {
-        public bool? Parse(StringBuilder value)
+        // for CsvReader
+        public bool? Read(StringBuilder value)
         {
             switch (value.ToString().ToLower())
             {
@@ -206,6 +212,20 @@ CustomParserType allows the Reader to use a custom parsing for a specific field.
                     return false;
             }
             return null;
+        }
+
+        // for CsvWriter
+        public string Write(bool? value)
+        {
+            if (value.HasValue)
+            {
+                if (value == true)
+                {
+                    return "1";
+                }
+                return "0";
+            }
+            return string.Empty;
         }
     }
 
@@ -230,6 +250,40 @@ CustomParserType allows the Reader to use a custom parsing for a specific field.
 
 Custom Parsers will run as singleton per specified column in the specific Reader<T>.
 
+# CsvAttribute
+
+the CsvAttribute can be set at defaults for CustomParserType, these CustomParserTypes will be applied to all properties of that specific type.\
+until they are overruled at property level.
+
+
+~~~cs
+
+    public class Parsestring : ICustomCsvParse<string>
+    {
+        public string Read(StringBuilder value)
+        {
+            return value.ToString();
+        }
+        public string Write(string value)
+        {
+            return value;
+        }
+    }
+
+    [Csv( DefaultCustomParserTypeString = typeof(Parsestring))]
+    public class CsvAllTypes
+    {
+        [Column(Index = 0, OutputFormat = "", OutputNullValue = "")]
+        public string _stringValue { get; set; }
+
+        [Column(Index = 35, OutputFormat = "", OutputNullValue = "")]
+        public string _stringValue2 { get; set; }
+
+        [Column(Index = 1, CustomParserType = typeof(ParseGuid), OutputFormat = "", OutputNullValue = "")]
+        public Guid _GuidValue { get; set; }
+   }
+
+~~~
 
 # Other Examples
 

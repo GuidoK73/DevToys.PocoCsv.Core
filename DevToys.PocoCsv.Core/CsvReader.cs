@@ -1,9 +1,11 @@
 ﻿using Delegates;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Text;
 
@@ -15,48 +17,9 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvReader<T> : BaseCsv, IDisposable where T : new()
     {
-        private StreamReader _StreamReader;
+        private StreamReader _StreamReader;       
         private readonly CsvStreamHelper _StreamHelper = new CsvStreamHelper();
-        private PropertyInfo[] _Properties = null;
-        private Boolean[] _IsNullable = null;
-
-        private ICustomCsvParse<string>[] _CustomParserString = null;
-        private ICustomCsvParse<Guid>[] _CustomParserGuid = null;
-        private ICustomCsvParse<Boolean>[] _CustomParserBoolean = null;
-        private ICustomCsvParse<DateTime>[] _CustomParserDateTime = null;
-        private ICustomCsvParse<DateTimeOffset>[] _CustomParserDateTimeOffset = null;
-        private ICustomCsvParse<TimeSpan>[] _CustomParserTimeSpan = null;
-        private ICustomCsvParse<Byte>[] _CustomParserByte = null;
-        private ICustomCsvParse<SByte>[] _CustomParserSByte = null;
-        private ICustomCsvParse<Int16>[] _CustomParserInt16 = null;
-        private ICustomCsvParse<Int32>[] _CustomParserInt32 = null;
-        private ICustomCsvParse<Int64>[] _CustomParserInt64 = null;
-        private ICustomCsvParse<Single>[] _CustomParserSingle = null;
-        private ICustomCsvParse<Decimal>[] _CustomParserDecimal = null;
-        private ICustomCsvParse<Double>[] _CustomParserDouble = null;
-        private ICustomCsvParse<UInt16>[] _CustomParserUInt16 = null;
-        private ICustomCsvParse<UInt32>[] _CustomParserUInt32 = null;
-        private ICustomCsvParse<UInt64>[] _CustomParserUInt64 = null;
-        private ICustomCsvParse<Guid?>[] _CustomParserGuidNull = null;
-        private ICustomCsvParse<Boolean?>[] _CustomParserBooleanNull = null;
-        private ICustomCsvParse<DateTime?>[] _CustomParserDateTimeNull = null;
-        private ICustomCsvParse<DateTimeOffset?>[] _CustomParserDateTimeOffsetNull = null;
-        private ICustomCsvParse<TimeSpan?>[] _CustomParserTimeSpanNull = null;
-        private ICustomCsvParse<Byte?>[] _CustomParserByteNull = null;
-        private ICustomCsvParse<SByte?>[] _CustomParserSByteNull = null;
-        private ICustomCsvParse<Int16?>[] _CustomParserInt16Null = null;
-        private ICustomCsvParse<Int32?>[] _CustomParserInt32Null = null;
-        private ICustomCsvParse<Int64?>[] _CustomParserInt64Null = null;
-        private ICustomCsvParse<Single?>[] _CustomParserSingleNull = null;
-        private ICustomCsvParse<Decimal?>[] _CustomParserDecimalNull = null;
-        private ICustomCsvParse<Double?>[] _CustomParserDoubleNull = null;
-        private ICustomCsvParse<UInt16?>[] _CustomParserUInt16Null = null;
-        private ICustomCsvParse<UInt32?>[] _CustomParserUInt32Null = null;
-        private ICustomCsvParse<UInt64?>[] _CustomParserUInt64Null = null;
-
-
-        private Func<object, object[], object>[] _CustomParserCall = null;
-
+        
         private Action<object, object>[] _PropertySetters = null;
         private Action<T, string>[] _PropertySettersString = null;
         private Action<T, Guid>[] _PropertySettersGuid = null;
@@ -75,6 +38,8 @@ namespace DevToys.PocoCsv.Core
         private Action<T, UInt16>[] _PropertySettersUInt16 = null;
         private Action<T, UInt32>[] _PropertySettersUInt32 = null;
         private Action<T, UInt64>[] _PropertySettersUInt64 = null;
+        private Action<T, BigInteger>[] _PropertySettersBigInteger = null;
+
         private Action<T, Guid?>[] _PropertySettersGuidNull = null;
         private Action<T, Boolean?>[] _PropertySettersBooleanNull = null;
         private Action<T, DateTime?>[] _PropertySettersDateTimeNull = null;
@@ -91,6 +56,8 @@ namespace DevToys.PocoCsv.Core
         private Action<T, UInt16?>[] _PropertySettersUInt16Null = null;
         private Action<T, UInt32?>[] _PropertySettersUInt32Null = null;
         private Action<T, UInt64?>[] _PropertySettersUInt64Null = null;
+        private Action<T, BigInteger?>[] _PropertySettersBigIntegerNull = null;
+
         private readonly List<CsvReadError> _Errors = new List<CsvReadError>();
         private readonly StringBuilder _sbValue = new StringBuilder(127);
         private char _char;
@@ -192,6 +159,10 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void Close()
         {
+            if (_StreamReader == null)
+            {
+                return;
+            }
             _StreamReader.BaseStream.Flush();
             _StreamReader.Close();
         }
@@ -530,6 +501,11 @@ namespace DevToys.PocoCsv.Core
                 SetValueUInt64(index, targetObject);
                 return;
             }
+            else if (targetType == typeof(BigInteger))
+            {
+                SetValueBigInteger(index, targetObject);
+                return;
+            }
         }
 
         private void SetValueOtherNullable(Type targetType, int index, T targetObject)
@@ -617,6 +593,11 @@ namespace DevToys.PocoCsv.Core
             else if (targetType == typeof(UInt64?))
             {
                 SetValueUInt64Null(index, targetObject);
+                return;
+            }
+            else if (targetType == typeof(BigInteger?))
+            {
+                SetValueBigIntegerNull(index, targetObject);
                 return;
             }
         }
@@ -1064,13 +1045,41 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        private void SetValueGuidNull(int index, T targetObject)
+
+        private void SetValueBigInteger(int index, T targetObject)
         {
-            if (_CustomParserGuidNull[index] != null)
+            if (_CustomParserBigInteger[index] != null)
             {
                 try
                 {
-                    Guid? _customParserValue = (Guid?)_CustomParserCall[index](_CustomParserGuidNull[index], new object[] { _sbValue });
+                    BigInteger _customParserValue = (BigInteger)_CustomParserCall[index](_CustomParserBigInteger[index], new object[] { _sbValue });
+                    _PropertySettersBigInteger[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+            bool succes = BigInteger.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out BigInteger _value);
+            if (succes)
+            {
+                _PropertySettersBigInteger[index](targetObject, _value);
+            }
+            else
+            {
+                _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+            }
+        }
+
+
+        private void SetValueGuidNull(int index, T targetObject)
+        {
+            if (_CustomParserGuidNullable[index] != null)
+            {
+                try
+                {
+                    Guid? _customParserValue = (Guid?)_CustomParserCall[index](_CustomParserGuidNullable[index], new object[] { _sbValue });
                     _PropertySettersGuidNull[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1102,11 +1111,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueBooleanNull(int index, T targetObject)
         {
-            if (_CustomParserBooleanNull[index] != null)
+            if (_CustomParserBooleanNullable[index] != null)
             {
                 try
                 {
-                    bool? _customParserValue = (bool?)_CustomParserCall[index](_CustomParserBooleanNull[index], new object[] { _sbValue });
+                    bool? _customParserValue = (bool?)_CustomParserCall[index](_CustomParserBooleanNullable[index], new object[] { _sbValue });
                     _PropertySettersBooleanNull[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1138,11 +1147,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDateTimeNull(int index, T targetObject)
         {
-            if (_CustomParserDateTimeNull[index] != null)
+            if (_CustomParserDateTimeNullable[index] != null)
             {
                 try
                 {
-                    DateTime? _customParserValue = (DateTime?)_CustomParserCall[index](_CustomParserDateTimeNull[index], new object[] { _sbValue });
+                    DateTime? _customParserValue = (DateTime?)_CustomParserCall[index](_CustomParserDateTimeNullable[index], new object[] { _sbValue });
                     _PropertySettersDateTimeNull[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1174,11 +1183,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDateTimeOffsetNull(int index, T targetObject)
         {
-            if (_CustomParserDateTimeOffsetNull[index] != null)
+            if (_CustomParserDateTimeOffsetNullable[index] != null)
             {
                 try
                 {
-                    DateTimeOffset? _customParserValue = (DateTimeOffset?)_CustomParserCall[index](_CustomParserDateTimeOffsetNull[index], new object[] { _sbValue });
+                    DateTimeOffset? _customParserValue = (DateTimeOffset?)_CustomParserCall[index](_CustomParserDateTimeOffsetNullable[index], new object[] { _sbValue });
                     _PropertySettersDateTimeOffsetNull[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1210,11 +1219,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueTimeSpanNull(int index, T targetObject)
         {
-            if (_CustomParserTimeSpanNull[index] != null)
+            if (_CustomParserTimeSpanNullable[index] != null)
             {
                 try
                 {
-                    TimeSpan? _customParserValue = (TimeSpan?)_CustomParserCall[index](_CustomParserTimeSpanNull[index], new object[] { _sbValue });
+                    TimeSpan? _customParserValue = (TimeSpan?)_CustomParserCall[index](_CustomParserTimeSpanNullable[index], new object[] { _sbValue });
                     _PropertySettersTimeSpanNull[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1246,11 +1255,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueByteNull(int index, T targetObject)
         {
-            if (_CustomParserByteNull[index] != null)
+            if (_CustomParserByteNullable[index] != null)
             {
                 try
                 {
-                    byte? _customParserValue = (byte?)_CustomParserCall[index](_CustomParserByteNull[index], new object[] { _sbValue });
+                    byte? _customParserValue = (byte?)_CustomParserCall[index](_CustomParserByteNullable[index], new object[] { _sbValue });
                     _PropertySettersByteNull[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1282,11 +1291,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueSByteNull(int index, T targetObject)
         {
-            if (_CustomParserSByteNull[index] != null)
+            if (_CustomParserSByteNullable[index] != null)
             {
                 try
                 {
-                    SByte? _customParserValue = (SByte?)_CustomParserCall[index](_CustomParserSByteNull[index], new object[] { _sbValue });
+                    SByte? _customParserValue = (SByte?)_CustomParserCall[index](_CustomParserSByteNullable[index], new object[] { _sbValue });
                     _PropertySettersSByteNull[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1318,11 +1327,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt16Null(int index, T targetObject)
         {
-            if (_CustomParserInt16Null[index] != null)
+            if (_CustomParserInt16Nullable[index] != null)
             {
                 try
                 {
-                    Int16? _customParserValue = (Int16?)_CustomParserCall[index](_CustomParserInt16Null[index], new object[] { _sbValue });
+                    Int16? _customParserValue = (Int16?)_CustomParserCall[index](_CustomParserInt16Nullable[index], new object[] { _sbValue });
                     _PropertySettersInt16Null[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1354,11 +1363,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt32Null(int index, T targetObject)
         {
-            if (_CustomParserInt32Null[index] != null)
+            if (_CustomParserInt32Nullable[index] != null)
             {
                 try
                 {
-                    Int32? _customParserValue = (Int32?)_CustomParserCall[index](_CustomParserInt32Null[index], new object[] { _sbValue });
+                    Int32? _customParserValue = (Int32?)_CustomParserCall[index](_CustomParserInt32Nullable[index], new object[] { _sbValue });
                     _PropertySettersInt32Null[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1390,11 +1399,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt64Null(int index, T targetObject)
         {
-            if (_CustomParserInt64Null[index] != null)
+            if (_CustomParserInt64Nullable[index] != null)
             {
                 try
                 {
-                    Int64? _customParserValue = (Int64?)_CustomParserCall[index](_CustomParserInt64Null[index], new object[] { _sbValue });
+                    Int64? _customParserValue = (Int64?)_CustomParserCall[index](_CustomParserInt64Nullable[index], new object[] { _sbValue });
                     _PropertySettersInt64Null[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1426,11 +1435,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueSingleNull(int index, T targetObject)
         {
-            if (_CustomParserSingleNull[index] != null)
+            if (_CustomParserSingleNullable[index] != null)
             {
                 try
                 {
-                    Single? _customParserValue = (Single?)_CustomParserCall[index](_CustomParserSingleNull[index], new object[] { _sbValue });
+                    Single? _customParserValue = (Single?)_CustomParserCall[index](_CustomParserSingleNullable[index], new object[] { _sbValue });
                     _PropertySettersSingleNull[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1462,11 +1471,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDecimalNull(int index, T targetObject)
         {
-            if (_CustomParserDecimalNull[index] != null)
+            if (_CustomParserDecimalNullable[index] != null)
             {
                 try
                 {
-                    Decimal? _customParserValue = (Decimal?)_CustomParserCall[index](_CustomParserDecimalNull[index], new object[] { _sbValue });
+                    Decimal? _customParserValue = (Decimal?)_CustomParserCall[index](_CustomParserDecimalNullable[index], new object[] { _sbValue });
                     _PropertySettersDecimalNull[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1498,11 +1507,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDoubleNull(int index, T targetObject)
         {
-            if (_CustomParserDoubleNull[index] != null)
+            if (_CustomParserDoubleNullable[index] != null)
             {
                 try
                 {
-                    Double? _customParserValue = (Double?)_CustomParserCall[index](_CustomParserDoubleNull[index], new object[] { _sbValue });
+                    Double? _customParserValue = (Double?)_CustomParserCall[index](_CustomParserDoubleNullable[index], new object[] { _sbValue });
                     _PropertySettersDoubleNull[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1534,11 +1543,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt16Null(int index, T targetObject)
         {
-            if (_CustomParserUInt16Null[index] != null)
+            if (_CustomParserUInt16Nullable[index] != null)
             {
                 try
                 {
-                    UInt16? _customParserValue = (UInt16?)_CustomParserCall[index](_CustomParserUInt16Null[index], new object[] { _sbValue });
+                    UInt16? _customParserValue = (UInt16?)_CustomParserCall[index](_CustomParserUInt16Nullable[index], new object[] { _sbValue });
                     _PropertySettersUInt16Null[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1570,11 +1579,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt32Null(int index, T targetObject)
         {
-            if (_CustomParserUInt32Null[index] != null)
+            if (_CustomParserUInt32Nullable[index] != null)
             {
                 try
                 {
-                    UInt32? _customParserValue = (UInt32?)_CustomParserCall[index](_CustomParserUInt32Null[index], new object[] { _sbValue });
+                    UInt32? _customParserValue = (UInt32?)_CustomParserCall[index](_CustomParserUInt32Nullable[index], new object[] { _sbValue });
                     _PropertySettersUInt32Null[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1606,11 +1615,11 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt64Null(int index, T targetObject)
         {
-            if (_CustomParserUInt64Null[index] != null)
+            if (_CustomParserUInt64Nullable[index] != null)
             {
                 try
                 {
-                    UInt64? _customParserValue = (UInt64?)_CustomParserCall[index](_CustomParserUInt64Null[index], new object[] { _sbValue });
+                    UInt64? _customParserValue = (UInt64?)_CustomParserCall[index](_CustomParserUInt64Nullable[index], new object[] { _sbValue });
                     _PropertySettersUInt64Null[index](targetObject, _customParserValue);
                 }
                 catch
@@ -1640,6 +1649,45 @@ namespace DevToys.PocoCsv.Core
                 _PropertySettersUInt64Null[index](targetObject, null);
             }
         }
+
+
+        private void SetValueBigIntegerNull(int index, T targetObject)
+        {
+            if (_CustomParserBigIntegerNullable[index] != null)
+            {
+                try
+                {
+                    BigInteger? _customParserValue = (BigInteger?)_CustomParserCall[index](_CustomParserBigIntegerNullable[index], new object[] { _sbValue });
+                    _PropertySettersBigIntegerNull[index](targetObject, _customParserValue);
+                }
+                catch
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
+            }
+
+
+            string _valueRead = _sbValue.ToString();
+
+            if (!string.IsNullOrEmpty(_valueRead))
+            {
+                bool succes = BigInteger.TryParse(_valueRead, out BigInteger _value);
+                if (succes)
+                {
+                    _PropertySettersBigIntegerNull[index](targetObject, _value);
+                }
+                else
+                {
+                    _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+            }
+            else
+            {
+                _PropertySettersBigIntegerNull[index](targetObject, null);
+            }
+        }
+
 
         #endregion Value Setters
 
@@ -1698,41 +1746,10 @@ namespace DevToys.PocoCsv.Core
                 .Select(p => (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index).Max();
 
 
-            _CustomParserString = new ICustomCsvParse<string>[_max + 1];
-            _CustomParserGuid = new ICustomCsvParse<Guid>[_max + 1];
-            _CustomParserBoolean = new ICustomCsvParse<Boolean>[_max + 1];
-            _CustomParserDateTime = new ICustomCsvParse<DateTime>[_max + 1];
-            _CustomParserDateTimeOffset = new ICustomCsvParse<DateTimeOffset>[_max + 1];
-            _CustomParserTimeSpan = new ICustomCsvParse<TimeSpan>[_max + 1];
-            _CustomParserByte = new ICustomCsvParse<Byte>[_max + 1];
-            _CustomParserSByte = new ICustomCsvParse<SByte>[_max + 1];
-            _CustomParserInt16 = new ICustomCsvParse<Int16>[_max + 1];
-            _CustomParserInt32 = new ICustomCsvParse<Int32>[_max + 1];
-            _CustomParserInt64 = new ICustomCsvParse<Int64>[_max + 1];
-            _CustomParserSingle = new ICustomCsvParse<Single>[_max + 1];
-            _CustomParserDecimal = new ICustomCsvParse<Decimal>[_max + 1];
-            _CustomParserDouble = new ICustomCsvParse<Double>[_max + 1];
-            _CustomParserUInt16 = new ICustomCsvParse<UInt16>[_max + 1];
-            _CustomParserUInt32 = new ICustomCsvParse<UInt32>[_max + 1];
-            _CustomParserUInt64 = new ICustomCsvParse<UInt64>[_max + 1];
-            _CustomParserGuidNull = new ICustomCsvParse<Guid?>[_max + 1];
-            _CustomParserBooleanNull = new ICustomCsvParse<Boolean?>[_max + 1];
-            _CustomParserDateTimeNull = new ICustomCsvParse<DateTime?>[_max + 1];
-            _CustomParserDateTimeOffsetNull = new ICustomCsvParse<DateTimeOffset?>[_max + 1];
-            _CustomParserTimeSpanNull = new ICustomCsvParse<TimeSpan?>[_max + 1];
-            _CustomParserByteNull = new ICustomCsvParse<Byte?>[_max + 1];
-            _CustomParserSByteNull = new ICustomCsvParse<SByte?>[_max + 1];
-            _CustomParserInt16Null = new ICustomCsvParse<Int16?>[_max + 1];
-            _CustomParserInt32Null = new ICustomCsvParse<Int32?>[_max + 1];
-            _CustomParserInt64Null = new ICustomCsvParse<Int64?>[_max + 1];
-            _CustomParserSingleNull = new ICustomCsvParse<Single?>[_max + 1];
-            _CustomParserDecimalNull = new ICustomCsvParse<Decimal?>[_max + 1];
-            _CustomParserDoubleNull = new ICustomCsvParse<Double?>[_max + 1];
-            _CustomParserUInt16Null = new ICustomCsvParse<UInt16?>[_max + 1];
-            _CustomParserUInt32Null = new ICustomCsvParse<UInt32?>[_max + 1];
-            _CustomParserUInt64Null = new ICustomCsvParse<UInt64?>[_max + 1];
+            InitCustomCsvParseArrays(_max + 1);
 
-            _CustomParserCall = new Func<object, object[], object>[_max + 1];
+            InitCsvAttribute(_type, _max + 1, ReadOrWrite.Read);
+
 
             _Properties = new PropertyInfo[_max + 1];
             _PropertySetters = new Action<object, object>[_max + 1];
@@ -1754,6 +1771,8 @@ namespace DevToys.PocoCsv.Core
             _PropertySettersUInt16 = new Action<T, UInt16>[_max + 1];
             _PropertySettersUInt32 = new Action<T, UInt32>[_max + 1];
             _PropertySettersUInt64 = new Action<T, UInt64>[_max + 1];
+            _PropertySettersBigInteger = new Action<T, BigInteger>[_max + 1];
+
             _PropertySettersGuidNull = new Action<T, Guid?>[_max + 1];
             _PropertySettersBooleanNull = new Action<T, Boolean?>[_max + 1];
             _PropertySettersDateTimeNull = new Action<T, DateTime?>[_max + 1];
@@ -1770,291 +1789,166 @@ namespace DevToys.PocoCsv.Core
             _PropertySettersUInt16Null = new Action<T, UInt16?>[_max + 1];
             _PropertySettersUInt32Null = new Action<T, UInt32?>[_max + 1];
             _PropertySettersUInt64Null = new Action<T, UInt64?>[_max + 1];
+            _PropertySettersBigIntegerNull = new Action<T, BigInteger?>[_max + 1];
 
-            foreach (var _property in _type.GetProperties()
+            foreach (var property in _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
                 .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) })
                 )
             {
-                Type propertyType = _property.Property.PropertyType;
+                Type propertyType = property.Property.PropertyType;
 
-                _IsNullable[_property.Index] = Nullable.GetUnderlyingType(propertyType) != null;
+                _IsNullable[property.Index] = Nullable.GetUnderlyingType(propertyType) != null;
 
-                if (_property.Attrib.CustomParserType != null)
+                if (property.Attrib.CustomParserType != null)
                 {
-                    if (TypeUtils.HasInterface<ICustomCsvParse<string>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserString[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<string>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Guid>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserGuid[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Guid>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Boolean>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserBoolean[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Boolean>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<DateTime>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserDateTime[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<DateTime>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<DateTimeOffset>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserDateTimeOffset[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<DateTimeOffset>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<TimeSpan>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserTimeSpan[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<TimeSpan>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Byte>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserByte[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Byte>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<SByte>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserSByte[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<SByte>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Int16>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserInt16[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Int16>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Int32>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserInt32[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Int32>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Int64>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserInt64[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Int64>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Single>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserSingle[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Single>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Decimal>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserDecimal[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Decimal>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Double>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserDouble[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Double>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<UInt16>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserUInt16[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<UInt16>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<UInt32>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserUInt32[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<UInt32>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<UInt64>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserUInt64[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<UInt64>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Guid?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserGuidNull[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Guid?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Boolean?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserBooleanNull[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Boolean?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<DateTime?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserDateTimeNull[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<DateTime?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<DateTimeOffset?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserDateTimeOffsetNull[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<DateTimeOffset?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<TimeSpan?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserTimeSpanNull[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<TimeSpan?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Byte?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserByteNull[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Byte?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<SByte?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserSByteNull[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<SByte?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Int16?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserInt16Null[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Int16?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Int32?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserInt32Null[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Int32?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Int64?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserInt64Null[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Int64?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Single?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserSingleNull[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Single?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Decimal?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserDecimalNull[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Decimal?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<Double?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserDoubleNull[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<Double?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<UInt16?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserUInt16Null[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<UInt16?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<UInt32?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserUInt32Null[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<UInt32?>;
-                    }
-                    else if (TypeUtils.HasInterface<ICustomCsvParse<UInt64?>>(_property.Attrib.CustomParserType))
-                    {
-                        _CustomParserUInt64Null[_property.Index] = Activator.CreateInstance(_property.Attrib.CustomParserType) as ICustomCsvParse<UInt64?>;
-                    }
-                    else 
-                    {
-                        throw new TypeLoadException($"PreParser type must implement PreParse interface. Property: {_property.Property.Name}");
-                    }
-                    _CustomParserCall[_property.Index] = DelegateFactory.InstanceMethod(_property.Attrib.CustomParserType, "Parse", typeof(StringBuilder));
+                    SetCustomParserType(property.Index, property.Attrib.CustomParserType, property.Property.Name);
+
+                    _CustomParserCall[property.Index] = DelegateFactory.InstanceMethod(property.Attrib.CustomParserType, "Read", typeof(StringBuilder));
                 }
 
                 if (propertyType == typeof(string))
                 {
-                    _PropertySettersString[_property.Index] = DelegateFactory.PropertySet<T, string>(_property.Property.Name);
+                    _PropertySettersString[property.Index] = DelegateFactory.PropertySet<T, string>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Guid))
                 {
-                    _PropertySettersGuid[_property.Index] = DelegateFactory.PropertySet<T, Guid>(_property.Property.Name);
+                    _PropertySettersGuid[property.Index] = DelegateFactory.PropertySet<T, Guid>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Boolean))
                 {
-                    _PropertySettersBoolean[_property.Index] = DelegateFactory.PropertySet<T, Boolean>(_property.Property.Name);
+                    _PropertySettersBoolean[property.Index] = DelegateFactory.PropertySet<T, Boolean>(property.Property.Name);
                 }
                 else if (propertyType == typeof(DateTime))
                 {
-                    _PropertySettersDateTime[_property.Index] = DelegateFactory.PropertySet<T, DateTime>(_property.Property.Name);
+                    _PropertySettersDateTime[property.Index] = DelegateFactory.PropertySet<T, DateTime>(property.Property.Name);
                 }
                 else if (propertyType == typeof(DateTimeOffset))
                 {
-                    _PropertySettersDateTimeOffset[_property.Index] = DelegateFactory.PropertySet<T, DateTimeOffset>(_property.Property.Name);
+                    _PropertySettersDateTimeOffset[property.Index] = DelegateFactory.PropertySet<T, DateTimeOffset>(property.Property.Name);
                 }
                 else if (propertyType == typeof(TimeSpan))
                 {
-                    _PropertySettersTimeSpan[_property.Index] = DelegateFactory.PropertySet<T, TimeSpan>(_property.Property.Name);
+                    _PropertySettersTimeSpan[property.Index] = DelegateFactory.PropertySet<T, TimeSpan>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Byte))
                 {
-                    _PropertySettersByte[_property.Index] = DelegateFactory.PropertySet<T, Byte>(_property.Property.Name);
+                    _PropertySettersByte[property.Index] = DelegateFactory.PropertySet<T, Byte>(property.Property.Name);
                 }
                 else if (propertyType == typeof(SByte))
                 {
-                    _PropertySettersSByte[_property.Index] = DelegateFactory.PropertySet<T, SByte>(_property.Property.Name);
+                    _PropertySettersSByte[property.Index] = DelegateFactory.PropertySet<T, SByte>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Int16))
                 {
-                    _PropertySettersInt16[_property.Index] = DelegateFactory.PropertySet<T, Int16>(_property.Property.Name);
+                    _PropertySettersInt16[property.Index] = DelegateFactory.PropertySet<T, Int16>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Int32))
                 {
-                    _PropertySettersInt32[_property.Index] = DelegateFactory.PropertySet<T, Int32>(_property.Property.Name);
+                    _PropertySettersInt32[property.Index] = DelegateFactory.PropertySet<T, Int32>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Int64))
                 {
-                    _PropertySettersInt64[_property.Index] = DelegateFactory.PropertySet<T, Int64>(_property.Property.Name);
+                    _PropertySettersInt64[property.Index] = DelegateFactory.PropertySet<T, Int64>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Single))
                 {
-                    _PropertySettersSingle[_property.Index] = DelegateFactory.PropertySet<T, Single>(_property.Property.Name);
+                    _PropertySettersSingle[property.Index] = DelegateFactory.PropertySet<T, Single>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Decimal))
                 {
-                    _PropertySettersDecimal[_property.Index] = DelegateFactory.PropertySet<T, Decimal>(_property.Property.Name);
+                    _PropertySettersDecimal[property.Index] = DelegateFactory.PropertySet<T, Decimal>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Double))
                 {
-                    _PropertySettersDouble[_property.Index] = DelegateFactory.PropertySet<T, Double>(_property.Property.Name);
+                    _PropertySettersDouble[property.Index] = DelegateFactory.PropertySet<T, Double>(property.Property.Name);
                 }
                 else if (propertyType == typeof(UInt16))
                 {
-                    _PropertySettersUInt16[_property.Index] = DelegateFactory.PropertySet<T, UInt16>(_property.Property.Name);
+                    _PropertySettersUInt16[property.Index] = DelegateFactory.PropertySet<T, UInt16>(property.Property.Name);
                 }
                 else if (propertyType == typeof(UInt32))
                 {
-                    _PropertySettersUInt32[_property.Index] = DelegateFactory.PropertySet<T, UInt32>(_property.Property.Name);
+                    _PropertySettersUInt32[property.Index] = DelegateFactory.PropertySet<T, UInt32>(property.Property.Name);
                 }
                 else if (propertyType == typeof(UInt64))
                 {
-                    _PropertySettersUInt64[_property.Index] = DelegateFactory.PropertySet<T, UInt64>(_property.Property.Name);
+                    _PropertySettersUInt64[property.Index] = DelegateFactory.PropertySet<T, UInt64>(property.Property.Name);
+                }
+                else if (propertyType == typeof(BigInteger))
+                {
+                    _PropertySettersBigInteger[property.Index] = DelegateFactory.PropertySet<T, BigInteger>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Guid?))
                 {
-                    _PropertySettersGuidNull[_property.Index] = DelegateFactory.PropertySet<T, Guid?>(_property.Property.Name);
+                    _PropertySettersGuidNull[property.Index] = DelegateFactory.PropertySet<T, Guid?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Boolean?))
                 {
-                    _PropertySettersBooleanNull[_property.Index] = DelegateFactory.PropertySet<T, Boolean?>(_property.Property.Name);
+                    _PropertySettersBooleanNull[property.Index] = DelegateFactory.PropertySet<T, Boolean?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(DateTime?))
                 {
-                    _PropertySettersDateTimeNull[_property.Index] = DelegateFactory.PropertySet<T, DateTime?>(_property.Property.Name);
+                    _PropertySettersDateTimeNull[property.Index] = DelegateFactory.PropertySet<T, DateTime?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(DateTimeOffset?))
                 {
-                    _PropertySettersDateTimeOffsetNull[_property.Index] = DelegateFactory.PropertySet<T, DateTimeOffset?>(_property.Property.Name);
+                    _PropertySettersDateTimeOffsetNull[property.Index] = DelegateFactory.PropertySet<T, DateTimeOffset?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(TimeSpan?))
                 {
-                    _PropertySettersTimeSpanNull[_property.Index] = DelegateFactory.PropertySet<T, TimeSpan?>(_property.Property.Name);
+                    _PropertySettersTimeSpanNull[property.Index] = DelegateFactory.PropertySet<T, TimeSpan?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Byte?))
                 {
-                    _PropertySettersByteNull[_property.Index] = DelegateFactory.PropertySet<T, Byte?>(_property.Property.Name);
+                    _PropertySettersByteNull[property.Index] = DelegateFactory.PropertySet<T, Byte?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(SByte?))
                 {
-                    _PropertySettersSByteNull[_property.Index] = DelegateFactory.PropertySet<T, SByte?>(_property.Property.Name);
+                    _PropertySettersSByteNull[property.Index] = DelegateFactory.PropertySet<T, SByte?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Int16?))
                 {
-                    _PropertySettersInt16Null[_property.Index] = DelegateFactory.PropertySet<T, Int16?>(_property.Property.Name);
+                    _PropertySettersInt16Null[property.Index] = DelegateFactory.PropertySet<T, Int16?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Int32?))
                 {
-                    _PropertySettersInt32Null[_property.Index] = DelegateFactory.PropertySet<T, Int32?>(_property.Property.Name);
+                    _PropertySettersInt32Null[property.Index] = DelegateFactory.PropertySet<T, Int32?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Int64?))
                 {
-                    _PropertySettersInt64Null[_property.Index] = DelegateFactory.PropertySet<T, Int64?>(_property.Property.Name);
+                    _PropertySettersInt64Null[property.Index] = DelegateFactory.PropertySet<T, Int64?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Single?))
                 {
-                    _PropertySettersSingleNull[_property.Index] = DelegateFactory.PropertySet<T, Single?>(_property.Property.Name);
+                    _PropertySettersSingleNull[property.Index] = DelegateFactory.PropertySet<T, Single?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Decimal?))
                 {
-                    _PropertySettersDecimalNull[_property.Index] = DelegateFactory.PropertySet<T, Decimal?>(_property.Property.Name);
+                    _PropertySettersDecimalNull[property.Index] = DelegateFactory.PropertySet<T, Decimal?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Double?))
                 {
-                    _PropertySettersDoubleNull[_property.Index] = DelegateFactory.PropertySet<T, Double?>(_property.Property.Name);
+                    _PropertySettersDoubleNull[property.Index] = DelegateFactory.PropertySet<T, Double?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(UInt16?))
                 {
-                    _PropertySettersUInt16Null[_property.Index] = DelegateFactory.PropertySet<T, UInt16?>(_property.Property.Name);
+                    _PropertySettersUInt16Null[property.Index] = DelegateFactory.PropertySet<T, UInt16?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(UInt32?))
                 {
-                    _PropertySettersUInt32Null[_property.Index] = DelegateFactory.PropertySet<T, UInt32?>(_property.Property.Name);
+                    _PropertySettersUInt32Null[property.Index] = DelegateFactory.PropertySet<T, UInt32?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(UInt64?))
                 {
-                    _PropertySettersUInt64Null[_property.Index] = DelegateFactory.PropertySet<T, UInt64?>(_property.Property.Name);
+                    _PropertySettersUInt64Null[property.Index] = DelegateFactory.PropertySet<T, UInt64?>(property.Property.Name);
                 }
-                _Properties[_property.Index] = _property.Property;
-                _PropertySetters[_property.Index] = _type.PropertySet(_property.Property.Name);
+                else if (propertyType == typeof(BigInteger?))
+                {
+                    _PropertySettersBigIntegerNull[property.Index] = DelegateFactory.PropertySet<T, BigInteger?>(property.Property.Name);
+                }
+                _Properties[property.Index] = property.Property;
+                _PropertySetters[property.Index] = _type.PropertySet(property.Property.Name);
             }
         }
     }

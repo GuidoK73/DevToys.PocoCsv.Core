@@ -29,12 +29,20 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Authors>GuidoK73</Authors>
 	<PackageTags>csv;export;import;comma separated;4180;delimited;poco;csv parser;parse csv;DataTable;Import Csv;Export Csv;Csv Object</PackageTags>
     <Company />
-    <Version>1.7.53</Version>
+    <Version>2.0</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>1.7.53
+    <PackageReleaseNotes>2.0
+- Improved CsvWriter&lt;T&gt; speed.
+- Extended ICustomCsvParser&lt;T&gt; to be supported by the CsvWriter&lt;T&gt; as well.
+- ICustomCsvParser&lt;T&gt;.Parse() has been removed.
+- Added Read() and Write() to ICustomCsvParser&lt;T&gt;
+- Refactored CsvReader&lt;T&gt; and  CsvWriter&lt;T&gt;
+- Introduced CsvAttribute to set, at this attribute defaults for ICustomCsvParser can be set at class level.
+
+1.7.53
 - Improved CsvStreamReader speed.
 - Added ReadAsEnumerable() to CsvStreamReader.
 
