@@ -10,12 +10,13 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvStreamReader : StreamReader
     {
-
         private readonly StringBuilder _sbValue = new StringBuilder(127);
         private char _char;
-        const char _CR = '\r';
-        const char _LF = '\n';
-        const char _ESCAPE = '"';
+        private const char _CR = '\r';
+        private const char _LF = '\n';
+        private const char _ESCAPE = '"';
+
+        private readonly List<string> _result = new List<string>();
 
         private readonly CsvStreamHelper _StreamHelper = new CsvStreamHelper();
 
@@ -35,7 +36,6 @@ namespace DevToys.PocoCsv.Core
         /// <param name="bufferSize">The minimum buffer size.</param>
         public CsvStreamReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize) : base(path, encoding, detectEncodingFromByteOrderMarks, bufferSize)
         { }
-
 
 #if NET60 || NET70
         /// <summary>
@@ -86,13 +86,13 @@ namespace DevToys.PocoCsv.Core
         /// Move reader to the start position 0
         /// </summary>
         public void MoveToStart() => _StreamHelper.MoveToPosition(BaseStream, 0);
-        
+
         /// <summary>
         /// Get / Sets the Separator character to use.
         /// </summary>
         public char Separator
         {
-            get => _StreamHelper.Separator; 
+            get => _StreamHelper.Separator;
             set => _StreamHelper.Separator = value;
         }
 
@@ -106,7 +106,6 @@ namespace DevToys.PocoCsv.Core
             Position = 0;
             return _schema;
         }
-
 
         /// <summary>
         /// Detects and sets CSV Separator. over 10 sample rows
@@ -155,7 +154,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void MoveToLast(int rows = 1) => _StreamHelper.MoveToLast(BaseStream, rows);
 
-        private List<string> _result = new List<string>();
+
 
         /// <summary>
         /// Reads a single CSV line into string array.
@@ -168,6 +167,7 @@ namespace DevToys.PocoCsv.Core
             int _column = 0;
             bool _trimLast = false;
             bool _rowEnd = false;
+            bool _escapedEscape = false;
 
             _sbValue.Length = 0;
             _StreamHelper._byte = 0;
@@ -228,17 +228,55 @@ namespace DevToys.PocoCsv.Core
                 }
                 else if (_char == _ESCAPE)
                 {
-                    _state = (_state == State.Normal) ? State.Escaped : State.Normal;
-                    if (_sbValue.Length == 0)
+                    if (_sbValue.Length == 0 && _state == State.Normal)
                     {
-                        _trimLast = true; // .Trim() is costly on large sets.
-                        continue;
+                        // first character in field is a double quote so we go to escape state.
+                        _state = State.Escaped; // first char in field is escape char.
+                        _trimLast = true; // we need to trim the last field as well.
+                        continue; // NEXT FIELD
+                    }
+                    else if (_state == State.Normal)
+                    {
+                        _state = State.Escaped;
+                    }
+                    else if (_state == State.Escaped)
+                    {
+                        char _nextChar = PeakNextChar(out int charByte);
+                        if (charByte == -1)
+                        {
+                            _state = State.Normal;
+                            continue;
+                        }
+                        if (_nextChar == _CR || _nextChar == _LF && _escapedEscape == false)
+                        {
+                            _state = State.Normal;
+                            continue;
+                        }
+                        if (_nextChar == Separator && _escapedEscape == false)
+                        {
+                            _state = State.Normal;
+                        }
+                        if (_nextChar == _ESCAPE && _escapedEscape == false)
+                        {
+                            _state = State.Escaped;
+                            _escapedEscape = true;
+                            continue;
+                        }
                     }
                 }
                 _sbValue.Append(_char);
+                _escapedEscape = false;
             }
 
             return _result.ToArray();
+        }
+
+        private char PeakNextChar(out int charByte)
+        {
+            charByte = BaseStream.ReadByte(); // Read next byte to see if it is LF.
+            char _c = (char)charByte;
+            BaseStream.Position--;
+            return _c;
         }
 
         /// <summary>

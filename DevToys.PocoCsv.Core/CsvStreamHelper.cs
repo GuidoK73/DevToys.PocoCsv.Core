@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -9,7 +8,6 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     internal sealed class CsvStreamHelper
     {
-        private readonly StringBuilder _sbValue = new StringBuilder(127);
         private char _char;
         internal int _byte = 0;
         const char _CR = '\r';

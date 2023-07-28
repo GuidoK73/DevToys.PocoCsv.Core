@@ -1,6 +1,4 @@
-﻿using System;
-using System.Data.SqlTypes;
-using System.Text;
+﻿using System.Text;
 
 namespace DevToys.PocoCsv.Core
 {
@@ -15,12 +13,10 @@ namespace DevToys.PocoCsv.Core
         /// <returns>Return value must be the same as the property type the CustomParser is placed on.</returns>
         T Read(StringBuilder value);
 
-
         /// <summary>
         /// This method is called when using CsvWriter
         /// T value must be the same as the property type the CustomParser is placed on.
         /// </summary>
         string Write(T value);
     }
-
 }

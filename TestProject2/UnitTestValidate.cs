@@ -119,12 +119,20 @@ namespace TestProject2
                 _writer.CRLFMode = CRLFMode.CR;
                 _writer.WriteCsvLine("Row 5", "Row E,E", "E", "E5");
                 _writer.WriteCsvLine("Row 6", "Row F,F\r\nF,F", "F", "F6");
+
+                _writer.WriteCsvLine("Row F\";\"F\r\nF,F\"", "Row 7", "\"", "F6\" ");
+                _writer.WriteCsvLine("A\" ", "\"\"\"", "B\"", "\"\"\"");
+
+
                 _writer.Flush();
             }
 
+            string _text = File.ReadAllText(file);
+
             using (CsvStreamReader _reader = new CsvStreamReader(file))
             {
-                _reader.DetectSeparator();
+                _reader.Separator = ';';
+                //_reader.DetectSeparator();
 
                 int _row = 0;
                 while (!_reader.EndOfStream)
@@ -172,6 +180,20 @@ namespace TestProject2
                         Assert.AreEqual(_values[1], "Row F,F\r\nF,F");
                         Assert.AreEqual(_values[2], "F");
                         Assert.AreEqual(_values[3], "F6");
+                    }
+                    if (_row == 6)
+                    {
+                        Assert.AreEqual(_values[0], "Row F\";\"F\r\nF,F\"");
+                        Assert.AreEqual(_values[1], "Row 7");
+                        Assert.AreEqual(_values[2], "\"");
+                        Assert.AreEqual(_values[3], "F6\" ");
+                    }
+                    if (_row == 7)
+                    {
+                        Assert.AreEqual(_values[0], "A\" ");
+                        Assert.AreEqual(_values[1], "\"\"\"");
+                        Assert.AreEqual(_values[2], "B\"");
+                        Assert.AreEqual(_values[3], "\"\"\"");
                     }
                     _row++;
                 }

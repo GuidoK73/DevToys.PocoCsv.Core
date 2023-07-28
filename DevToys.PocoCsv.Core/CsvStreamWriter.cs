@@ -47,7 +47,6 @@ namespace DevToys.PocoCsv.Core
         }
 #endif
 
-
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamWriter class for the specified stream by using UTF-8 encoding and the default buffer size.
         /// </summary>
@@ -110,7 +109,6 @@ namespace DevToys.PocoCsv.Core
             _sb.Length--;
             BaseStream.Write(Encoding.Default.GetBytes(_sb.ToString()), 0, _sb.Length);
         }
-
 
         /// <summary>
         /// Write an array of strings to the Csv Stream and escapes when nececary.

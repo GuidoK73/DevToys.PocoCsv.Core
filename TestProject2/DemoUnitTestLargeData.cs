@@ -33,6 +33,8 @@ namespace TestProject2
 
                 var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
             }
+            // 00:00:22.3810056}
+            // 00:00:23.2109005
 
             _w.Stop();
             Console.WriteLine(_w.Duration);

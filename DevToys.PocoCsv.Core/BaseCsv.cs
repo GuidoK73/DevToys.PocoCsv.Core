@@ -14,6 +14,15 @@ namespace DevToys.PocoCsv.Core
         Write = 1
     }
 
+    public enum TypeGroup
+    {
+        String = 0,
+        Nullable = 1,
+        NonNullable = 2,
+        NullableSpecial = 1,
+        NonNullableSpecial = 2,
+    }
+
     /// <summary>
     /// Base class for BaseCsvReader and BaseCsvWriter
     /// </summary>
@@ -49,53 +58,55 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public Encoding Encoding { get; set; } = Encoding.Default;
 
-        internal protected PropertyInfo[] _Properties = null;
+        protected internal PropertyInfo[] _Properties = null;
 
-        internal protected Boolean[] _IsNullable = null;
-
-        internal protected ICustomCsvParse<string>[] _CustomParserString = null;
-        internal protected ICustomCsvParse<Guid>[] _CustomParserGuid = null;
-        internal protected ICustomCsvParse<Boolean>[] _CustomParserBoolean = null;
-        internal protected ICustomCsvParse<DateTime>[] _CustomParserDateTime = null;
-        internal protected ICustomCsvParse<DateTimeOffset>[] _CustomParserDateTimeOffset = null;
-        internal protected ICustomCsvParse<TimeSpan>[] _CustomParserTimeSpan = null;
-        internal protected ICustomCsvParse<Byte>[] _CustomParserByte = null;
-        internal protected ICustomCsvParse<SByte>[] _CustomParserSByte = null;
-        internal protected ICustomCsvParse<Int16>[] _CustomParserInt16 = null;
-        internal protected ICustomCsvParse<Int32>[] _CustomParserInt32 = null;
-        internal protected ICustomCsvParse<Int64>[] _CustomParserInt64 = null;
-        internal protected ICustomCsvParse<Single>[] _CustomParserSingle = null;
-        internal protected ICustomCsvParse<Decimal>[] _CustomParserDecimal = null;
-        internal protected ICustomCsvParse<Double>[] _CustomParserDouble = null;
-        internal protected ICustomCsvParse<UInt16>[] _CustomParserUInt16 = null;
-        internal protected ICustomCsvParse<UInt32>[] _CustomParserUInt32 = null;
-        internal protected ICustomCsvParse<UInt64>[] _CustomParserUInt64 = null;
-        internal protected ICustomCsvParse<BigInteger>[] _CustomParserBigInteger = null;
-
-        internal protected ICustomCsvParse<Guid?>[] _CustomParserGuidNullable = null;
-        internal protected ICustomCsvParse<Boolean?>[] _CustomParserBooleanNullable = null;
-        internal protected ICustomCsvParse<DateTime?>[] _CustomParserDateTimeNullable = null;
-        internal protected ICustomCsvParse<DateTimeOffset?>[] _CustomParserDateTimeOffsetNullable = null;
-        internal protected ICustomCsvParse<TimeSpan?>[] _CustomParserTimeSpanNullable = null;
-        internal protected ICustomCsvParse<Byte?>[] _CustomParserByteNullable = null;
-        internal protected ICustomCsvParse<SByte?>[] _CustomParserSByteNullable = null;
-        internal protected ICustomCsvParse<Int16?>[] _CustomParserInt16Nullable = null;
-        internal protected ICustomCsvParse<Int32?>[] _CustomParserInt32Nullable = null;
-        internal protected ICustomCsvParse<Int64?>[] _CustomParserInt64Nullable = null;
-        internal protected ICustomCsvParse<Single?>[] _CustomParserSingleNullable = null;
-        internal protected ICustomCsvParse<Decimal?>[] _CustomParserDecimalNullable = null;
-        internal protected ICustomCsvParse<Double?>[] _CustomParserDoubleNullable = null;
-        internal protected ICustomCsvParse<UInt16?>[] _CustomParserUInt16Nullable = null;
-        internal protected ICustomCsvParse<UInt32?>[] _CustomParserUInt32Nullable = null;
-        internal protected ICustomCsvParse<UInt64?>[] _CustomParserUInt64Nullable = null;
-        internal protected ICustomCsvParse<BigInteger?>[] _CustomParserBigIntegerNullable = null;
-
-        internal protected Func<object, object[], object>[] _CustomParserCall = null;
-
-        internal protected CsvAttribute _CsvAttribute;
+        protected internal Boolean[] _IsNullable = null;
 
 
-        internal protected void InitCustomCsvParseArrays(int size)
+
+
+        protected internal ICustomCsvParse<string>[] _CustomParserString = null;
+        protected internal ICustomCsvParse<Guid>[] _CustomParserGuid = null;
+        protected internal ICustomCsvParse<Boolean>[] _CustomParserBoolean = null;
+        protected internal ICustomCsvParse<DateTime>[] _CustomParserDateTime = null;
+        protected internal ICustomCsvParse<DateTimeOffset>[] _CustomParserDateTimeOffset = null;
+        protected internal ICustomCsvParse<TimeSpan>[] _CustomParserTimeSpan = null;
+        protected internal ICustomCsvParse<Byte>[] _CustomParserByte = null;
+        protected internal ICustomCsvParse<SByte>[] _CustomParserSByte = null;
+        protected internal ICustomCsvParse<Int16>[] _CustomParserInt16 = null;
+        protected internal ICustomCsvParse<Int32>[] _CustomParserInt32 = null;
+        protected internal ICustomCsvParse<Int64>[] _CustomParserInt64 = null;
+        protected internal ICustomCsvParse<Single>[] _CustomParserSingle = null;
+        protected internal ICustomCsvParse<Decimal>[] _CustomParserDecimal = null;
+        protected internal ICustomCsvParse<Double>[] _CustomParserDouble = null;
+        protected internal ICustomCsvParse<UInt16>[] _CustomParserUInt16 = null;
+        protected internal ICustomCsvParse<UInt32>[] _CustomParserUInt32 = null;
+        protected internal ICustomCsvParse<UInt64>[] _CustomParserUInt64 = null;
+        protected internal ICustomCsvParse<BigInteger>[] _CustomParserBigInteger = null;
+
+        protected internal ICustomCsvParse<Guid?>[] _CustomParserGuidNullable = null;
+        protected internal ICustomCsvParse<Boolean?>[] _CustomParserBooleanNullable = null;
+        protected internal ICustomCsvParse<DateTime?>[] _CustomParserDateTimeNullable = null;
+        protected internal ICustomCsvParse<DateTimeOffset?>[] _CustomParserDateTimeOffsetNullable = null;
+        protected internal ICustomCsvParse<TimeSpan?>[] _CustomParserTimeSpanNullable = null;
+        protected internal ICustomCsvParse<Byte?>[] _CustomParserByteNullable = null;
+        protected internal ICustomCsvParse<SByte?>[] _CustomParserSByteNullable = null;
+        protected internal ICustomCsvParse<Int16?>[] _CustomParserInt16Nullable = null;
+        protected internal ICustomCsvParse<Int32?>[] _CustomParserInt32Nullable = null;
+        protected internal ICustomCsvParse<Int64?>[] _CustomParserInt64Nullable = null;
+        protected internal ICustomCsvParse<Single?>[] _CustomParserSingleNullable = null;
+        protected internal ICustomCsvParse<Decimal?>[] _CustomParserDecimalNullable = null;
+        protected internal ICustomCsvParse<Double?>[] _CustomParserDoubleNullable = null;
+        protected internal ICustomCsvParse<UInt16?>[] _CustomParserUInt16Nullable = null;
+        protected internal ICustomCsvParse<UInt32?>[] _CustomParserUInt32Nullable = null;
+        protected internal ICustomCsvParse<UInt64?>[] _CustomParserUInt64Nullable = null;
+        protected internal ICustomCsvParse<BigInteger?>[] _CustomParserBigIntegerNullable = null;
+
+        protected internal Func<object, object[], object>[] _CustomParserCall = null;
+
+        protected internal CsvAttribute _CsvAttribute;
+
+        protected internal void InitCustomCsvParseArrays(int size)
         {
             _CustomParserString = new ICustomCsvParse<string>[size];
             _CustomParserGuid = new ICustomCsvParse<Guid>[size];
@@ -137,7 +148,7 @@ namespace DevToys.PocoCsv.Core
             _CustomParserCall = new Func<object, object[], object>[size];
         }
 
-        internal protected void SetCustomParserType(int index, Type customAttributeType, string propertyname)
+        protected internal void SetCustomParserType(int index, Type customAttributeType, string propertyname)
         {
             if (TypeUtils.HasInterface<ICustomCsvParse<string>>(customAttributeType))
             {
@@ -285,9 +296,7 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
-
-        internal protected void InitCsvAttribute(Type type, int size, ReadOrWrite readOrWrite)
+        protected internal void InitCsvAttribute(Type type, int size, ReadOrWrite readOrWrite)
         {
             _CsvAttribute = type.GetCustomAttribute<CsvAttribute>();
             if (_CsvAttribute == null)

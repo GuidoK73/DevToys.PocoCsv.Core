@@ -33,6 +33,7 @@ namespace DevToys.PocoCsv.Core
                 case NetType.UInt32:
                 case NetType.UInt64:
                     return true;
+
                 default:
                     break;
             }
@@ -215,7 +216,6 @@ namespace DevToys.PocoCsv.Core
             target = Nullable.GetUnderlyingType(target) ?? target;
             return (target.IsEnum) ? Enum.Parse(target, value.ToString()) : System.Convert.ChangeType(value, target, culture);
         }
-
 
         /// <summary>
         /// For use in array of string values, it can be used to detect the best fitting type for a string value.
@@ -517,7 +517,7 @@ namespace DevToys.PocoCsv.Core
                     return $"new DateTime({_datetime.Year},{_datetime.Month}, {_datetime.Day}, {_datetime.Hour}, {_datetime.Minute}, {_datetime.Second} )";
 
                 case NetType.String:
-                    return $"\"{ value.ToString().Replace("\"", "\\\"") }\"";
+                    return $"\"{value.ToString().Replace("\"", "\\\"")}\"";
 
                 case NetType.Boolean:
                     return value.ToString().ToLower();
@@ -594,7 +594,7 @@ namespace DevToys.PocoCsv.Core
                     return _ts.Ticks.ToString();
 
                 case NetType.String:
-                    return $"'{ ToSqlAscii(value.ToString()) }'";
+                    return $"'{ToSqlAscii(value.ToString())}'";
 
                 case NetType.Boolean:
                     bool _bool = (bool)value;

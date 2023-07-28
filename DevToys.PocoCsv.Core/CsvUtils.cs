@@ -29,7 +29,7 @@ namespace DevToys.PocoCsv.Core
         public static string[] CsvHeader(string text, char separator)
         {
             byte[] byteArray = Encoding.Default.GetBytes(text);
-            
+
             using MemoryStream _stream = new MemoryStream(byteArray);
             {
                 using CsvStreamReader _reader = new CsvStreamReader(_stream);
@@ -154,7 +154,7 @@ namespace DevToys.PocoCsv.Core
 
             using MemoryStream _stream = new MemoryStream(byteArray);
             using CsvStreamReader _reader = new CsvStreamReader(_stream);
-                return IsCsv(_reader, separator, sampleRows);
+            return IsCsv(_reader, separator, sampleRows);
         }
 
         /// <summary>

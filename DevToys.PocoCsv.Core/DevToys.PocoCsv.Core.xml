@@ -416,34 +416,34 @@
             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReadError.ColumnIndex">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReadError.PropertyName">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReadError.PropertyType">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReadError.Value">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReadError.LineNumber">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReadError.ToString">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamHelper">
              <summary>

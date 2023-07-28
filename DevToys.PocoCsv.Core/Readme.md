@@ -12,7 +12,10 @@ Read/write serialize/deserialize data to and from Csv.
 - Auto line feed/break detection.
 - Sequential read with ReadAsEnumerable().
 - Csv schema Retrieval with CsvUtils.GetCsvSchema().
-- Casting Error log.
+- DataTable import and export.
+- Deserialiser / serializer.
+- Stream reader / writer.
+
 
 # CsvStreamReader
 ~~~cs

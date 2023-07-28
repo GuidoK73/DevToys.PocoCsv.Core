@@ -16,7 +16,7 @@ namespace DevToys.PocoCsv.Core
     public sealed class CsvWriter<T> : BaseCsv, IDisposable where T : class, new()
     {
         private NetTypeComplete[] _PropertyTypes = new NetTypeComplete[0];
-        
+
         private Func<T, object>[] _PropertyGetterByteArray = new Func<T, object>[0];
         private Func<T, string>[] _PropertyGetterString = new Func<T, string>[0];
         private Func<T, Guid>[] _PropertyGetterGuid = new Func<T, Guid>[0];
@@ -115,7 +115,6 @@ namespace DevToys.PocoCsv.Core
         /// \n = LF(Line Feed) → Used as a new line character in Unix/Mac OS X
         /// </summary>
         public CRLFMode CRLFMode { get; set; } = CRLFMode.CRLF;
-
 
         /// <summary>
         /// How will the write behave with null objects.
@@ -264,12 +263,11 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
         private void WriteValueOthers(Type targetType, T row, int index, string formatter, string outputNullValue)
         {
             if (!_IsNullable[index])
             {
-                WriteValueOthersNormal(targetType, row, index, formatter, outputNullValue);
+                WriteValueOthersNormal(targetType, row, index, formatter);
             }
             else
             {
@@ -349,7 +347,7 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        private void WriteValueOthersNormal(Type targetType, T row, int index, string formatter, string outputNullValue)
+        private void WriteValueOthersNormal(Type targetType, T row, int index, string formatter)
         {
             if (targetType == typeof(Guid))
             {
@@ -466,9 +464,8 @@ namespace DevToys.PocoCsv.Core
             else
             {
                 _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString()));
-            }              
+            }
         }
-
 
         private void WriteGuidNull(T row, int index, string formatter, string _nullValueDefault)
         {
@@ -499,11 +496,7 @@ namespace DevToys.PocoCsv.Core
             {
                 _StreamWriter.Write(string.Empty);
             }
-            
-
         }
-
-
 
         private void WriteBoolean(T row, int index)
         {
@@ -518,7 +511,6 @@ namespace DevToys.PocoCsv.Core
             _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
         }
 
-
         private void WriteBooleanNull(T row, int index, string _nullValueDefault)
         {
             Boolean? value = _PropertyGetterBooleanNullable[index](row);
@@ -532,7 +524,6 @@ namespace DevToys.PocoCsv.Core
             if (value.HasValue)
             {
                 _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
-
             }
             else if (_nullValueDefault != null)
             {
@@ -563,7 +554,6 @@ namespace DevToys.PocoCsv.Core
                 _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
             }
         }
-
 
         private void WriteDateTimeNull(T row, int index, string formatter, string _nullValueDefault)
         {
@@ -616,7 +606,6 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
         private void WriteDateTimeOffsetNull(T row, int index, string formatter, string _nullValueDefault)
         {
             DateTimeOffset? value = _PropertyGetterDateTimeOffsetNullable[index](row);
@@ -667,7 +656,6 @@ namespace DevToys.PocoCsv.Core
                 _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString()));
             }
         }
-
 
         private void WriteTimeSpanNull(T row, int index, string formatter, string _nullValueDefault)
         {
@@ -720,7 +708,6 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
         private void WriteByteNull(T row, int index, string formatter, string _nullValueDefault)
         {
             Byte? value = _PropertyGetterByteNullable[index](row);
@@ -772,7 +759,6 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
         private void WriteSByteNull(T row, int index, string formatter, string _nullValueDefault)
         {
             SByte? value = _PropertyGetterSByteNullable[index](row);
@@ -782,7 +768,6 @@ namespace DevToys.PocoCsv.Core
                 _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserSByteNullable[index], new object[] { value })));
                 return;
             }
-
 
             if (value.HasValue)
             {
@@ -824,7 +809,6 @@ namespace DevToys.PocoCsv.Core
                 _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
             }
         }
-
 
         private void WriteInt16Null(T row, int index, string formatter, string _nullValueDefault)
         {
@@ -877,7 +861,6 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
         private void WriteInt32Null(T row, int index, string formatter, string _nullValueDefault)
         {
             Int32? value = _PropertyGetterInt32Nullable[index](row);
@@ -928,7 +911,6 @@ namespace DevToys.PocoCsv.Core
                 _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
             }
         }
-
 
         private void WriteInt64Null(T row, int index, string formatter, string _nullValueDefault)
         {
@@ -981,7 +963,6 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
         private void WriteSingleNull(T row, int index, string formatter, string _nullValueDefault)
         {
             Single? value = _PropertyGetterSingleNullable[index](row);
@@ -1032,7 +1013,6 @@ namespace DevToys.PocoCsv.Core
                 _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
             }
         }
-
 
         private void WriteDecimalNull(T row, int index, string formatter, string _nullValueDefault)
         {
@@ -1085,7 +1065,6 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
         private void WriteDoubleNull(T row, int index, string formatter, string _nullValueDefault)
         {
             Double? value = _PropertyGetterDoubleNullable[index](row);
@@ -1136,7 +1115,6 @@ namespace DevToys.PocoCsv.Core
                 _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
             }
         }
-
 
         private void WriteUInt16Null(T row, int index, string formatter, string _nullValueDefault)
         {
@@ -1189,7 +1167,6 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
         private void WriteUInt32Null(T row, int index, string formatter, string _nullValueDefault)
         {
             UInt32? value = _PropertyGetterUInt32Nullable[index](row);
@@ -1230,7 +1207,6 @@ namespace DevToys.PocoCsv.Core
                 _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserUInt64[index], new object[] { value })));
                 return;
             }
-
 
             if (!string.IsNullOrEmpty(formatter))
             {
@@ -1303,7 +1279,6 @@ namespace DevToys.PocoCsv.Core
                 return;
             }
 
-
             if (value.HasValue)
             {
                 if (!string.IsNullOrEmpty(formatter))
@@ -1324,8 +1299,6 @@ namespace DevToys.PocoCsv.Core
                 _StreamWriter.Write(string.Empty);
             }
         }
-
-
 
         /// <summary>
         /// Initialize and open the CSV Stream Writer.
@@ -1362,7 +1335,6 @@ namespace DevToys.PocoCsv.Core
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
                 .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) });
 
-
             int _max = _properties.Max(p => p.Index);
             _MaxColumnIndex = _max;
 
@@ -1371,7 +1343,6 @@ namespace DevToys.PocoCsv.Core
             _PropertyTypes = new NetTypeComplete[_max + 1];
 
             _IsNullable = new Boolean[_max + 1];
-
 
             _PropertyGetterByteArray = new Func<T, object>[_max + 1];
             _PropertyGetterString = new Func<T, string>[_max + 1];
@@ -1415,7 +1386,6 @@ namespace DevToys.PocoCsv.Core
 
             InitCsvAttribute(_type, _max + 1, ReadOrWrite.Write);
 
-
             foreach (var property in _properties)
             {
                 int _index = property.Index;
@@ -1430,7 +1400,6 @@ namespace DevToys.PocoCsv.Core
                     SetCustomParserType(property.Index, property.Attrib.CustomParserType, property.Property.Name);
 
                     _CustomParserCall[property.Index] = DelegateFactory.InstanceMethod(property.Attrib.CustomParserType, "Write", property.Property.PropertyType);
-
                 }
 
                 if (_propertyType == typeof(string))
@@ -1615,7 +1584,7 @@ namespace DevToys.PocoCsv.Core
                 }
             }
 
-            _Formatters = new string[_max + 1]; 
+            _Formatters = new string[_max + 1];
 
             Dictionary<int, string> _formatters = _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
@@ -1638,7 +1607,6 @@ namespace DevToys.PocoCsv.Core
             {
                 _OutputNullValues[key] = _outputNullValues[key];
             }
-
         }
     }
 }

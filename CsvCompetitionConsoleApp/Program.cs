@@ -100,8 +100,6 @@ Console.WriteLine(_w.Duration);
 
 
 
-
-
 // ############################################################
 // DevToys.PocoCsv.Core by Guidok73
 
@@ -121,6 +119,8 @@ using (var _reader = new DevToys.PocoCsv.Core.CsvReader<CsvObject>(file))
 
 _w.Stop();
 Console.WriteLine(_w.Duration);
+
+
 
 
 // ############################################################

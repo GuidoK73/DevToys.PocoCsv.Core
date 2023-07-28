@@ -1,7 +1,6 @@
 ﻿using Delegates;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,9 +16,9 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvReader<T> : BaseCsv, IDisposable where T : new()
     {
-        private StreamReader _StreamReader;       
+        private StreamReader _StreamReader;
         private readonly CsvStreamHelper _StreamHelper = new CsvStreamHelper();
-        
+
         private Action<object, object>[] _PropertySetters = null;
         private Action<T, string>[] _PropertySettersString = null;
         private Action<T, Guid>[] _PropertySettersGuid = null;
@@ -175,7 +174,6 @@ namespace DevToys.PocoCsv.Core
             _StreamReader.BaseStream.Flush();
         }
 
-
         /// <summary>
         /// Detect the separator by sampling first 10 rows. Position is moved to start after execution.
         /// </summary>
@@ -275,6 +273,7 @@ namespace DevToys.PocoCsv.Core
             _StreamHelper._byte = 0;
             bool _rowEnd = false;
             int lineLength = 0;
+            bool _escapedEscape = false;
 
             while (_StreamHelper._byte > -1)
             {
@@ -338,15 +337,45 @@ namespace DevToys.PocoCsv.Core
                 }
                 else if (_char == _ESCAPE)
                 {
-                    _state = (_state == State.Normal) ? State.Escaped : State.Normal; // Switch state
-                    if (_sbValue.Length == 0)
+                    if (_sbValue.Length == 0 && _state == State.Normal)
                     {
-                        _trimLast = true; // .Trim() is costly on large sets.
+                        // first character in field is a double quote so we go to escape state.
+                        _state = State.Escaped; // first char in field is escape char.
+                        _trimLast = true; // we need to trim the last field as well.
                         continue; // NEXT FIELD
+                    }
+                    else if (_state == State.Normal)
+                    {
+                        _state = State.Escaped;
+                    }
+                    else if (_state == State.Escaped)
+                    {
+                        char _nextChar = PeakNextChar(out int charByte);
+                        if (charByte == -1)
+                        {
+                            _state = State.Normal;
+                            continue;
+                        }
+                        if (_nextChar == _CR || _nextChar == _LF && _escapedEscape == false)
+                        {
+                            _state = State.Normal;
+                            continue;
+                        }
+                        if (_nextChar == Separator && _escapedEscape == false)
+                        {
+                            _state = State.Normal;
+                        }
+                        if (_nextChar == _ESCAPE && _escapedEscape == false)
+                        {
+                            _state = State.Escaped;
+                            _escapedEscape = true;
+                            continue;
+                        }
                     }
                 }
                 lineLength++;
                 _sbValue.Append(_char);
+                _escapedEscape = false;
             }
             if (lineLength == 0)
             {
@@ -356,6 +385,15 @@ namespace DevToys.PocoCsv.Core
                 }
             }
             return _result;
+        }
+
+
+
+        private char PeakNextChar(out int charByte)
+        {
+            charByte = _StreamReader.BaseStream.ReadByte(); // Read next byte to see if it is LF.
+            char _c = (char)charByte;
+            return _c;
         }
 
         private void SetValue(int index, T targetObject)
@@ -393,7 +431,6 @@ namespace DevToys.PocoCsv.Core
                 }
             }
         }
-
 
         #region Value Setters
 
@@ -722,10 +759,10 @@ namespace DevToys.PocoCsv.Core
                 catch
                 {
                     _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
-                }                
+                }
                 return;
             }
-            
+
             bool succes = DateTime.TryParse(_sbValue.ToString(), Culture, DateTimeStyles.None, out DateTime _value);
             if (succes)
             {
@@ -1045,7 +1082,6 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
         private void SetValueBigInteger(int index, T targetObject)
         {
             if (_CustomParserBigInteger[index] != null)
@@ -1071,7 +1107,6 @@ namespace DevToys.PocoCsv.Core
                 _Errors.Add(new CsvReadError() { ColumnIndex = index, PropertyName = _Properties[index].Name, PropertyType = _Properties[index].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
-
 
         private void SetValueGuidNull(int index, T targetObject)
         {
@@ -1629,7 +1664,6 @@ namespace DevToys.PocoCsv.Core
                 return;
             }
 
-
             string _valueRead = _sbValue.ToString();
 
             if (!string.IsNullOrEmpty(_valueRead))
@@ -1650,7 +1684,6 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
         private void SetValueBigIntegerNull(int index, T targetObject)
         {
             if (_CustomParserBigIntegerNullable[index] != null)
@@ -1666,7 +1699,6 @@ namespace DevToys.PocoCsv.Core
                 }
                 return;
             }
-
 
             string _valueRead = _sbValue.ToString();
 
@@ -1687,7 +1719,6 @@ namespace DevToys.PocoCsv.Core
                 _PropertySettersBigIntegerNull[index](targetObject, null);
             }
         }
-
 
         #endregion Value Setters
 
@@ -1726,7 +1757,7 @@ namespace DevToys.PocoCsv.Core
 #endif
 #if NET50 || NETCOREAPP3_1 || NETCOREAPP3_0 || NETCOREAPP2_2 || NETCOREAPP1_0_OR_GREATER
                 _StreamReader = new StreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: _BufferSize);
-                
+
 #endif
             }
         }
@@ -1745,15 +1776,15 @@ namespace DevToys.PocoCsv.Core
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
                 .Select(p => (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index).Max();
 
-
             InitCustomCsvParseArrays(_max + 1);
 
             InitCsvAttribute(_type, _max + 1, ReadOrWrite.Read);
 
-
             _Properties = new PropertyInfo[_max + 1];
             _PropertySetters = new Action<object, object>[_max + 1];
             _IsNullable = new Boolean[_max + 1];
+
+
             _PropertySettersString = new Action<T, String>[_max + 1];
             _PropertySettersGuid = new Action<T, Guid>[_max + 1];
             _PropertySettersBoolean = new Action<T, Boolean>[_max + 1];
@@ -1799,7 +1830,7 @@ namespace DevToys.PocoCsv.Core
                 Type propertyType = property.Property.PropertyType;
 
                 _IsNullable[property.Index] = Nullable.GetUnderlyingType(propertyType) != null;
-
+               
                 if (property.Attrib.CustomParserType != null)
                 {
                     SetCustomParserType(property.Index, property.Attrib.CustomParserType, property.Property.Name);
@@ -1950,6 +1981,88 @@ namespace DevToys.PocoCsv.Core
                 _Properties[property.Index] = property.Property;
                 _PropertySetters[property.Index] = _type.PropertySet(property.Property.Name);
             }
+        }
+
+        private TypeGroup GetTypeGroup(Type type)
+        {
+            bool _nullable = Nullable.GetUnderlyingType(type) != null;
+            Type _underlyingType = Nullable.GetUnderlyingType(type);
+
+            if (_underlyingType == typeof(string))
+            {
+                return TypeGroup.String;
+            }
+
+            if (_underlyingType == typeof(Guid))
+            {
+                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
+            }
+            if (_underlyingType == typeof(Boolean))
+            {
+                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
+            }
+            if (_underlyingType == typeof(DateTime))
+            {
+                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
+            }
+            if (_underlyingType == typeof(DateTimeOffset))
+            {
+                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
+            }
+            if (_underlyingType == typeof(TimeSpan))
+            {
+                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
+            }
+            if (_underlyingType == typeof(Byte))
+            {
+                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
+            }
+            if (_underlyingType == typeof(Int16))
+            {
+                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
+            }
+            if (_underlyingType == typeof(Int32))
+            {
+                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
+            }
+            if (_underlyingType == typeof(Int64))
+            {
+                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
+            }
+            if (_underlyingType == typeof(Single))
+            {
+                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
+            }
+            if (_underlyingType == typeof(Decimal))
+            {
+                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
+            }
+            if (_underlyingType == typeof(Double))
+            {
+                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
+            }
+            if (_underlyingType == typeof(SByte))
+            {
+                return _nullable ? TypeGroup.NullableSpecial : TypeGroup.NonNullableSpecial;
+            }
+            if (_underlyingType == typeof(UInt16))
+            {
+                return _nullable ? TypeGroup.NullableSpecial : TypeGroup.NonNullableSpecial;
+            }
+            if (_underlyingType == typeof(UInt32))
+            {
+                return _nullable ? TypeGroup.NullableSpecial : TypeGroup.NonNullableSpecial;
+            }
+            if (_underlyingType == typeof(UInt64))
+            {
+                return _nullable ? TypeGroup.NullableSpecial : TypeGroup.NonNullableSpecial;
+            }
+            if (_underlyingType == typeof(BigInteger))
+            {
+                return _nullable ? TypeGroup.NullableSpecial : TypeGroup.NonNullableSpecial;
+            }
+
+            return TypeGroup.String;
         }
     }
 }

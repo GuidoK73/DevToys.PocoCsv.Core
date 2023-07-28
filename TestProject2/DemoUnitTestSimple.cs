@@ -1,6 +1,7 @@
 ﻿using DevToys.PocoCsv.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TestProject2.Models;
 
@@ -32,36 +33,39 @@ namespace TestProject2
         }
 
         [TestMethod]
-        public void TestReaderSimpleLast()
+        public void TestQuotes()
         {
             string _file = System.IO.Path.GetTempFileName();
 
             using (CsvWriter<CsvSimple> _writer = new(_file) { Separator = ',' })
             {
                 _writer.Open();
-                _writer.WriteHeader();
+                //_writer.WriteHeader();
                 _writer.Write(Data());
             }
+
+            string _text = File.ReadAllText(_file);
 
             using (CsvReader<CsvSimple> _reader = new(_file))
             {
                 _reader.Open();
-                var _last10 = _reader.Last(10).ToList();
+                var _data = _reader.ReadAsEnumerable().ToList();
             }
         }
 
         private IEnumerable<CsvSimple> Data()
         {
-            for (int ii = 0; ii < 1000; ii++)
+            // _writer.WriteCsvLine("Row 7", "Row F\",\"F\r\nF,F\"", "\"", "F6\" ");
+            for (int ii = 0; ii < 1; ii++)
             {
                 CsvSimple _line = new()
                 {
-                    AfBij = "bij",
-                    Bedrag = "100",
-                    Code = "test",
-                    Datum = "20200203",
+                    AfBij = "bij,af",
+                    Bedrag = "AAAA\"\"",
+                    Code = "TEST\" ",
+                    Datum = "\"",
                     Mededelingen = $"test {ii}",
-                    Rekening = "3434",
+                    Rekening = "\"\"",
                     Tegenrekening = "3423424"
                 };
                 yield return _line;

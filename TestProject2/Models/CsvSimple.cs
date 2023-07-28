@@ -9,7 +9,7 @@ namespace TestProject2.Models
 {
     public sealed class CsvSimple
     {
-        
+        [Column(Index = 5)]
         public string AfBij { get; set; }
 
         [Column(Index = 6)]

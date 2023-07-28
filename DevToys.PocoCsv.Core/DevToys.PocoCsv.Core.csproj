@@ -29,12 +29,16 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Authors>GuidoK73</Authors>
 	<PackageTags>csv;export;import;comma separated;4180;delimited;poco;csv parser;parse csv;DataTable;Import Csv;Export Csv;Csv Object</PackageTags>
     <Company />
-    <Version>2.0</Version>
+    <Version>2.0.2</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>2.0
+    <PackageReleaseNotes>2.0.2
+- Bugfix: not properly reading escaped double quotes.
+- Minor improvements
+
+2.0
 - Improved CsvWriter&lt;T&gt; speed.
 - Extended ICustomCsvParser&lt;T&gt; to be supported by the CsvWriter&lt;T&gt; as well.
 - ICustomCsvParser&lt;T&gt;.Parse() has been removed.
