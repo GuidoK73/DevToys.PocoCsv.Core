@@ -387,8 +387,6 @@ namespace DevToys.PocoCsv.Core
             return _result;
         }
 
-
-
         private char PeakNextChar(out int charByte)
         {
             charByte = _StreamReader.BaseStream.ReadByte(); // Read next byte to see if it is LF.
@@ -398,6 +396,10 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValue(int index, T targetObject)
         {
+            if (index >= _Properties.Length)
+            {
+                return;
+            }
             if (_Properties[index] == null)
             {
                 return;

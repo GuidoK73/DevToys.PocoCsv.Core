@@ -74,13 +74,14 @@ this reader is faster then CsvStreamReader, it is optamized to deserialize the r
         public string Column5 { get; set; }
     }
     
-    string file = @"D:\Temp\data.csv");
+    string file = @"D:\Temp\data.csv";
 
     using (CsvReader<Data> _reader = new(file))
     {        
+        _reader.Culture = CultureInfo.GetCultureInfo("en-us");
         _reader.Open();
         _reader.Separator = ','; // or use _reader.DetectSeparator(); 
-        var _data = Reader.ReadAsEnumerable().Where(p => p.Column1.Contains("16"));
+        var _data = _reader.ReadAsEnumerable().Where(p => p.Column1.Contains("16"));
         var _materialized = _data.ToList();
 
     }    
@@ -108,6 +109,9 @@ Moves the reader to the start position, Skip() and Take() alter the start positi
 Return the current line number.
 - **Flush()**
 Flushes all buffers.
+- **Culture**\
+Sets the default Culture for decimal / double conversions etc. For more complex conversions use the ICustomCsvParse interface.
+
 
 # CsvWriter\<T\>
 this writer is faster then CsvStreamWriter, it is optamized to serialize the objects to rows.
@@ -149,6 +153,7 @@ this writer is faster then CsvStreamWriter, it is optamized to serialize the obj
     string file = @"D:\largedata.csv";
     using (CsvWriter<CsvSimple> _writer = new(file) { Separator = ',', Append = true })
     {
+        _writer.Culture = CultureInfo.GetCultureInfo("en-us");
         _writer.Open();
         _writer.Write(LargeData());
     }
@@ -174,6 +179,8 @@ Determine what to do with writing null objects.
     - Empty Line, Write an empty line
 - **Flush()**
 Flushes all buffers.
+- **Culture**\
+Sets the default Culture for decimal / double conversions etc. For more complex conversions use the ICustomCsvParse interface.
 
 # ColumnAttribute
 
@@ -232,6 +239,21 @@ CustomParserType allows the Reader<T> and Writer<T> to use a custom parsing for 
         }
     }
 
+    public class ParsePrice : ICustomCsvParse<Decimal>
+    {
+        private CultureInfo _culture;
+
+        public ParseDecimal()
+        {
+            _culture = CultureInfo.GetCultureInfo("en-us");
+        }
+
+        public Decimal Read(StringBuilder value) => Decimal.Parse(value.ToString(), _culture);
+
+        public string Write(Decimal value) => value.ToString(_culture);
+    }
+
+
     public sealed class CsvPreParseTestObject
     {
         [Column(Index = 0, CustomParserType = typeof(ParseBoolean) )]
@@ -239,6 +261,9 @@ CustomParserType allows the Reader<T> and Writer<T> to use a custom parsing for 
 
         [Column(Index = 1)]
         public string Name { get; set; }
+
+        [Column(Index = 3, CustomParserType = typeof(ParsePrice))]
+        public Decimal Price { get; set; }
     }
 
 

@@ -1,6 +1,7 @@
 ﻿using DevToys.PocoCsv.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,7 @@ namespace TestProject2
                 _writer.Open();
 
                 _writer.WriteHeader();
+                _writer.Culture = CultureInfo.GetCultureInfo("en-us");
 
                 var _x = new CsvAllTypes()
                 {

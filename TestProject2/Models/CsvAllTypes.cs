@@ -1,6 +1,7 @@
 ﻿using DevToys.PocoCsv.Core;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -196,14 +197,28 @@ namespace TestProject2.Models
 
     public class ParseDecimal : ICustomCsvParse<Decimal>
     {
-        public Decimal Read(StringBuilder value) => Decimal.Parse(value.ToString());
-        public string Write(Decimal value) => value.ToString();
+        private CultureInfo _culture;
+
+        public ParseDecimal()
+        {
+            _culture = CultureInfo.GetCultureInfo("en-us");
+        }
+
+        public Decimal Read(StringBuilder value) => Decimal.Parse(value.ToString(), _culture);
+        public string Write(Decimal value) => value.ToString(_culture);
     }
 
     public class ParseDouble : ICustomCsvParse<Double>
     {
-        public Double Read(StringBuilder value) => Double.Parse(value.ToString());
-        public string Write(Double value) => value.ToString();
+        private CultureInfo _culture;
+
+        public ParseDouble()
+        {
+            _culture = CultureInfo.GetCultureInfo("en-us");
+        }
+
+        public Double Read(StringBuilder value) => Double.Parse(value.ToString(), _culture);
+        public string Write(Double value) => value.ToString(_culture);
     }
 
     public class ParseUInt16 : ICustomCsvParse<UInt16>
