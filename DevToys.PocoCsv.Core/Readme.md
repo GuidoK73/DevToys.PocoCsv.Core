@@ -81,9 +81,9 @@ this reader is faster then CsvStreamReader, it is optamized to deserialize the r
         _reader.Culture = CultureInfo.GetCultureInfo("en-us");
         _reader.Open();
         _reader.Separator = ','; // or use _reader.DetectSeparator(); 
+        // _reader.Skip(); // Skip the header row.
         var _data = _reader.ReadAsEnumerable().Where(p => p.Column1.Contains("16"));
         var _materialized = _data.ToList();
-
     }    
 ~~~
 - **Open()**\

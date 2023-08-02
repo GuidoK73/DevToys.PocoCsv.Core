@@ -342,7 +342,7 @@ namespace DevToys.PocoCsv.Core
                         // first character in field is a double quote so we go to escape state.
                         _state = State.Escaped; // first char in field is escape char.
                         _trimLast = true; // we need to trim the last field as well.
-                        continue; // NEXT FIELD
+                        continue; // LAST CHAR IN FIELD
                     }
                     else if (_state == State.Normal)
                     {
