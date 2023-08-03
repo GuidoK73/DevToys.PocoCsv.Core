@@ -198,12 +198,9 @@ namespace DevToys.PocoCsv.Core
                 }
                 if (_rowEnd)
                 {
-                    if (_trimLast)
+                    if (_trimLast && _sbValue.Length > 0 && _sbValue[_sbValue.Length - 1] == _ESCAPE)
                     {
-                        if (_sbValue.Length > 0 && _sbValue[_sbValue.Length - 1] == _ESCAPE)
-                        {
-                            _sbValue.Length--;
-                        }
+                        _sbValue.Length--;
                     }
                     _result.Add(_sbValue.ToString());
                     _StreamHelper.CurrentLine++;
@@ -247,16 +244,16 @@ namespace DevToys.PocoCsv.Core
                             _state = State.Normal;
                             continue;
                         }
-                        if (_nextChar == _CR || _nextChar == _LF && _escapedEscape == false)
+                        else if (_nextChar == _CR || _nextChar == _LF && _escapedEscape == false)
                         {
                             _state = State.Normal;
                             continue;
                         }
-                        if (_nextChar == Separator && _escapedEscape == false)
+                        else if (_nextChar == Separator && _escapedEscape == false)
                         {
                             _state = State.Normal;
                         }
-                        if (_nextChar == _ESCAPE && _escapedEscape == false)
+                        else if (_nextChar == _ESCAPE && _escapedEscape == false)
                         {
                             _state = State.Escaped;
                             _escapedEscape = true;

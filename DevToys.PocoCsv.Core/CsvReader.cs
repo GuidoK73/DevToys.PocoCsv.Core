@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -339,15 +338,15 @@ namespace DevToys.PocoCsv.Core
                 }
                 else if (_char == _ESCAPE)
                 {
-                    if (_sbValue.Length == 0 && _state == State.Normal)
+                    if (_state == State.Normal)
                     {
-                        // first character in field is a double quote so we go to escape state.
-                        _state = State.Escaped; // first char in field is escape char.
-                        _trimLast = true; // we need to trim the last field as well.
-                        continue; // LAST CHAR IN FIELD
-                    }
-                    else if (_state == State.Normal)
-                    {
+                        if (_sbValue.Length == 0)
+                        {
+                            // first character in field is a double quote so we go to escape state.
+                            _state = State.Escaped; // first char in field is escape char.
+                            _trimLast = true; // we need to trim the last field as well.
+                            continue; // LAST CHAR IN FIELD
+                        }
                         _state = State.Escaped;
                     }
                     else if (_state == State.Escaped)
@@ -358,16 +357,16 @@ namespace DevToys.PocoCsv.Core
                             _state = State.Normal;
                             continue;
                         }
-                        if (_nextChar == _CR || _nextChar == _LF && _escapedEscape == false)
+                        else if ((_nextChar == _CR || _nextChar == _LF) && _escapedEscape == false)
                         {
                             _state = State.Normal;
                             continue;
                         }
-                        if (_nextChar == Separator && _escapedEscape == false)
+                        else if (_nextChar == Separator && _escapedEscape == false)
                         {
                             _state = State.Normal;
                         }
-                        if (_nextChar == _ESCAPE && _escapedEscape == false)
+                        else if (_nextChar == _ESCAPE && _escapedEscape == false)
                         {
                             _state = State.Escaped;
                             _escapedEscape = true;

@@ -46,6 +46,14 @@ using (DevToys.PocoCsv.Core.CsvWriter<CsvObject> _writer = new(file) { Separator
 _w.Stop();
 Console.WriteLine(_w.Duration);
 
+
+// ############################################################
+// DevToys.PocoCsv.Core by Guidok73
+
+
+
+
+
 // ############################################################
 // LinqToCsv by Matt Perdeck
 
