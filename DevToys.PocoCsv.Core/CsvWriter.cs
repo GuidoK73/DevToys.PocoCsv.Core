@@ -1,6 +1,8 @@
 ﻿using Delegates;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -15,48 +17,48 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvWriter<T> : BaseCsv, IDisposable where T : class, new()
     {
-        private NetTypeComplete[] _PropertyTypes = new NetTypeComplete[0];
+        private ImmutableArray<NetTypeComplete> _PropertyTypes;
 
-        private Func<T, object>[] _PropertyGetterByteArray = new Func<T, object>[0];
-        private Func<T, string>[] _PropertyGetterString = new Func<T, string>[0];
-        private Func<T, Guid>[] _PropertyGetterGuid = new Func<T, Guid>[0];
-        private Func<T, Boolean>[] _PropertyGetterBoolean = new Func<T, Boolean>[0];
-        private Func<T, DateTime>[] _PropertyGetterDateTime = new Func<T, DateTime>[0];
-        private Func<T, DateTimeOffset>[] _PropertyGetterDateTimeOffset = new Func<T, DateTimeOffset>[0];
-        private Func<T, TimeSpan>[] _PropertyGetterTimeSpan = new Func<T, TimeSpan>[0];
-        private Func<T, Byte>[] _PropertyGetterByte = new Func<T, Byte>[0];
-        private Func<T, SByte>[] _PropertyGetterSByte = new Func<T, SByte>[0];
-        private Func<T, Int16>[] _PropertyGetterInt16 = new Func<T, Int16>[0];
-        private Func<T, Int32>[] _PropertyGetterInt32 = new Func<T, Int32>[0];
-        private Func<T, Int64>[] _PropertyGetterInt64 = new Func<T, Int64>[0];
-        private Func<T, Single>[] _PropertyGetterSingle = new Func<T, Single>[0];
-        private Func<T, Decimal>[] _PropertyGetterDecimal = new Func<T, Decimal>[0];
-        private Func<T, Double>[] _PropertyGetterDouble = new Func<T, Double>[0];
-        private Func<T, UInt16>[] _PropertyGetterUInt16 = new Func<T, UInt16>[0];
-        private Func<T, UInt32>[] _PropertyGetterUInt32 = new Func<T, UInt32>[0];
-        private Func<T, UInt64>[] _PropertyGetterUInt64 = new Func<T, UInt64>[0];
-        private Func<T, BigInteger>[] _PropertyGetterBigInteger = new Func<T, BigInteger>[0];
+        private ImmutableArray<Func<T, object>> _PropertyGetterByteArray;
+        private ImmutableArray<Func<T, string>> _PropertyGetterString;
+        private ImmutableArray<Func<T, Guid>> _PropertyGetterGuid;
+        private ImmutableArray<Func<T, Boolean>> _PropertyGetterBoolean;
+        private ImmutableArray<Func<T, DateTime>> _PropertyGetterDateTime;
+        private ImmutableArray<Func<T, DateTimeOffset>> _PropertyGetterDateTimeOffset;
+        private ImmutableArray<Func<T, TimeSpan>> _PropertyGetterTimeSpan;
+        private ImmutableArray<Func<T, Byte>> _PropertyGetterByte;
+        private ImmutableArray<Func<T, SByte>> _PropertyGetterSByte;
+        private ImmutableArray<Func<T, Int16>> _PropertyGetterInt16;
+        private ImmutableArray<Func<T, Int32>> _PropertyGetterInt32;
+        private ImmutableArray<Func<T, Int64>> _PropertyGetterInt64;
+        private ImmutableArray<Func<T, Single>> _PropertyGetterSingle;
+        private ImmutableArray<Func<T, Decimal>> _PropertyGetterDecimal;
+        private ImmutableArray<Func<T, Double>> _PropertyGetterDouble;
+        private ImmutableArray<Func<T, UInt16>> _PropertyGetterUInt16;
+        private ImmutableArray<Func<T, UInt32>> _PropertyGetterUInt32;
+        private ImmutableArray<Func<T, UInt64>> _PropertyGetterUInt64;
+        private ImmutableArray<Func<T, BigInteger>> _PropertyGetterBigInteger;
 
-        private Func<T, Guid?>[] _PropertyGetterGuidNullable = new Func<T, Guid?>[0];
-        private Func<T, Boolean?>[] _PropertyGetterBooleanNullable = new Func<T, Boolean?>[0];
-        private Func<T, DateTime?>[] _PropertyGetterDateTimeNullable = new Func<T, DateTime?>[0];
-        private Func<T, DateTimeOffset?>[] _PropertyGetterDateTimeOffsetNullable = new Func<T, DateTimeOffset?>[0];
-        private Func<T, TimeSpan?>[] _PropertyGetterTimeSpanNullable = new Func<T, TimeSpan?>[0];
-        private Func<T, Byte?>[] _PropertyGetterByteNullable = new Func<T, Byte?>[0];
-        private Func<T, SByte?>[] _PropertyGetterSByteNullable = new Func<T, SByte?>[0];
-        private Func<T, Int16?>[] _PropertyGetterInt16Nullable = new Func<T, Int16?>[0];
-        private Func<T, Int32?>[] _PropertyGetterInt32Nullable = new Func<T, Int32?>[0];
-        private Func<T, Int64?>[] _PropertyGetterInt64Nullable = new Func<T, Int64?>[0];
-        private Func<T, Single?>[] _PropertyGetterSingleNullable = new Func<T, Single?>[0];
-        private Func<T, Decimal?>[] _PropertyGetterDecimalNullable = new Func<T, Decimal?>[0];
-        private Func<T, Double?>[] _PropertyGetterDoubleNullable = new Func<T, Double?>[0];
-        private Func<T, UInt16?>[] _PropertyGetterUInt16Nullable = new Func<T, UInt16?>[0];
-        private Func<T, UInt32?>[] _PropertyGetterUInt32Nullable = new Func<T, UInt32?>[0];
-        private Func<T, UInt64?>[] _PropertyGetterUInt64Nullable = new Func<T, UInt64?>[0];
-        private Func<T, BigInteger?>[] _PropertyGetterBigIntegerNullable = new Func<T, BigInteger?>[0];
+        private ImmutableArray<Func<T, Guid?>> _PropertyGetterGuidNullable;
+        private ImmutableArray<Func<T, Boolean?>> _PropertyGetterBooleanNullable;
+        private ImmutableArray<Func<T, DateTime?>> _PropertyGetterDateTimeNullable;
+        private ImmutableArray<Func<T, DateTimeOffset?>> _PropertyGetterDateTimeOffsetNullable;
+        private ImmutableArray<Func<T, TimeSpan?>> _PropertyGetterTimeSpanNullable;
+        private ImmutableArray<Func<T, Byte?>> _PropertyGetterByteNullable;
+        private ImmutableArray<Func<T, SByte?>> _PropertyGetterSByteNullable;
+        private ImmutableArray<Func<T, Int16?>> _PropertyGetterInt16Nullable;
+        private ImmutableArray<Func<T, Int32?>> _PropertyGetterInt32Nullable;
+        private ImmutableArray<Func<T, Int64?>> _PropertyGetterInt64Nullable;
+        private ImmutableArray<Func<T, Single?>> _PropertyGetterSingleNullable;
+        private ImmutableArray<Func<T, Decimal?>> _PropertyGetterDecimalNullable;
+        private ImmutableArray<Func<T, Double?>> _PropertyGetterDoubleNullable;
+        private ImmutableArray<Func<T, UInt16?>> _PropertyGetterUInt16Nullable;
+        private ImmutableArray<Func<T, UInt32?>> _PropertyGetterUInt32Nullable;
+        private ImmutableArray<Func<T, UInt64?>> _PropertyGetterUInt64Nullable;
+        private ImmutableArray<Func<T, BigInteger?>> _PropertyGetterBigIntegerNullable;
 
-        private string[] _Formatters = new string[0];
-        private string[] _OutputNullValues = new string[0];
+        private ImmutableArray<string> _Formatters;
+        private ImmutableArray<string> _OutputNullValues;
         private StreamWriter _StreamWriter;
         private int _MaxColumnIndex = 0;
 
@@ -1338,49 +1340,50 @@ namespace DevToys.PocoCsv.Core
             int _max = _properties.Max(p => p.Index);
             _MaxColumnIndex = _max;
 
-            _Properties = new PropertyInfo[_max + 1];
+            var _propertiesInfo = new PropertyInfo[_max + 1];
 
-            _PropertyTypes = new NetTypeComplete[_max + 1];
+            var _propertyTypes = new NetTypeComplete[_max + 1];
 
-            _IsNullable = new Boolean[_max + 1];
+            var _isNullable = new Boolean[_max + 1];
 
-            _PropertyGetterByteArray = new Func<T, object>[_max + 1];
-            _PropertyGetterString = new Func<T, string>[_max + 1];
-            _PropertyGetterGuid = new Func<T, Guid>[_max + 1];
-            _PropertyGetterBoolean = new Func<T, Boolean>[_max + 1];
-            _PropertyGetterDateTime = new Func<T, DateTime>[_max + 1];
-            _PropertyGetterDateTimeOffset = new Func<T, DateTimeOffset>[_max + 1];
-            _PropertyGetterTimeSpan = new Func<T, TimeSpan>[_max + 1];
-            _PropertyGetterByte = new Func<T, Byte>[_max + 1];
-            _PropertyGetterSByte = new Func<T, SByte>[_max + 1];
-            _PropertyGetterInt16 = new Func<T, Int16>[_max + 1];
-            _PropertyGetterInt32 = new Func<T, Int32>[_max + 1];
-            _PropertyGetterInt64 = new Func<T, Int64>[_max + 1];
-            _PropertyGetterSingle = new Func<T, Single>[_max + 1];
-            _PropertyGetterDecimal = new Func<T, Decimal>[_max + 1];
-            _PropertyGetterDouble = new Func<T, Double>[_max + 1];
-            _PropertyGetterUInt16 = new Func<T, UInt16>[_max + 1];
-            _PropertyGetterUInt32 = new Func<T, UInt32>[_max + 1];
-            _PropertyGetterUInt64 = new Func<T, UInt64>[_max + 1];
-            _PropertyGetterBigInteger = new Func<T, BigInteger>[_max + 1];
+           
+            var _propertyGetterByteArray = new Func<T, object>[_max + 1];
+            var _propertyGetterString = new Func<T, string>[_max + 1];
+            var _propertyGetterGuid = new Func<T, Guid>[_max + 1];
+            var _propertyGetterBoolean = new Func<T, Boolean>[_max + 1];
+            var _propertyGetterDateTime = new Func<T, DateTime>[_max + 1];
+            var _propertyGetterDateTimeOffset = new Func<T, DateTimeOffset>[_max + 1];
+            var _propertyGetterTimeSpan = new Func<T, TimeSpan>[_max + 1];
+            var _propertyGetterByte = new Func<T, Byte>[_max + 1];
+            var _propertyGetterSByte = new Func<T, SByte>[_max + 1];
+            var _propertyGetterInt16 = new Func<T, Int16>[_max + 1];
+            var _propertyGetterInt32 = new Func<T, Int32>[_max + 1];
+            var _propertyGetterInt64 = new Func<T, Int64>[_max + 1];
+            var _propertyGetterSingle = new Func<T, Single>[_max + 1];
+            var _propertyGetterDecimal = new Func<T, Decimal>[_max + 1];
+            var _propertyGetterDouble = new Func<T, Double>[_max + 1];
+            var _propertyGetterUInt16 = new Func<T, UInt16>[_max + 1];
+            var _propertyGetterUInt32 = new Func<T, UInt32>[_max + 1];
+            var _propertyGetterUInt64 = new Func<T, UInt64>[_max + 1];
+            var _propertyGetterBigInteger = new Func<T, BigInteger>[_max + 1];
 
-            _PropertyGetterGuidNullable = new Func<T, Guid?>[_max + 1];
-            _PropertyGetterBooleanNullable = new Func<T, Boolean?>[_max + 1];
-            _PropertyGetterDateTimeNullable = new Func<T, DateTime?>[_max + 1];
-            _PropertyGetterDateTimeOffsetNullable = new Func<T, DateTimeOffset?>[_max + 1];
-            _PropertyGetterTimeSpanNullable = new Func<T, TimeSpan?>[_max + 1];
-            _PropertyGetterByteNullable = new Func<T, Byte?>[_max + 1];
-            _PropertyGetterSByteNullable = new Func<T, SByte?>[_max + 1];
-            _PropertyGetterInt16Nullable = new Func<T, Int16?>[_max + 1];
-            _PropertyGetterInt32Nullable = new Func<T, Int32?>[_max + 1];
-            _PropertyGetterInt64Nullable = new Func<T, Int64?>[_max + 1];
-            _PropertyGetterSingleNullable = new Func<T, Single?>[_max + 1];
-            _PropertyGetterDecimalNullable = new Func<T, Decimal?>[_max + 1];
-            _PropertyGetterDoubleNullable = new Func<T, Double?>[_max + 1];
-            _PropertyGetterUInt16Nullable = new Func<T, UInt16?>[_max + 1];
-            _PropertyGetterUInt32Nullable = new Func<T, UInt32?>[_max + 1];
-            _PropertyGetterUInt64Nullable = new Func<T, UInt64?>[_max + 1];
-            _PropertyGetterBigIntegerNullable = new Func<T, BigInteger?>[_max + 1];
+            var _propertyGetterGuidNullable = new Func<T, Guid?>[_max + 1];
+            var _propertyGetterBooleanNullable = new Func<T, Boolean?>[_max + 1];
+            var _propertyGetterDateTimeNullable = new Func<T, DateTime?>[_max + 1];
+            var _propertyGetterDateTimeOffsetNullable = new Func<T, DateTimeOffset?>[_max + 1];
+            var _propertyGetterTimeSpanNullable = new Func<T, TimeSpan?>[_max + 1];
+            var _propertyGetterByteNullable = new Func<T, Byte?>[_max + 1];
+            var _propertyGetterSByteNullable = new Func<T, SByte?>[_max + 1];
+            var _propertyGetterInt16Nullable = new Func<T, Int16?>[_max + 1];
+            var _propertyGetterInt32Nullable = new Func<T, Int32?>[_max + 1];
+            var _propertyGetterInt64Nullable = new Func<T, Int64?>[_max + 1];
+            var _propertyGetterSingleNullable = new Func<T, Single?>[_max + 1];
+            var _propertyGetterDecimalNullable = new Func<T, Decimal?>[_max + 1];
+            var _propertyGetterDoubleNullable = new Func<T, Double?>[_max + 1];
+            var _propertyGetterUInt16Nullable = new Func<T, UInt16?>[_max + 1];
+            var _propertyGetterUInt32Nullable = new Func<T, UInt32?>[_max + 1];
+            var _propertyGetterUInt64Nullable = new Func<T, UInt64?>[_max + 1];
+            var _propertyGetterBigIntegerNullable = new Func<T, BigInteger?>[_max + 1];
 
             InitCustomCsvParseArrays(_max + 1);
 
@@ -1391,222 +1394,270 @@ namespace DevToys.PocoCsv.Core
                 int _index = property.Index;
                 Type _propertyType = property.Property.PropertyType;
 
-                _Properties[_index] = property.Property;
+                _propertiesInfo[_index] = property.Property;
 
-                _IsNullable[property.Index] = Nullable.GetUnderlyingType(_propertyType) != null;
+                _isNullable[property.Index] = Nullable.GetUnderlyingType(_propertyType) != null;
 
                 if (property.Attrib.CustomParserType != null)
                 {
                     SetCustomParserType(property.Index, property.Attrib.CustomParserType, property.Property.Name);
 
-                    _CustomParserCall[property.Index] = DelegateFactory.InstanceMethod(property.Attrib.CustomParserType, "Write", property.Property.PropertyType);
+                    __CustomParserCall[property.Index] = DelegateFactory.InstanceMethod(property.Attrib.CustomParserType, "Write", property.Property.PropertyType);
                 }
 
                 if (_propertyType == typeof(string))
                 {
-                    _PropertyGetterString[_index] = DelegateFactory.PropertyGet<T, string>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.String;
+                    _propertyGetterString[_index] = DelegateFactory.PropertyGet<T, string>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.String;
                 }
                 if (_propertyType == typeof(Guid))
                 {
-                    _PropertyGetterGuid[_index] = DelegateFactory.PropertyGet<T, Guid>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.Guid;
+                    _propertyGetterGuid[_index] = DelegateFactory.PropertyGet<T, Guid>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.Guid;
                 }
                 if (_propertyType == typeof(Boolean))
                 {
-                    _PropertyGetterBoolean[_index] = DelegateFactory.PropertyGet<T, Boolean>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.Boolean;
+                    _propertyGetterBoolean[_index] = DelegateFactory.PropertyGet<T, Boolean>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.Boolean;
                 }
                 if (_propertyType == typeof(DateTime))
                 {
-                    _PropertyGetterDateTime[_index] = DelegateFactory.PropertyGet<T, DateTime>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.DateTime;
+                    _propertyGetterDateTime[_index] = DelegateFactory.PropertyGet<T, DateTime>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.DateTime;
                 }
                 if (_propertyType == typeof(DateTimeOffset))
                 {
-                    _PropertyGetterDateTimeOffset[_index] = DelegateFactory.PropertyGet<T, DateTimeOffset>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.DateTimeOffset;
+                    _propertyGetterDateTimeOffset[_index] = DelegateFactory.PropertyGet<T, DateTimeOffset>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.DateTimeOffset;
                 }
                 if (_propertyType == typeof(TimeSpan))
                 {
-                    _PropertyGetterTimeSpan[_index] = DelegateFactory.PropertyGet<T, TimeSpan>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.TimeSpan;
+                    _propertyGetterTimeSpan[_index] = DelegateFactory.PropertyGet<T, TimeSpan>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.TimeSpan;
                 }
                 if (_propertyType == typeof(Byte))
                 {
-                    _PropertyGetterByte[_index] = DelegateFactory.PropertyGet<T, Byte>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.Byte;
+                    _propertyGetterByte[_index] = DelegateFactory.PropertyGet<T, Byte>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.Byte;
                 }
                 if (_propertyType == typeof(SByte))
                 {
-                    _PropertyGetterSByte[_index] = DelegateFactory.PropertyGet<T, SByte>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.SByte;
+                    _propertyGetterSByte[_index] = DelegateFactory.PropertyGet<T, SByte>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.SByte;
                 }
                 if (_propertyType == typeof(Int16))
                 {
-                    _PropertyGetterInt16[_index] = DelegateFactory.PropertyGet<T, Int16>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.Int16;
+                    _propertyGetterInt16[_index] = DelegateFactory.PropertyGet<T, Int16>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.Int16;
                 }
                 if (_propertyType == typeof(Int32))
                 {
-                    _PropertyGetterInt32[_index] = DelegateFactory.PropertyGet<T, Int32>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.Int32;
+                    _propertyGetterInt32[_index] = DelegateFactory.PropertyGet<T, Int32>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.Int32;
                 }
                 if (_propertyType == typeof(Int64))
                 {
-                    _PropertyGetterInt64[_index] = DelegateFactory.PropertyGet<T, Int64>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.Int64;
+                    _propertyGetterInt64[_index] = DelegateFactory.PropertyGet<T, Int64>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.Int64;
                 }
                 if (_propertyType == typeof(Single))
                 {
-                    _PropertyGetterSingle[_index] = DelegateFactory.PropertyGet<T, Single>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.Single;
+                    _propertyGetterSingle[_index] = DelegateFactory.PropertyGet<T, Single>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.Single;
                 }
                 if (_propertyType == typeof(Decimal))
                 {
-                    _PropertyGetterDecimal[_index] = DelegateFactory.PropertyGet<T, Decimal>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.Decimal;
+                    _propertyGetterDecimal[_index] = DelegateFactory.PropertyGet<T, Decimal>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.Decimal;
                 }
                 if (_propertyType == typeof(Double))
                 {
-                    _PropertyGetterDouble[_index] = DelegateFactory.PropertyGet<T, Double>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.Double;
+                    _propertyGetterDouble[_index] = DelegateFactory.PropertyGet<T, Double>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.Double;
                 }
                 if (_propertyType == typeof(UInt16))
                 {
-                    _PropertyGetterUInt16[_index] = DelegateFactory.PropertyGet<T, UInt16>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.UInt16;
+                    _propertyGetterUInt16[_index] = DelegateFactory.PropertyGet<T, UInt16>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.UInt16;
                 }
                 if (_propertyType == typeof(UInt32))
                 {
-                    _PropertyGetterUInt32[_index] = DelegateFactory.PropertyGet<T, UInt32>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.UInt32;
+                    _propertyGetterUInt32[_index] = DelegateFactory.PropertyGet<T, UInt32>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.UInt32;
                 }
                 if (_propertyType == typeof(UInt64))
                 {
-                    _PropertyGetterUInt64[_index] = DelegateFactory.PropertyGet<T, UInt64>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.UInt64;
+                    _propertyGetterUInt64[_index] = DelegateFactory.PropertyGet<T, UInt64>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.UInt64;
                 }
                 if (_propertyType == typeof(BigInteger))
                 {
-                    _PropertyGetterBigInteger[_index] = DelegateFactory.PropertyGet<T, BigInteger>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.BigInteger;
+                    _propertyGetterBigInteger[_index] = DelegateFactory.PropertyGet<T, BigInteger>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.BigInteger;
                 }
                 if (_propertyType == typeof(Guid?))
                 {
-                    _PropertyGetterGuidNullable[_index] = DelegateFactory.PropertyGet<T, Guid?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.GuidNullable;
+                    _propertyGetterGuidNullable[_index] = DelegateFactory.PropertyGet<T, Guid?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.GuidNullable;
                 }
                 if (_propertyType == typeof(Boolean?))
                 {
-                    _PropertyGetterBooleanNullable[_index] = DelegateFactory.PropertyGet<T, Boolean?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.BooleanNullable;
+                    _propertyGetterBooleanNullable[_index] = DelegateFactory.PropertyGet<T, Boolean?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.BooleanNullable;
                 }
                 if (_propertyType == typeof(DateTime?))
                 {
-                    _PropertyGetterDateTimeNullable[_index] = DelegateFactory.PropertyGet<T, DateTime?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.DateTimeNullable;
+                    _propertyGetterDateTimeNullable[_index] = DelegateFactory.PropertyGet<T, DateTime?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.DateTimeNullable;
                 }
                 if (_propertyType == typeof(DateTimeOffset?))
                 {
-                    _PropertyGetterDateTimeOffsetNullable[_index] = DelegateFactory.PropertyGet<T, DateTimeOffset?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.DateTimeOffsetNullable;
+                    _propertyGetterDateTimeOffsetNullable[_index] = DelegateFactory.PropertyGet<T, DateTimeOffset?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.DateTimeOffsetNullable;
                 }
                 if (_propertyType == typeof(TimeSpan?))
                 {
-                    _PropertyGetterTimeSpanNullable[_index] = DelegateFactory.PropertyGet<T, TimeSpan?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.TimeSpanNullable;
+                    _propertyGetterTimeSpanNullable[_index] = DelegateFactory.PropertyGet<T, TimeSpan?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.TimeSpanNullable;
                 }
                 if (_propertyType == typeof(Byte?))
                 {
-                    _PropertyGetterByteNullable[_index] = DelegateFactory.PropertyGet<T, Byte?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.ByteNullable;
+                    _propertyGetterByteNullable[_index] = DelegateFactory.PropertyGet<T, Byte?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.ByteNullable;
                 }
                 if (_propertyType == typeof(SByte?))
                 {
-                    _PropertyGetterSByteNullable[_index] = DelegateFactory.PropertyGet<T, SByte?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.SByteNullable;
+                    _propertyGetterSByteNullable[_index] = DelegateFactory.PropertyGet<T, SByte?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.SByteNullable;
                 }
                 if (_propertyType == typeof(Int16?))
                 {
-                    _PropertyGetterInt16Nullable[_index] = DelegateFactory.PropertyGet<T, Int16?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.Int16Nullable;
+                    _propertyGetterInt16Nullable[_index] = DelegateFactory.PropertyGet<T, Int16?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.Int16Nullable;
                 }
                 if (_propertyType == typeof(Int32?))
                 {
-                    _PropertyGetterInt32Nullable[_index] = DelegateFactory.PropertyGet<T, Int32?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.Int32Nullable;
+                    _propertyGetterInt32Nullable[_index] = DelegateFactory.PropertyGet<T, Int32?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.Int32Nullable;
                 }
                 if (_propertyType == typeof(Int64?))
                 {
-                    _PropertyGetterInt64Nullable[_index] = DelegateFactory.PropertyGet<T, Int64?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.Int64Nullable;
+                    _propertyGetterInt64Nullable[_index] = DelegateFactory.PropertyGet<T, Int64?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.Int64Nullable;
                 }
                 if (_propertyType == typeof(Single?))
                 {
-                    _PropertyGetterSingleNullable[_index] = DelegateFactory.PropertyGet<T, Single?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.SingleNullable;
+                    _propertyGetterSingleNullable[_index] = DelegateFactory.PropertyGet<T, Single?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.SingleNullable;
                 }
                 if (_propertyType == typeof(Decimal?))
                 {
-                    _PropertyGetterDecimalNullable[_index] = DelegateFactory.PropertyGet<T, Decimal?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.DecimalNullable;
+                    _propertyGetterDecimalNullable[_index] = DelegateFactory.PropertyGet<T, Decimal?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.DecimalNullable;
                 }
                 if (_propertyType == typeof(Double?))
                 {
-                    _PropertyGetterDoubleNullable[_index] = DelegateFactory.PropertyGet<T, Double?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.DoubleNullable;
+                    _propertyGetterDoubleNullable[_index] = DelegateFactory.PropertyGet<T, Double?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.DoubleNullable;
                 }
                 if (_propertyType == typeof(UInt16?))
                 {
-                    _PropertyGetterUInt16Nullable[_index] = DelegateFactory.PropertyGet<T, UInt16?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.UInt16Nullable;
+                    _propertyGetterUInt16Nullable[_index] = DelegateFactory.PropertyGet<T, UInt16?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.UInt16Nullable;
                 }
                 if (_propertyType == typeof(UInt32?))
                 {
-                    _PropertyGetterUInt32Nullable[_index] = DelegateFactory.PropertyGet<T, UInt32?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.UInt32Nullable;
+                    _propertyGetterUInt32Nullable[_index] = DelegateFactory.PropertyGet<T, UInt32?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.UInt32Nullable;
                 }
                 if (_propertyType == typeof(UInt64?))
                 {
-                    _PropertyGetterUInt64Nullable[_index] = DelegateFactory.PropertyGet<T, UInt64?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.UInt64Nullable;
+                    _propertyGetterUInt64Nullable[_index] = DelegateFactory.PropertyGet<T, UInt64?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.UInt64Nullable;
                 }
                 if (_propertyType == typeof(BigInteger?))
                 {
-                    _PropertyGetterBigIntegerNullable[_index] = DelegateFactory.PropertyGet<T, BigInteger?>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.BigIntegerNullable;
+                    _propertyGetterBigIntegerNullable[_index] = DelegateFactory.PropertyGet<T, BigInteger?>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.BigIntegerNullable;
                 }
                 if (_propertyType == typeof(byte[]))
                 {
-                    _PropertyGetterByteArray[_index] = DelegateFactory.PropertyGet<T, object>(property.Property.Name);
-                    _PropertyTypes[_index] = NetTypeComplete.ByteArray;
+                    _propertyGetterByteArray[_index] = DelegateFactory.PropertyGet<T, object>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.ByteArray;
                 }
             }
 
-            _Formatters = new string[_max + 1];
+            var _formatters = new string[_max + 1];
 
-            Dictionary<int, string> _formatters = _type.GetProperties()
+            Dictionary<int, string> _formattersDict = _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
                 .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).OutputFormat })
                 .ToDictionary(p => p.Key, p => p.OutputFormat);
 
-            foreach (int key in _formatters.Keys)
+            foreach (int key in _formattersDict.Keys)
             {
-                _Formatters[key] = _formatters[key];
+                _formatters[key] = _formatters[key];
             }
 
-            _OutputNullValues = new string[_max + 1];
+            var _outputNullValues = new string[_max + 1];
 
-            Dictionary<int, string> _outputNullValues = _type.GetProperties()
+            Dictionary<int, string> _outputNullValuesDict = _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
                 .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).OutputNullValue })
                 .ToDictionary(p => p.Key, p => p.OutputNullValue);
 
-            foreach (int key in _outputNullValues.Keys)
+            foreach (int key in _outputNullValuesDict.Keys)
             {
-                _OutputNullValues[key] = _outputNullValues[key];
+                _outputNullValues[key] = _outputNullValuesDict[key];
             }
+
+            _Properties = _propertiesInfo.ToImmutableArray();
+            _IsNullable = _isNullable.ToImmutableArray();
+
+            _PropertyGetterByteArray = _propertyGetterByteArray.ToImmutableArray();
+            _PropertyGetterString = _propertyGetterString.ToImmutableArray();
+            _PropertyGetterGuid = _propertyGetterGuid.ToImmutableArray();
+            _PropertyGetterBoolean = _propertyGetterBoolean.ToImmutableArray();
+            _PropertyGetterDateTime = _propertyGetterDateTime.ToImmutableArray();
+            _PropertyGetterDateTimeOffset = _propertyGetterDateTimeOffset.ToImmutableArray();
+            _PropertyGetterTimeSpan = _propertyGetterTimeSpan.ToImmutableArray();
+            _PropertyGetterByte = _propertyGetterByte.ToImmutableArray();
+            _PropertyGetterSByte = _propertyGetterSByte.ToImmutableArray();
+            _PropertyGetterInt16 = _propertyGetterInt16.ToImmutableArray();
+            _PropertyGetterInt32 = _propertyGetterInt32.ToImmutableArray();
+            _PropertyGetterInt64 = _propertyGetterInt64.ToImmutableArray();
+            _PropertyGetterSingle = _propertyGetterSingle.ToImmutableArray();
+            _PropertyGetterDecimal = _propertyGetterDecimal.ToImmutableArray();
+            _PropertyGetterDouble = _propertyGetterDouble.ToImmutableArray();
+            _PropertyGetterUInt16 = _propertyGetterUInt16.ToImmutableArray();
+            _PropertyGetterUInt32 = _propertyGetterUInt32.ToImmutableArray();
+            _PropertyGetterUInt64 = _propertyGetterUInt64.ToImmutableArray();
+            _PropertyGetterBigInteger = _propertyGetterBigInteger.ToImmutableArray();
+
+            _PropertyGetterGuidNullable = _propertyGetterGuidNullable.ToImmutableArray();
+            _PropertyGetterBooleanNullable = _propertyGetterBooleanNullable.ToImmutableArray();
+            _PropertyGetterDateTimeNullable = _propertyGetterDateTimeNullable.ToImmutableArray();
+            _PropertyGetterDateTimeOffsetNullable = _propertyGetterDateTimeOffsetNullable.ToImmutableArray();
+            _PropertyGetterTimeSpanNullable = _propertyGetterTimeSpanNullable.ToImmutableArray();
+            _PropertyGetterByteNullable = _propertyGetterByteNullable.ToImmutableArray();
+            _PropertyGetterSByteNullable = _propertyGetterSByteNullable.ToImmutableArray();
+            _PropertyGetterInt16Nullable = _propertyGetterInt16Nullable.ToImmutableArray();
+            _PropertyGetterInt32Nullable = _propertyGetterInt32Nullable.ToImmutableArray();
+            _PropertyGetterInt64Nullable = _propertyGetterInt64Nullable.ToImmutableArray();
+            _PropertyGetterSingleNullable = _propertyGetterSingleNullable.ToImmutableArray();
+            _PropertyGetterDecimalNullable = _propertyGetterDecimalNullable.ToImmutableArray();
+            _PropertyGetterDoubleNullable = _propertyGetterDoubleNullable.ToImmutableArray();
+            _PropertyGetterUInt16Nullable = _propertyGetterUInt16Nullable.ToImmutableArray();
+            _PropertyGetterUInt32Nullable = _propertyGetterUInt32Nullable.ToImmutableArray();
+            _PropertyGetterUInt64Nullable = _propertyGetterUInt64Nullable.ToImmutableArray();
+            _PropertyGetterBigIntegerNullable = _propertyGetterBigIntegerNullable.ToImmutableArray();
+
+            _PropertyTypes = _propertyTypes.ToImmutableArray();
+
+            _Formatters = _formatters.ToImmutableArray();
+            _OutputNullValues = _outputNullValues.ToImmutableArray();
+
+            base.InitImmutableArray();
         }
     }
 }

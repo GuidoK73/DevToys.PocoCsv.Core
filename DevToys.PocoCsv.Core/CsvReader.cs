@@ -1,11 +1,13 @@
 ﻿using Delegates;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -19,43 +21,43 @@ namespace DevToys.PocoCsv.Core
         private StreamReader _StreamReader;
         private readonly CsvStreamHelper _StreamHelper = new CsvStreamHelper();
 
-        private Action<object, object>[] _PropertySetters = null;
-        private Action<T, string>[] _PropertySettersString = null;
-        private Action<T, Guid>[] _PropertySettersGuid = null;
-        private Action<T, Boolean>[] _PropertySettersBoolean = null;
-        private Action<T, DateTime>[] _PropertySettersDateTime = null;
-        private Action<T, DateTimeOffset>[] _PropertySettersDateTimeOffset = null;
-        private Action<T, TimeSpan>[] _PropertySettersTimeSpan = null;
-        private Action<T, Byte>[] _PropertySettersByte = null;
-        private Action<T, SByte>[] _PropertySettersSByte = null;
-        private Action<T, Int16>[] _PropertySettersInt16 = null;
-        private Action<T, Int32>[] _PropertySettersInt32 = null;
-        private Action<T, Int64>[] _PropertySettersInt64 = null;
-        private Action<T, Single>[] _PropertySettersSingle = null;
-        private Action<T, Decimal>[] _PropertySettersDecimal = null;
-        private Action<T, Double>[] _PropertySettersDouble = null;
-        private Action<T, UInt16>[] _PropertySettersUInt16 = null;
-        private Action<T, UInt32>[] _PropertySettersUInt32 = null;
-        private Action<T, UInt64>[] _PropertySettersUInt64 = null;
-        private Action<T, BigInteger>[] _PropertySettersBigInteger = null;
+        private ImmutableArray<Action<object, object>> _PropertySetters;
+        private ImmutableArray<Action<T, string>> _PropertySettersString;
+        private ImmutableArray<Action<T, Guid>> _PropertySettersGuid;
+        private ImmutableArray<Action<T, Boolean>> _PropertySettersBoolean;
+        private ImmutableArray<Action<T, DateTime>> _PropertySettersDateTime;
+        private ImmutableArray<Action<T, DateTimeOffset>> _PropertySettersDateTimeOffset;
+        private ImmutableArray<Action<T, TimeSpan>> _PropertySettersTimeSpan;
+        private ImmutableArray<Action<T, Byte>> _PropertySettersByte;
+        private ImmutableArray<Action<T, SByte>> _PropertySettersSByte;
+        private ImmutableArray<Action<T, Int16>> _PropertySettersInt16;
+        private ImmutableArray<Action<T, Int32>> _PropertySettersInt32;
+        private ImmutableArray<Action<T, Int64>> _PropertySettersInt64;
+        private ImmutableArray<Action<T, Single>> _PropertySettersSingle;
+        private ImmutableArray<Action<T, Decimal>> _PropertySettersDecimal;
+        private ImmutableArray<Action<T, Double>> _PropertySettersDouble;
+        private ImmutableArray<Action<T, UInt16>> _PropertySettersUInt16;
+        private ImmutableArray<Action<T, UInt32>> _PropertySettersUInt32;
+        private ImmutableArray<Action<T, UInt64>> _PropertySettersUInt64;
+        private ImmutableArray<Action<T, BigInteger>> _PropertySettersBigInteger;
 
-        private Action<T, Guid?>[] _PropertySettersGuidNull = null;
-        private Action<T, Boolean?>[] _PropertySettersBooleanNull = null;
-        private Action<T, DateTime?>[] _PropertySettersDateTimeNull = null;
-        private Action<T, DateTimeOffset?>[] _PropertySettersDateTimeOffsetNull = null;
-        private Action<T, TimeSpan?>[] _PropertySettersTimeSpanNull = null;
-        private Action<T, Byte?>[] _PropertySettersByteNull = null;
-        private Action<T, SByte?>[] _PropertySettersSByteNull = null;
-        private Action<T, Int16?>[] _PropertySettersInt16Null = null;
-        private Action<T, Int32?>[] _PropertySettersInt32Null = null;
-        private Action<T, Int64?>[] _PropertySettersInt64Null = null;
-        private Action<T, Single?>[] _PropertySettersSingleNull = null;
-        private Action<T, Decimal?>[] _PropertySettersDecimalNull = null;
-        private Action<T, Double?>[] _PropertySettersDoubleNull = null;
-        private Action<T, UInt16?>[] _PropertySettersUInt16Null = null;
-        private Action<T, UInt32?>[] _PropertySettersUInt32Null = null;
-        private Action<T, UInt64?>[] _PropertySettersUInt64Null = null;
-        private Action<T, BigInteger?>[] _PropertySettersBigIntegerNull = null;
+        private ImmutableArray<Action<T, Guid?>> _PropertySettersGuidNull;
+        private ImmutableArray<Action<T, Boolean?>> _PropertySettersBooleanNull;
+        private ImmutableArray<Action<T, DateTime?>> _PropertySettersDateTimeNull;
+        private ImmutableArray<Action<T, DateTimeOffset?>> _PropertySettersDateTimeOffsetNull;
+        private ImmutableArray<Action<T, TimeSpan?>> _PropertySettersTimeSpanNull;
+        private ImmutableArray<Action<T, Byte?>> _PropertySettersByteNull;
+        private ImmutableArray<Action<T, SByte?>> _PropertySettersSByteNull;
+        private ImmutableArray<Action<T, Int16?>> _PropertySettersInt16Null;
+        private ImmutableArray<Action<T, Int32?>> _PropertySettersInt32Null;
+        private ImmutableArray<Action<T, Int64?>> _PropertySettersInt64Null;
+        private ImmutableArray<Action<T, Single?>> _PropertySettersSingleNull;
+        private ImmutableArray<Action<T, Decimal?>> _PropertySettersDecimalNull;
+        private ImmutableArray<Action<T, Double?>> _PropertySettersDoubleNull;
+        private ImmutableArray<Action<T, UInt16?>> _PropertySettersUInt16Null;
+        private ImmutableArray<Action<T, UInt32?>> _PropertySettersUInt32Null;
+        private ImmutableArray<Action<T, UInt64?>> _PropertySettersUInt64Null;
+        private ImmutableArray<Action<T, BigInteger?>> _PropertySettersBigIntegerNull;
 
         private readonly List<CsvReadError> _Errors = new List<CsvReadError>();
         private readonly StringBuilder _sbValue = new StringBuilder(127);
@@ -390,6 +392,7 @@ namespace DevToys.PocoCsv.Core
         private char PeakNextChar(out int charByte)
         {
             charByte = _StreamReader.BaseStream.ReadByte(); // Read next byte to see if it is LF.
+            _StreamReader.BaseStream.Position--;
             char _c = (char)charByte;
             return _c;
         }
@@ -1782,47 +1785,46 @@ namespace DevToys.PocoCsv.Core
 
             InitCsvAttribute(_type, _max + 1, ReadOrWrite.Read);
 
-            _Properties = new PropertyInfo[_max + 1];
-            _PropertySetters = new Action<object, object>[_max + 1];
-            _IsNullable = new Boolean[_max + 1];
+            var _properties = new PropertyInfo[_max + 1];
+            var _propertySetters = new Action<object, object>[_max + 1];
+            var _isNullable = new Boolean[_max + 1];
 
+            var _propertySettersString = new Action<T, String>[_max + 1];
+            var _propertySettersGuid = new Action<T, Guid>[_max + 1];
+            var _propertySettersBoolean = new Action<T, Boolean>[_max + 1];
+            var _propertySettersDateTime = new Action<T, DateTime>[_max + 1];
+            var _propertySettersDateTimeOffset = new Action<T, DateTimeOffset>[_max + 1];
+            var _propertySettersTimeSpan = new Action<T, TimeSpan>[_max + 1];
+            var _propertySettersByte = new Action<T, Byte>[_max + 1];
+            var _propertySettersSByte = new Action<T, SByte>[_max + 1];
+            var _propertySettersInt16 = new Action<T, Int16>[_max + 1];
+            var _propertySettersInt32 = new Action<T, Int32>[_max + 1];
+            var _propertySettersInt64 = new Action<T, Int64>[_max + 1];
+            var _propertySettersSingle = new Action<T, Single>[_max + 1];
+            var _propertySettersDecimal = new Action<T, Decimal>[_max + 1];
+            var _propertySettersDouble = new Action<T, Double>[_max + 1];
+            var _propertySettersUInt16 = new Action<T, UInt16>[_max + 1];
+            var _propertySettersUInt32 = new Action<T, UInt32>[_max + 1];
+            var _propertySettersUInt64 = new Action<T, UInt64>[_max + 1];
+            var _propertySettersBigInteger = new Action<T, BigInteger>[_max + 1];
 
-            _PropertySettersString = new Action<T, String>[_max + 1];
-            _PropertySettersGuid = new Action<T, Guid>[_max + 1];
-            _PropertySettersBoolean = new Action<T, Boolean>[_max + 1];
-            _PropertySettersDateTime = new Action<T, DateTime>[_max + 1];
-            _PropertySettersDateTimeOffset = new Action<T, DateTimeOffset>[_max + 1];
-            _PropertySettersTimeSpan = new Action<T, TimeSpan>[_max + 1];
-            _PropertySettersByte = new Action<T, Byte>[_max + 1];
-            _PropertySettersSByte = new Action<T, SByte>[_max + 1];
-            _PropertySettersInt16 = new Action<T, Int16>[_max + 1];
-            _PropertySettersInt32 = new Action<T, Int32>[_max + 1];
-            _PropertySettersInt64 = new Action<T, Int64>[_max + 1];
-            _PropertySettersSingle = new Action<T, Single>[_max + 1];
-            _PropertySettersDecimal = new Action<T, Decimal>[_max + 1];
-            _PropertySettersDouble = new Action<T, Double>[_max + 1];
-            _PropertySettersUInt16 = new Action<T, UInt16>[_max + 1];
-            _PropertySettersUInt32 = new Action<T, UInt32>[_max + 1];
-            _PropertySettersUInt64 = new Action<T, UInt64>[_max + 1];
-            _PropertySettersBigInteger = new Action<T, BigInteger>[_max + 1];
-
-            _PropertySettersGuidNull = new Action<T, Guid?>[_max + 1];
-            _PropertySettersBooleanNull = new Action<T, Boolean?>[_max + 1];
-            _PropertySettersDateTimeNull = new Action<T, DateTime?>[_max + 1];
-            _PropertySettersDateTimeOffsetNull = new Action<T, DateTimeOffset?>[_max + 1];
-            _PropertySettersTimeSpanNull = new Action<T, TimeSpan?>[_max + 1];
-            _PropertySettersByteNull = new Action<T, Byte?>[_max + 1];
-            _PropertySettersSByteNull = new Action<T, SByte?>[_max + 1];
-            _PropertySettersInt16Null = new Action<T, Int16?>[_max + 1];
-            _PropertySettersInt32Null = new Action<T, Int32?>[_max + 1];
-            _PropertySettersInt64Null = new Action<T, Int64?>[_max + 1];
-            _PropertySettersSingleNull = new Action<T, Single?>[_max + 1];
-            _PropertySettersDecimalNull = new Action<T, Decimal?>[_max + 1];
-            _PropertySettersDoubleNull = new Action<T, Double?>[_max + 1];
-            _PropertySettersUInt16Null = new Action<T, UInt16?>[_max + 1];
-            _PropertySettersUInt32Null = new Action<T, UInt32?>[_max + 1];
-            _PropertySettersUInt64Null = new Action<T, UInt64?>[_max + 1];
-            _PropertySettersBigIntegerNull = new Action<T, BigInteger?>[_max + 1];
+            var _propertySettersGuidNull = new Action<T, Guid?>[_max + 1];
+            var _propertySettersBooleanNull = new Action<T, Boolean?>[_max + 1];
+            var _propertySettersDateTimeNull = new Action<T, DateTime?>[_max + 1];
+            var _propertySettersDateTimeOffsetNull = new Action<T, DateTimeOffset?>[_max + 1];
+            var _propertySettersTimeSpanNull = new Action<T, TimeSpan?>[_max + 1];
+            var _propertySettersByteNull = new Action<T, Byte?>[_max + 1];
+            var _propertySettersSByteNull = new Action<T, SByte?>[_max + 1];
+            var _propertySettersInt16Null = new Action<T, Int16?>[_max + 1];
+            var _propertySettersInt32Null = new Action<T, Int32?>[_max + 1];
+            var _propertySettersInt64Null = new Action<T, Int64?>[_max + 1];
+            var _propertySettersSingleNull = new Action<T, Single?>[_max + 1];
+            var _propertySettersDecimalNull = new Action<T, Decimal?>[_max + 1];
+            var _propertySettersDoubleNull = new Action<T, Double?>[_max + 1];
+            var _propertySettersUInt16Null = new Action<T, UInt16?>[_max + 1];
+            var _propertySettersUInt32Null = new Action<T, UInt32?>[_max + 1];
+            var _propertySettersUInt64Null = new Action<T, UInt64?>[_max + 1];
+            var _propertySettersBigIntegerNull = new Action<T, BigInteger?>[_max + 1];
 
             foreach (var property in _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
@@ -1831,240 +1833,203 @@ namespace DevToys.PocoCsv.Core
             {
                 Type propertyType = property.Property.PropertyType;
 
-                _IsNullable[property.Index] = Nullable.GetUnderlyingType(propertyType) != null;
+                _isNullable[property.Index] = Nullable.GetUnderlyingType(propertyType) != null;
                
                 if (property.Attrib.CustomParserType != null)
                 {
                     SetCustomParserType(property.Index, property.Attrib.CustomParserType, property.Property.Name);
 
-                    _CustomParserCall[property.Index] = DelegateFactory.InstanceMethod(property.Attrib.CustomParserType, "Read", typeof(StringBuilder));
+                    __CustomParserCall[property.Index] = DelegateFactory.InstanceMethod(property.Attrib.CustomParserType, "Read", typeof(StringBuilder));
                 }
 
                 if (propertyType == typeof(string))
                 {
-                    _PropertySettersString[property.Index] = DelegateFactory.PropertySet<T, string>(property.Property.Name);
+                    _propertySettersString[property.Index] = DelegateFactory.PropertySet<T, string>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Guid))
                 {
-                    _PropertySettersGuid[property.Index] = DelegateFactory.PropertySet<T, Guid>(property.Property.Name);
+                    _propertySettersGuid[property.Index] = DelegateFactory.PropertySet<T, Guid>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Boolean))
                 {
-                    _PropertySettersBoolean[property.Index] = DelegateFactory.PropertySet<T, Boolean>(property.Property.Name);
+                    _propertySettersBoolean[property.Index] = DelegateFactory.PropertySet<T, Boolean>(property.Property.Name);
                 }
                 else if (propertyType == typeof(DateTime))
                 {
-                    _PropertySettersDateTime[property.Index] = DelegateFactory.PropertySet<T, DateTime>(property.Property.Name);
+                    _propertySettersDateTime[property.Index] = DelegateFactory.PropertySet<T, DateTime>(property.Property.Name);
                 }
                 else if (propertyType == typeof(DateTimeOffset))
                 {
-                    _PropertySettersDateTimeOffset[property.Index] = DelegateFactory.PropertySet<T, DateTimeOffset>(property.Property.Name);
+                    _propertySettersDateTimeOffset[property.Index] = DelegateFactory.PropertySet<T, DateTimeOffset>(property.Property.Name);
                 }
                 else if (propertyType == typeof(TimeSpan))
                 {
-                    _PropertySettersTimeSpan[property.Index] = DelegateFactory.PropertySet<T, TimeSpan>(property.Property.Name);
+                    _propertySettersTimeSpan[property.Index] = DelegateFactory.PropertySet<T, TimeSpan>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Byte))
                 {
-                    _PropertySettersByte[property.Index] = DelegateFactory.PropertySet<T, Byte>(property.Property.Name);
+                    _propertySettersByte[property.Index] = DelegateFactory.PropertySet<T, Byte>(property.Property.Name);
                 }
                 else if (propertyType == typeof(SByte))
                 {
-                    _PropertySettersSByte[property.Index] = DelegateFactory.PropertySet<T, SByte>(property.Property.Name);
+                    _propertySettersSByte[property.Index] = DelegateFactory.PropertySet<T, SByte>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Int16))
                 {
-                    _PropertySettersInt16[property.Index] = DelegateFactory.PropertySet<T, Int16>(property.Property.Name);
+                    _propertySettersInt16[property.Index] = DelegateFactory.PropertySet<T, Int16>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Int32))
                 {
-                    _PropertySettersInt32[property.Index] = DelegateFactory.PropertySet<T, Int32>(property.Property.Name);
+                    _propertySettersInt32[property.Index] = DelegateFactory.PropertySet<T, Int32>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Int64))
                 {
-                    _PropertySettersInt64[property.Index] = DelegateFactory.PropertySet<T, Int64>(property.Property.Name);
+                    _propertySettersInt64[property.Index] = DelegateFactory.PropertySet<T, Int64>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Single))
                 {
-                    _PropertySettersSingle[property.Index] = DelegateFactory.PropertySet<T, Single>(property.Property.Name);
+                    _propertySettersSingle[property.Index] = DelegateFactory.PropertySet<T, Single>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Decimal))
                 {
-                    _PropertySettersDecimal[property.Index] = DelegateFactory.PropertySet<T, Decimal>(property.Property.Name);
+                    _propertySettersDecimal[property.Index] = DelegateFactory.PropertySet<T, Decimal>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Double))
                 {
-                    _PropertySettersDouble[property.Index] = DelegateFactory.PropertySet<T, Double>(property.Property.Name);
+                    _propertySettersDouble[property.Index] = DelegateFactory.PropertySet<T, Double>(property.Property.Name);
                 }
                 else if (propertyType == typeof(UInt16))
                 {
-                    _PropertySettersUInt16[property.Index] = DelegateFactory.PropertySet<T, UInt16>(property.Property.Name);
+                    _propertySettersUInt16[property.Index] = DelegateFactory.PropertySet<T, UInt16>(property.Property.Name);
                 }
                 else if (propertyType == typeof(UInt32))
                 {
-                    _PropertySettersUInt32[property.Index] = DelegateFactory.PropertySet<T, UInt32>(property.Property.Name);
+                    _propertySettersUInt32[property.Index] = DelegateFactory.PropertySet<T, UInt32>(property.Property.Name);
                 }
                 else if (propertyType == typeof(UInt64))
                 {
-                    _PropertySettersUInt64[property.Index] = DelegateFactory.PropertySet<T, UInt64>(property.Property.Name);
+                    _propertySettersUInt64[property.Index] = DelegateFactory.PropertySet<T, UInt64>(property.Property.Name);
                 }
                 else if (propertyType == typeof(BigInteger))
                 {
-                    _PropertySettersBigInteger[property.Index] = DelegateFactory.PropertySet<T, BigInteger>(property.Property.Name);
+                    _propertySettersBigInteger[property.Index] = DelegateFactory.PropertySet<T, BigInteger>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Guid?))
                 {
-                    _PropertySettersGuidNull[property.Index] = DelegateFactory.PropertySet<T, Guid?>(property.Property.Name);
+                    _propertySettersGuidNull[property.Index] = DelegateFactory.PropertySet<T, Guid?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Boolean?))
                 {
-                    _PropertySettersBooleanNull[property.Index] = DelegateFactory.PropertySet<T, Boolean?>(property.Property.Name);
+                    _propertySettersBooleanNull[property.Index] = DelegateFactory.PropertySet<T, Boolean?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(DateTime?))
                 {
-                    _PropertySettersDateTimeNull[property.Index] = DelegateFactory.PropertySet<T, DateTime?>(property.Property.Name);
+                    _propertySettersDateTimeNull[property.Index] = DelegateFactory.PropertySet<T, DateTime?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(DateTimeOffset?))
                 {
-                    _PropertySettersDateTimeOffsetNull[property.Index] = DelegateFactory.PropertySet<T, DateTimeOffset?>(property.Property.Name);
+                    _propertySettersDateTimeOffsetNull[property.Index] = DelegateFactory.PropertySet<T, DateTimeOffset?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(TimeSpan?))
                 {
-                    _PropertySettersTimeSpanNull[property.Index] = DelegateFactory.PropertySet<T, TimeSpan?>(property.Property.Name);
+                    _propertySettersTimeSpanNull[property.Index] = DelegateFactory.PropertySet<T, TimeSpan?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Byte?))
                 {
-                    _PropertySettersByteNull[property.Index] = DelegateFactory.PropertySet<T, Byte?>(property.Property.Name);
+                    _propertySettersByteNull[property.Index] = DelegateFactory.PropertySet<T, Byte?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(SByte?))
                 {
-                    _PropertySettersSByteNull[property.Index] = DelegateFactory.PropertySet<T, SByte?>(property.Property.Name);
+                    _propertySettersSByteNull[property.Index] = DelegateFactory.PropertySet<T, SByte?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Int16?))
                 {
-                    _PropertySettersInt16Null[property.Index] = DelegateFactory.PropertySet<T, Int16?>(property.Property.Name);
+                    _propertySettersInt16Null[property.Index] = DelegateFactory.PropertySet<T, Int16?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Int32?))
                 {
-                    _PropertySettersInt32Null[property.Index] = DelegateFactory.PropertySet<T, Int32?>(property.Property.Name);
+                    _propertySettersInt32Null[property.Index] = DelegateFactory.PropertySet<T, Int32?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Int64?))
                 {
-                    _PropertySettersInt64Null[property.Index] = DelegateFactory.PropertySet<T, Int64?>(property.Property.Name);
+                    _propertySettersInt64Null[property.Index] = DelegateFactory.PropertySet<T, Int64?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Single?))
                 {
-                    _PropertySettersSingleNull[property.Index] = DelegateFactory.PropertySet<T, Single?>(property.Property.Name);
+                    _propertySettersSingleNull[property.Index] = DelegateFactory.PropertySet<T, Single?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Decimal?))
                 {
-                    _PropertySettersDecimalNull[property.Index] = DelegateFactory.PropertySet<T, Decimal?>(property.Property.Name);
+                    _propertySettersDecimalNull[property.Index] = DelegateFactory.PropertySet<T, Decimal?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(Double?))
                 {
-                    _PropertySettersDoubleNull[property.Index] = DelegateFactory.PropertySet<T, Double?>(property.Property.Name);
+                    _propertySettersDoubleNull[property.Index] = DelegateFactory.PropertySet<T, Double?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(UInt16?))
                 {
-                    _PropertySettersUInt16Null[property.Index] = DelegateFactory.PropertySet<T, UInt16?>(property.Property.Name);
+                    _propertySettersUInt16Null[property.Index] = DelegateFactory.PropertySet<T, UInt16?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(UInt32?))
                 {
-                    _PropertySettersUInt32Null[property.Index] = DelegateFactory.PropertySet<T, UInt32?>(property.Property.Name);
+                    _propertySettersUInt32Null[property.Index] = DelegateFactory.PropertySet<T, UInt32?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(UInt64?))
                 {
-                    _PropertySettersUInt64Null[property.Index] = DelegateFactory.PropertySet<T, UInt64?>(property.Property.Name);
+                    _propertySettersUInt64Null[property.Index] = DelegateFactory.PropertySet<T, UInt64?>(property.Property.Name);
                 }
                 else if (propertyType == typeof(BigInteger?))
                 {
-                    _PropertySettersBigIntegerNull[property.Index] = DelegateFactory.PropertySet<T, BigInteger?>(property.Property.Name);
+                    _propertySettersBigIntegerNull[property.Index] = DelegateFactory.PropertySet<T, BigInteger?>(property.Property.Name);
                 }
-                _Properties[property.Index] = property.Property;
-                _PropertySetters[property.Index] = _type.PropertySet(property.Property.Name);
+                _properties[property.Index] = property.Property;
+                _propertySetters[property.Index] = _type.PropertySet(property.Property.Name);
             }
+
+            _IsNullable = _isNullable.ToImmutableArray();
+            _Properties = _properties.ToImmutableArray();
+            _PropertySetters = _propertySetters.ToImmutableArray();
+            _PropertySettersString = _propertySettersString.ToImmutableArray();
+            _PropertySettersGuid = _propertySettersGuid.ToImmutableArray();
+            _PropertySettersBoolean = _propertySettersBoolean.ToImmutableArray();
+            _PropertySettersDateTime = _propertySettersDateTime.ToImmutableArray();
+            _PropertySettersDateTimeOffset = _propertySettersDateTimeOffset.ToImmutableArray();
+            _PropertySettersTimeSpan = _propertySettersTimeSpan.ToImmutableArray();
+            _PropertySettersByte = _propertySettersByte.ToImmutableArray();
+            _PropertySettersSByte = _propertySettersSByte.ToImmutableArray();
+            _PropertySettersInt16 = _propertySettersInt16.ToImmutableArray();
+            _PropertySettersInt32 = _propertySettersInt32.ToImmutableArray();
+            _PropertySettersInt64 = _propertySettersInt64.ToImmutableArray();
+            _PropertySettersSingle = _propertySettersSingle.ToImmutableArray();
+            _PropertySettersDecimal = _propertySettersDecimal.ToImmutableArray();
+            _PropertySettersDouble = _propertySettersDouble.ToImmutableArray();
+            _PropertySettersUInt16 = _propertySettersUInt16.ToImmutableArray();
+            _PropertySettersUInt32 = _propertySettersUInt32.ToImmutableArray();
+            _PropertySettersUInt64 = _propertySettersUInt64.ToImmutableArray();
+            _PropertySettersBigInteger = _propertySettersBigInteger.ToImmutableArray();
+            _PropertySettersGuidNull = _propertySettersGuidNull.ToImmutableArray();
+            _PropertySettersBooleanNull = _propertySettersBooleanNull.ToImmutableArray();
+            _PropertySettersDateTimeNull = _propertySettersDateTimeNull.ToImmutableArray();
+            _PropertySettersDateTimeOffsetNull = _propertySettersDateTimeOffsetNull.ToImmutableArray();
+            _PropertySettersTimeSpanNull = _propertySettersTimeSpanNull.ToImmutableArray();
+            _PropertySettersByteNull = _propertySettersByteNull.ToImmutableArray();
+            _PropertySettersSByteNull = _propertySettersSByteNull.ToImmutableArray();
+            _PropertySettersInt16Null = _propertySettersInt16Null.ToImmutableArray();
+            _PropertySettersInt32Null = _propertySettersInt32Null.ToImmutableArray();
+            _PropertySettersInt64Null = _propertySettersInt64Null.ToImmutableArray();
+            _PropertySettersSingleNull = _propertySettersSingleNull.ToImmutableArray();
+            _PropertySettersDecimalNull = _propertySettersDecimalNull.ToImmutableArray();
+            _PropertySettersDoubleNull = _propertySettersDoubleNull.ToImmutableArray();
+            _PropertySettersUInt16Null = _propertySettersUInt16Null.ToImmutableArray();
+            _PropertySettersUInt32Null = _propertySettersUInt32Null.ToImmutableArray();
+            _PropertySettersUInt64Null = _propertySettersUInt64Null.ToImmutableArray();
+            _PropertySettersBigIntegerNull = _propertySettersBigIntegerNull.ToImmutableArray();
+
+            base.InitImmutableArray();
+
+
         }
 
-        private TypeGroup GetTypeGroup(Type type)
-        {
-            bool _nullable = Nullable.GetUnderlyingType(type) != null;
-            Type _underlyingType = Nullable.GetUnderlyingType(type);
 
-            if (_underlyingType == typeof(string))
-            {
-                return TypeGroup.String;
-            }
-
-            if (_underlyingType == typeof(Guid))
-            {
-                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
-            }
-            if (_underlyingType == typeof(Boolean))
-            {
-                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
-            }
-            if (_underlyingType == typeof(DateTime))
-            {
-                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
-            }
-            if (_underlyingType == typeof(DateTimeOffset))
-            {
-                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
-            }
-            if (_underlyingType == typeof(TimeSpan))
-            {
-                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
-            }
-            if (_underlyingType == typeof(Byte))
-            {
-                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
-            }
-            if (_underlyingType == typeof(Int16))
-            {
-                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
-            }
-            if (_underlyingType == typeof(Int32))
-            {
-                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
-            }
-            if (_underlyingType == typeof(Int64))
-            {
-                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
-            }
-            if (_underlyingType == typeof(Single))
-            {
-                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
-            }
-            if (_underlyingType == typeof(Decimal))
-            {
-                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
-            }
-            if (_underlyingType == typeof(Double))
-            {
-                return _nullable ? TypeGroup.Nullable : TypeGroup.NonNullable;
-            }
-            if (_underlyingType == typeof(SByte))
-            {
-                return _nullable ? TypeGroup.NullableSpecial : TypeGroup.NonNullableSpecial;
-            }
-            if (_underlyingType == typeof(UInt16))
-            {
-                return _nullable ? TypeGroup.NullableSpecial : TypeGroup.NonNullableSpecial;
-            }
-            if (_underlyingType == typeof(UInt32))
-            {
-                return _nullable ? TypeGroup.NullableSpecial : TypeGroup.NonNullableSpecial;
-            }
-            if (_underlyingType == typeof(UInt64))
-            {
-                return _nullable ? TypeGroup.NullableSpecial : TypeGroup.NonNullableSpecial;
-            }
-            if (_underlyingType == typeof(BigInteger))
-            {
-                return _nullable ? TypeGroup.NullableSpecial : TypeGroup.NonNullableSpecial;
-            }
-
-            return TypeGroup.String;
-        }
     }
 }

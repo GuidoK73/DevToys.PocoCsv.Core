@@ -44,6 +44,7 @@ namespace DevToys.PocoCsv.Core
             _byte = 0;
         }
 
+
         /// <summary>
         /// Move stream to start position.
         /// </summary>

@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -57,7 +58,7 @@ namespace TestProject2
         private CsvTypesData ROW2 = new()
         {
             StringValue = $"Line 2",
-            GuidValue = Guid.Parse("94a6bfe9-abb4-46b6-bd7d-8f047b9ba480"),
+            GuidValue = Guid.Parse("90a6bfe9-abb4-46b6-bd7d-8f047b9ba480"),
             GuidValueNullable = null,
             BooleanValue = true,
             BooleanValueNullable = null,
@@ -108,7 +109,7 @@ namespace TestProject2
 
             using (CsvStreamWriter _writer = new CsvStreamWriter(file))
             {
-                _writer.Separator = ';'; // Alternate separator
+                _writer.Separator = ','; // Alternate separator
 
                 _writer.CRLFMode = CRLFMode.CRLF;
                 _writer.WriteCsvLine("Row 1", "Row A,A\rA", "A", "A1");
@@ -131,7 +132,7 @@ namespace TestProject2
 
             using (CsvStreamReader _reader = new CsvStreamReader(file))
             {
-                _reader.Separator = ';';
+                _reader.Separator = ',';
                 //_reader.DetectSeparator();
 
                 int _row = 0;
@@ -222,6 +223,7 @@ namespace TestProject2
             using (CsvWriter<CsvTypesData> _writer = new(file) { Separator = ',' })
             {
                 _writer.Open();
+                //_writer.Culture = CultureInfo.GetCultureInfo("en-US");
                 _writer.NullValueBehaviour = WriteNullValueBehaviour.EmptyLine;
                 _writer.CRLFMode = CRLFMode.CRLF;
                 _writer.WriteHeader();
@@ -235,9 +237,12 @@ namespace TestProject2
                 _writer.Write(ROW2);
             }
 
+            string _text = File.ReadAllText(file);
+
             using (CsvReader<CsvTypesData> _reader = new(file) { Separator = ',' })
             {
                 _reader.Open();
+                //_reader.Culture = CultureInfo.GetCultureInfo("en-US");
 
                 _reader.DetectSeparator();
                 _reader.EmptyLineBehaviour = EmptyLineBehaviour.NullValue;
@@ -289,7 +294,7 @@ namespace TestProject2
 
                 _row = _reader.Read();
                 Assert.AreEqual("Line 2", _row.StringValue);
-                Assert.AreEqual(Guid.Parse("94a6bfe9-abb4-46b6-bd7d-8f047b9ba480"), _row.GuidValue);
+                Assert.AreEqual(Guid.Parse("90a6bfe9-abb4-46b6-bd7d-8f047b9ba480"), _row.GuidValue);
                 Assert.AreEqual(null, _row.GuidValueNullable);
                 Assert.AreEqual(true, _row.BooleanValue);
                 Assert.AreEqual(null, _row.BooleanValueNullable);
