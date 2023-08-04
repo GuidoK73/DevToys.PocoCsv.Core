@@ -7,7 +7,7 @@ It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader
 
 Read/write serialize/deserialize data to and from Csv.
 
-- Conform RFC 4180.
+- RFC 4180 compliant.
 - Auto separator detection.
 - Auto line feed/break detection.
 - Sequential read with ReadAsEnumerable().

@@ -19,6 +19,8 @@ namespace TestProject2
 
         private CsvTypesData ROW1 = new()
         {
+            
+
             StringValue = $"Line 1",
             GuidValue = Guid.Parse("94a6bfe9-abb4-46b6-bd7d-8f047b9ba480"),
             GuidValueNullable = Guid.Parse("94a6bfe9-abb4-46b6-bd7d-8f047b9ba480"),

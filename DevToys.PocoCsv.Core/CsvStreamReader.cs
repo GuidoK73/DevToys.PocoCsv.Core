@@ -244,20 +244,23 @@ namespace DevToys.PocoCsv.Core
                             _state = State.Normal;
                             continue;
                         }
-                        else if (_nextChar == _CR || _nextChar == _LF && _escapedEscape == false)
+                        else if (_escapedEscape == false)
                         {
-                            _state = State.Normal;
-                            continue;
-                        }
-                        else if (_nextChar == Separator && _escapedEscape == false)
-                        {
-                            _state = State.Normal;
-                        }
-                        else if (_nextChar == _ESCAPE && _escapedEscape == false)
-                        {
-                            _state = State.Escaped;
-                            _escapedEscape = true;
-                            continue;
+                            if (_nextChar == _CR || _nextChar == _LF)
+                            {
+                                _state = State.Normal;
+                                continue;
+                            }
+                            else if (_nextChar == Separator)
+                            {
+                                _state = State.Normal;
+                            }
+                            else if (_nextChar == _ESCAPE)
+                            {
+                                _state = State.Escaped;
+                                _escapedEscape = true;
+                                continue;
+                            }
                         }
                     }
                 }

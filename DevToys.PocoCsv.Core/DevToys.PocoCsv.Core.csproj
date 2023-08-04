@@ -10,7 +10,7 @@ It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader
 
 Read/write serialize/deserialize data to and from Csv.
 
-- Conform RFC 4180.
+- RFC 4180 compliant.
 - Auto separator detection.
 - Auto line feed/break detection.
 - Sequential read/materializing with ReadAsEnumerable().
@@ -29,12 +29,15 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Authors>GuidoK73</Authors>
 	<PackageTags>csv;export;import;comma separated;4180;delimited;poco;csv parser;parse csv;DataTable;Import Csv;Export Csv;Csv Object</PackageTags>
     <Company />
-    <Version>2.0.4</Version>
+    <Version>2.0.5</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>2.0.4
+    <PackageReleaseNotes>2.0.5
+- Small improvements.
+
+2.0.4
 - Critical Bugfix: Escaped separator not correctly handled.
 - Small performance improvements.
 

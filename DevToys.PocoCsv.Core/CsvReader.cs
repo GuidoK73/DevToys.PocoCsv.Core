@@ -59,8 +59,16 @@ namespace DevToys.PocoCsv.Core
         private ImmutableArray<Action<T, BigInteger?>> _PropertySettersBigIntegerNull;
 
         private readonly List<CsvReadError> _Errors = new List<CsvReadError>();
+        
         private readonly StringBuilder _sbValue = new StringBuilder(127);
         private char _char;
+        private int _columnIndex = 0;
+        private State _state = State.Normal;
+        private bool _trimLast = false;
+        private bool _rowEnd = false;
+        private int lineLength = 0;
+        private bool _escapedEscape = false;
+
         private const char _CR = '\r';
         private const char _LF = '\n';
         private const char _ESCAPE = '"';
@@ -266,16 +274,17 @@ namespace DevToys.PocoCsv.Core
         public T Read()
         {
             // own implementation of _Streamer.ReadRow to futher improve speed.
+
             T _result = new T();
-            int _columnIndex = 0;
-            State _state = State.Normal;
-            bool _trimLast = false;
             _sbValue.Length = 0; // Clear the string buffer.
             _StreamHelper._byte = 0;
-            bool _rowEnd = false;
-            int lineLength = 0;
-            bool _escapedEscape = false;
-
+            _columnIndex = 0;
+            _state = State.Normal;
+            _trimLast = false;
+            _rowEnd = false;
+            lineLength = 0;
+            _escapedEscape = false;
+            
             while (_StreamHelper._byte > -1)
             {
                 _StreamHelper._byte = _StreamReader.BaseStream.ReadByte();
@@ -347,7 +356,10 @@ namespace DevToys.PocoCsv.Core
                             _trimLast = true; // we need to trim the last field as well.
                             continue; // LAST CHAR IN FIELD
                         }
-                        _state = State.Escaped;
+                        else
+                        {
+                            _state = State.Escaped;
+                        }
                     }
                     else if (_state == State.Escaped)
                     {
@@ -357,20 +369,23 @@ namespace DevToys.PocoCsv.Core
                             _state = State.Normal;
                             continue;
                         }
-                        else if ((_nextChar == _CR || _nextChar == _LF) && _escapedEscape == false)
+                        else if (_escapedEscape == false)
                         {
-                            _state = State.Normal;
-                            continue;
-                        }
-                        else if (_nextChar == Separator && _escapedEscape == false)
-                        {
-                            _state = State.Normal;
-                        }
-                        else if (_nextChar == _ESCAPE && _escapedEscape == false)
-                        {
-                            _state = State.Escaped;
-                            _escapedEscape = true;
-                            continue;
+                            if (_nextChar == _CR || _nextChar == _LF)
+                            {
+                                _state = State.Normal;
+                                continue;
+                            }
+                            else if (_nextChar == Separator)
+                            {
+                                _state = State.Normal;
+                            }
+                            else if (_nextChar == _ESCAPE)
+                            {
+                                _state = State.Escaped;
+                                _escapedEscape = true;
+                                continue;
+                            }
                         }
                     }
                 }
@@ -387,6 +402,8 @@ namespace DevToys.PocoCsv.Core
             }
             return _result;
         }
+
+
 
         private char PeakNextChar(out int charByte)
         {
