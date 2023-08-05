@@ -86,31 +86,29 @@ this reader is faster then CsvStreamReader, it is optamized to deserialize the r
         var _materialized = _data.ToList();
     }    
 ~~~
-- **Open()**\
-Opens the Reader.
-- **Separator**\
-Set the separator to use (default ',');
-- **ReadAsEnumerable()**\
-Reads and deserializes each csv file line per iteration in the collection, this allows for querying mega sized files.
-- **DetectSeparator()**\
-To auto set the separator (looks for commonly used separators in first 10 lines).
-- **Skip(int rows)**\
-Skip and advances the reader to the next row without interpreting it. This is much faster then IEnumerable.Skip(). 
-- **Last(int rows)**\
-Last seeks the csv document for the last x entries. this is much faster then IEnumerable.Last().
-- **Read()**\
-Reads current row into T and advances the reader to the next row. 
-- **MoveToStart()**\
-Moves the reader to the start position, Skip() and Take() alter the start positions use MoveToStart() to reset the position.
-- **EmptyLineBehaviour**
-    -   EmptyLineBehaviour: Return a new instance of T (Default)
-    -   NullValue: Return Null value for object.
-- **CurrentLine**\
-Return the current line number.
-- **Flush()**
-Flushes all buffers.
-- **Culture**\
-Sets the default Culture for decimal / double conversions etc. For more complex conversions use the ICustomCsvParse interface.
+
+
+
+Methods / Properties:
+
+|Item|Description|
+|:-|:-|
+|**DetectSeparator()**|To auto set the separator (looks for commonly used separators in first 10 lines).|
+|**Flush()**|Flushes all buffers.|
+|**Last(int rows)**|Last seeks the csv document for the last x entries. this is much faster then IEnumerable.Last().|
+|**MoveToStart()**|Moves the reader to the start position, Skip() and Take() alter the start positions use MoveToStart() to reset the position.|
+|**Open()**|Opens the Reader.|
+|**Read()**|Reads current row into T and advances the reader to the next row. |
+|**ReadAsEnumerable()**|Reads and deserializes each csv file line per iteration in the collection, this allows for querying mega sized files. It starts from the current position, if you used Skip(), Read() or SkipHeader() the current position is determined by those methods.|
+|**Skip(int rows)**|Skip and advances the reader to the next row without interpreting it. This is much faster then IEnumerable.Skip(). |
+|**SkipHeader()**|Ensures stream is at start then skips the first row.|
+|**Culture**|Sets the default Culture for decimal / double conversions etc. For more complex conversions use the ICustomCsvParse interface.|
+|**CurrentLine**|Returns the current line number.|
+|**EmptyLineBehaviour**|EmptyLineBehaviour: <li>DefaultInstance: Return a new instance of T (Default)</li><li>NullValue: Return Null value for object.</li>|
+|**Encoding**|The character encoding to use.|
+|**Separator**|Set the separator to use (default ',')|
+|**HasErrors**|Indicates there are errors|
+|**Errors**|List of errors|
 
 
 # CsvWriter\<T\>
@@ -160,42 +158,35 @@ this writer is faster then CsvStreamWriter, it is optamized to serialize the obj
       
 ~~~
 
-- **Open()**\
-Opens the Writer.
-- **Separator**\
-Set the separator to use (default ',');
-- **WriteHeader()**\
-Write header with property names of T.
-- **Write(IEnumerable<T> rows)**\
-Writes data to Csv while consuming rows.
-- **CRLFMode**\
-Determine which mode to use for new lines.
-    - CR + LF → Used as a new line character in Windows.
-    - CR(Carriage Return) → Used as a new line character in Mac OS before X.
-    - LF(Line Feed) → Used as a new line character in Unix/Mac OS X
-- **NullValueBehaviour**
-Determine what to do with writing null objects.
-    - Skip, Ignore the object
-    - Empty Line, Write an empty line
-- **Flush()**
-Flushes all buffers.
-- **Culture**\
-Sets the default Culture for decimal / double conversions etc. For more complex conversions use the ICustomCsvParse interface.
+
+Methods / Properties:
+
+|Item|Description|
+|:-|:-|
+|**Open()**|Opens the Writer.|
+|**WriteHeader()**|Write header with property names of T.|
+|**Write(IEnumerable<T> rows)**|Writes data to Csv while consuming rows.|
+|**Flush()**|Flushes all buffers.|
+|**Separator**|Set the separator to use (default ',')|
+|**CRLFMode**|Determine which mode to use for new lines.<li>CR + LF → Used as a new line character in Windows.</li><li>CR(Carriage Return) → Used as a new line character in Mac OS before X.</li><li>LF(Line Feed) → Used as a new line character in Unix/Mac OS X</li>|
+|**NullValueBehaviour**|Determine what to do with writing null objects.<li>Skip, Ignore the object</li><li>Empty Line, Write an empty line</li>|
+|**Culture**|Sets the default Culture for decimal / double conversions etc. For more complex conversions use the ICustomCsvParse interface.|
+|**Encoding**|The character encoding to use.|
+
 
 # ColumnAttribute
 
 The column attribute defines the properties to be serialized or deserialized.
 
-- **Index**\
-Defines the index position within the CSV document. Numbers can be skipped for the reader to ignore certain columns, for the writer numbers can also be skipped which leads to empty columns.
-- **Header**\
-Defines the header text, this property only applies to the CsvWriter, if not specified, the property name is used.
-- **OutputFormat**\
-Apply a string format, depending on the Property type. This property is for CsvWriter only.
-- **OutputNullValue**\
-Defines the value to write as a default for null, This property is for CsvWriter only.
-- **CustomParserType**\
-CustomParserType allows for custom parsing of values to a specific type.
+
+|Item|Description|
+|:-|:-|
+|**Index**|Defines the index position within the CSV document. Numbers can be skipped for the reader to ignore certain columns, for the writer numbers can also be skipped which leads to empty columns.|
+|**Header**|Defines the header text, this property only applies to the CsvWriter, if not specified, the property name is used.|
+|**OutputFormat**|Apply a string format, depending on the Property type. This property is for CsvWriter only.|
+|**OutputNullValue**|Defines the value to write as a default for null, This property is for CsvWriter only.|
+|**CustomParserType**|CustomParserType allows for custom parsing of values to a specific type.|
+
 
 # CustomParserType
 CustomParserType allows the Reader<T> and Writer<T> to use a custom parsing for a specific field.

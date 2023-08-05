@@ -390,6 +390,11 @@
             Use to skip first row without materializing, usefull for skipping header.
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.SkipHeader">
+            <summary>
+            Ensures stream is at start then skips the first row.
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Last(System.Int32)">
             <summary>
             Returns Last X records in the Csv Document. This one is much faster then ReadAsEnumerable().Last().
@@ -398,6 +403,11 @@
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Read">
             <summary>
             reads the CsvLine
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.SkipColumn">
+            <summary>
+            If a column is not referenced we can advance this column faster.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Open">

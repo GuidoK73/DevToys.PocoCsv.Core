@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -1346,7 +1345,6 @@ namespace DevToys.PocoCsv.Core
 
             var _isNullable = new Boolean[_max + 1];
 
-           
             var _propertyGetterByteArray = new Func<T, object>[_max + 1];
             var _propertyGetterString = new Func<T, string>[_max + 1];
             var _propertyGetterGuid = new Func<T, Guid>[_max + 1];

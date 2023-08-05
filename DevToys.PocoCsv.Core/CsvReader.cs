@@ -59,7 +59,7 @@ namespace DevToys.PocoCsv.Core
         private ImmutableArray<Action<T, BigInteger?>> _PropertySettersBigIntegerNull;
 
         private readonly List<CsvReadError> _Errors = new List<CsvReadError>();
-        
+
         private readonly StringBuilder _sbValue = new StringBuilder(127);
         private char _char;
         private int _columnIndex = 0;
@@ -247,6 +247,15 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
+        /// Ensures stream is at start then skips the first row.
+        /// </summary>
+        public void SkipHeader()
+        {
+            MoveToStart();
+            Skip();
+        }
+
+        /// <summary>
         /// Returns Last X records in the Csv Document. This one is much faster then ReadAsEnumerable().Last().
         /// </summary>
         public IEnumerable<T> Last(int rows = 1)
@@ -274,7 +283,6 @@ namespace DevToys.PocoCsv.Core
         public T Read()
         {
             // own implementation of _Streamer.ReadRow to futher improve speed.
-
             T _result = new T();
             _sbValue.Length = 0; // Clear the string buffer.
             _StreamHelper._byte = 0;
@@ -284,7 +292,7 @@ namespace DevToys.PocoCsv.Core
             _rowEnd = false;
             lineLength = 0;
             _escapedEscape = false;
-            
+
             while (_StreamHelper._byte > -1)
             {
                 _StreamHelper._byte = _StreamReader.BaseStream.ReadByte();
@@ -402,8 +410,6 @@ namespace DevToys.PocoCsv.Core
             }
             return _result;
         }
-
-
 
         private char PeakNextChar(out int charByte)
         {
@@ -1850,7 +1856,7 @@ namespace DevToys.PocoCsv.Core
                 Type propertyType = property.Property.PropertyType;
 
                 _isNullable[property.Index] = Nullable.GetUnderlyingType(propertyType) != null;
-               
+
                 if (property.Attrib.CustomParserType != null)
                 {
                     SetCustomParserType(property.Index, property.Attrib.CustomParserType, property.Property.Name);
@@ -2042,10 +2048,6 @@ namespace DevToys.PocoCsv.Core
             _PropertySettersBigIntegerNull = _propertySettersBigIntegerNull.ToImmutableArray();
 
             base.InitImmutableArray();
-
-
         }
-
-
     }
 }

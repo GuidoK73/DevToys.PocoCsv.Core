@@ -41,7 +41,23 @@ namespace TestProject2
             // 00:00:20.4812967
 
             _w.Stop();
+            var _Duration1 = _w.Duration;
             Console.WriteLine(_w.Duration);
+
+
+            _w.Start();
+
+            using (var _reader = new CsvReader<CsvSimpleSmall>(_file))
+            {
+                _reader.Open();
+
+                var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
+            }
+
+            _w.Stop();
+            var _Duration2 = _w.Duration;
+            Console.WriteLine(_w.Duration);
+
         }
 
         private IEnumerable<CsvSimple> LargeData()
