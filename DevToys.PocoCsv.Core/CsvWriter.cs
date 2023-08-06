@@ -16,8 +16,6 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvWriter<T> : BaseCsv, IDisposable where T : class, new()
     {
-        private ImmutableArray<NetTypeComplete> _PropertyTypes;
-
         private ImmutableArray<Func<T, object>> _PropertyGetterByteArray;
         private ImmutableArray<Func<T, string>> _PropertyGetterString;
         private ImmutableArray<Func<T, Guid>> _PropertyGetterGuid;

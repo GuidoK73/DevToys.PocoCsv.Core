@@ -318,32 +318,23 @@ namespace DevToys.PocoCsv.Core
                 }
                 if (_rowEnd)
                 {
-                    if (_trimLast)
+                    if (_trimLast && _sbValue.Length > 0 && _sbValue[_sbValue.Length - 1] == _ESCAPE)
                     {
-                        if (_sbValue.Length > 0)
-                        {
-                            if (_sbValue[_sbValue.Length - 1] == _ESCAPE)
-                            {
-                                _sbValue.Length--;
-                            }
-                        }
+                        _sbValue.Length--;
                     }
                     SetValue(_columnIndex, _result);
                     _StreamHelper.CurrentLine++;
                     break; // END ROW.
                 }
-                if (_char == Separator)
+                else if (_char == Separator)
                 {
                     if (_state == State.Normal)
                     {
                         if (_trimLast)
                         {
-                            if (_sbValue.Length > 0)
+                            if (_sbValue.Length > 0 && _sbValue[_sbValue.Length - 1] == _ESCAPE)
                             {
-                                if (_sbValue[_sbValue.Length - 1] == _ESCAPE)
-                                {
-                                    _sbValue.Length--;
-                                }
+                                _sbValue.Length--;
                             }
                             _trimLast = false;
                         }
@@ -431,7 +422,7 @@ namespace DevToys.PocoCsv.Core
             }
             else
             {
-                if (_Properties[index].PropertyType == typeof(string))
+                if (_PropertyTypes[index] == NetTypeComplete.String)
                 {
                     if (_CustomParserString[index] == null)
                     {
@@ -1808,6 +1799,7 @@ namespace DevToys.PocoCsv.Core
             InitCsvAttribute(_type, _max + 1, ReadOrWrite.Read);
 
             var _properties = new PropertyInfo[_max + 1];
+            var _propertyTypes = new NetTypeComplete[_max + 1];
             var _propertySetters = new Action<object, object>[_max + 1];
             var _isNullable = new Boolean[_max + 1];
 
@@ -1867,145 +1859,186 @@ namespace DevToys.PocoCsv.Core
                 if (propertyType == typeof(string))
                 {
                     _propertySettersString[property.Index] = DelegateFactory.PropertySet<T, string>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.String;
                 }
                 else if (propertyType == typeof(Guid))
                 {
                     _propertySettersGuid[property.Index] = DelegateFactory.PropertySet<T, Guid>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.Guid;
                 }
                 else if (propertyType == typeof(Boolean))
                 {
                     _propertySettersBoolean[property.Index] = DelegateFactory.PropertySet<T, Boolean>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.Boolean;
                 }
                 else if (propertyType == typeof(DateTime))
                 {
                     _propertySettersDateTime[property.Index] = DelegateFactory.PropertySet<T, DateTime>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.DateTime;
                 }
                 else if (propertyType == typeof(DateTimeOffset))
                 {
                     _propertySettersDateTimeOffset[property.Index] = DelegateFactory.PropertySet<T, DateTimeOffset>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.DateTimeOffset;
                 }
                 else if (propertyType == typeof(TimeSpan))
                 {
                     _propertySettersTimeSpan[property.Index] = DelegateFactory.PropertySet<T, TimeSpan>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.TimeSpan;
                 }
                 else if (propertyType == typeof(Byte))
                 {
                     _propertySettersByte[property.Index] = DelegateFactory.PropertySet<T, Byte>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.Byte;
                 }
                 else if (propertyType == typeof(SByte))
                 {
                     _propertySettersSByte[property.Index] = DelegateFactory.PropertySet<T, SByte>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.SByte;
                 }
                 else if (propertyType == typeof(Int16))
                 {
                     _propertySettersInt16[property.Index] = DelegateFactory.PropertySet<T, Int16>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.Int16;
                 }
                 else if (propertyType == typeof(Int32))
                 {
                     _propertySettersInt32[property.Index] = DelegateFactory.PropertySet<T, Int32>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.Int32;
                 }
                 else if (propertyType == typeof(Int64))
                 {
                     _propertySettersInt64[property.Index] = DelegateFactory.PropertySet<T, Int64>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.Int64;
                 }
                 else if (propertyType == typeof(Single))
                 {
                     _propertySettersSingle[property.Index] = DelegateFactory.PropertySet<T, Single>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.Single;
                 }
                 else if (propertyType == typeof(Decimal))
                 {
                     _propertySettersDecimal[property.Index] = DelegateFactory.PropertySet<T, Decimal>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.Decimal;
                 }
                 else if (propertyType == typeof(Double))
                 {
                     _propertySettersDouble[property.Index] = DelegateFactory.PropertySet<T, Double>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.Double;
                 }
                 else if (propertyType == typeof(UInt16))
                 {
                     _propertySettersUInt16[property.Index] = DelegateFactory.PropertySet<T, UInt16>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.UInt16;
                 }
                 else if (propertyType == typeof(UInt32))
                 {
                     _propertySettersUInt32[property.Index] = DelegateFactory.PropertySet<T, UInt32>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.UInt32;
                 }
                 else if (propertyType == typeof(UInt64))
                 {
                     _propertySettersUInt64[property.Index] = DelegateFactory.PropertySet<T, UInt64>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.UInt64;
                 }
                 else if (propertyType == typeof(BigInteger))
                 {
                     _propertySettersBigInteger[property.Index] = DelegateFactory.PropertySet<T, BigInteger>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.BigInteger;
                 }
                 else if (propertyType == typeof(Guid?))
                 {
                     _propertySettersGuidNull[property.Index] = DelegateFactory.PropertySet<T, Guid?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.GuidNullable;
                 }
                 else if (propertyType == typeof(Boolean?))
                 {
                     _propertySettersBooleanNull[property.Index] = DelegateFactory.PropertySet<T, Boolean?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.BooleanNullable;
                 }
                 else if (propertyType == typeof(DateTime?))
                 {
                     _propertySettersDateTimeNull[property.Index] = DelegateFactory.PropertySet<T, DateTime?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.DateTimeNullable;
                 }
                 else if (propertyType == typeof(DateTimeOffset?))
                 {
                     _propertySettersDateTimeOffsetNull[property.Index] = DelegateFactory.PropertySet<T, DateTimeOffset?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.DateTimeOffsetNullable;
                 }
                 else if (propertyType == typeof(TimeSpan?))
                 {
                     _propertySettersTimeSpanNull[property.Index] = DelegateFactory.PropertySet<T, TimeSpan?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.TimeSpanNullable;
                 }
                 else if (propertyType == typeof(Byte?))
                 {
                     _propertySettersByteNull[property.Index] = DelegateFactory.PropertySet<T, Byte?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.ByteNullable;
                 }
                 else if (propertyType == typeof(SByte?))
                 {
                     _propertySettersSByteNull[property.Index] = DelegateFactory.PropertySet<T, SByte?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.SByteNullable;
                 }
                 else if (propertyType == typeof(Int16?))
                 {
                     _propertySettersInt16Null[property.Index] = DelegateFactory.PropertySet<T, Int16?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.Int16Nullable;
                 }
                 else if (propertyType == typeof(Int32?))
                 {
                     _propertySettersInt32Null[property.Index] = DelegateFactory.PropertySet<T, Int32?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.Int32Nullable;
                 }
                 else if (propertyType == typeof(Int64?))
                 {
                     _propertySettersInt64Null[property.Index] = DelegateFactory.PropertySet<T, Int64?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.Int64Nullable;
                 }
                 else if (propertyType == typeof(Single?))
                 {
                     _propertySettersSingleNull[property.Index] = DelegateFactory.PropertySet<T, Single?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.SingleNullable;
                 }
                 else if (propertyType == typeof(Decimal?))
                 {
                     _propertySettersDecimalNull[property.Index] = DelegateFactory.PropertySet<T, Decimal?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.DecimalNullable;
                 }
                 else if (propertyType == typeof(Double?))
                 {
                     _propertySettersDoubleNull[property.Index] = DelegateFactory.PropertySet<T, Double?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.DoubleNullable;
                 }
                 else if (propertyType == typeof(UInt16?))
                 {
                     _propertySettersUInt16Null[property.Index] = DelegateFactory.PropertySet<T, UInt16?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.UInt16Nullable;
                 }
                 else if (propertyType == typeof(UInt32?))
                 {
                     _propertySettersUInt32Null[property.Index] = DelegateFactory.PropertySet<T, UInt32?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.UInt32Nullable;
                 }
                 else if (propertyType == typeof(UInt64?))
                 {
                     _propertySettersUInt64Null[property.Index] = DelegateFactory.PropertySet<T, UInt64?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.UInt64Nullable;
                 }
                 else if (propertyType == typeof(BigInteger?))
                 {
                     _propertySettersBigIntegerNull[property.Index] = DelegateFactory.PropertySet<T, BigInteger?>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.BigIntegerNullable;
+                }
+                else if (propertyType == typeof(byte[]))
+                {
+                    _propertySetters[property.Index] = _type.PropertySet(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.ByteArray;
                 }
                 _properties[property.Index] = property.Property;
                 _propertySetters[property.Index] = _type.PropertySet(property.Property.Name);
+
             }
 
             _IsNullable = _isNullable.ToImmutableArray();
@@ -2046,6 +2079,7 @@ namespace DevToys.PocoCsv.Core
             _PropertySettersUInt32Null = _propertySettersUInt32Null.ToImmutableArray();
             _PropertySettersUInt64Null = _propertySettersUInt64Null.ToImmutableArray();
             _PropertySettersBigIntegerNull = _propertySettersBigIntegerNull.ToImmutableArray();
+            _PropertyTypes = _propertyTypes.ToImmutableArray();
 
             base.InitImmutableArray();
         }

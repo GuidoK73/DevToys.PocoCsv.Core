@@ -126,7 +126,7 @@
     }
 
 
-    internal enum NetTypeComplete
+    public enum NetTypeComplete
     {
         String = 0,
         Guid = 1,

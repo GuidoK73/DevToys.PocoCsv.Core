@@ -15,15 +15,6 @@ namespace DevToys.PocoCsv.Core
         Write = 1
     }
 
-    public enum TypeGroup
-    {
-        String = 0,
-        Nullable = 1,
-        NonNullable = 2,
-        NullableSpecial = 1,
-        NonNullableSpecial = 2,
-    }
-
     /// <summary>
     /// Base class for BaseCsvReader and BaseCsvWriter
     /// </summary>
@@ -60,6 +51,8 @@ namespace DevToys.PocoCsv.Core
         public Encoding Encoding { get; set; } = Encoding.Default;
 
         protected internal ImmutableArray<PropertyInfo> _Properties;
+
+        protected internal ImmutableArray<NetTypeComplete> _PropertyTypes;
 
         protected internal ImmutableArray<Boolean> _IsNullable;
 
