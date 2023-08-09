@@ -66,17 +66,19 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        public CsvWriter(string file)
+        public CsvWriter(string file, char separator = ',')
         {
             _File = file;
+            Separator = separator;
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public CsvWriter(Stream stream)
+        public CsvWriter(Stream stream, char separator = ',')
         {
             _Stream = stream;
+            Separator = separator;
         }
 
         /// <summary>
@@ -87,7 +89,7 @@ namespace DevToys.PocoCsv.Core
             Culture = culture;
             Separator = separator;
             Encoding = encoding;
-            _BufferSize = buffersize;
+            BufferSize = buffersize;
             _File = file;
         }
 
@@ -100,7 +102,7 @@ namespace DevToys.PocoCsv.Core
             Culture = culture;
             Separator = separator;
             Encoding = encoding;
-            _BufferSize = buffersize;
+            BufferSize = buffersize;
         }
 
         /// <summary>
@@ -1307,11 +1309,11 @@ namespace DevToys.PocoCsv.Core
             Init();
             if (_Stream != null)
             {
-                _StreamWriter = new StreamWriter(stream: _Stream, encoding: Encoding, bufferSize: _BufferSize);
+                _StreamWriter = new StreamWriter(stream: _Stream, encoding: Encoding, bufferSize: BufferSize);
             }
             if (!string.IsNullOrEmpty(_File))
             {
-                _StreamWriter = new StreamWriter(path: _File, append: true, encoding: Encoding, bufferSize: _BufferSize);
+                _StreamWriter = new StreamWriter(path: _File, append: true, encoding: Encoding, bufferSize: BufferSize);
             }
         }
 

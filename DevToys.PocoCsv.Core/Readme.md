@@ -19,10 +19,9 @@ Read/write serialize/deserialize data to and from Csv.
 
 # CsvStreamReader
 ~~~cs
-    string file = "C:\Temp\data.csv";
-    using (CsvStreamReader _reader = new CsvStreamReader(file))
+    string _file = "C:\Temp\data.csv";
+    using (CsvStreamReader _reader = new CsvStreamReader(_file))
     {
-        _reader.Separator = ',';
         while (!_reader.EndOfStream)
         {
             string[] _values = _reader.ReadCsvLine();
@@ -33,10 +32,9 @@ Read/write serialize/deserialize data to and from Csv.
 or 
 
 ~~~cs
-    string file = "C:\Temp\data.csv";
-    using (CsvStreamReader _reader = new CsvStreamReader(file))
+    string _file = "C:\Temp\data.csv";
+    using (CsvStreamReader _reader = new CsvStreamReader(_file))
     {
-        _reader.Separator = ',';
         foreach (string[] items in _reader.ReadAsEnumerable())
         {
             
@@ -78,38 +76,40 @@ this reader is faster then CsvStreamReader, it is optamized to deserialize the r
 
     using (CsvReader<Data> _reader = new(file))
     {        
-        _reader.Culture = CultureInfo.GetCultureInfo("en-us");
+        _reader.Culture = CultureInfo.GetCultureInfo("en-us") ;
         _reader.Open();
-        _reader.Separator = ','; // or use _reader.DetectSeparator(); 
-        // _reader.Skip(); // Skip the header row.
+        _reader.SkipHeader();
         var _data = _reader.ReadAsEnumerable().Where(p => p.Column1.Contains("16"));
         var _materialized = _data.ToList();
     }    
 ~~~
 
 
-
-Methods / Properties:
-
-|Item|Description|
+|Methods / Property|Description|
 |:-|:-|
+|**BufferSize**|Stream buffer size, Default: 1024.|
+|**Close()**|Close the CSV stream reader|
+|**Culture**|Sets the default Culture for decimal / double conversions etc. For more complex conversions use the ICustomCsvParse interface.|
+|**CurrentLine**|Returns the current line number.|
+|**DetectEncodingFromByteOrderMarks**|Indicates whether to look for byte order marks at the beginning of the file.|
 |**DetectSeparator()**|To auto set the separator (looks for commonly used separators in first 10 lines).|
+|**Dispose()**|Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.|
+|**EmptyLineBehaviour**|EmptyLineBehaviour: <li>DefaultInstance: Return a new instance of T (Default)</li><li>NullValue: Return Null value for object.</li>|
+|**Encoding**|The character encoding to use.|
+|**EndOfStream**|Returns true when end of stream is reached. Use this when you are using Read() / Skip() or partially ReadAsEnumerable() |
+|**Errors**|Returns a list of errors when HasErrors returned true|
 |**Flush()**|Flushes all buffers.|
+|**HasErrors**|Indicates there are errors|
 |**Last(int rows)**|Last seeks the csv document for the last x entries. this is much faster then IEnumerable.Last().|
 |**MoveToStart()**|Moves the reader to the start position, Skip() and Take() alter the start positions use MoveToStart() to reset the position.|
 |**Open()**|Opens the Reader.|
 |**Read()**|Reads current row into T and advances the reader to the next row. |
 |**ReadAsEnumerable()**|Reads and deserializes each csv file line per iteration in the collection, this allows for querying mega sized files. It starts from the current position, if you used Skip(), Read() or SkipHeader() the current position is determined by those methods.|
+|**Separator**|Set the separator to use (default ',')|
 |**Skip(int rows)**|Skip and advances the reader to the next row without interpreting it. This is much faster then IEnumerable.Skip(). |
 |**SkipHeader()**|Ensures stream is at start then skips the first row.|
-|**Culture**|Sets the default Culture for decimal / double conversions etc. For more complex conversions use the ICustomCsvParse interface.|
-|**CurrentLine**|Returns the current line number.|
-|**EmptyLineBehaviour**|EmptyLineBehaviour: <li>DefaultInstance: Return a new instance of T (Default)</li><li>NullValue: Return Null value for object.</li>|
-|**Encoding**|The character encoding to use.|
-|**Separator**|Set the separator to use (default ',')|
-|**HasErrors**|Indicates there are errors|
-|**Errors**|List of errors|
 
+(Skip and Last do not deserialize, that's why they are faster then normal IEnumerable operations).
 
 # CsvWriter\<T\>
 this writer is faster then CsvStreamWriter, it is optamized to serialize the objects to rows.

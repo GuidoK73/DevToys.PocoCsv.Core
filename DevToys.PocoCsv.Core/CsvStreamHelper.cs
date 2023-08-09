@@ -8,7 +8,6 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     internal sealed class CsvStreamHelper
     {
-        private char _char;
         internal int _byte = 0;
         const char _CR = '\r';
         const char _LF = '\n';
@@ -62,29 +61,27 @@ namespace DevToys.PocoCsv.Core
             while (_byte > -1)
             {
                 _byte = stream.ReadByte();
-                _char = (char)_byte;
                 if (_byte == -1)
                 {
                     break;
                 }
-                else if ((_state == State.Normal && _char == _CR))
+                else if ((_state == State.Normal && _byte == _CR))
                 {
                     // PEEK
                     _byte = stream.ReadByte();
-                    _char = (char)_byte;
-                    if (_char != _LF)
+                    if (_byte != _LF)
                     {
                         stream.Position--;
                         CurrentLine++;
                         break;
                     }
                 }
-                if ((_state == State.Normal && _char == _LF))
+                if ((_state == State.Normal && _byte == _LF))
                 {
                     CurrentLine++;
                     break;
                 }
-                if (_char == _ESCAPE)
+                if (_byte == _ESCAPE)
                 {
                     _state = (_state == State.Normal) ? State.Escaped : State.Normal;
                 }
@@ -104,30 +101,28 @@ namespace DevToys.PocoCsv.Core
             while (_byte > -1)
             {
                 _byte = stream.ReadByte();
-                _char = (char)_byte;
                 if (_byte == -1)
                 {
                     break;
                 }
-                else if ((_state == State.Normal && _char == _CR))
+                else if ((_state == State.Normal && _byte == _CR))
                 {
                     // PEEK
                     _byte = stream.ReadByte();
-                    _char = (char)_byte;
-                    if (_char != _LF)
+                    if (_byte != _LF)
                     {
                         stream.Position--;
                         CurrentLine++;
                         _takeLastQueue.Add(stream.Position);
                     }
                 }
-                if ((_state == State.Normal && _char == _LF))
+                if ((_state == State.Normal && _byte == _LF))
                 {
                     _takeLastQueue.Add(stream.Position);
                     CurrentLine++;
                     continue;
                 }
-                if (_char == _ESCAPE)
+                if (_byte == _ESCAPE)
                 {
                     _state = (_state == State.Normal) ? State.Escaped : State.Normal;
                 }

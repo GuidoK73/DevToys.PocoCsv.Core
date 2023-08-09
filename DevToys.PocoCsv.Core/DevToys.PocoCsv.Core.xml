@@ -24,7 +24,7 @@
             Separator to use. Default: ','
             </summary>
         </member>
-        <member name="F:DevToys.PocoCsv.Core.BaseCsv._BufferSize">
+        <member name="P:DevToys.PocoCsv.Core.BaseCsv.BufferSize">
             <summary>
             Stream buffer size, Default: 1024
             </summary>
@@ -300,12 +300,12 @@
             Properties needs to be marked with ColumnAttribute
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.String)">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.String,System.Char)">
             <summary>
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.Stream)">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.Stream,System.Char)">
             <summary>
             Constructor
             </summary>
@@ -403,11 +403,6 @@
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Read">
             <summary>
             reads the CsvLine
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.SkipColumn">
-            <summary>
-            If a column is not referenced we can advance this column faster.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Open">
@@ -709,12 +704,12 @@
             Write T to Csv Stream from an IEnumerable source.
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String)">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String,System.Char)">
             <summary>
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.IO.Stream)">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.IO.Stream,System.Char)">
             <summary>
             Constructor
             </summary>

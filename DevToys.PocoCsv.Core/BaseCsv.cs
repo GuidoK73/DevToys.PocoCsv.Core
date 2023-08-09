@@ -38,7 +38,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Stream buffer size, Default: 1024
         /// </summary>
-        protected int _BufferSize = 1024;
+        public int BufferSize { get; set; } = 1024;
 
         /// <summary>
         /// Culture info to use for serialization.

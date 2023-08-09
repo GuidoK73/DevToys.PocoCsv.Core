@@ -11,7 +11,6 @@ namespace DevToys.PocoCsv.Core
     public sealed class CsvStreamReader : StreamReader
     {
         private readonly StringBuilder _sbValue = new StringBuilder(127);
-        private char _char;
         private const char _CR = '\r';
         private const char _LF = '\n';
         private const char _ESCAPE = '"';
@@ -175,24 +174,22 @@ namespace DevToys.PocoCsv.Core
             while (_StreamHelper._byte > -1)
             {
                 _StreamHelper._byte = BaseStream.ReadByte();
-                _char = (char)_StreamHelper._byte;
                 if (_StreamHelper._byte == -1)
                 {
                     _rowEnd = true;
                 }
-                else if ((_state == State.Normal && _char == _CR))
+                else if ((_state == State.Normal && _StreamHelper._byte == _CR))
                 {
                     // PEEK
                     _StreamHelper._byte = BaseStream.ReadByte();
-                    _char = (char)_StreamHelper._byte;
-                    if (_char != _LF)
+                    if (_StreamHelper._byte != _LF)
                     {
                         BaseStream.Position--;
                         _rowEnd = true; // We have a single \r without following \n.
                     }
                     // IF char is a normal char we can just continue from this point.
                 }
-                if ((_state == State.Normal && _char == _LF))
+                if ((_state == State.Normal && _StreamHelper._byte == _LF))
                 {
                     _rowEnd = true; // WE HAVE A SINGLE \n either preceded or not by \r
                 }
@@ -206,7 +203,7 @@ namespace DevToys.PocoCsv.Core
                     _StreamHelper.CurrentLine++;
                     return _result.ToArray();
                 }
-                if (_char == Separator)
+                if (_StreamHelper._byte == Separator)
                 {
                     if (_state == State.Normal)
                     {
@@ -223,7 +220,7 @@ namespace DevToys.PocoCsv.Core
                         continue; // NEXT FIELD
                     }
                 }
-                else if (_char == _ESCAPE)
+                else if (_StreamHelper._byte == _ESCAPE)
                 {
                     if (_sbValue.Length == 0 && _state == State.Normal)
                     {
@@ -238,24 +235,25 @@ namespace DevToys.PocoCsv.Core
                     }
                     else if (_state == State.Escaped)
                     {
-                        char _nextChar = PeakNextChar(out int charByte);
-                        if (charByte == -1)
+                        int nextByte = BaseStream.ReadByte();
+                        BaseStream.Position--;
+                        if (nextByte == -1)
                         {
                             _state = State.Normal;
                             continue;
                         }
                         else if (_escapedEscape == false)
                         {
-                            if (_nextChar == _CR || _nextChar == _LF)
+                            if (nextByte == _CR || nextByte == _LF)
                             {
                                 _state = State.Normal;
                                 continue;
                             }
-                            else if (_nextChar == Separator)
+                            else if (nextByte == Separator)
                             {
                                 _state = State.Normal;
                             }
-                            else if (_nextChar == _ESCAPE)
+                            else if (nextByte == _ESCAPE)
                             {
                                 _state = State.Escaped;
                                 _escapedEscape = true;
@@ -264,20 +262,14 @@ namespace DevToys.PocoCsv.Core
                         }
                     }
                 }
-                _sbValue.Append(_char);
+                _sbValue.Append((char)_StreamHelper._byte);
                 _escapedEscape = false;
             }
 
             return _result.ToArray();
         }
 
-        private char PeakNextChar(out int charByte)
-        {
-            charByte = BaseStream.ReadByte(); // Read next byte to see if it is LF.
-            char _c = (char)charByte;
-            BaseStream.Position--;
-            return _c;
-        }
+
 
         /// <summary>
         /// Perform ReadCsvLine.

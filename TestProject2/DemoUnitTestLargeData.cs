@@ -3,8 +3,11 @@ using DevToys.PocoCsv.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using TestProject2.Models;
+using static System.Net.WebRequestMethods;
 
 namespace TestProject2
 {
@@ -27,7 +30,7 @@ namespace TestProject2
 
             _w.Start();
 
-            using (var _reader = new CsvReader<CsvSimple>(_file))
+            using (var _reader = new CsvReader<CsvSimple>(_file, ',') { BufferSize = 2048 } )
             {
                 _reader.Open();
 
@@ -42,6 +45,9 @@ namespace TestProject2
             // {00:00:21.3921716}
             // {00:00:20.5838151}
 
+            //  Reader only 4
+            //  Without SetValue = 14 (setvalue 6 to 7)
+            //  Reader process 10
 
             _w.Stop();
             var _Duration1 = _w.Duration;
@@ -82,5 +88,11 @@ namespace TestProject2
                 yield return _line;
             }
         }
+
+
+
     }
+
+
+
 }

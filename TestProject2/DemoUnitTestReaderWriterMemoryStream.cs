@@ -76,10 +76,9 @@ namespace TestProject2
 
             using (MemoryStream _stream = new MemoryStream())
             {
-                using (CsvWriter<Data> _csvWriter = new CsvWriter<Data>(_stream))
-                using (CsvReader<Data> _csvReader = new CsvReader<Data>(_stream))
+                using (CsvWriter<Data> _csvWriter = new CsvWriter<Data>(_stream) { Separator = ',' })
+                using (CsvReader<Data> _csvReader = new CsvReader<Data>(_stream) { Separator = ',' })
                 {
-                    _csvWriter.Separator = ',';
                     _csvWriter.Open();
                     _csvWriter.WriteHeader();
                     _csvWriter.Write(GetTestData());
