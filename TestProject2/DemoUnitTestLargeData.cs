@@ -19,6 +19,10 @@ namespace TestProject2
         {
             string _file = System.IO.Path.GetTempFileName();
 
+            var _w = new StopWatch();
+
+            _w.Start();
+
             using (CsvWriter<CsvSimple> _writer = new(_file) { Separator = ',' })
             {
                 _writer.Open();
@@ -26,7 +30,9 @@ namespace TestProject2
                 _writer.Write(LargeData());
             }
 
-            var _w = new StopWatch();
+            _w.Stop();
+            var _DurationA = _w.Duration;
+            Console.WriteLine(_w.Duration);
 
             _w.Start();
 

@@ -184,6 +184,12 @@ namespace DevToys.PocoCsv.Core
             _StreamReader.BaseStream.Flush();
         }
 
+        private void MoveToPosition(long position)
+        {
+            _StreamReader.BaseStream.Position = position;
+            _byte = 0;
+        }
+
         /// <summary>
         /// Detect the separator by sampling first 10 rows. Position is moved to start after execution.
         /// </summary>
@@ -340,6 +346,9 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
+        /// <summary>
+        /// Move to a last row position before number of rows.
+        /// </summary>
         public void MoveToLast(int rows)
         {
             _takeLastQueue = new InfiniteLoopQueue<long>(rows);
@@ -397,8 +406,8 @@ namespace DevToys.PocoCsv.Core
                     }
                     else if (_byte == _ESCAPE)
                     {
-                        _state = State.Normal;
-                        continue; // Move to next itteration in Normal state, do not add this char (TRIM).
+                        _state = State.Normal; // not need for special escape checking, just switch.
+                        continue; 
                     }
                     continue;
                 }
@@ -406,9 +415,7 @@ namespace DevToys.PocoCsv.Core
 
             var _queuePosition = _takeLastQueue.GetQueue();
             _CurrentLine -= _queuePosition.Length;
-            _StreamReader.BaseStream.Position = _queuePosition[0]; // Get first position of Queue to move to the file position of last x rows.
-            _byte = _StreamReader.BaseStream.ReadByte();
-            _StreamReader.BaseStream.Position--;
+            MoveToPosition(_StreamReader.BaseStream.Position); // Get first position of Queue to move to the file position of last x rows.
             _CurrentLine -= rows;
         }
 
@@ -451,7 +458,7 @@ namespace DevToys.PocoCsv.Core
                         _StreamReader.BaseStream.Position--;
                         if (_nextByte == _LF)
                         {
-                            continue; // goes to else if (_byte == '\n')
+                            continue; // skip /r (CR) let it be handled on /n (LF)
                         }
                         // end of line.
                         if (_colIndex < _Properties.Length && _Properties[_colIndex] != null)
@@ -500,8 +507,11 @@ namespace DevToys.PocoCsv.Core
                     // ',' and '\r' and "" are part of the value.
                     if (_byte == -1)
                     {
-                        // End of field
-                        // Set the value
+                        // In a proper CSV this would not occur.
+                        if (_colIndex < _Properties.Length && _Properties[_colIndex] != null)
+                        {                            
+                            SetValue(_result);
+                        }
                         _sbValue.Clear();
                         break; // end the while loop.
                     }
@@ -510,10 +520,6 @@ namespace DevToys.PocoCsv.Core
                         // " aaa "" ","bbb", "ccc""","ddd """" "
                         _nextByte = _StreamReader.BaseStream.ReadByte();
                         _StreamReader.BaseStream.Position--; // Next read will read the , and act upon it in normal state.
-
-                        char _current = (char)_byte;
-                        char _next = (char)_nextByte;
-
                         if (_nextByte == Separator || _nextByte == _CR || _nextByte == _LF)
                         {
                             // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.

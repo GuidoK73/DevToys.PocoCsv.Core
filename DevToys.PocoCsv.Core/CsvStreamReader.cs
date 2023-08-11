@@ -85,14 +85,14 @@ namespace DevToys.PocoCsv.Core
             get => BaseStream.Position;
             internal set
             {
-                MoveToPosition(BaseStream, value);
+                MoveToPosition(value);
             }
         }
 
         /// <summary>
         /// Move reader to the start position 0
         /// </summary>
-        public void MoveToStart() => MoveToPosition(BaseStream, 0);
+        public void MoveToStart() => MoveToPosition(0);
 
         /// <summary>
         /// Get / Sets the Separator character to use.
@@ -287,15 +287,14 @@ namespace DevToys.PocoCsv.Core
             var _queuePosition = _takeLastQueue.GetQueue();
             CurrentLine -= _queuePosition.Length;
             BaseStream.Position = _queuePosition[0]; // Get first position of Queue to move to the file position of last x rows
-            _byte = BaseStream.ReadByte();
-            BaseStream.Position--;
+            _byte = 0;
             CurrentLine -= rows;
 
         }
 
-        internal void MoveToPosition(Stream stream, long position)
+        private void MoveToPosition(long position)
         {
-            stream.Position = position;
+            BaseStream.Position = position;
             _byte = 0;
         }
 
@@ -303,7 +302,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Move stream to start position.
         /// </summary>
-        public void MoveToStart(Stream stream) => MoveToPosition(stream, 0);
+        public void MoveToStart(Stream stream) => MoveToPosition(0);
 
 
         /// <summary>
