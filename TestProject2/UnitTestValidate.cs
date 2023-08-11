@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using TestProject2.Models;
 
 namespace TestProject2
 {
@@ -95,7 +96,89 @@ namespace TestProject2
             ByteArray = null,
         };
 
+
+
+        private CsvSimpleSmall ROWA = new() { AfBij = "111", Rekening = "AA", Tegenrekening = "X" };
+        private CsvSimpleSmall ROWB = new() { AfBij = "222", Rekening = "BB", Tegenrekening = "Y" };
+        private CsvSimpleSmall ROWC = new() { AfBij = "333", Rekening = "CC", Tegenrekening = "Z" };
+
+        private CsvSimpleSmall ROWD = new() { AfBij = "AAA1 \"\" ", Rekening = "BBB\r\n",  Tegenrekening = "AAA,BBB" };
+        private CsvSimpleSmall ROWE = new() { AfBij = "AAA2 \"\"", Rekening = "BBB\r\n \"", Tegenrekening = "CCC,DDD" };
+        private CsvSimpleSmall ROWF = new() { AfBij = "AAA3 \",\r\"", Rekening = "BBB\r,\n \"", Tegenrekening = "EEE,FFF" };
         #endregion Data
+
+        [TestMethod]
+        public void Validate()
+        {
+            ValidateCRLFStreamReaderAndWriter();
+            TestTypeFields();
+            ValidateCsvReader();
+        }
+
+        [TestMethod]
+        public void ValidateCsvReader()
+        {
+            string file = System.IO.Path.GetTempFileName();
+
+            using (CsvWriter<CsvSimpleSmall> _writer = new CsvWriter<CsvSimpleSmall>(file) { Separator = ',' } )
+            {
+                _writer.Open();
+                _writer.CRLFMode = CRLFMode.CRLF;
+                _writer.Write(ROWA);
+                _writer.CRLFMode = CRLFMode.LF;
+                _writer.Write(ROWB);
+                _writer.CRLFMode = CRLFMode.CR;
+                _writer.Write(ROWC);
+                _writer.CRLFMode = CRLFMode.CRLF;
+                _writer.Write(ROWD);
+                _writer.CRLFMode = CRLFMode.LF;
+                _writer.Write(ROWE);
+                _writer.CRLFMode = CRLFMode.CR;
+                _writer.Write(ROWF);
+            }
+
+            string _text = File.ReadAllText(file);
+
+            using (CsvReader<CsvSimpleSmall> _reader = new CsvReader<CsvSimpleSmall>(file) { Separator = ',' })
+            {
+                _reader.Open();
+                var _rowA = _reader.Read();
+                var _rowB = _reader.Read();
+                var _rowC = _reader.Read();
+                var _rowD = _reader.Read();
+                var _rowE = _reader.Read();
+                var _rowF = _reader.Read();
+
+
+                Assert.AreEqual(_rowA.AfBij, "111");
+                Assert.AreEqual(_rowA.Rekening, "AA");
+                Assert.AreEqual(_rowA.Tegenrekening, "X");
+
+                Assert.AreEqual(_rowB.AfBij, "222");
+                Assert.AreEqual(_rowB.Rekening, "BB");
+                Assert.AreEqual(_rowB.Tegenrekening, "Y");
+
+                Assert.AreEqual(_rowC.AfBij, "333");
+                Assert.AreEqual(_rowC.Rekening, "CC");
+                Assert.AreEqual(_rowC.Tegenrekening, "Z");
+
+
+                Assert.AreEqual(_rowD.AfBij, "AAA1 \"\" ");
+                Assert.AreEqual(_rowD.Rekening, "BBB\r\n");
+                Assert.AreEqual(_rowD.Tegenrekening, "AAA,BBB");
+
+                Assert.AreEqual(_rowE.AfBij, "AAA2 \"\"");
+                Assert.AreEqual(_rowE.Rekening, "BBB\r\n \"");
+                Assert.AreEqual(_rowE.Tegenrekening, "CCC,DDD");
+
+                Assert.AreEqual(_rowF.AfBij, "AAA3 \",\r\"");
+                Assert.AreEqual(_rowF.Rekening, "BBB\r,\n \"");
+                Assert.AreEqual(_rowF.Tegenrekening, "EEE,FFF");
+
+            }
+        }
+
+
 
         /// <summary>
         /// This TestMethod tests the CsvStreamReader and the CsvStreamWriter
@@ -125,7 +208,6 @@ namespace TestProject2
 
                 _writer.WriteCsvLine("Row F\";\"F\r\nF,F\"", "Row 7", "\"", "F6\" ");
                 _writer.WriteCsvLine("A\" ", "\"\"\"", "B\"", "\"\"\"");
-
 
                 _writer.Flush();
             }
@@ -186,6 +268,9 @@ namespace TestProject2
                     }
                     if (_row == 6)
                     {
+                        //_writer.WriteCsvLine("Row F\";\"F\r\nF,F\"", "Row 7", "\"", "F6\" ");
+
+
                         Assert.AreEqual(_values[0], "Row F\";\"F\r\nF,F\"");
                         Assert.AreEqual(_values[1], "Row 7");
                         Assert.AreEqual(_values[2], "\"");
@@ -336,6 +421,12 @@ namespace TestProject2
                 _row = _reader.Read();
                 Assert.AreEqual(Guid.Empty, _row.GuidValue); // Testing empty
 
+                _reader.EmptyLineBehaviour = EmptyLineBehaviour.NullValue;
+
+                _reader.MoveToStart();
+                var _all = _reader.ReadAsEnumerable().ToList();
+
+
                 _reader.MoveToStart();
                 _reader.EmptyLineBehaviour = EmptyLineBehaviour.NullValue;
 
@@ -376,6 +467,8 @@ Line 2,94a6bfe9-abb4-46b6-bd7d-8f047b9ba480,True,31/03/2023 00:00:00,31/03/2023 
             }
         }
     }
+
+    #region Classes
 
     public class CsvTypesData
     {
@@ -493,4 +586,6 @@ Line 2,94a6bfe9-abb4-46b6-bd7d-8f047b9ba480,True,31/03/2023 00:00:00,31/03/2023 
         [Column(Index = 10, Header = "Row 10")]
         public string Row10 { get; set; }
     }
+
+    #endregion
 }

@@ -14,10 +14,12 @@ namespace DevToys.PocoCsv.Core
         private const char _CR = '\r';
         private const char _LF = '\n';
         private const char _ESCAPE = '"';
-
+        private char _Separator = ',';
+        private int _byte = 0;
+        private int _nextByte = 0;
+        private State _state = State.Normal;
         private readonly List<string> _result = new List<string>();
-
-        private readonly CsvStreamHelper _StreamHelper = new CsvStreamHelper();
+        private InfiniteLoopQueue<long> _takeLastQueue;
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamReader class for the specified file name.
@@ -65,9 +67,15 @@ namespace DevToys.PocoCsv.Core
         { }
 
         /// <summary>
-        /// Indicates end of the stream.
+        /// Indicates the stream has ended.
         /// </summary>
-        public new bool EndOfStream => _StreamHelper.EndOfStream;
+        public new bool EndOfStream => _byte == -1;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int CurrentLine { get; private set; }
+
 
         /// <summary>
         /// Get / Sets the position.
@@ -77,22 +85,22 @@ namespace DevToys.PocoCsv.Core
             get => BaseStream.Position;
             internal set
             {
-                _StreamHelper.MoveToPosition(BaseStream, value);
+                MoveToPosition(BaseStream, value);
             }
         }
 
         /// <summary>
         /// Move reader to the start position 0
         /// </summary>
-        public void MoveToStart() => _StreamHelper.MoveToPosition(BaseStream, 0);
+        public void MoveToStart() => MoveToPosition(BaseStream, 0);
 
         /// <summary>
         /// Get / Sets the Separator character to use.
         /// </summary>
         public char Separator
         {
-            get => _StreamHelper.Separator;
-            set => _StreamHelper.Separator = value;
+            get => _Separator;
+            set => _Separator = value;
         }
 
         /// <summary>
@@ -137,22 +145,165 @@ namespace DevToys.PocoCsv.Core
         {
             int ii = 0;
 
-            while (!_StreamHelper.EndOfStream)
+            while (!EndOfStream)
             {
                 if (ii >= rows)
                 {
                     break;
                 }
-                _StreamHelper.Skip(BaseStream);
+                _Skip();
                 ii++;
             }
         }
 
-        /// <summary>
-        /// Moves to the last X rows, use ReadCsvLine after this call.
-        /// </summary>
-        public void MoveToLast(int rows = 1) => _StreamHelper.MoveToLast(BaseStream, rows);
+        private void _Skip()
+        {
+            _byte = 0;
+            _nextByte = 0;
+            _state = State.Normal;
+            
+            while (true)
+            {
+                _byte = BaseStream.ReadByte();
+                if (_state == State.Normal)
+                {
+                    if (_byte == Separator)
+                    {
+                        continue;
+                    }
+                    else if (_byte == _CR)
+                    {
+                        _nextByte = BaseStream.ReadByte();
+                        BaseStream.Position--;
+                        if (_nextByte == _LF)
+                        {
+                            continue; // goes to else if (_byte == '\n')
+                        }
+                        // end of line.
+                        CurrentLine++;
+                        break;
+                    }
+                    else if (_byte == _LF)
+                    {
+                        // end of line.
+                        CurrentLine++;
+                        break;
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        // switch mode
+                        _state = State.Escaped;
+                        continue; // do not add this char. (TRIM)
+                    }
+                    else if (_byte == -1)
+                    {
+                        break; // end the while loop.
+                    }
+                    continue;
+                }
+                else if (_state == State.Escaped)
+                {
+                    // ',' and '\r' and "" are part of the value.
+                    if (_byte == -1)
+                    {
+                        break; 
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        _state = State.Normal;
+                        continue; // Move to next itteration in Normal state, do not add this char (TRIM).
+                    }
+                    continue;
+                }
+            }
+        }
 
+        /// <summary>
+        /// Move to a last row position before number of rows.
+        /// </summary>
+        public void MoveToLast(int rows = 1)
+        {
+            _takeLastQueue = new InfiniteLoopQueue<long>(rows);
+            MoveToStart();
+
+            _state = State.Normal;
+            _byte = 0;
+            _nextByte = 0;
+
+            while (true)
+            {
+                _byte = BaseStream.ReadByte();
+                if (_state == State.Normal)
+                {
+                    if (_byte == Separator)
+                    {
+                        continue;
+                    }
+                    else if (_byte == _CR)
+                    {
+                        _nextByte = BaseStream.ReadByte();
+                        BaseStream.Position--;
+                        if (_nextByte == _LF)
+                        {
+                            continue; // goes to else if (_byte == '\n')
+                        }
+                        CurrentLine++;
+                        _takeLastQueue.Add(BaseStream.Position);
+                        continue;
+                    }
+                    else if (_byte == _LF)
+                    {
+                        CurrentLine++;
+                        _takeLastQueue.Add(BaseStream.Position);
+                        continue;
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        _state = State.Escaped;
+                        continue; // do not add this char. (TRIM)
+                    }
+                    else if (_byte == -1)
+                    {
+                        break; // end the while loop.
+                    }
+                    continue;
+                }
+                else if (_state == State.Escaped)
+                {
+                    // ',' and '\r' and "" are part of the value.
+                    if (_byte == -1)
+                    {
+                        break; // end the while loop.
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        _state = State.Normal;
+                        continue; // Move to next itteration in Normal state, do not add this char (TRIM).
+                    }
+                    continue;
+                }
+            }
+
+            var _queuePosition = _takeLastQueue.GetQueue();
+            CurrentLine -= _queuePosition.Length;
+            BaseStream.Position = _queuePosition[0]; // Get first position of Queue to move to the file position of last x rows
+            _byte = BaseStream.ReadByte();
+            BaseStream.Position--;
+            CurrentLine -= rows;
+
+        }
+
+        internal void MoveToPosition(Stream stream, long position)
+        {
+            stream.Position = position;
+            _byte = 0;
+        }
+
+
+        /// <summary>
+        /// Move stream to start position.
+        /// </summary>
+        public void MoveToStart(Stream stream) => MoveToPosition(stream, 0);
 
 
         /// <summary>
@@ -160,115 +311,108 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public string[] ReadCsvLine()
         {
-            // twice as fast on 10mln rows as _StreamHelper.ReadRow()
             _result.Clear();
-            State _state = State.Normal;
-            int _column = 0;
-            bool _trimLast = false;
-            bool _rowEnd = false;
-            bool _escapedEscape = false;
+            _state = State.Normal;
+            _sbValue.Length = 0; // Clear the string buffer.
+            _byte = 0;
+            _nextByte = 0;
 
-            _sbValue.Length = 0;
-            _StreamHelper._byte = 0;
-
-            while (_StreamHelper._byte > -1)
+            while (true)
             {
-                _StreamHelper._byte = BaseStream.ReadByte();
-                if (_StreamHelper._byte == -1)
+                _byte = BaseStream.ReadByte();
+                if (_state == State.Normal)
                 {
-                    _rowEnd = true;
-                }
-                else if ((_state == State.Normal && _StreamHelper._byte == _CR))
-                {
-                    // PEEK
-                    _StreamHelper._byte = BaseStream.ReadByte();
-                    if (_StreamHelper._byte != _LF)
+                    if (_byte == Separator)
                     {
-                        BaseStream.Position--;
-                        _rowEnd = true; // We have a single \r without following \n.
-                    }
-                    // IF char is a normal char we can just continue from this point.
-                }
-                if ((_state == State.Normal && _StreamHelper._byte == _LF))
-                {
-                    _rowEnd = true; // WE HAVE A SINGLE \n either preceded or not by \r
-                }
-                if (_rowEnd)
-                {
-                    if (_trimLast && _sbValue.Length > 0 && _sbValue[_sbValue.Length - 1] == _ESCAPE)
-                    {
-                        _sbValue.Length--;
-                    }
-                    _result.Add(_sbValue.ToString());
-                    _StreamHelper.CurrentLine++;
-                    return _result.ToArray();
-                }
-                if (_StreamHelper._byte == Separator)
-                {
-                    if (_state == State.Normal)
-                    {
-                        if (_trimLast)
-                        {
-                            if (_sbValue.Length > 0 && _sbValue[_sbValue.Length - 1] == _ESCAPE)
-                            {
-                                _sbValue.Length--;
-                            }
-                        }
+                        // End of field
                         _result.Add(_sbValue.ToString());
-                        _column++;
                         _sbValue.Length = 0;
-                        continue; // NEXT FIELD
+                        continue;
                     }
-                }
-                else if (_StreamHelper._byte == _ESCAPE)
-                {
-                    if (_sbValue.Length == 0 && _state == State.Normal)
+                    else if (_byte == _CR)
                     {
-                        // first character in field is a double quote so we go to escape state.
-                        _state = State.Escaped; // first char in field is escape char.
-                        _trimLast = true; // we need to trim the last field as well.
-                        continue; // NEXT FIELD
-                    }
-                    else if (_state == State.Normal)
-                    {
-                        _state = State.Escaped;
-                    }
-                    else if (_state == State.Escaped)
-                    {
-                        int nextByte = BaseStream.ReadByte();
+                        _nextByte = BaseStream.ReadByte();
                         BaseStream.Position--;
-                        if (nextByte == -1)
+                        if (_nextByte == _LF)
                         {
+                            continue; // goes to else if (_byte == '\n')
+                        }
+                        // end of line.
+                        _result.Add(_sbValue.ToString());
+                        _sbValue.Length = 0;
+                        CurrentLine++;
+                        break;
+                    }
+                    else if (_byte == _LF)
+                    {
+                        // end of line.
+                        _result.Add(_sbValue.ToString());
+                        _sbValue.Length = 0;
+                        CurrentLine++;
+                        break;
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        // switch mode
+                        _state = State.Escaped;
+                        continue; // do not add this char. (TRIM)
+                    }
+                    else if (_byte == -1)
+                    {
+                        // End of field
+                        _result.Add(_sbValue.ToString());
+                        _sbValue.Length = 0;
+                        return _result.ToArray();
+                    }
+                    _sbValue.Append((char)_byte);
+                    continue;
+                }
+                else if (_state == State.Escaped)
+                {
+                    // ',' and '\r' and "" are part of the value.
+                    if (_byte == -1)
+                    {
+                        // End of field
+                        // Set the value
+                        _sbValue.Clear();
+                        break; // end the while loop.
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        // " aaa "" ","bbb", "ccc""","ddd """" "
+                        _nextByte = BaseStream.ReadByte();
+                        BaseStream.Position--; // Next read will read the , and act upon it in normal state.
+                        if (_nextByte == Separator || _nextByte == _CR || _nextByte == _LF)
+                        {
+                            // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.
                             _state = State.Normal;
                             continue;
                         }
-                        else if (_escapedEscape == false)
+                        if (_nextByte == -1)
                         {
-                            if (nextByte == _CR || nextByte == _LF)
-                            {
-                                _state = State.Normal;
-                                continue;
-                            }
-                            else if (nextByte == Separator)
-                            {
-                                _state = State.Normal;
-                            }
-                            else if (nextByte == _ESCAPE)
-                            {
-                                _state = State.Escaped;
-                                _escapedEscape = true;
-                                continue;
-                            }
+                            // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.
+                            _result.Add(_sbValue.ToString());
+                            break;
+                        }
+
+                        else if (_nextByte == _ESCAPE)
+                        {
+                            _state = State.EscapedEscape;
+                            continue; // Also do not add this char, we add it when we are in EscapedEscape mode and from their we turn back to normal Escape.  (basically adding one of two)
                         }
                     }
+                    _sbValue.Append((char)_byte);
+                    continue;
                 }
-                _sbValue.Append((char)_StreamHelper._byte);
-                _escapedEscape = false;
+                else if (_state == State.EscapedEscape)
+                {
+                    _sbValue.Append((char)_byte);
+                    _state = State.Escaped;
+                    continue;
+                }
             }
-
             return _result.ToArray();
         }
-
 
 
         /// <summary>
@@ -281,7 +425,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public IEnumerable<string[]> ReadAsEnumerable()
         {
-            while (_StreamHelper._byte > -1)
+            while (_byte > -1)
             {
                 yield return ReadCsvLine();
             }

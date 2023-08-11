@@ -3,7 +3,8 @@
     internal enum State
     {
         Normal = 0, // Field separator: ',' Line ending: "\r\n" or '\r' or '\n', Switch to Escape mode: '"'
-        Escaped = 1 // '\r' and '\n' and ',' and "" are seen as part of the value.
+        Escaped = 1, // '\r' and '\n' and ',' and "" are seen as part of the value.
+        EscapedEscape = 2,
     }
 
     /// <summary>

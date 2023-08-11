@@ -342,7 +342,7 @@
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.EndOfStream">
             <summary>
-            Indicates the End of the stream.
+            Indicates the stream has ended.
             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.CurrentLine">
@@ -450,47 +450,6 @@
             
              </summary>
         </member>
-        <member name="T:DevToys.PocoCsv.Core.CsvStreamHelper">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvStreamHelper.Separator">
-            <summary>
-            Char separator to use default: ','
-            </summary>
-        </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvStreamHelper.EndOfStream">
-            <summary>
-            Indicates the stream has ended.
-            </summary>
-        </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvStreamHelper.CurrentLine">
-            <summary>
-            Current Line
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamHelper.MoveToPosition(System.IO.Stream,System.Int64)">
-            <summary>
-            Move stream to a position.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamHelper.MoveToStart(System.IO.Stream)">
-            <summary>
-            Move stream to start position.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamHelper.Skip(System.IO.Stream)">
-            <summary>
-            Skip a CSV row
-            </summary>
-            <param name="stream"></param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamHelper.MoveToLast(System.IO.Stream,System.Int32)">
-            <summary>
-            Move to a last row position before number of rows.
-            </summary>
-        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamReader">
             <summary>
             Implements a System.IO.TextReader that reads characters from a byte stream in a particular encoding.
@@ -530,7 +489,12 @@
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.EndOfStream">
             <summary>
-            Indicates end of the stream.
+            Indicates the stream has ended.
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.CurrentLine">
+            <summary>
+            
             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.Position">
@@ -570,7 +534,12 @@
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.MoveToLast(System.Int32)">
             <summary>
-            Moves to the last X rows, use ReadCsvLine after this call.
+            Move to a last row position before number of rows.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.MoveToStart(System.IO.Stream)">
+            <summary>
+            Move stream to start position.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadCsvLine">

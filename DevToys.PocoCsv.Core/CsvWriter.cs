@@ -58,7 +58,6 @@ namespace DevToys.PocoCsv.Core
         private ImmutableArray<string> _OutputNullValues;
         private StreamWriter _StreamWriter;
         private int _MaxColumnIndex = 0;
-
         private const char _CR = '\r';
         private const char _LF = '\n';
         private const string _CRLF = "\r\n";
@@ -140,6 +139,7 @@ namespace DevToys.PocoCsv.Core
             {
                 return;
             }
+            _StreamWriter.Flush();
             _StreamWriter.Close();
         }
 
@@ -261,6 +261,10 @@ namespace DevToys.PocoCsv.Core
                 {
                     _StreamWriter.Write(Separator);
                 }
+            }
+            if (_StreamWriter.BaseStream.Position == 0)
+            {
+                _StreamWriter.Flush();
             }
         }
 
