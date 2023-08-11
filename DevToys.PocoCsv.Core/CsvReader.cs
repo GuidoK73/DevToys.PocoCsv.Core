@@ -436,7 +436,7 @@ namespace DevToys.PocoCsv.Core
             _nextByte = 0;
             _colIndex = 0;
             
-            while (true)
+            for(;;)
             {
                 _byte = _StreamReader.BaseStream.ReadByte();
                 if (_state == State.Normal)

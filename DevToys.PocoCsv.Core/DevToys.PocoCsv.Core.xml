@@ -400,6 +400,11 @@
             Returns Last X records in the Csv Document. This one is much faster then ReadAsEnumerable().Last().
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.MoveToLast(System.Int32)">
+            <summary>
+            Move to a last row position before number of rows.
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Read">
             <summary>
             reads the CsvLine
