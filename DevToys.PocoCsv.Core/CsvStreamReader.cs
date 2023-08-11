@@ -161,8 +161,8 @@ namespace DevToys.PocoCsv.Core
             _byte = 0;
             _nextByte = 0;
             _state = State.Normal;
-            
-            while (true)
+
+            for (;;)
             {
                 _byte = BaseStream.ReadByte();
                 if (_state == State.Normal)
@@ -230,7 +230,7 @@ namespace DevToys.PocoCsv.Core
             _byte = 0;
             _nextByte = 0;
 
-            while (true)
+            for (;;)
             {
                 _byte = BaseStream.ReadByte();
                 if (_state == State.Normal)
@@ -285,7 +285,6 @@ namespace DevToys.PocoCsv.Core
             }
 
             var _queuePosition = _takeLastQueue.GetQueue();
-            CurrentLine -= _queuePosition.Length;
             BaseStream.Position = _queuePosition[0]; // Get first position of Queue to move to the file position of last x rows
             _byte = 0;
             CurrentLine -= rows;
@@ -316,7 +315,7 @@ namespace DevToys.PocoCsv.Core
             _byte = 0;
             _nextByte = 0;
 
-            while (true)
+            for (;;)
             {
                 _byte = BaseStream.ReadByte();
                 if (_state == State.Normal)
