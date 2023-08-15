@@ -29,12 +29,18 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Authors>GuidoK73</Authors>
 	<PackageTags>csv;export;import;comma separated;4180;delimited;poco;csv parser;parse csv;DataTable;Import Csv;Export Csv;Csv Object</PackageTags>
     <Company />
-    <Version>3.0.1</Version>
+    <Version>3.0.3</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>3.0.0
+    <PackageReleaseNotes>3.0.3
+- Added SkipAndReadNext option to EmptyLineBehaviour for CsvReader. this will ignore empty lines altogether
+- Added LogError and ThrowException to EmptyLineBehaviour.
+- Bugfix: not serializing/deserializing enums
+- Throw Error on not supported property types.
+
+3.0.0
 - CsvStreamReader and CsvReader&lt;T&gt; Performance +10%
 - BugFix CsvWriter: Flush on Close(). 
 

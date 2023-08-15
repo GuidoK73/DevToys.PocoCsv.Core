@@ -322,6 +322,14 @@ namespace Delegates.Extensions
             var propertyInfo = typeInfo.GetProperty(propertyName, staticOrInstance) ??
                                typeInfo.GetProperty(propertyName, staticOrInstance | PrivateOrProtectedBindingFlags) ??
                                typeInfo.GetProperty(propertyName, staticOrInstance | InternalBindingFlags);
+
+            if (propertyInfo == null)
+            {
+                var _xxx = source.GetProperties();
+
+                propertyInfo = source.GetProperty(propertyName);
+            }
+
 #if NET35 || NET4 || PORTABLE
             return new CPropertyInfo(propertyInfo);
 #else

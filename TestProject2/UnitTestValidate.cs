@@ -10,6 +10,12 @@ using TestProject2.Models;
 
 namespace TestProject2
 {
+    public enum TestEnum
+    {
+        XXX = 1,
+        YYY = 2
+    }
+    ///
     /// <summary>
     /// This tests are actual tests for maintaining correct behaviour.
     /// </summary>
@@ -56,6 +62,7 @@ namespace TestProject2
             UInt64Value = 26,
             UInt64ValueNullable = 29,
             ByteArray = new byte[] { 1, 2, 3 },
+            TestEnumItem = TestEnum.XXX
         };
 
         private CsvTypesData ROW2 = new()
@@ -94,6 +101,7 @@ namespace TestProject2
             UInt64Value = 26,
             UInt64ValueNullable = null,
             ByteArray = null,
+            TestEnumItem = TestEnum.YYY
         };
 
 
@@ -113,6 +121,7 @@ namespace TestProject2
             ValidateCRLFStreamReaderAndWriter();
             TestTypeFields();
             ValidateCsvReader();
+            ValidateCsvReaderEmptyLineBehaviour();
         }
 
         [TestMethod]
@@ -178,7 +187,54 @@ namespace TestProject2
             }
         }
 
+        [TestMethod]
+        public void ValidateCsvReaderEmptyLineBehaviour()
+        {
+            string file = System.IO.Path.GetTempFileName();
 
+            using (CsvWriter<CsvTypesData> _writer = new(file) { Separator = ',' })
+            {
+                _writer.Open();
+                //_writer.Culture = CultureInfo.GetCultureInfo("en-US");
+                _writer.WriteHeader();
+                _writer.NullValueBehaviour = WriteNullValueBehaviour.EmptyLine;
+                _writer.CRLFMode = CRLFMode.CRLF;
+                _writer.WriteHeader();
+                _writer.CRLFMode = CRLFMode.LF;
+                _writer.Write(ROW1);
+                _writer.Write((CsvTypesData)null); // Write empty row. (Mode is EmptyLine)
+                _writer.CRLFMode = CRLFMode.CR;
+                _writer.Write((CsvTypesData)null); // Write empty row. (Mode is EmptyLine)
+                _writer.Write((CsvTypesData)null); // Write empty row. (Mode is EmptyLine)
+                _writer.CRLFMode = CRLFMode.CRLF;
+                _writer.Write(ROW2);
+            }
+
+            string _text = File.ReadAllText(file);
+
+            using (CsvReader<CsvTypesData> _reader = new(file) { Separator = ',' })
+            {
+                _reader.Open();
+                _reader.EmptyLineBehaviour = EmptyLineBehaviour.NullValue;
+                _reader.MoveToStart();
+                _reader.SkipHeader();
+                var _items = _reader.ReadAsEnumerable().ToList();
+                Assert.AreEqual(5, _items.Count);
+                Assert.AreEqual(_items[1], null);
+                Assert.AreEqual(_items[2], null);
+                Assert.AreEqual(_items[3], null);
+
+                _reader.EmptyLineBehaviour = EmptyLineBehaviour.SkipAndReadNext;
+                _reader.MoveToStart();
+                _reader.SkipHeader();
+                _items = _reader.ReadAsEnumerable().ToList();
+                Assert.AreEqual(2, _items.Count);
+
+
+
+                Assert.AreEqual(2, _items.Count);
+            }
+        }
 
         /// <summary>
         /// This TestMethod tests the CsvStreamReader and the CsvStreamWriter
@@ -370,6 +426,8 @@ namespace TestProject2
                 Assert.AreEqual((UInt32?)25, _row.UInt32ValueNullable);
                 Assert.AreEqual((UInt64)26, _row.UInt64Value);
                 Assert.AreEqual((UInt64?)29, _row.UInt64ValueNullable);
+                Assert.AreEqual(TestEnum.XXX, _row.TestEnumItem);
+
 
                 _row = _reader.Read();
                 Assert.AreEqual(null, _row);
@@ -407,6 +465,8 @@ namespace TestProject2
                 Assert.AreEqual(null, _row.UInt32ValueNullable);
                 Assert.AreEqual((UInt64)26, _row.UInt64Value);
                 Assert.AreEqual(null, _row.UInt64ValueNullable);
+                Assert.AreEqual(TestEnum.YYY, _row.TestEnumItem);
+
 
                 _reader.MoveToStart();
 
@@ -573,7 +633,11 @@ Line 2,94a6bfe9-abb4-46b6-bd7d-8f047b9ba480,True,31/03/2023 00:00:00,31/03/2023 
 
         [Column(Index = 33, Header = "ByteArray")]
         public byte[] ByteArray { get; set; }
+
+        [Column(Index = 34, Header = "Enum")]
+        public TestEnum TestEnumItem { get; set; }
     }
+
 
     public class CsvSimpleRow
     {

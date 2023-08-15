@@ -19,6 +19,7 @@ namespace DevToys.PocoCsv.Core
     {
         private StreamReader _StreamReader;
 
+        private ImmutableArray<Action<T, int>> _PropertySettersEnum;
         private ImmutableArray<Action<object, object>> _PropertySetters;
         private ImmutableArray<Action<T, string>> _PropertySettersString;
         private ImmutableArray<Action<T, Guid>> _PropertySettersGuid;
@@ -112,8 +113,6 @@ namespace DevToys.PocoCsv.Core
             BufferSize = buffersize;
         }
 
-        
-
         /// <summary>
         /// Csv Seperator to use default ','
         /// </summary>
@@ -137,7 +136,6 @@ namespace DevToys.PocoCsv.Core
         /// Returns collection of error messages.
         /// </summary>
         public IEnumerable<CsvReadError> Errors => _Errors;
-
 
         /// <summary>
         /// Indicates the stream has ended.
@@ -427,6 +425,8 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public T Read()
         {
+            SkipAndReadNext:
+
             T _result = new T();
             _state = State.Normal;
             _sbValue.Length = 0; // Clear the string buffer.
@@ -554,9 +554,21 @@ namespace DevToys.PocoCsv.Core
 
             if (lineLength == 0)
             {
-                if (EmptyLineBehaviour == EmptyLineBehaviour.NullValue)
+                switch (EmptyLineBehaviour)
                 {
-                    return default;
+                    case EmptyLineBehaviour.NullValue:
+                        return default;
+                    case EmptyLineBehaviour.SkipAndReadNext:
+                        if (_byte != -1)
+                        {
+                            goto SkipAndReadNext;
+                        }
+                        return default;
+                    case EmptyLineBehaviour.LogError:
+                        _Errors.Add(new CsvReadError() { ColumnIndex = 0, LineNumber = _CurrentLine } );
+                        return default;
+                    case EmptyLineBehaviour.ThrowException:
+                        throw new CsvReadException($"Could not read empty line. Linenumber: {_CurrentLine}, Reader Position: {_StreamReader.BaseStream.Position}.");
                 }
             }
             return _result;
@@ -595,206 +607,130 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueOther(T targetObject)
         {
-            if (!_IsNullable[_colIndex])
+            switch (_PropertyTypes[_colIndex])
             {
-                SetValueOtherNonNullable(targetObject);
+                case NetTypeComplete.Decimal:
+                    SetValueDecimal(targetObject);
+                    return;
+                case NetTypeComplete.Int32:
+                    SetValueInt32(targetObject);
+                    return;
+                case NetTypeComplete.Double:
+                    SetValueDouble(targetObject);
+                    return;
+                case NetTypeComplete.DateTime:
+                    SetValueDateTime(targetObject);
+                    return;
+                case NetTypeComplete.Int64:
+                    SetValueInt64(targetObject);
+                    return;
+                case NetTypeComplete.Guid:
+                    SetValueGuid(targetObject);
+                    return;
+                case NetTypeComplete.Single:
+                    SetValueSingle(targetObject);
+                    return;
+                case NetTypeComplete.Boolean:
+                    SetValueBoolean(targetObject);
+                    return;
+                case NetTypeComplete.TimeSpan:
+                    SetValueTimeSpan(targetObject);
+                    return;
+                case NetTypeComplete.Int16:
+                    SetValueInt16(targetObject);
+                    return;
+                case NetTypeComplete.Byte:
+                    SetValueByte(targetObject);
+                    return;
+                case NetTypeComplete.DateTimeOffset:
+                    SetValueDateTimeOffset(targetObject);
+                    return;
+                case NetTypeComplete.SByte:
+                    SetValueSByte(targetObject);
+                    return;
+                case NetTypeComplete.UInt16:
+                    SetValueUInt16(targetObject);
+                    return;
+                case NetTypeComplete.UInt32:
+                    SetValueUInt32(targetObject);
+                    return;
+                case NetTypeComplete.UInt64:
+                    SetValueUInt64(targetObject);
+                    return;
+                case NetTypeComplete.BigInteger:
+                    SetValueBigInteger(targetObject);
+                    return;
+                case NetTypeComplete.DecimalNullable:
+                    SetValueDecimalNull(targetObject);
+                    return;
+                case NetTypeComplete.Int32Nullable:
+                    SetValueInt32Null(targetObject);
+                    return;
+                case NetTypeComplete.DoubleNullable:
+                    SetValueDoubleNull(targetObject);
+                    return;
+                case NetTypeComplete.DateTimeNullable:
+                    SetValueDateTimeNull(targetObject);
+                    return;
+                case NetTypeComplete.Int64Nullable:
+                    SetValueInt64Null(targetObject);
+                    return;
+                case NetTypeComplete.GuidNullable:
+                    SetValueGuidNull(targetObject);
+                    return;
+                case NetTypeComplete.SingleNullable:
+                    SetValueSingleNull(targetObject);
+                    return;
+                case NetTypeComplete.BooleanNullable:
+                    SetValueBooleanNull(targetObject);
+                    return;
+                case NetTypeComplete.TimeSpanNullable:
+                    SetValueTimeSpanNull(targetObject);
+                    return;
+                case NetTypeComplete.Int16Nullable:
+                    SetValueInt16Null(targetObject);
+                    return;
+                case NetTypeComplete.ByteNullable:
+                    SetValueByteNull(targetObject);
+                    return;
+                case NetTypeComplete.DateTimeOffsetNullable:
+                    SetValueDateTimeOffsetNull(targetObject);
+                    return;
+                case NetTypeComplete.SByteNullable:
+                    SetValueSByteNull(targetObject);
+                    return;
+                case NetTypeComplete.UInt16Nullable:
+                    SetValueUInt16Null(targetObject);
+                    return;
+                case NetTypeComplete.UInt32Nullable:
+                    SetValueUInt32Null(targetObject);
+                    return;
+                case NetTypeComplete.UInt64Nullable:
+                    SetValueUInt64Null(targetObject);
+                    return;
+                case NetTypeComplete.BigIntegerNullable:
+                    SetValueBigIntegerNull(targetObject);
+                    return;
+
+                case NetTypeComplete.ByteArray:
+                    SetValueByteArray(targetObject);
+                    return;
+                case NetTypeComplete.Enum:
+                    SetValueEnum(targetObject);
+                    return;
+            }
+        }
+
+        private void SetValueEnum(T targetObject)
+        {
+            bool succes = int.TryParse(_sbValue.ToString(), NumberStyles.Any, Culture, out int _value);
+            if (succes)
+            {
+                _PropertySettersEnum[_colIndex](targetObject, _value);
             }
             else
             {
-                SetValueOtherNullable(targetObject);
-            }
-        }
-
-        private void SetValueOtherNonNullable(T targetObject)
-        {
-            if (_Properties[_colIndex].PropertyType == typeof(Decimal))
-            {
-                SetValueDecimal(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Int32))
-            {
-                SetValueInt32(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Double))
-            {
-                SetValueDouble(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(DateTime))
-            {
-                SetValueDateTime(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Int64))
-            {
-                SetValueInt64(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Guid))
-            {
-                SetValueGuid(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Single))
-            {
-                SetValueSingle(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Boolean))
-            {
-                SetValueBoolean(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(TimeSpan))
-            {
-                SetValueTimeSpan(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Int16))
-            {
-                SetValueInt16(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Byte))
-            {
-                SetValueByte(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(DateTimeOffset))
-            {
-                SetValueDateTimeOffset(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType.IsEnum)
-            {
-                _PropertySetters[_colIndex](targetObject, Enum.Parse(_Properties[_colIndex].PropertyType, _sbValue.ToString()));
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(byte[]))
-            {
-                SetValueByteArray(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(SByte))
-            {
-                SetValueSByte(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(UInt16))
-            {
-                SetValueUInt16(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(UInt32))
-            {
-                SetValueUInt32(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(UInt64))
-            {
-                SetValueUInt64(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(BigInteger))
-            {
-                SetValueBigInteger(targetObject);
-                return;
-            }
-        }
-
-        private void SetValueOtherNullable(T targetObject)
-        {
-            if (_Properties[_colIndex].PropertyType == typeof(DateTime?))
-            {
-                SetValueDateTimeNull(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Guid?))
-            {
-                SetValueGuidNull(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Boolean?))
-            {
-                SetValueBooleanNull(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(DateTime?))
-            {
-                SetValueDateTimeNull(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(DateTimeOffset?))
-            {
-                SetValueDateTimeOffsetNull(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(TimeSpan?))
-            {
-                SetValueTimeSpanNull(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Byte?))
-            {
-                SetValueByteNull(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(SByte?))
-            {
-                SetValueSByteNull(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Int16?))
-            {
-                SetValueInt16Null(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Int32?))
-            {
-                SetValueInt32Null(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Int64?))
-            {
-                SetValueInt64Null(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Single?))
-            {
-                SetValueSingleNull(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Decimal?))
-            {
-                SetValueDecimalNull(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(Double?))
-            {
-                SetValueDoubleNull(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(UInt16?))
-            {
-                SetValueUInt16Null(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(UInt32?))
-            {
-                SetValueUInt32Null(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(UInt64?))
-            {
-                SetValueUInt64Null(targetObject);
-                return;
-            }
-            else if (_Properties[_colIndex].PropertyType == typeof(BigInteger?))
-            {
-                SetValueBigIntegerNull(targetObject);
-                return;
+                _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
         }
 
@@ -1944,6 +1880,7 @@ namespace DevToys.PocoCsv.Core
             var _propertySetters = new Action<object, object>[_max + 1];
             var _isNullable = new Boolean[_max + 1];
 
+            var _propertySettersEnum = new Action<T, int>[_max + 1];
             var _propertySettersString = new Action<T, String>[_max + 1];
             var _propertySettersGuid = new Action<T, Guid>[_max + 1];
             var _propertySettersBoolean = new Action<T, Boolean>[_max + 1];
@@ -2177,6 +2114,16 @@ namespace DevToys.PocoCsv.Core
                     _propertySetters[property.Index] = _type.PropertySet(property.Property.Name);
                     _propertyTypes[property.Index] = NetTypeComplete.ByteArray;
                 }
+                else if (propertyType.IsEnum)
+                {
+                    _propertySettersEnum[property.Index] = DelegateFactory.PropertySet<T, int>(property.Property.Name);
+                    _propertyTypes[property.Index] = NetTypeComplete.Enum;
+                }
+                else
+                {
+                    throw new CsvException($"Property: {property.Property} Type: {propertyType.Name} not supported.");
+                }
+                
                 _properties[property.Index] = property.Property;
                 _propertySetters[property.Index] = _type.PropertySet(property.Property.Name);
 
@@ -2184,6 +2131,7 @@ namespace DevToys.PocoCsv.Core
 
             _IsNullable = _isNullable.ToImmutableArray();
             _Properties = _properties.ToImmutableArray();
+            _PropertySettersEnum = _propertySettersEnum.ToImmutableArray();
             _PropertySetters = _propertySetters.ToImmutableArray();
             _PropertySettersString = _propertySettersString.ToImmutableArray();
             _PropertySettersGuid = _propertySettersGuid.ToImmutableArray();

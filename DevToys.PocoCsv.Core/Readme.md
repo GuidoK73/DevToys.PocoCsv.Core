@@ -94,7 +94,7 @@ this reader is faster then CsvStreamReader, it is optamized to deserialize the r
 |**DetectEncodingFromByteOrderMarks**|Indicates whether to look for byte order marks at the beginning of the file.|
 |**DetectSeparator()**|To auto set the separator (looks for commonly used separators in first 10 lines).|
 |**Dispose()**|Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.|
-|**EmptyLineBehaviour**|EmptyLineBehaviour: <li>DefaultInstance: Return a new instance of T (Default)</li><li>NullValue: Return Null value for object.</li>|
+|**EmptyLineBehaviour**|EmptyLineBehaviour: <li>DefaultInstance: Return a new instance of T (Default)</li><li>NullValue: Return Null value for object.</li><li>SkipAndReadNext: if empty line has occurred, the reader will move to the next line.</li><li>LogError: Create an entry in Errors collecion</li><li>ThrowException: throw an exception when an empty line has occurred.</li> |
 |**Encoding**|The character encoding to use.|
 |**EndOfStream**|Returns true when end of stream is reached. Use this when you are using Read() / Skip() or partially ReadAsEnumerable() |
 |**Errors**|Returns a list of errors when HasErrors returned true|

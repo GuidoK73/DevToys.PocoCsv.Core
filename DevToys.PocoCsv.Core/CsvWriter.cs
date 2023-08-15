@@ -17,6 +17,7 @@ namespace DevToys.PocoCsv.Core
     public sealed class CsvWriter<T> : BaseCsv, IDisposable where T : class, new()
     {
         private ImmutableArray<Func<T, object>> _PropertyGetterByteArray;
+        private ImmutableArray<Func<T, int>> _PropertyGetterEnum;
         private ImmutableArray<Func<T, string>> _PropertyGetterString;
         private ImmutableArray<Func<T, Guid>> _PropertyGetterGuid;
         private ImmutableArray<Func<T, Boolean>> _PropertyGetterBoolean;
@@ -426,6 +427,10 @@ namespace DevToys.PocoCsv.Core
             {
                 WriteByteArray(row, index);
             }
+            else if (targetType.IsEnum)
+            {
+                WriteEnum(row, index);
+            }
         }
 
         private void WriteString(T row, int index)
@@ -451,6 +456,15 @@ namespace DevToys.PocoCsv.Core
                 _StreamWriter.Write(Convert.ToBase64String(_byteValue));
             }
         }
+
+        private void WriteEnum(T row, int index)
+        {
+            string _value = _PropertyGetterEnum[index](row).ToString();
+            _StreamWriter.Write(_value);            
+        }
+
+
+
 
         private void WriteGuid(T row, int index, string formatter)
         {
@@ -1349,6 +1363,7 @@ namespace DevToys.PocoCsv.Core
 
             var _isNullable = new Boolean[_max + 1];
 
+            var _propertyGetterEnum = new Func<T, int>[_max + 1];
             var _propertyGetterByteArray = new Func<T, object>[_max + 1];
             var _propertyGetterString = new Func<T, string>[_max + 1];
             var _propertyGetterGuid = new Func<T, Guid>[_max + 1];
@@ -1412,180 +1427,189 @@ namespace DevToys.PocoCsv.Core
                     _propertyGetterString[_index] = DelegateFactory.PropertyGet<T, string>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.String;
                 }
-                if (_propertyType == typeof(Guid))
+                else if (_propertyType == typeof(Guid))
                 {
                     _propertyGetterGuid[_index] = DelegateFactory.PropertyGet<T, Guid>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.Guid;
                 }
-                if (_propertyType == typeof(Boolean))
+                else if (_propertyType == typeof(Boolean))
                 {
                     _propertyGetterBoolean[_index] = DelegateFactory.PropertyGet<T, Boolean>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.Boolean;
                 }
-                if (_propertyType == typeof(DateTime))
+                else if (_propertyType == typeof(DateTime))
                 {
                     _propertyGetterDateTime[_index] = DelegateFactory.PropertyGet<T, DateTime>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.DateTime;
                 }
-                if (_propertyType == typeof(DateTimeOffset))
+                else if (_propertyType == typeof(DateTimeOffset))
                 {
                     _propertyGetterDateTimeOffset[_index] = DelegateFactory.PropertyGet<T, DateTimeOffset>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.DateTimeOffset;
                 }
-                if (_propertyType == typeof(TimeSpan))
+                else if (_propertyType == typeof(TimeSpan))
                 {
                     _propertyGetterTimeSpan[_index] = DelegateFactory.PropertyGet<T, TimeSpan>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.TimeSpan;
                 }
-                if (_propertyType == typeof(Byte))
+                else if (_propertyType == typeof(Byte))
                 {
                     _propertyGetterByte[_index] = DelegateFactory.PropertyGet<T, Byte>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.Byte;
                 }
-                if (_propertyType == typeof(SByte))
+                else if (_propertyType == typeof(SByte))
                 {
                     _propertyGetterSByte[_index] = DelegateFactory.PropertyGet<T, SByte>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.SByte;
                 }
-                if (_propertyType == typeof(Int16))
+                else if (_propertyType == typeof(Int16))
                 {
                     _propertyGetterInt16[_index] = DelegateFactory.PropertyGet<T, Int16>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.Int16;
                 }
-                if (_propertyType == typeof(Int32))
+                else if (_propertyType == typeof(Int32))
                 {
                     _propertyGetterInt32[_index] = DelegateFactory.PropertyGet<T, Int32>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.Int32;
                 }
-                if (_propertyType == typeof(Int64))
+                else if (_propertyType == typeof(Int64))
                 {
                     _propertyGetterInt64[_index] = DelegateFactory.PropertyGet<T, Int64>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.Int64;
                 }
-                if (_propertyType == typeof(Single))
+                else if (_propertyType == typeof(Single))
                 {
                     _propertyGetterSingle[_index] = DelegateFactory.PropertyGet<T, Single>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.Single;
                 }
-                if (_propertyType == typeof(Decimal))
+                else if (_propertyType == typeof(Decimal))
                 {
                     _propertyGetterDecimal[_index] = DelegateFactory.PropertyGet<T, Decimal>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.Decimal;
                 }
-                if (_propertyType == typeof(Double))
+                else if (_propertyType == typeof(Double))
                 {
                     _propertyGetterDouble[_index] = DelegateFactory.PropertyGet<T, Double>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.Double;
                 }
-                if (_propertyType == typeof(UInt16))
+                else if (_propertyType == typeof(UInt16))
                 {
                     _propertyGetterUInt16[_index] = DelegateFactory.PropertyGet<T, UInt16>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.UInt16;
                 }
-                if (_propertyType == typeof(UInt32))
+                else if (_propertyType == typeof(UInt32))
                 {
                     _propertyGetterUInt32[_index] = DelegateFactory.PropertyGet<T, UInt32>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.UInt32;
                 }
-                if (_propertyType == typeof(UInt64))
+                else if (_propertyType == typeof(UInt64))
                 {
                     _propertyGetterUInt64[_index] = DelegateFactory.PropertyGet<T, UInt64>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.UInt64;
                 }
-                if (_propertyType == typeof(BigInteger))
+                else if (_propertyType == typeof(BigInteger))
                 {
                     _propertyGetterBigInteger[_index] = DelegateFactory.PropertyGet<T, BigInteger>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.BigInteger;
                 }
-                if (_propertyType == typeof(Guid?))
+                else if (_propertyType == typeof(Guid?))
                 {
                     _propertyGetterGuidNullable[_index] = DelegateFactory.PropertyGet<T, Guid?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.GuidNullable;
                 }
-                if (_propertyType == typeof(Boolean?))
+                else if (_propertyType == typeof(Boolean?))
                 {
                     _propertyGetterBooleanNullable[_index] = DelegateFactory.PropertyGet<T, Boolean?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.BooleanNullable;
                 }
-                if (_propertyType == typeof(DateTime?))
+                else if (_propertyType == typeof(DateTime?))
                 {
                     _propertyGetterDateTimeNullable[_index] = DelegateFactory.PropertyGet<T, DateTime?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.DateTimeNullable;
                 }
-                if (_propertyType == typeof(DateTimeOffset?))
+                else if (_propertyType == typeof(DateTimeOffset?))
                 {
                     _propertyGetterDateTimeOffsetNullable[_index] = DelegateFactory.PropertyGet<T, DateTimeOffset?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.DateTimeOffsetNullable;
                 }
-                if (_propertyType == typeof(TimeSpan?))
+                else if (_propertyType == typeof(TimeSpan?))
                 {
                     _propertyGetterTimeSpanNullable[_index] = DelegateFactory.PropertyGet<T, TimeSpan?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.TimeSpanNullable;
                 }
-                if (_propertyType == typeof(Byte?))
+                else if (_propertyType == typeof(Byte?))
                 {
                     _propertyGetterByteNullable[_index] = DelegateFactory.PropertyGet<T, Byte?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.ByteNullable;
                 }
-                if (_propertyType == typeof(SByte?))
+                else if (_propertyType == typeof(SByte?))
                 {
                     _propertyGetterSByteNullable[_index] = DelegateFactory.PropertyGet<T, SByte?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.SByteNullable;
                 }
-                if (_propertyType == typeof(Int16?))
+                else if (_propertyType == typeof(Int16?))
                 {
                     _propertyGetterInt16Nullable[_index] = DelegateFactory.PropertyGet<T, Int16?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.Int16Nullable;
                 }
-                if (_propertyType == typeof(Int32?))
+                else if (_propertyType == typeof(Int32?))
                 {
                     _propertyGetterInt32Nullable[_index] = DelegateFactory.PropertyGet<T, Int32?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.Int32Nullable;
                 }
-                if (_propertyType == typeof(Int64?))
+                else if (_propertyType == typeof(Int64?))
                 {
                     _propertyGetterInt64Nullable[_index] = DelegateFactory.PropertyGet<T, Int64?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.Int64Nullable;
                 }
-                if (_propertyType == typeof(Single?))
+                else if (_propertyType == typeof(Single?))
                 {
                     _propertyGetterSingleNullable[_index] = DelegateFactory.PropertyGet<T, Single?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.SingleNullable;
                 }
-                if (_propertyType == typeof(Decimal?))
+                else if (_propertyType == typeof(Decimal?))
                 {
                     _propertyGetterDecimalNullable[_index] = DelegateFactory.PropertyGet<T, Decimal?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.DecimalNullable;
                 }
-                if (_propertyType == typeof(Double?))
+                else if (_propertyType == typeof(Double?))
                 {
                     _propertyGetterDoubleNullable[_index] = DelegateFactory.PropertyGet<T, Double?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.DoubleNullable;
                 }
-                if (_propertyType == typeof(UInt16?))
+                else if (_propertyType == typeof(UInt16?))
                 {
                     _propertyGetterUInt16Nullable[_index] = DelegateFactory.PropertyGet<T, UInt16?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.UInt16Nullable;
                 }
-                if (_propertyType == typeof(UInt32?))
+                else if (_propertyType == typeof(UInt32?))
                 {
                     _propertyGetterUInt32Nullable[_index] = DelegateFactory.PropertyGet<T, UInt32?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.UInt32Nullable;
                 }
-                if (_propertyType == typeof(UInt64?))
+                else if (_propertyType == typeof(UInt64?))
                 {
                     _propertyGetterUInt64Nullable[_index] = DelegateFactory.PropertyGet<T, UInt64?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.UInt64Nullable;
                 }
-                if (_propertyType == typeof(BigInteger?))
+                else if (_propertyType == typeof(BigInteger?))
                 {
                     _propertyGetterBigIntegerNullable[_index] = DelegateFactory.PropertyGet<T, BigInteger?>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.BigIntegerNullable;
                 }
-                if (_propertyType == typeof(byte[]))
+                else if (_propertyType == typeof(byte[]))
                 {
                     _propertyGetterByteArray[_index] = DelegateFactory.PropertyGet<T, object>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.ByteArray;
+                }
+                else if (_propertyType.IsEnum)
+                {
+                    _propertyGetterEnum[_index] = DelegateFactory.PropertyGet<T, int>(property.Property.Name);
+                    _propertyTypes[_index] = NetTypeComplete.Enum;
+                }
+                else
+                {
+                    throw new CsvException($"Property: {property.Property} Type: {property.Property.Name} not supported.");
                 }
             }
 
@@ -1616,6 +1640,7 @@ namespace DevToys.PocoCsv.Core
             _Properties = _propertiesInfo.ToImmutableArray();
             _IsNullable = _isNullable.ToImmutableArray();
 
+            _PropertyGetterEnum = _propertyGetterEnum.ToImmutableArray();
             _PropertyGetterByteArray = _propertyGetterByteArray.ToImmutableArray();
             _PropertyGetterString = _propertyGetterString.ToImmutableArray();
             _PropertyGetterGuid = _propertyGetterGuid.ToImmutableArray();
@@ -1661,5 +1686,11 @@ namespace DevToys.PocoCsv.Core
 
             base.InitImmutableArray();
         }
+
+
+
+
     }
+
+
 }

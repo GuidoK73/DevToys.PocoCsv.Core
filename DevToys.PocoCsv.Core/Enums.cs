@@ -20,7 +20,22 @@
         /// <summary>
         /// Return Null value for object.
         /// </summary>
-        NullValue = 1
+        NullValue = 1,
+
+        /// <summary>
+        /// Skip the line and read the next.
+        /// </summary>
+        SkipAndReadNext = 2,
+
+        /// <summary>
+        /// Add an entry in the LogErrors 
+        /// </summary>
+        LogError = 3,
+
+        /// <summary>
+        /// Throw an Exception
+        /// </summary>
+        ThrowException = 4
     }
 
     /// <summary>
@@ -146,24 +161,27 @@
         UInt16 = 14,
         UInt32 = 15,
         UInt64 = 16,
-        GuidNullable = 17,
-        BooleanNullable = 18,
-        DateTimeNullable = 19,
-        DateTimeOffsetNullable = 20,
-        TimeSpanNullable = 21,
-        ByteNullable = 22,
-        SByteNullable = 23,
-        Int16Nullable = 24,
-        Int32Nullable = 25,
-        Int64Nullable = 26,
-        SingleNullable = 27,
-        DecimalNullable = 28,
-        DoubleNullable = 29,
-        UInt16Nullable = 30,
-        UInt32Nullable = 31,
-        UInt64Nullable = 32,
-        ByteArray = 33,
-        BigInteger = 34,
-        BigIntegerNullable = 35
+        Enum = 17,
+        GuidNullable = 18,
+        BooleanNullable = 19,
+        DateTimeNullable = 20,
+        DateTimeOffsetNullable = 21,
+        TimeSpanNullable = 22,
+        ByteNullable = 23,
+        SByteNullable = 24,
+        Int16Nullable = 25,
+        Int32Nullable = 26,
+        Int64Nullable = 27,
+        SingleNullable = 28,
+        DecimalNullable = 29,
+        DoubleNullable = 30,
+        UInt16Nullable = 31,
+        UInt32Nullable = 32,
+        UInt64Nullable = 33,
+        ByteArray = 34,
+        BigInteger = 35,
+        BigIntegerNullable = 36,
+        EnumNullable = 37,
+        Unknown = 999
     }
 }

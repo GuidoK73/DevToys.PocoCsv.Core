@@ -793,6 +793,21 @@
             Return Null value for object.
             </summary>
         </member>
+        <member name="F:DevToys.PocoCsv.Core.EmptyLineBehaviour.SkipAndReadNext">
+            <summary>
+            Skip the line and read the next.
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.EmptyLineBehaviour.LogError">
+            <summary>
+            Add an entry in the LogErrors 
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.EmptyLineBehaviour.ThrowException">
+            <summary>
+            Throw an Exception
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.WriteNullValueBehaviour">
             <summary>
             How will the write behave with null objects.
