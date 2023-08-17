@@ -4,6 +4,11 @@
         <name>DevToys.PocoCsv.Core</name>
     </assembly>
     <members>
+        <member name="T:DevToys.PocoCsv.Core.ReadOrWrite">
+            <summary>
+            Internally used
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.BaseCsv">
             <summary>
             Base class for BaseCsvReader and BaseCsvWriter
@@ -37,6 +42,11 @@
         <member name="P:DevToys.PocoCsv.Core.BaseCsv.Encoding">
             <summary>
             The character encoding to use.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsv.SetCustomParserType(System.Int32,System.Type,System.String)">
+            <summary>
+            
             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.ColumnAttribute">
@@ -449,6 +459,11 @@
              <summary>
             
              </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReadError.Exception">
+            <summary>
+            Exception Message
+            </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReadError.ToString">
              <summary>

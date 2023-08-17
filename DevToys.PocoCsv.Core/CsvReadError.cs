@@ -33,6 +33,11 @@ namespace DevToys.PocoCsv.Core
         public int LineNumber { get; set; }
 
         /// <summary>
+        /// Exception Message
+        /// </summary>
+        public Exception Exception { get; set; }
+
+        /// <summary>
         ///
         /// </summary>
         public override string ToString()

@@ -9,6 +9,10 @@ using System.Text;
 
 namespace DevToys.PocoCsv.Core
 {
+ 
+    /// <summary>
+    /// Internally used
+    /// </summary>
     public enum ReadOrWrite
     {
         Read = 0,
@@ -20,35 +24,42 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public abstract class BaseCsv
     {
-        /// <summary>
-        /// Property Set by contructor, either File or Stream is used.
-        /// </summary>
-        protected string _File = null;
+        private ICustomCsvParse<string>[] __CustomParserString = null;
+        private ICustomCsvParse<Guid>[] __CustomParserGuid = null;
+        private ICustomCsvParse<Boolean>[] __CustomParserBoolean = null;
+        private ICustomCsvParse<DateTime>[] __CustomParserDateTime = null;
+        private ICustomCsvParse<DateTimeOffset>[] __CustomParserDateTimeOffset = null;
+        private ICustomCsvParse<TimeSpan>[] __CustomParserTimeSpan = null;
+        private ICustomCsvParse<Byte>[] __CustomParserByte = null;
+        private ICustomCsvParse<SByte>[] __CustomParserSByte = null;
+        private ICustomCsvParse<Int16>[] __CustomParserInt16 = null;
+        private ICustomCsvParse<Int32>[] __CustomParserInt32 = null;
+        private ICustomCsvParse<Int64>[] __CustomParserInt64 = null;
+        private ICustomCsvParse<Single>[] __CustomParserSingle = null;
+        private ICustomCsvParse<Decimal>[] __CustomParserDecimal = null;
+        private ICustomCsvParse<Double>[] __CustomParserDouble = null;
+        private ICustomCsvParse<UInt16>[] __CustomParserUInt16 = null;
+        private ICustomCsvParse<UInt32>[] __CustomParserUInt32 = null;
+        private ICustomCsvParse<UInt64>[] __CustomParserUInt64 = null;
+        private ICustomCsvParse<BigInteger>[] __CustomParserBigInteger = null;
 
-        /// <summary>
-        /// Property Set by contructor, either File or Stream is used.
-        /// </summary>
-        protected Stream _Stream = null;
-
-        /// <summary>
-        /// Separator to use. Default: ','
-        /// </summary>
-        protected char _Separator = ',';
-
-        /// <summary>
-        /// Stream buffer size, Default: 1024
-        /// </summary>
-        public int BufferSize { get; set; } = 1024;
-
-        /// <summary>
-        /// Culture info to use for serialization.
-        /// </summary>
-        public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
-
-        /// <summary>
-        /// The character encoding to use.
-        /// </summary>
-        public Encoding Encoding { get; set; } = Encoding.Default;
+        private ICustomCsvParse<Guid?>[] __CustomParserGuidNullable = null;
+        private ICustomCsvParse<Boolean?>[] __CustomParserBooleanNullable = null;
+        private ICustomCsvParse<DateTime?>[] __CustomParserDateTimeNullable = null;
+        private ICustomCsvParse<DateTimeOffset?>[] __CustomParserDateTimeOffsetNullable = null;
+        private ICustomCsvParse<TimeSpan?>[] __CustomParserTimeSpanNullable = null;
+        private ICustomCsvParse<Byte?>[] __CustomParserByteNullable = null;
+        private ICustomCsvParse<SByte?>[] __CustomParserSByteNullable = null;
+        private ICustomCsvParse<Int16?>[] __CustomParserInt16Nullable = null;
+        private ICustomCsvParse<Int32?>[] __CustomParserInt32Nullable = null;
+        private ICustomCsvParse<Int64?>[] __CustomParserInt64Nullable = null;
+        private ICustomCsvParse<Single?>[] __CustomParserSingleNullable = null;
+        private ICustomCsvParse<Decimal?>[] __CustomParserDecimalNullable = null;
+        private ICustomCsvParse<Double?>[] __CustomParserDoubleNullable = null;
+        private ICustomCsvParse<UInt16?>[] __CustomParserUInt16Nullable = null;
+        private ICustomCsvParse<UInt32?>[] __CustomParserUInt32Nullable = null;
+        private ICustomCsvParse<UInt64?>[] __CustomParserUInt64Nullable = null;
+        private ICustomCsvParse<BigInteger?>[] __CustomParserBigIntegerNullable = null;
 
         protected internal ImmutableArray<PropertyInfo> _Properties;
 
@@ -95,50 +106,39 @@ namespace DevToys.PocoCsv.Core
 
         protected internal ImmutableArray<Func<object, object[], object>> _CustomParserCall;
 
-
-        private ICustomCsvParse<string>[] __CustomParserString = null;
-        private ICustomCsvParse<Guid>[] __CustomParserGuid = null;
-        private ICustomCsvParse<Boolean>[] __CustomParserBoolean = null;
-        private ICustomCsvParse<DateTime>[] __CustomParserDateTime = null;
-        private ICustomCsvParse<DateTimeOffset>[] __CustomParserDateTimeOffset = null;
-        private ICustomCsvParse<TimeSpan>[] __CustomParserTimeSpan = null;
-        private ICustomCsvParse<Byte>[] __CustomParserByte = null;
-        private ICustomCsvParse<SByte>[] __CustomParserSByte = null;
-        private ICustomCsvParse<Int16>[] __CustomParserInt16 = null;
-        private ICustomCsvParse<Int32>[] __CustomParserInt32 = null;
-        private ICustomCsvParse<Int64>[] __CustomParserInt64 = null;
-        private ICustomCsvParse<Single>[] __CustomParserSingle = null;
-        private ICustomCsvParse<Decimal>[] __CustomParserDecimal = null;
-        private ICustomCsvParse<Double>[] __CustomParserDouble = null;
-        private ICustomCsvParse<UInt16>[] __CustomParserUInt16 = null;
-        private ICustomCsvParse<UInt32>[] __CustomParserUInt32 = null;
-        private ICustomCsvParse<UInt64>[] __CustomParserUInt64 = null;
-        private ICustomCsvParse<BigInteger>[] __CustomParserBigInteger = null;
-
-        private ICustomCsvParse<Guid?>[] __CustomParserGuidNullable = null;
-        private ICustomCsvParse<Boolean?>[] __CustomParserBooleanNullable = null;
-        private ICustomCsvParse<DateTime?>[] __CustomParserDateTimeNullable = null;
-        private ICustomCsvParse<DateTimeOffset?>[] __CustomParserDateTimeOffsetNullable = null;
-        private ICustomCsvParse<TimeSpan?>[] __CustomParserTimeSpanNullable = null;
-        private ICustomCsvParse<Byte?>[] __CustomParserByteNullable = null;
-        private ICustomCsvParse<SByte?>[] __CustomParserSByteNullable = null;
-        private ICustomCsvParse<Int16?>[] __CustomParserInt16Nullable = null;
-        private ICustomCsvParse<Int32?>[] __CustomParserInt32Nullable = null;
-        private ICustomCsvParse<Int64?>[] __CustomParserInt64Nullable = null;
-        private ICustomCsvParse<Single?>[] __CustomParserSingleNullable = null;
-        private ICustomCsvParse<Decimal?>[] __CustomParserDecimalNullable = null;
-        private ICustomCsvParse<Double?>[] __CustomParserDoubleNullable = null;
-        private ICustomCsvParse<UInt16?>[] __CustomParserUInt16Nullable = null;
-        private ICustomCsvParse<UInt32?>[] __CustomParserUInt32Nullable = null;
-        private ICustomCsvParse<UInt64?>[] __CustomParserUInt64Nullable = null;
-        private ICustomCsvParse<BigInteger?>[] __CustomParserBigIntegerNullable = null;
-
         protected internal Func<object, object[], object>[] __CustomParserCall = null;
 
-
-
-
         protected internal CsvAttribute _CsvAttribute;
+
+        /// <summary>
+        /// Property Set by contructor, either File or Stream is used.
+        /// </summary>
+        protected string _File = null;
+
+        /// <summary>
+        /// Property Set by contructor, either File or Stream is used.
+        /// </summary>
+        protected Stream _Stream = null;
+
+        /// <summary>
+        /// Separator to use. Default: ','
+        /// </summary>
+        protected char _Separator = ',';
+
+        /// <summary>
+        /// Stream buffer size, Default: 1024
+        /// </summary>
+        public int BufferSize { get; set; } = 1024;
+
+        /// <summary>
+        /// Culture info to use for serialization.
+        /// </summary>
+        public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
+
+        /// <summary>
+        /// The character encoding to use.
+        /// </summary>
+        public Encoding Encoding { get; set; } = Encoding.Default;
 
         protected internal void InitCustomCsvParseArrays(int size)
         {
@@ -222,6 +222,9 @@ namespace DevToys.PocoCsv.Core
             _CustomParserCall = __CustomParserCall.ToImmutableArray();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected internal void SetCustomParserType(int index, Type customAttributeType, string propertyname)
         {
             if (TypeUtils.HasInterface<ICustomCsvParse<string>>(customAttributeType))

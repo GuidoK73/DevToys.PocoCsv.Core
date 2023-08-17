@@ -47,5 +47,12 @@ namespace TestProject2
             }
         }
 
+        [TestMethod]
+        public void TestBuilder()
+        {
+        }
+
     }
+
+
 }

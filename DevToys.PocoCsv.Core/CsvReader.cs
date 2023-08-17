@@ -576,148 +576,179 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValue(T targetObject)
         {
-            if (_PropertyTypes[_colIndex] == NetTypeComplete.String)
+            switch (_PropertyTypes[_colIndex])
             {
-                if (_CustomParserString[_colIndex] == null)
-                {
-                    _PropertySettersString[_colIndex](targetObject, _sbValue.ToString());
-                    return;
-                }
-                else
-                {
-                    try
-                    {
-                        String _customParserValue = (String)_CustomParserCall[_colIndex](_CustomParserString[_colIndex], new object[] { _sbValue });
-                        _PropertySettersString[_colIndex](targetObject, _customParserValue);
-                    }
-                    catch
-                    {
-                        _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
-                    }
-                    return;
-                }
-            }
-            else
-            {
-                SetValueOther(targetObject);
+                case NetTypeComplete.String:
+                    SetValueString(targetObject);
+                    break;
+
+                case NetTypeComplete.Decimal:
+                    SetValueDecimal(targetObject);
+                    break;
+
+                case NetTypeComplete.Int32:
+                    SetValueInt32(targetObject);
+                    break;
+
+                case NetTypeComplete.Double:
+                    SetValueDouble(targetObject);
+                    break;
+
+                case NetTypeComplete.DateTime:
+                    SetValueDateTime(targetObject);
+                    break;
+
+                case NetTypeComplete.Int64:
+                    SetValueInt64(targetObject);
+                    break;
+
+                case NetTypeComplete.Guid:
+                    SetValueGuid(targetObject);
+                    break;
+
+                case NetTypeComplete.Single:
+                    SetValueSingle(targetObject);
+                    break;
+
+                case NetTypeComplete.Boolean:
+                    SetValueBoolean(targetObject);
+                    break;
+
+                case NetTypeComplete.TimeSpan:
+                    SetValueTimeSpan(targetObject);
+                    break;
+
+                case NetTypeComplete.Int16:
+                    SetValueInt16(targetObject);
+                    break;
+
+                case NetTypeComplete.Byte:
+                    SetValueByte(targetObject);
+                    break;
+
+                case NetTypeComplete.DateTimeOffset:
+                    SetValueDateTimeOffset(targetObject);
+                    break;
+
+                case NetTypeComplete.SByte:
+                    SetValueSByte(targetObject);
+                    break;
+
+                case NetTypeComplete.UInt16:
+                    SetValueUInt16(targetObject);
+                    break;
+
+                case NetTypeComplete.UInt32:
+                    SetValueUInt32(targetObject);
+                    break;
+
+                case NetTypeComplete.UInt64:
+                    SetValueUInt64(targetObject);
+                    break;
+
+                case NetTypeComplete.BigInteger:
+                    SetValueBigInteger(targetObject);
+                    break;
+
+                case NetTypeComplete.DecimalNullable:
+                    SetValueDecimalNull(targetObject);
+                    break;
+
+                case NetTypeComplete.Int32Nullable:
+                    SetValueInt32Null(targetObject);
+                    break;
+
+                case NetTypeComplete.DoubleNullable:
+                    SetValueDoubleNull(targetObject);
+                    break;
+
+                case NetTypeComplete.DateTimeNullable:
+                    SetValueDateTimeNull(targetObject);
+                    break;
+
+                case NetTypeComplete.Int64Nullable:
+                    SetValueInt64Null(targetObject);
+                    break;
+
+                case NetTypeComplete.GuidNullable:
+                    SetValueGuidNull(targetObject);
+                    break;
+
+                case NetTypeComplete.SingleNullable:
+                    SetValueSingleNull(targetObject);
+                    break;
+
+                case NetTypeComplete.BooleanNullable:
+                    SetValueBooleanNull(targetObject);
+                    break;
+
+                case NetTypeComplete.TimeSpanNullable:
+                    SetValueTimeSpanNull(targetObject);
+                    break;
+
+                case NetTypeComplete.Int16Nullable:
+                    SetValueInt16Null(targetObject);
+                    break;
+
+                case NetTypeComplete.ByteNullable:
+                    SetValueByteNull(targetObject);
+                    break;
+
+                case NetTypeComplete.DateTimeOffsetNullable:
+                    SetValueDateTimeOffsetNull(targetObject);
+                    break;
+
+                case NetTypeComplete.SByteNullable:
+                    SetValueSByteNull(targetObject);
+                    break;
+
+                case NetTypeComplete.UInt16Nullable:
+                    SetValueUInt16Null(targetObject);
+                    break;
+
+                case NetTypeComplete.UInt32Nullable:
+                    SetValueUInt32Null(targetObject);
+                    break;
+
+                case NetTypeComplete.UInt64Nullable:
+                    SetValueUInt64Null(targetObject);
+                    break;
+
+                case NetTypeComplete.BigIntegerNullable:
+                    SetValueBigIntegerNull(targetObject);
+                    break;
+
+                case NetTypeComplete.ByteArray:
+                    SetValueByteArray(targetObject);
+                    break;
+
+                case NetTypeComplete.Enum:
+                    SetValueEnum(targetObject);
+                    break;
             }
         }
 
         #region Value Setters
 
-        private void SetValueOther(T targetObject)
+        private void SetValueString(T targetObject)
         {
-            switch (_PropertyTypes[_colIndex])
+            if (_CustomParserString[_colIndex] == null)
             {
-                case NetTypeComplete.Decimal:
-                    SetValueDecimal(targetObject);
-                    return;
-                case NetTypeComplete.Int32:
-                    SetValueInt32(targetObject);
-                    return;
-                case NetTypeComplete.Double:
-                    SetValueDouble(targetObject);
-                    return;
-                case NetTypeComplete.DateTime:
-                    SetValueDateTime(targetObject);
-                    return;
-                case NetTypeComplete.Int64:
-                    SetValueInt64(targetObject);
-                    return;
-                case NetTypeComplete.Guid:
-                    SetValueGuid(targetObject);
-                    return;
-                case NetTypeComplete.Single:
-                    SetValueSingle(targetObject);
-                    return;
-                case NetTypeComplete.Boolean:
-                    SetValueBoolean(targetObject);
-                    return;
-                case NetTypeComplete.TimeSpan:
-                    SetValueTimeSpan(targetObject);
-                    return;
-                case NetTypeComplete.Int16:
-                    SetValueInt16(targetObject);
-                    return;
-                case NetTypeComplete.Byte:
-                    SetValueByte(targetObject);
-                    return;
-                case NetTypeComplete.DateTimeOffset:
-                    SetValueDateTimeOffset(targetObject);
-                    return;
-                case NetTypeComplete.SByte:
-                    SetValueSByte(targetObject);
-                    return;
-                case NetTypeComplete.UInt16:
-                    SetValueUInt16(targetObject);
-                    return;
-                case NetTypeComplete.UInt32:
-                    SetValueUInt32(targetObject);
-                    return;
-                case NetTypeComplete.UInt64:
-                    SetValueUInt64(targetObject);
-                    return;
-                case NetTypeComplete.BigInteger:
-                    SetValueBigInteger(targetObject);
-                    return;
-                case NetTypeComplete.DecimalNullable:
-                    SetValueDecimalNull(targetObject);
-                    return;
-                case NetTypeComplete.Int32Nullable:
-                    SetValueInt32Null(targetObject);
-                    return;
-                case NetTypeComplete.DoubleNullable:
-                    SetValueDoubleNull(targetObject);
-                    return;
-                case NetTypeComplete.DateTimeNullable:
-                    SetValueDateTimeNull(targetObject);
-                    return;
-                case NetTypeComplete.Int64Nullable:
-                    SetValueInt64Null(targetObject);
-                    return;
-                case NetTypeComplete.GuidNullable:
-                    SetValueGuidNull(targetObject);
-                    return;
-                case NetTypeComplete.SingleNullable:
-                    SetValueSingleNull(targetObject);
-                    return;
-                case NetTypeComplete.BooleanNullable:
-                    SetValueBooleanNull(targetObject);
-                    return;
-                case NetTypeComplete.TimeSpanNullable:
-                    SetValueTimeSpanNull(targetObject);
-                    return;
-                case NetTypeComplete.Int16Nullable:
-                    SetValueInt16Null(targetObject);
-                    return;
-                case NetTypeComplete.ByteNullable:
-                    SetValueByteNull(targetObject);
-                    return;
-                case NetTypeComplete.DateTimeOffsetNullable:
-                    SetValueDateTimeOffsetNull(targetObject);
-                    return;
-                case NetTypeComplete.SByteNullable:
-                    SetValueSByteNull(targetObject);
-                    return;
-                case NetTypeComplete.UInt16Nullable:
-                    SetValueUInt16Null(targetObject);
-                    return;
-                case NetTypeComplete.UInt32Nullable:
-                    SetValueUInt32Null(targetObject);
-                    return;
-                case NetTypeComplete.UInt64Nullable:
-                    SetValueUInt64Null(targetObject);
-                    return;
-                case NetTypeComplete.BigIntegerNullable:
-                    SetValueBigIntegerNull(targetObject);
-                    return;
-
-                case NetTypeComplete.ByteArray:
-                    SetValueByteArray(targetObject);
-                    return;
-                case NetTypeComplete.Enum:
-                    SetValueEnum(targetObject);
-                    return;
+                _PropertySettersString[_colIndex](targetObject, _sbValue.ToString());
+                return;
+            }
+            else
+            {
+                try
+                {
+                    String _customParserValue = (String)_CustomParserCall[_colIndex](_CustomParserString[_colIndex], new object[] { _sbValue });
+                    _PropertySettersString[_colIndex](targetObject, _customParserValue);
+                }
+                catch (Exception ex)
+                {
+                    _Errors.Add(new CsvReadError() { Exception = ex,  ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                }
+                return;
             }
         }
 
@@ -743,9 +774,9 @@ namespace DevToys.PocoCsv.Core
                     Decimal _customParserValue = (Decimal)_CustomParserCall[_colIndex](_CustomParserDecimal[_colIndex], new object[] { _sbValue });
                     _PropertySettersDecimal[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -770,9 +801,9 @@ namespace DevToys.PocoCsv.Core
                     Int32 _customParserValue = (Int32)_CustomParserCall[_colIndex](_CustomParserInt32[_colIndex], new object[] { _sbValue });
                     _PropertySettersInt32[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -797,9 +828,9 @@ namespace DevToys.PocoCsv.Core
                     Int64 _customParserValue = (Int64)_CustomParserCall[_colIndex](_CustomParserInt64[_colIndex], new object[] { _sbValue });
                     _PropertySettersInt64[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -824,9 +855,9 @@ namespace DevToys.PocoCsv.Core
                     Double _customParserValue = (Double)_CustomParserCall[_colIndex](_CustomParserDouble[_colIndex], new object[] { _sbValue });
                     _PropertySettersDouble[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -851,9 +882,9 @@ namespace DevToys.PocoCsv.Core
                     DateTime _customParserValue = (DateTime)_CustomParserCall[_colIndex](_CustomParserDateTime[_colIndex], new object[] { _sbValue });
                     _PropertySettersDateTime[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -878,9 +909,9 @@ namespace DevToys.PocoCsv.Core
                     Guid _customParserValue = (Guid)_CustomParserCall[_colIndex](_CustomParserGuid[_colIndex], new object[] { _sbValue });
                     _PropertySettersGuid[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -905,9 +936,9 @@ namespace DevToys.PocoCsv.Core
                     Single _customParserValue = (Single)_CustomParserCall[_colIndex](_CustomParserSingle[_colIndex], new object[] { _sbValue });
                     _PropertySettersSingle[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -932,9 +963,9 @@ namespace DevToys.PocoCsv.Core
                     bool _customParserValue = (bool)_CustomParserCall[_colIndex](_CustomParserBoolean[_colIndex], new object[] { _sbValue });
                     _PropertySettersBoolean[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -959,9 +990,9 @@ namespace DevToys.PocoCsv.Core
                     TimeSpan _customParserValue = (TimeSpan)_CustomParserCall[_colIndex](_CustomParserTimeSpan[_colIndex], new object[] { _sbValue });
                     _PropertySettersTimeSpan[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -986,9 +1017,9 @@ namespace DevToys.PocoCsv.Core
                     Int16 _customParserValue = (Int16)_CustomParserCall[_colIndex](_CustomParserInt16[_colIndex], new object[] { _sbValue });
                     _PropertySettersInt16[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1013,9 +1044,9 @@ namespace DevToys.PocoCsv.Core
                     Byte _customParserValue = (Byte)_CustomParserCall[_colIndex](_CustomParserByte[_colIndex], new object[] { _sbValue });
                     _PropertySettersByte[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1040,9 +1071,9 @@ namespace DevToys.PocoCsv.Core
                     DateTimeOffset _customParserValue = (DateTimeOffset)_CustomParserCall[_colIndex](_CustomParserDateTimeOffset[_colIndex], new object[] { _sbValue });
                     _PropertySettersDateTimeOffset[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1065,9 +1096,9 @@ namespace DevToys.PocoCsv.Core
             {
                 _byteValue = Convert.FromBase64String(_sbValue.ToString());
             }
-            catch
+            catch (Exception ex)
             {
-                _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
             }
             _PropertySetters[_colIndex](targetObject, _byteValue);
         }
@@ -1081,9 +1112,9 @@ namespace DevToys.PocoCsv.Core
                     SByte _customParserValue = (SByte)_CustomParserCall[_colIndex](_CustomParserSByte[_colIndex], new object[] { _sbValue });
                     _PropertySettersSByte[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1108,9 +1139,9 @@ namespace DevToys.PocoCsv.Core
                     UInt16 _customParserValue = (UInt16)_CustomParserCall[_colIndex](_CustomParserUInt16[_colIndex], new object[] { _sbValue });
                     _PropertySettersUInt16[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1134,9 +1165,9 @@ namespace DevToys.PocoCsv.Core
                     UInt32 _customParserValue = (UInt32)_CustomParserCall[_colIndex](_CustomParserUInt32[_colIndex], new object[] { _sbValue });
                     _PropertySettersUInt32[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1160,9 +1191,9 @@ namespace DevToys.PocoCsv.Core
                     UInt64 _customParserValue = (UInt64)_CustomParserCall[_colIndex](_CustomParserUInt64[_colIndex], new object[] { _sbValue });
                     _PropertySettersUInt64[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1186,9 +1217,9 @@ namespace DevToys.PocoCsv.Core
                     BigInteger _customParserValue = (BigInteger)_CustomParserCall[_colIndex](_CustomParserBigInteger[_colIndex], new object[] { _sbValue });
                     _PropertySettersBigInteger[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1212,9 +1243,9 @@ namespace DevToys.PocoCsv.Core
                     Guid? _customParserValue = (Guid?)_CustomParserCall[_colIndex](_CustomParserGuidNullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersGuidNull[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1248,9 +1279,9 @@ namespace DevToys.PocoCsv.Core
                     bool? _customParserValue = (bool?)_CustomParserCall[_colIndex](_CustomParserBooleanNullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersBooleanNull[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1284,9 +1315,9 @@ namespace DevToys.PocoCsv.Core
                     DateTime? _customParserValue = (DateTime?)_CustomParserCall[_colIndex](_CustomParserDateTimeNullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersDateTimeNull[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1320,9 +1351,9 @@ namespace DevToys.PocoCsv.Core
                     DateTimeOffset? _customParserValue = (DateTimeOffset?)_CustomParserCall[_colIndex](_CustomParserDateTimeOffsetNullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersDateTimeOffsetNull[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1356,9 +1387,9 @@ namespace DevToys.PocoCsv.Core
                     TimeSpan? _customParserValue = (TimeSpan?)_CustomParserCall[_colIndex](_CustomParserTimeSpanNullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersTimeSpanNull[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1392,9 +1423,9 @@ namespace DevToys.PocoCsv.Core
                     byte? _customParserValue = (byte?)_CustomParserCall[_colIndex](_CustomParserByteNullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersByteNull[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1428,9 +1459,9 @@ namespace DevToys.PocoCsv.Core
                     SByte? _customParserValue = (SByte?)_CustomParserCall[_colIndex](_CustomParserSByteNullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersSByteNull[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1464,9 +1495,9 @@ namespace DevToys.PocoCsv.Core
                     Int16? _customParserValue = (Int16?)_CustomParserCall[_colIndex](_CustomParserInt16Nullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersInt16Null[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1500,9 +1531,9 @@ namespace DevToys.PocoCsv.Core
                     Int32? _customParserValue = (Int32?)_CustomParserCall[_colIndex](_CustomParserInt32Nullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersInt32Null[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1536,9 +1567,9 @@ namespace DevToys.PocoCsv.Core
                     Int64? _customParserValue = (Int64?)_CustomParserCall[_colIndex](_CustomParserInt64Nullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersInt64Null[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1572,9 +1603,9 @@ namespace DevToys.PocoCsv.Core
                     Single? _customParserValue = (Single?)_CustomParserCall[_colIndex](_CustomParserSingleNullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersSingleNull[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1608,9 +1639,9 @@ namespace DevToys.PocoCsv.Core
                     Decimal? _customParserValue = (Decimal?)_CustomParserCall[_colIndex](_CustomParserDecimalNullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersDecimalNull[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1644,9 +1675,9 @@ namespace DevToys.PocoCsv.Core
                     Double? _customParserValue = (Double?)_CustomParserCall[_colIndex](_CustomParserDoubleNullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersDoubleNull[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1680,9 +1711,9 @@ namespace DevToys.PocoCsv.Core
                     UInt16? _customParserValue = (UInt16?)_CustomParserCall[_colIndex](_CustomParserUInt16Nullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersUInt16Null[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1716,9 +1747,9 @@ namespace DevToys.PocoCsv.Core
                     UInt32? _customParserValue = (UInt32?)_CustomParserCall[_colIndex](_CustomParserUInt32Nullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersUInt32Null[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1752,9 +1783,9 @@ namespace DevToys.PocoCsv.Core
                     UInt64? _customParserValue = (UInt64?)_CustomParserCall[_colIndex](_CustomParserUInt64Nullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersUInt64Null[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1788,9 +1819,9 @@ namespace DevToys.PocoCsv.Core
                     BigInteger? _customParserValue = (BigInteger?)_CustomParserCall[_colIndex](_CustomParserBigIntegerNullable[_colIndex], new object[] { _sbValue });
                     _PropertySettersBigIntegerNull[_colIndex](targetObject, _customParserValue);
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    _Errors.Add(new CsvReadError() { ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _sbValue.ToString(), LineNumber = CurrentLine });
                 }
                 return;
             }
@@ -1930,7 +1961,6 @@ namespace DevToys.PocoCsv.Core
                 if (property.Attrib.CustomParserType != null)
                 {
                     SetCustomParserType(property.Index, property.Attrib.CustomParserType, property.Property.Name);
-
                     __CustomParserCall[property.Index] = DelegateFactory.InstanceMethod(property.Attrib.CustomParserType, "Read", typeof(StringBuilder));
                 }
 

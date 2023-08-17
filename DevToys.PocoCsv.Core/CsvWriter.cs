@@ -248,15 +248,7 @@ namespace DevToys.PocoCsv.Core
 
                     string _formatter = _Formatters[index];
                     string _outputNullValue = _OutputNullValues[index];
-
-                    if (targetType == typeof(String))
-                    {
-                        WriteString(row, index);
-                    }
-                    else
-                    {
-                        WriteValueOthers(targetType, row, index, _formatter, _outputNullValue);
-                    }
+                    WriteValue(row, index, _formatter, _outputNullValue);
                 }
                 if (index < _MaxColumnIndex)
                 {
@@ -269,173 +261,168 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        private void WriteValueOthers(Type targetType, T row, int index, string formatter, string outputNullValue)
+        private void WriteValue(T row, int index, string formatter, string outputNullValue)
         {
-            if (!_IsNullable[index])
+            switch (_PropertyTypes[index])
             {
-                WriteValueOthersNormal(targetType, row, index, formatter);
-            }
-            else
-            {
-                WriteValueOthersNormalNullable(targetType, row, index, formatter, outputNullValue);
-            }
-        }
+                case NetTypeComplete.String:
+                    WriteString(row, index);
+                    break;
 
-        private void WriteValueOthersNormalNullable(Type targetType, T row, int index, string formatter, string outputNullValue)
-        {
-            if (targetType == typeof(Guid?))
-            {
-                WriteGuidNull(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(Boolean?))
-            {
-                WriteBooleanNull(row, index, outputNullValue);
-            }
-            else if (targetType == typeof(DateTime?))
-            {
-                WriteDateTimeNull(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(DateTimeOffset?))
-            {
-                WriteDateTimeOffsetNull(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(TimeSpan?))
-            {
-                WriteTimeSpanNull(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(Byte?))
-            {
-                WriteByteNull(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(SByte?))
-            {
-                WriteSByteNull(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(Int16?))
-            {
-                WriteInt16Null(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(Int32?))
-            {
-                WriteInt32Null(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(Int64?))
-            {
-                WriteInt64Null(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(Single?))
-            {
-                WriteSingleNull(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(Decimal?))
-            {
-                WriteDecimalNull(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(Double?))
-            {
-                WriteDoubleNull(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(UInt16?))
-            {
-                WriteUInt16Null(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(UInt32?))
-            {
-                WriteUInt32Null(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(UInt64?))
-            {
-                WriteUInt64Null(row, index, outputNullValue, formatter);
-            }
-            else if (targetType == typeof(BigInteger?))
-            {
-                WriteBigIntegerNull(row, index, outputNullValue, formatter);
-            }
-        }
+                case NetTypeComplete.GuidNullable:
+                    WriteGuidNull(row, index, outputNullValue, formatter);
+                    break;
 
-        private void WriteValueOthersNormal(Type targetType, T row, int index, string formatter)
-        {
-            if (targetType == typeof(Guid))
-            {
-                WriteGuid(row, index, formatter);
-            }
-            else if (targetType == typeof(Boolean))
-            {
-                WriteBoolean(row, index);
-            }
-            else if (targetType == typeof(DateTime))
-            {
-                WriteDateTime(row, index, formatter);
-            }
-            else if (targetType == typeof(DateTimeOffset))
-            {
-                WriteDateTimeOffset(row, index, formatter);
-            }
-            else if (targetType == typeof(TimeSpan))
-            {
-                WriteTimeSpan(row, index, formatter);
-            }
-            else if (targetType == typeof(Byte))
-            {
-                WriteByte(row, index, formatter);
-            }
-            else if (targetType == typeof(SByte))
-            {
-                WriteSByte(row, index, formatter);
-            }
-            else if (targetType == typeof(Int16))
-            {
-                WriteInt16(row, index, formatter);
-            }
-            else if (targetType == typeof(Int32))
-            {
-                WriteInt32(row, index, formatter);
-            }
-            else if (targetType == typeof(Int64))
-            {
-                WriteInt64(row, index, formatter);
-            }
-            else if (targetType == typeof(Single))
-            {
-                WriteSingle(row, index, formatter);
-            }
-            else if (targetType == typeof(Decimal))
-            {
-                WriteDecimal(row, index, formatter);
-            }
-            else if (targetType == typeof(Double))
-            {
-                WriteDouble(row, index, formatter);
-            }
-            else if (targetType == typeof(UInt16))
-            {
-                WriteUInt16(row, index, formatter);
-            }
-            else if (targetType == typeof(UInt32))
-            {
-                WriteUInt32(row, index, formatter);
-            }
-            else if (targetType == typeof(UInt64))
-            {
-                WriteUInt64(row, index, formatter);
-            }
-            else if (targetType == typeof(BigInteger))
-            {
-                WriteBigInteger(row, index, formatter);
-            }
-            else if (targetType == typeof(byte[]))
-            {
-                WriteByteArray(row, index);
-            }
-            else if (targetType.IsEnum)
-            {
-                WriteEnum(row, index);
+                case NetTypeComplete.BooleanNullable:
+                    WriteBooleanNull(row, index, outputNullValue);
+                    break;
+
+                case NetTypeComplete.DateTimeNullable:
+                    WriteDateTimeNull(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.DateTimeOffsetNullable:
+                    WriteDateTimeOffsetNull(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.TimeSpanNullable:
+                    WriteTimeSpanNull(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.ByteNullable:
+                    WriteByteNull(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.SByteNullable:
+                    WriteSByteNull(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.Int16Nullable:
+                    WriteInt16Null(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.Int32Nullable:
+                    WriteInt32Null(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.Int64Nullable:
+                    WriteInt64Null(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.SingleNullable:
+                    WriteSingleNull(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.DecimalNullable:
+                    WriteDecimalNull(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.DoubleNullable:
+                    WriteDoubleNull(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.UInt16Nullable:
+                    WriteUInt16Null(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.UInt32Nullable:
+                    WriteUInt32Null(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.UInt64Nullable:
+                    WriteUInt64Null(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.BigIntegerNullable:
+                    WriteBigIntegerNull(row, index, outputNullValue, formatter);
+                    break;
+
+                case NetTypeComplete.Guid:
+                    WriteGuid(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.Boolean:
+                    WriteBoolean(row, index);
+                    break;
+
+                case NetTypeComplete.DateTime:
+                    WriteDateTime(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.DateTimeOffset:
+                    WriteDateTimeOffset(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.TimeSpan:
+                    WriteTimeSpan(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.Byte:
+                    WriteByte(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.SByte:
+                    WriteSByte(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.Int16:
+                    WriteInt16(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.Int32:
+                    WriteInt32(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.Int64:
+                    WriteInt64(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.Single:
+                    WriteSingle(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.Decimal:
+                    WriteDecimal(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.Double:
+                    WriteDouble(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.UInt16:
+                    WriteUInt16(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.UInt32:
+                    WriteUInt32(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.UInt64:
+                    WriteUInt64(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.BigInteger:
+                    WriteBigInteger(row, index, formatter);
+                    break;
+
+                case NetTypeComplete.ByteArray:
+                    WriteByteArray(row, index);
+                    break;
+
+                case NetTypeComplete.Enum:
+                    WriteEnum(row, index);
+                    break;
             }
         }
 
         private void WriteString(T row, int index)
         {
             string _value = _PropertyGetterString[index](row);
+            if (_CustomParserCall[index] != null)
+            {
+                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserString[index], new object[] { _value })));
+                return;
+            }
             if (_value != null)
             {
                 _StreamWriter.Write(CsvUtils.Esc(_Separator, _value.ToString()));
@@ -460,11 +447,8 @@ namespace DevToys.PocoCsv.Core
         private void WriteEnum(T row, int index)
         {
             string _value = _PropertyGetterEnum[index](row).ToString();
-            _StreamWriter.Write(_value);            
+            _StreamWriter.Write(_value);
         }
-
-
-
 
         private void WriteGuid(T row, int index, string formatter)
         {
@@ -1686,11 +1670,5 @@ namespace DevToys.PocoCsv.Core
 
             base.InitImmutableArray();
         }
-
-
-
-
     }
-
-
 }
