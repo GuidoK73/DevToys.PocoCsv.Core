@@ -390,19 +390,19 @@
             Moves the reader to the start position.
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadAsEnumerable">
-            <summary>
-            Each iteration will read the next row from stream or file
-            </summary>
-        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Skip(System.Int32)">
             <summary>
-            Use to skip first row without materializing, usefull for skipping header.
+            Skip 1 or more rows.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Skip">
+            <summary>
+            Skip a dingle row.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.SkipHeader">
             <summary>
-            Ensures stream is at start then skips the first row.
+            MoveToStart then skip first row.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Last(System.Int32)">
@@ -413,6 +413,11 @@
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.MoveToLast(System.Int32)">
             <summary>
             Move to a last row position before number of rows.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadAsEnumerable">
+            <summary>
+            Each iteration will read the next row from stream or file
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Read">

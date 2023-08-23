@@ -17,7 +17,7 @@ namespace DevToys.PocoCsv.Core
     public sealed class CsvWriter<T> : BaseCsv, IDisposable where T : class, new()
     {
         private ImmutableArray<Func<T, object>> _PropertyGetterByteArray;
-        private ImmutableArray<Func<T, int>> _PropertyGetterEnum;
+        private ImmutableArray<Func<T, Int32>> _PropertyGetterEnum;
         private ImmutableArray<Func<T, string>> _PropertyGetterString;
         private ImmutableArray<Func<T, Guid>> _PropertyGetterGuid;
         private ImmutableArray<Func<T, Boolean>> _PropertyGetterBoolean;
@@ -414,6 +414,9 @@ namespace DevToys.PocoCsv.Core
                     break;
             }
         }
+
+
+        #region Value Writers
 
         private void WriteString(T row, int index)
         {
@@ -1303,6 +1306,8 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
+        #endregion
+
         /// <summary>
         /// Initialize and open the CSV Stream Writer.
         /// </summary>
@@ -1329,11 +1334,6 @@ namespace DevToys.PocoCsv.Core
 
             var _type = typeof(T);
 
-            //Dictionary<int, PropertyInfo> _properties = _type.GetProperties()
-            //    .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
-            //    .Select(p => new { Value = p, Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index })
-            //   .ToDictionary(p => p.Key, p => p.Value);
-
             var _properties = _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
                 .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) });
@@ -1347,7 +1347,7 @@ namespace DevToys.PocoCsv.Core
 
             var _isNullable = new Boolean[_max + 1];
 
-            var _propertyGetterEnum = new Func<T, int>[_max + 1];
+            var _propertyGetterEnum = new Func<T, Int32>[_max + 1];
             var _propertyGetterByteArray = new Func<T, object>[_max + 1];
             var _propertyGetterString = new Func<T, string>[_max + 1];
             var _propertyGetterGuid = new Func<T, Guid>[_max + 1];
@@ -1402,7 +1402,6 @@ namespace DevToys.PocoCsv.Core
                 if (property.Attrib.CustomParserType != null)
                 {
                     SetCustomParserType(property.Index, property.Attrib.CustomParserType, property.Property.Name);
-
                     __CustomParserCall[property.Index] = DelegateFactory.InstanceMethod(property.Attrib.CustomParserType, "Write", property.Property.PropertyType);
                 }
 

@@ -51,7 +51,7 @@
         /// <summary>
         /// Write an empty line
         /// </summary>
-        EmptyLine = 1,
+        EmptyLine = 1
     }
 
     /// <summary>
