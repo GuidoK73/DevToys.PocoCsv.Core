@@ -36,12 +36,12 @@ namespace TestProject2
 
             _w.Start();
 
-            using (var _reader = new CsvReader<CsvSimple>(_file, ',') { BufferSize = 2048 } )
-            {
-                _reader.Open();
+            //using (var _reader = new CsvReader<CsvSimple>(_file, ',') { BufferSize = 2048 } )
+            //{
+            //    _reader.Open();
 
-                var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
-            }
+            //    var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
+            //}
             // 00:00:22.3810056
             // 00:00:23.2109005
             // 00:00:21.2599918

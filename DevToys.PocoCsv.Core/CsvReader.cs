@@ -60,6 +60,7 @@ namespace DevToys.PocoCsv.Core
 
         private readonly List<CsvReadError> _Errors = new List<CsvReadError>();
         private readonly StringBuilder _sbValue = new StringBuilder(127);
+        private int _propertyCount = 0;
         private int _colIndex = 0;
         private State _state = State.Normal;
         private int lineLength = 0;
@@ -304,6 +305,7 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
+
         /// <summary>
         /// MoveToStart then skip first row.
         /// </summary>
@@ -446,7 +448,7 @@ namespace DevToys.PocoCsv.Core
                     if (_byte == Separator)
                     {
                         // End of field
-                        if (_colIndex < _Properties.Length && _Properties[_colIndex] != null)
+                        if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
                         {
                             SetValue(_result);
                         }
@@ -463,7 +465,7 @@ namespace DevToys.PocoCsv.Core
                             continue; // skip /r (CR) let it be handled on /n (LF)
                         }
                         // end of line.
-                        if (_colIndex < _Properties.Length && _Properties[_colIndex] != null)
+                        if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
                         {
                             SetValue(_result);
                         }
@@ -475,7 +477,7 @@ namespace DevToys.PocoCsv.Core
                     else if (_byte == _LF)
                     {
                         // end of line.
-                        if (_colIndex < _Properties.Length && _Properties[_colIndex] != null)
+                        if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
                         {
                             SetValue(_result);
                         }
@@ -493,7 +495,7 @@ namespace DevToys.PocoCsv.Core
                     else if (_byte == -1)
                     {
                         // End of field
-                        if (_colIndex < _Properties.Length && _Properties[_colIndex] != null)
+                        if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
                         {
                             SetValue(_result);
                         }
@@ -510,7 +512,7 @@ namespace DevToys.PocoCsv.Core
                     if (_byte == -1)
                     {
                         // In a proper CSV this would not occur.
-                        if (_colIndex < _Properties.Length && _Properties[_colIndex] != null)
+                        if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
                         {                            
                             SetValue(_result);
                         }
@@ -530,7 +532,7 @@ namespace DevToys.PocoCsv.Core
                         }
                         else if (_nextByte == -1)
                         {
-                            if (_colIndex < _Properties.Length && _Properties[_colIndex] != null)
+                            if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
                             {
                                 SetValue(_result);
                             }
@@ -575,6 +577,67 @@ namespace DevToys.PocoCsv.Core
                 }
             }
             return _result;
+        }
+
+        private void SkipField()
+        {
+            for (;;)
+            {
+                _byte = _StreamReader.BaseStream.ReadByte();
+                if (_state == State.Normal)
+                {
+                    if (_byte == Separator)
+                    {
+                        _colIndex++;
+                        break;
+                    }
+                    else if (_byte == _CR)
+                    {
+                        _nextByte = _StreamReader.BaseStream.ReadByte();
+                        _StreamReader.BaseStream.Position--;
+                        if (_nextByte == _LF)
+                        {
+                            break;
+                        }
+                        // end of line.
+                        _colIndex = 0;
+                        _CurrentLine++;
+                        break;
+                    }
+                    else if (_byte == _LF)
+                    {
+                        // end of line.
+                        _colIndex = 0;
+                        _CurrentLine++;
+                        break;
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        // switch mode
+                        _state = State.Escaped;
+                        continue; // do not add this char. (TRIM)
+                    }
+                    else if (_byte == -1)
+                    {
+                        break; // end the while loop.
+                    }
+                    continue;
+                }
+                else if (_state == State.Escaped)
+                {
+                    // ',' and '\r' and "" are part of the value.
+                    if (_byte == -1)
+                    {
+                        break;
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        _state = State.Normal;
+                        continue; // Move to next itteration in Normal state, do not add this char (TRIM).
+                    }
+                    continue;
+                }
+            }
         }
 
         private void SetValue(T targetObject)
@@ -1955,6 +2018,7 @@ namespace DevToys.PocoCsv.Core
             var _propertyTypes = new NetTypeComplete[_max + 1];
             var _propertySetters = new Action<object, object>[_max + 1];
             var _isNullable = new Boolean[_max + 1];
+            var _isAssigned = new Boolean[_max + 1];
 
             var _propertySettersEnum = new Action<T, Int32>[_max + 1];
             var _propertySettersString = new Action<T, String>[_max + 1];
@@ -2002,6 +2066,7 @@ namespace DevToys.PocoCsv.Core
                 Type propertyType = property.Property.PropertyType;
 
                 _isNullable[property.Index] = Nullable.GetUnderlyingType(propertyType) != null;
+                _isAssigned[property.Index] = true;
 
                 if (property.Attrib.CustomParserType != null)
                 {
@@ -2204,8 +2269,13 @@ namespace DevToys.PocoCsv.Core
 
             }
 
+
             _IsNullable = _isNullable.ToImmutableArray();
+            _IsAssigned = _isAssigned.ToImmutableArray();
             _Properties = _properties.ToImmutableArray();
+
+            _propertyCount = _Properties.Length;
+
             _PropertySettersEnum = _propertySettersEnum.ToImmutableArray();
             _PropertySetters = _propertySetters.ToImmutableArray();
             _PropertySettersString = _propertySettersString.ToImmutableArray();

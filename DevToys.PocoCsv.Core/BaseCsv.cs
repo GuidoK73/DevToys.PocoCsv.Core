@@ -62,10 +62,9 @@ namespace DevToys.PocoCsv.Core
         private ICustomCsvParse<BigInteger?>[] __CustomParserBigIntegerNullable = null;
 
         protected internal ImmutableArray<PropertyInfo> _Properties;
-
         protected internal ImmutableArray<NetTypeComplete> _PropertyTypes;
-
         protected internal ImmutableArray<Boolean> _IsNullable;
+        protected internal ImmutableArray<Boolean> _IsAssigned;
 
         protected internal ImmutableArray<ICustomCsvParse<string>> _CustomParserString;
         protected internal ImmutableArray<ICustomCsvParse<Guid>> _CustomParserGuid;

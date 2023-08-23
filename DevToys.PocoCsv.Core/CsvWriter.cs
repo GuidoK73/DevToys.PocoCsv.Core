@@ -1346,7 +1346,7 @@ namespace DevToys.PocoCsv.Core
             var _propertyTypes = new NetTypeComplete[_max + 1];
 
             var _isNullable = new Boolean[_max + 1];
-
+            var _isAssigned = new Boolean[_max + 1];
             var _propertyGetterEnum = new Func<T, Int32>[_max + 1];
             var _propertyGetterByteArray = new Func<T, object>[_max + 1];
             var _propertyGetterString = new Func<T, string>[_max + 1];
@@ -1398,6 +1398,7 @@ namespace DevToys.PocoCsv.Core
                 _propertiesInfo[_index] = property.Property;
 
                 _isNullable[property.Index] = Nullable.GetUnderlyingType(_propertyType) != null;
+                _isAssigned[property.Index] = true;
 
                 if (property.Attrib.CustomParserType != null)
                 {
@@ -1622,6 +1623,7 @@ namespace DevToys.PocoCsv.Core
 
             _Properties = _propertiesInfo.ToImmutableArray();
             _IsNullable = _isNullable.ToImmutableArray();
+            _IsAssigned = _isAssigned.ToImmutableArray();
 
             _PropertyGetterEnum = _propertyGetterEnum.ToImmutableArray();
             _PropertyGetterByteArray = _propertyGetterByteArray.ToImmutableArray();
