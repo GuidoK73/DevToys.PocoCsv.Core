@@ -579,67 +579,6 @@ namespace DevToys.PocoCsv.Core
             return _result;
         }
 
-        private void SkipField()
-        {
-            for (;;)
-            {
-                _byte = _StreamReader.BaseStream.ReadByte();
-                if (_state == State.Normal)
-                {
-                    if (_byte == Separator)
-                    {
-                        _colIndex++;
-                        break;
-                    }
-                    else if (_byte == _CR)
-                    {
-                        _nextByte = _StreamReader.BaseStream.ReadByte();
-                        _StreamReader.BaseStream.Position--;
-                        if (_nextByte == _LF)
-                        {
-                            break;
-                        }
-                        // end of line.
-                        _colIndex = 0;
-                        _CurrentLine++;
-                        break;
-                    }
-                    else if (_byte == _LF)
-                    {
-                        // end of line.
-                        _colIndex = 0;
-                        _CurrentLine++;
-                        break;
-                    }
-                    else if (_byte == _ESCAPE)
-                    {
-                        // switch mode
-                        _state = State.Escaped;
-                        continue; // do not add this char. (TRIM)
-                    }
-                    else if (_byte == -1)
-                    {
-                        break; // end the while loop.
-                    }
-                    continue;
-                }
-                else if (_state == State.Escaped)
-                {
-                    // ',' and '\r' and "" are part of the value.
-                    if (_byte == -1)
-                    {
-                        break;
-                    }
-                    else if (_byte == _ESCAPE)
-                    {
-                        _state = State.Normal;
-                        continue; // Move to next itteration in Normal state, do not add this char (TRIM).
-                    }
-                    continue;
-                }
-            }
-        }
-
         private void SetValue(T targetObject)
         {
             switch (_PropertyTypes[_colIndex])
