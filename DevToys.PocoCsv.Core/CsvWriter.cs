@@ -1388,7 +1388,7 @@ namespace DevToys.PocoCsv.Core
 
             InitCustomCsvParseArrays(_max + 1);
 
-            InitCsvAttribute(_type, _max + 1, ReadOrWrite.Write);
+            InitCsvAttributeWrite(_type, _max + 1);
 
             foreach (var property in _properties)
             {
@@ -1670,6 +1670,193 @@ namespace DevToys.PocoCsv.Core
             _OutputNullValues = _outputNullValues.ToImmutableArray();
 
             base.InitImmutableArray();
+        }
+
+        private void InitCsvAttributeWrite(Type type, int size)
+        {
+            _CsvAttribute = type.GetCustomAttribute<CsvAttribute>();
+            if (_CsvAttribute == null)
+            {
+                return;
+            }
+            for (int index = 0; index < size; index++)
+            {
+                if (_CsvAttribute.DefaultCustomParserTypeString != null)
+                {
+                    __CustomParserString[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeString) as ICustomCsvParse<string>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeString, "Write", typeof(string));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeGuid != null)
+                {
+                    __CustomParserGuid[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeGuid) as ICustomCsvParse<Guid>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeGuid, "Write", typeof(Guid));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeBoolean != null)
+                {
+                    __CustomParserBoolean[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeBoolean) as ICustomCsvParse<Boolean>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBoolean, "Write", typeof(Boolean));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeDateTime != null)
+                {
+                    __CustomParserDateTime[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDateTime) as ICustomCsvParse<DateTime>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDateTime, "Write", typeof(DateTime));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeDateTimeOffset != null)
+                {
+                    __CustomParserDateTimeOffset[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDateTimeOffset) as ICustomCsvParse<DateTimeOffset>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDateTimeOffset, "Write", typeof(DateTimeOffset));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeTimeSpan != null)
+                {
+                    __CustomParserTimeSpan[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeTimeSpan) as ICustomCsvParse<TimeSpan>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeTimeSpan, "Write", typeof(TimeSpan));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeByte != null)
+                {
+                    __CustomParserByte[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeByte) as ICustomCsvParse<Byte>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeByte, "Write", typeof(Byte));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeSByte != null)
+                {
+                    __CustomParserSByte[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeSByte) as ICustomCsvParse<SByte>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeSByte, "Write", typeof(SByte));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeInt16 != null)
+                {
+                    __CustomParserInt16[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeInt16) as ICustomCsvParse<Int16>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt16, "Write", typeof(Int16));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeInt32 != null)
+                {
+                    __CustomParserInt32[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeInt32) as ICustomCsvParse<Int32>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt32, "Write", typeof(Int32));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeInt64 != null)
+                {
+                    __CustomParserInt64[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeInt64) as ICustomCsvParse<Int64>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt64, "Write", typeof(Int64));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeSingle != null)
+                {
+                    __CustomParserSingle[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeSingle) as ICustomCsvParse<Single>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeSingle, "Write", typeof(Single));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeDecimal != null)
+                {
+                    __CustomParserDecimal[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDecimal) as ICustomCsvParse<Decimal>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDecimal, "Write", typeof(Decimal));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeDouble != null)
+                {
+                    __CustomParserDouble[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDouble) as ICustomCsvParse<Double>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDouble, "Write", typeof(Double));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeUInt16 != null)
+                {
+                    __CustomParserUInt16[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeUInt16) as ICustomCsvParse<UInt16>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt16, "Write", typeof(UInt16));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeUInt32 != null)
+                {
+                    __CustomParserUInt32[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeUInt32) as ICustomCsvParse<UInt32>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt32, "Write", typeof(UInt32));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeUInt64 != null)
+                {
+                    __CustomParserUInt64[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeUInt64) as ICustomCsvParse<UInt64>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt64, "Write", typeof(UInt64));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeBigInteger != null)
+                {
+                    __CustomParserBigInteger[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeBigInteger) as ICustomCsvParse<BigInteger>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBigInteger, "Write", typeof(BigInteger));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeGuidNullable != null)
+                {
+                    __CustomParserGuidNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeGuidNullable) as ICustomCsvParse<Guid?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeGuidNullable, "Write", typeof(Guid?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeBooleanNullable != null)
+                {
+                    __CustomParserBooleanNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeBooleanNullable) as ICustomCsvParse<Boolean?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBooleanNullable, "Write", typeof(Boolean?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeDateTimeNullable != null)
+                {
+                    __CustomParserDateTimeNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDateTimeNullable) as ICustomCsvParse<DateTime?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDateTimeNullable, "Write", typeof(DateTime?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeDateTimeOffsetNullable != null)
+                {
+                    __CustomParserDateTimeOffsetNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDateTimeOffsetNullable) as ICustomCsvParse<DateTimeOffset?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDateTimeOffsetNullable, "Write", typeof(DateTimeOffset?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeTimeSpanNullable != null)
+                {
+                    __CustomParserTimeSpanNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeTimeSpanNullable) as ICustomCsvParse<TimeSpan?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeTimeSpanNullable, "Write", typeof(TimeSpan?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeByteNullable != null)
+                {
+                    __CustomParserByteNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeByteNullable) as ICustomCsvParse<Byte?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeByteNullable, "Write", typeof(Byte?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeSByteNullable != null)
+                {
+                    __CustomParserSByteNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeSByteNullable) as ICustomCsvParse<SByte?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeSByteNullable, "Write", typeof(SByte?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeInt16Nullable != null)
+                {
+                    __CustomParserInt16Nullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeInt16Nullable) as ICustomCsvParse<Int16?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt16Nullable, "Write", typeof(Int16?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeInt32Nullable != null)
+                {
+                    __CustomParserInt32Nullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeInt32Nullable) as ICustomCsvParse<Int32?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt32Nullable, "Write", typeof(Int32?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeInt64Nullable != null)
+                {
+                    __CustomParserInt64Nullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeInt64Nullable) as ICustomCsvParse<Int64?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt64Nullable, "Write", typeof(Int64?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeSingleNullable != null)
+                {
+                    __CustomParserSingleNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeSingleNullable) as ICustomCsvParse<Single?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeSingleNullable, "Write", typeof(Single?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeDecimalNullable != null)
+                {
+                    __CustomParserDecimalNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDecimalNullable) as ICustomCsvParse<Decimal?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDecimalNullable, "Write", typeof(Decimal?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeDoubleNullable != null)
+                {
+                    __CustomParserDoubleNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDoubleNullable) as ICustomCsvParse<Double?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDoubleNullable, "Write", typeof(Double?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeUInt16Nullable != null)
+                {
+                    __CustomParserUInt16Nullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeUInt16Nullable) as ICustomCsvParse<UInt16?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt16Nullable, "Write", typeof(UInt16?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeUInt32Nullable != null)
+                {
+                    __CustomParserUInt32Nullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeUInt32Nullable) as ICustomCsvParse<UInt32?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt32Nullable, "Write", typeof(UInt32?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeUInt64Nullable != null)
+                {
+                    __CustomParserUInt64Nullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeUInt64Nullable) as ICustomCsvParse<UInt64?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt64Nullable, "Write", typeof(UInt64?));
+                }
+                if (_CsvAttribute.DefaultCustomParserTypeBigIntegerNullable != null)
+                {
+                    __CustomParserBigIntegerNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeBigIntegerNullable) as ICustomCsvParse<BigInteger?>;
+                    __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBigIntegerNullable, "Write", typeof(BigInteger?));
+                }
+            }
         }
     }
 }

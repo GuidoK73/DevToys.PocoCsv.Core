@@ -9,105 +9,95 @@ using System.Text;
 
 namespace DevToys.PocoCsv.Core
 {
- 
-    /// <summary>
-    /// Internally used
-    /// </summary>
-    public enum ReadOrWrite
-    {
-        Read = 0,
-        Write = 1
-    }
-
     /// <summary>
     /// Base class for BaseCsvReader and BaseCsvWriter
     /// </summary>
     public abstract class BaseCsv
     {
-        private ICustomCsvParse<string>[] __CustomParserString = null;
-        private ICustomCsvParse<Guid>[] __CustomParserGuid = null;
-        private ICustomCsvParse<Boolean>[] __CustomParserBoolean = null;
-        private ICustomCsvParse<DateTime>[] __CustomParserDateTime = null;
-        private ICustomCsvParse<DateTimeOffset>[] __CustomParserDateTimeOffset = null;
-        private ICustomCsvParse<TimeSpan>[] __CustomParserTimeSpan = null;
-        private ICustomCsvParse<Byte>[] __CustomParserByte = null;
-        private ICustomCsvParse<SByte>[] __CustomParserSByte = null;
-        private ICustomCsvParse<Int16>[] __CustomParserInt16 = null;
-        private ICustomCsvParse<Int32>[] __CustomParserInt32 = null;
-        private ICustomCsvParse<Int64>[] __CustomParserInt64 = null;
-        private ICustomCsvParse<Single>[] __CustomParserSingle = null;
-        private ICustomCsvParse<Decimal>[] __CustomParserDecimal = null;
-        private ICustomCsvParse<Double>[] __CustomParserDouble = null;
-        private ICustomCsvParse<UInt16>[] __CustomParserUInt16 = null;
-        private ICustomCsvParse<UInt32>[] __CustomParserUInt32 = null;
-        private ICustomCsvParse<UInt64>[] __CustomParserUInt64 = null;
-        private ICustomCsvParse<BigInteger>[] __CustomParserBigInteger = null;
+        internal protected ICustomCsvParse<string>[] __CustomParserString = null;
+        internal protected ICustomCsvParse<Guid>[] __CustomParserGuid = null;
+        internal protected ICustomCsvParse<Boolean>[] __CustomParserBoolean = null;
+        internal protected ICustomCsvParse<DateTime>[] __CustomParserDateTime = null;
+        internal protected ICustomCsvParse<DateTimeOffset>[] __CustomParserDateTimeOffset = null;
+        internal protected ICustomCsvParse<TimeSpan>[] __CustomParserTimeSpan = null;
+        internal protected ICustomCsvParse<Byte>[] __CustomParserByte = null;
+        internal protected ICustomCsvParse<SByte>[] __CustomParserSByte = null;
+        internal protected ICustomCsvParse<Int16>[] __CustomParserInt16 = null;
+        internal protected ICustomCsvParse<Int32>[] __CustomParserInt32 = null;
+        internal protected ICustomCsvParse<Int64>[] __CustomParserInt64 = null;
+        internal protected ICustomCsvParse<Single>[] __CustomParserSingle = null;
+        internal protected ICustomCsvParse<Decimal>[] __CustomParserDecimal = null;
+        internal protected ICustomCsvParse<Double>[] __CustomParserDouble = null;
+        internal protected ICustomCsvParse<UInt16>[] __CustomParserUInt16 = null;
+        internal protected ICustomCsvParse<UInt32>[] __CustomParserUInt32 = null;
+        internal protected ICustomCsvParse<UInt64>[] __CustomParserUInt64 = null;
+        internal protected ICustomCsvParse<BigInteger>[] __CustomParserBigInteger = null;
 
-        private ICustomCsvParse<Guid?>[] __CustomParserGuidNullable = null;
-        private ICustomCsvParse<Boolean?>[] __CustomParserBooleanNullable = null;
-        private ICustomCsvParse<DateTime?>[] __CustomParserDateTimeNullable = null;
-        private ICustomCsvParse<DateTimeOffset?>[] __CustomParserDateTimeOffsetNullable = null;
-        private ICustomCsvParse<TimeSpan?>[] __CustomParserTimeSpanNullable = null;
-        private ICustomCsvParse<Byte?>[] __CustomParserByteNullable = null;
-        private ICustomCsvParse<SByte?>[] __CustomParserSByteNullable = null;
-        private ICustomCsvParse<Int16?>[] __CustomParserInt16Nullable = null;
-        private ICustomCsvParse<Int32?>[] __CustomParserInt32Nullable = null;
-        private ICustomCsvParse<Int64?>[] __CustomParserInt64Nullable = null;
-        private ICustomCsvParse<Single?>[] __CustomParserSingleNullable = null;
-        private ICustomCsvParse<Decimal?>[] __CustomParserDecimalNullable = null;
-        private ICustomCsvParse<Double?>[] __CustomParserDoubleNullable = null;
-        private ICustomCsvParse<UInt16?>[] __CustomParserUInt16Nullable = null;
-        private ICustomCsvParse<UInt32?>[] __CustomParserUInt32Nullable = null;
-        private ICustomCsvParse<UInt64?>[] __CustomParserUInt64Nullable = null;
-        private ICustomCsvParse<BigInteger?>[] __CustomParserBigIntegerNullable = null;
+        internal protected ICustomCsvParse<Guid?>[] __CustomParserGuidNullable = null;
+        internal protected ICustomCsvParse<Boolean?>[] __CustomParserBooleanNullable = null;
+        internal protected ICustomCsvParse<DateTime?>[] __CustomParserDateTimeNullable = null;
+        internal protected ICustomCsvParse<DateTimeOffset?>[] __CustomParserDateTimeOffsetNullable = null;
+        internal protected ICustomCsvParse<TimeSpan?>[] __CustomParserTimeSpanNullable = null;
+        internal protected ICustomCsvParse<Byte?>[] __CustomParserByteNullable = null;
+        internal protected ICustomCsvParse<SByte?>[] __CustomParserSByteNullable = null;
+        internal protected ICustomCsvParse<Int16?>[] __CustomParserInt16Nullable = null;
+        internal protected ICustomCsvParse<Int32?>[] __CustomParserInt32Nullable = null;
+        internal protected ICustomCsvParse<Int64?>[] __CustomParserInt64Nullable = null;
+        internal protected ICustomCsvParse<Single?>[] __CustomParserSingleNullable = null;
+        internal protected ICustomCsvParse<Decimal?>[] __CustomParserDecimalNullable = null;
+        internal protected ICustomCsvParse<Double?>[] __CustomParserDoubleNullable = null;
+        internal protected ICustomCsvParse<UInt16?>[] __CustomParserUInt16Nullable = null;
+        internal protected ICustomCsvParse<UInt32?>[] __CustomParserUInt32Nullable = null;
+        internal protected ICustomCsvParse<UInt64?>[] __CustomParserUInt64Nullable = null;
+        internal protected ICustomCsvParse<BigInteger?>[] __CustomParserBigIntegerNullable = null;
 
-        protected internal ImmutableArray<PropertyInfo> _Properties;
-        protected internal ImmutableArray<NetTypeComplete> _PropertyTypes;
-        protected internal ImmutableArray<Boolean> _IsNullable;
-        protected internal ImmutableArray<Boolean> _IsAssigned;
+        internal protected ImmutableArray<PropertyInfo> _Properties;
+        internal protected ImmutableArray<NetTypeComplete> _PropertyTypes;
+        internal protected ImmutableArray<Boolean> _IsNullable;
+        internal protected ImmutableArray<Boolean> _IsAssigned;
 
-        protected internal ImmutableArray<ICustomCsvParse<string>> _CustomParserString;
-        protected internal ImmutableArray<ICustomCsvParse<Guid>> _CustomParserGuid;
-        protected internal ImmutableArray<ICustomCsvParse<Boolean>> _CustomParserBoolean;
-        protected internal ImmutableArray<ICustomCsvParse<DateTime>> _CustomParserDateTime;
-        protected internal ImmutableArray<ICustomCsvParse<DateTimeOffset>> _CustomParserDateTimeOffset;
-        protected internal ImmutableArray<ICustomCsvParse<TimeSpan>> _CustomParserTimeSpan;
-        protected internal ImmutableArray<ICustomCsvParse<Byte>> _CustomParserByte;
-        protected internal ImmutableArray<ICustomCsvParse<SByte>> _CustomParserSByte;
-        protected internal ImmutableArray<ICustomCsvParse<Int16>> _CustomParserInt16;
-        protected internal ImmutableArray<ICustomCsvParse<Int32>> _CustomParserInt32;
-        protected internal ImmutableArray<ICustomCsvParse<Int64>> _CustomParserInt64;
-        protected internal ImmutableArray<ICustomCsvParse<Single>> _CustomParserSingle;
-        protected internal ImmutableArray<ICustomCsvParse<Decimal>> _CustomParserDecimal;
-        protected internal ImmutableArray<ICustomCsvParse<Double>> _CustomParserDouble;
-        protected internal ImmutableArray<ICustomCsvParse<UInt16>> _CustomParserUInt16;
-        protected internal ImmutableArray<ICustomCsvParse<UInt32>> _CustomParserUInt32;
-        protected internal ImmutableArray<ICustomCsvParse<UInt64>> _CustomParserUInt64;
-        protected internal ImmutableArray<ICustomCsvParse<BigInteger>> _CustomParserBigInteger;
+        internal protected ImmutableArray<ICustomCsvParse<string>> _CustomParserString;
+        internal protected ImmutableArray<ICustomCsvParse<Guid>> _CustomParserGuid;
+        internal protected ImmutableArray<ICustomCsvParse<Boolean>> _CustomParserBoolean;
+        internal protected ImmutableArray<ICustomCsvParse<DateTime>> _CustomParserDateTime;
+        internal protected ImmutableArray<ICustomCsvParse<DateTimeOffset>> _CustomParserDateTimeOffset;
+        internal protected ImmutableArray<ICustomCsvParse<TimeSpan>> _CustomParserTimeSpan;
+        internal protected ImmutableArray<ICustomCsvParse<Byte>> _CustomParserByte;
+        internal protected ImmutableArray<ICustomCsvParse<SByte>> _CustomParserSByte;
+        internal protected ImmutableArray<ICustomCsvParse<Int16>> _CustomParserInt16;
+        internal protected ImmutableArray<ICustomCsvParse<Int32>> _CustomParserInt32;
+        internal protected ImmutableArray<ICustomCsvParse<Int64>> _CustomParserInt64;
+        internal protected ImmutableArray<ICustomCsvParse<Single>> _CustomParserSingle;
+        internal protected ImmutableArray<ICustomCsvParse<Decimal>> _CustomParserDecimal;
+        internal protected ImmutableArray<ICustomCsvParse<Double>> _CustomParserDouble;
+        internal protected ImmutableArray<ICustomCsvParse<UInt16>> _CustomParserUInt16;
+        internal protected ImmutableArray<ICustomCsvParse<UInt32>> _CustomParserUInt32;
+        internal protected ImmutableArray<ICustomCsvParse<UInt64>> _CustomParserUInt64;
+        internal protected ImmutableArray<ICustomCsvParse<BigInteger>> _CustomParserBigInteger;
 
-        protected internal ImmutableArray<ICustomCsvParse<Guid?>> _CustomParserGuidNullable;
-        protected internal ImmutableArray<ICustomCsvParse<Boolean?>> _CustomParserBooleanNullable;
-        protected internal ImmutableArray<ICustomCsvParse<DateTime?>> _CustomParserDateTimeNullable;
-        protected internal ImmutableArray<ICustomCsvParse<DateTimeOffset?>> _CustomParserDateTimeOffsetNullable;
-        protected internal ImmutableArray<ICustomCsvParse<TimeSpan?>> _CustomParserTimeSpanNullable;
-        protected internal ImmutableArray<ICustomCsvParse<Byte?>> _CustomParserByteNullable;
-        protected internal ImmutableArray<ICustomCsvParse<SByte?>> _CustomParserSByteNullable;
-        protected internal ImmutableArray<ICustomCsvParse<Int16?>> _CustomParserInt16Nullable;
-        protected internal ImmutableArray<ICustomCsvParse<Int32?>> _CustomParserInt32Nullable;
-        protected internal ImmutableArray<ICustomCsvParse<Int64?>> _CustomParserInt64Nullable;
-        protected internal ImmutableArray<ICustomCsvParse<Single?>> _CustomParserSingleNullable;
-        protected internal ImmutableArray<ICustomCsvParse<Decimal?>> _CustomParserDecimalNullable;
-        protected internal ImmutableArray<ICustomCsvParse<Double?>> _CustomParserDoubleNullable;
-        protected internal ImmutableArray<ICustomCsvParse<UInt16?>> _CustomParserUInt16Nullable;
-        protected internal ImmutableArray<ICustomCsvParse<UInt32?>> _CustomParserUInt32Nullable;
-        protected internal ImmutableArray<ICustomCsvParse<UInt64?>> _CustomParserUInt64Nullable;
-        protected internal ImmutableArray<ICustomCsvParse<BigInteger?>> _CustomParserBigIntegerNullable;
+        internal protected ImmutableArray<ICustomCsvParse<Guid?>> _CustomParserGuidNullable;
+        internal protected ImmutableArray<ICustomCsvParse<Boolean?>> _CustomParserBooleanNullable;
+        internal protected ImmutableArray<ICustomCsvParse<DateTime?>> _CustomParserDateTimeNullable;
+        internal protected ImmutableArray<ICustomCsvParse<DateTimeOffset?>> _CustomParserDateTimeOffsetNullable;
+        internal protected ImmutableArray<ICustomCsvParse<TimeSpan?>> _CustomParserTimeSpanNullable;
+        internal protected ImmutableArray<ICustomCsvParse<Byte?>> _CustomParserByteNullable;
+        internal protected ImmutableArray<ICustomCsvParse<SByte?>> _CustomParserSByteNullable;
+        internal protected ImmutableArray<ICustomCsvParse<Int16?>> _CustomParserInt16Nullable;
+        internal protected ImmutableArray<ICustomCsvParse<Int32?>> _CustomParserInt32Nullable;
+        internal protected ImmutableArray<ICustomCsvParse<Int64?>> _CustomParserInt64Nullable;
+        internal protected ImmutableArray<ICustomCsvParse<Single?>> _CustomParserSingleNullable;
+        internal protected ImmutableArray<ICustomCsvParse<Decimal?>> _CustomParserDecimalNullable;
+        internal protected ImmutableArray<ICustomCsvParse<Double?>> _CustomParserDoubleNullable;
+        internal protected ImmutableArray<ICustomCsvParse<UInt16?>> _CustomParserUInt16Nullable;
+        internal protected ImmutableArray<ICustomCsvParse<UInt32?>> _CustomParserUInt32Nullable;
+        internal protected ImmutableArray<ICustomCsvParse<UInt64?>> _CustomParserUInt64Nullable;
+        internal protected ImmutableArray<ICustomCsvParse<BigInteger?>> _CustomParserBigIntegerNullable;
 
-        protected internal ImmutableArray<Func<object, object[], object>> _CustomParserCall;
+        internal protected ImmutableArray<Func<object, object[], object>> _CustomParserCall;
 
-        protected internal Func<object, object[], object>[] __CustomParserCall = null;
+        internal protected Func<object, object[], object>[] __CustomParserCall = null;
 
-        protected internal CsvAttribute _CsvAttribute;
+        internal protected CsvAttribute _CsvAttribute;
 
         /// <summary>
         /// Property Set by contructor, either File or Stream is used.
@@ -139,7 +129,10 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public Encoding Encoding { get; set; } = Encoding.Default;
 
-        protected internal void InitCustomCsvParseArrays(int size)
+        /// <summary>
+        /// 
+        /// </summary>
+        internal protected void InitCustomCsvParseArrays(int size)
         {
             __CustomParserString = new ICustomCsvParse<string>[size];
             __CustomParserGuid = new ICustomCsvParse<Guid>[size];
@@ -181,7 +174,7 @@ namespace DevToys.PocoCsv.Core
             __CustomParserCall = new Func<object, object[], object>[size];
         }
 
-        protected void InitImmutableArray()
+        internal protected void InitImmutableArray()
         {
             _CustomParserString = __CustomParserString.ToImmutableArray();
             _CustomParserGuid = __CustomParserGuid.ToImmutableArray();
@@ -224,7 +217,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// 
         /// </summary>
-        protected internal void SetCustomParserType(int index, Type customAttributeType, string propertyname)
+        internal protected void SetCustomParserType(int index, Type customAttributeType, string propertyname)
         {
             if (TypeUtils.HasInterface<ICustomCsvParse<string>>(customAttributeType))
             {
@@ -369,439 +362,6 @@ namespace DevToys.PocoCsv.Core
             else
             {
                 throw new TypeLoadException($"PreParser type must implement PreParse interface. Property: {propertyname}");
-            }
-        }
-
-        protected internal void InitCsvAttribute(Type type, int size, ReadOrWrite readOrWrite)
-        {
-            _CsvAttribute = type.GetCustomAttribute<CsvAttribute>();
-            if (_CsvAttribute == null)
-            {
-                return;
-            }
-
-            for (int index = 0; index < size; index++)
-            {
-                if (_CsvAttribute.DefaultCustomParserTypeString != null)
-                {
-                    __CustomParserString[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeString) as ICustomCsvParse<string>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeString, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeString, "Write", typeof(string));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeGuid != null)
-                {
-                    __CustomParserGuid[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeGuid) as ICustomCsvParse<Guid>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeGuid, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeGuid, "Write", typeof(Guid));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeBoolean != null)
-                {
-                    __CustomParserBoolean[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeBoolean) as ICustomCsvParse<Boolean>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBoolean, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBoolean, "Write", typeof(Boolean));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeDateTime != null)
-                {
-                    __CustomParserDateTime[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDateTime) as ICustomCsvParse<DateTime>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDateTime, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDateTime, "Write", typeof(DateTime));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeDateTimeOffset != null)
-                {
-                    __CustomParserDateTimeOffset[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDateTimeOffset) as ICustomCsvParse<DateTimeOffset>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDateTimeOffset, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDateTimeOffset, "Write", typeof(DateTimeOffset));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeTimeSpan != null)
-                {
-                    __CustomParserTimeSpan[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeTimeSpan) as ICustomCsvParse<TimeSpan>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeTimeSpan, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeTimeSpan, "Write", typeof(TimeSpan));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeByte != null)
-                {
-                    __CustomParserByte[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeByte) as ICustomCsvParse<Byte>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeByte, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeByte, "Write", typeof(Byte));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeSByte != null)
-                {
-                    __CustomParserSByte[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeSByte) as ICustomCsvParse<SByte>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeSByte, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeSByte, "Write", typeof(SByte));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeInt16 != null)
-                {
-                    __CustomParserInt16[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeInt16) as ICustomCsvParse<Int16>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt16, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt16, "Write", typeof(Int16));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeInt32 != null)
-                {
-                    __CustomParserInt32[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeInt32) as ICustomCsvParse<Int32>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt32, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt32, "Write", typeof(Int32));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeInt64 != null)
-                {
-                    __CustomParserInt64[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeInt64) as ICustomCsvParse<Int64>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt64, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt64, "Write", typeof(Int64));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeSingle != null)
-                {
-                    __CustomParserSingle[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeSingle) as ICustomCsvParse<Single>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeSingle, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeSingle, "Write", typeof(Single));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeDecimal != null)
-                {
-                    __CustomParserDecimal[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDecimal) as ICustomCsvParse<Decimal>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDecimal, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDecimal, "Write", typeof(Decimal));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeDouble != null)
-                {
-                    __CustomParserDouble[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDouble) as ICustomCsvParse<Double>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDouble, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDouble, "Write", typeof(Double));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeUInt16 != null)
-                {
-                    __CustomParserUInt16[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeUInt16) as ICustomCsvParse<UInt16>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt16, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt16, "Write", typeof(UInt16));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeUInt32 != null)
-                {
-                    __CustomParserUInt32[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeUInt32) as ICustomCsvParse<UInt32>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt32, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt32, "Write", typeof(UInt32));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeUInt64 != null)
-                {
-                    __CustomParserUInt64[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeUInt64) as ICustomCsvParse<UInt64>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt64, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt64, "Write", typeof(UInt64));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeBigInteger != null)
-                {
-                    __CustomParserBigInteger[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeBigInteger) as ICustomCsvParse<BigInteger>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBigInteger, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBigInteger, "Write", typeof(BigInteger));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeGuidNullable != null)
-                {
-                    __CustomParserGuidNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeGuidNullable) as ICustomCsvParse<Guid?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeGuidNullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeGuidNullable, "Write", typeof(Guid?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeBooleanNullable != null)
-                {
-                    __CustomParserBooleanNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeBooleanNullable) as ICustomCsvParse<Boolean?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBooleanNullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBooleanNullable, "Write", typeof(Boolean?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeDateTimeNullable != null)
-                {
-                    __CustomParserDateTimeNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDateTimeNullable) as ICustomCsvParse<DateTime?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDateTimeNullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDateTimeNullable, "Write", typeof(DateTime?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeDateTimeOffsetNullable != null)
-                {
-                    __CustomParserDateTimeOffsetNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDateTimeOffsetNullable) as ICustomCsvParse<DateTimeOffset?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDateTimeOffsetNullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDateTimeOffsetNullable, "Write", typeof(DateTimeOffset?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeTimeSpanNullable != null)
-                {
-                    __CustomParserTimeSpanNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeTimeSpanNullable) as ICustomCsvParse<TimeSpan?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeTimeSpanNullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeTimeSpanNullable, "Write", typeof(TimeSpan?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeByteNullable != null)
-                {
-                    __CustomParserByteNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeByteNullable) as ICustomCsvParse<Byte?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeByteNullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeByteNullable, "Write", typeof(Byte?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeSByteNullable != null)
-                {
-                    __CustomParserSByteNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeSByteNullable) as ICustomCsvParse<SByte?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeSByteNullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeSByteNullable, "Write", typeof(SByte?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeInt16Nullable != null)
-                {
-                    __CustomParserInt16Nullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeInt16Nullable) as ICustomCsvParse<Int16?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt16Nullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt16Nullable, "Write", typeof(Int16?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeInt32Nullable != null)
-                {
-                    __CustomParserInt32Nullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeInt32Nullable) as ICustomCsvParse<Int32?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt32Nullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt32Nullable, "Write", typeof(Int32?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeInt64Nullable != null)
-                {
-                    __CustomParserInt64Nullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeInt64Nullable) as ICustomCsvParse<Int64?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt64Nullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeInt64Nullable, "Write", typeof(Int64?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeSingleNullable != null)
-                {
-                    __CustomParserSingleNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeSingleNullable) as ICustomCsvParse<Single?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeSingleNullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeSingleNullable, "Write", typeof(Single?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeDecimalNullable != null)
-                {
-                    __CustomParserDecimalNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDecimalNullable) as ICustomCsvParse<Decimal?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDecimalNullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDecimalNullable, "Write", typeof(Decimal?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeDoubleNullable != null)
-                {
-                    __CustomParserDoubleNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeDoubleNullable) as ICustomCsvParse<Double?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDoubleNullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeDoubleNullable, "Write", typeof(Double?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeUInt16Nullable != null)
-                {
-                    __CustomParserUInt16Nullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeUInt16Nullable) as ICustomCsvParse<UInt16?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt16Nullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt16Nullable, "Write", typeof(UInt16?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeUInt32Nullable != null)
-                {
-                    __CustomParserUInt32Nullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeUInt32Nullable) as ICustomCsvParse<UInt32?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt32Nullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt32Nullable, "Write", typeof(UInt32?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeUInt64Nullable != null)
-                {
-                    __CustomParserUInt64Nullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeUInt64Nullable) as ICustomCsvParse<UInt64?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt64Nullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeUInt64Nullable, "Write", typeof(UInt64?));
-                    }
-                }
-                if (_CsvAttribute.DefaultCustomParserTypeBigIntegerNullable != null)
-                {
-                    __CustomParserBigIntegerNullable[index] = Activator.CreateInstance(_CsvAttribute.DefaultCustomParserTypeBigIntegerNullable) as ICustomCsvParse<BigInteger?>;
-                    if (readOrWrite == ReadOrWrite.Read)
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBigIntegerNullable, "Read", typeof(StringBuilder));
-                    }
-                    else
-                    {
-                        __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBigIntegerNullable, "Write", typeof(BigInteger?));
-                    }
-                }
             }
         }
     }
