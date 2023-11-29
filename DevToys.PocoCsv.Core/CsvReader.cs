@@ -2208,7 +2208,6 @@ namespace DevToys.PocoCsv.Core
 
             }
 
-
             _IsNullable = _isNullable.ToImmutableArray();
             _IsAssigned = _isAssigned.ToImmutableArray();
             _Properties = _properties.ToImmutableArray();
@@ -2445,6 +2444,5 @@ namespace DevToys.PocoCsv.Core
                 }
             }
         }
-
     }
 }

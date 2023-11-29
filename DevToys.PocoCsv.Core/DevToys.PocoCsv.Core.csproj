@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
+	  <TargetFrameworks>netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>One of the fastest Csv reader deserialzer available.
 
@@ -29,12 +29,15 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Authors>GuidoK73</Authors>
 	<PackageTags>csv;export;import;comma separated;4180;delimited;poco;csv parser;parse csv;DataTable;Import Csv;Export Csv;Csv Object</PackageTags>
     <Company />
-    <Version>3.0.7</Version>
+    <Version>3.1.0</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>3.0.6
+    <PackageReleaseNotes>3.1.0
+- Added .net 8 support.
+
+3.0.6
 - Small refactorings
 
 3.0.4
@@ -184,6 +187,14 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>F:\DEV\GIT\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core\DevToys.PocoCsv.Core.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+    <WarningLevel>7</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+    <WarningLevel>7</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>
