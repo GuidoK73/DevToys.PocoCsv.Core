@@ -98,6 +98,7 @@ this reader is faster then CsvStreamReader, it is optamized to deserialize the r
 |**Errors**|Returns a list of errors when HasErrors returned true|
 |**Flush()**|Flushes all buffers.|
 |**HasErrors**|Indicates there are errors|
+|**IgnoreColumnAttributes**|All properties are handled in order of property occurrence and mapped directly to their respective index. Only use when CsvWriter has this set to true as well. (ColumnAttribute is ignored.)|
 |**Last(int rows)**|Last seeks the csv document for the last x entries. this is much faster then IEnumerable.Last().|
 |**MoveToStart()**|Moves the reader to the start position, Skip() and Take() alter the start positions use MoveToStart() to reset the position.|
 |**Open()**|Opens the Reader.|
@@ -165,12 +166,12 @@ Methods / Properties:
 |**WriteHeader()**|Write header with property names of T.|
 |**Write(IEnumerable<T> rows)**|Writes data to Csv while consuming rows.|
 |**Flush()**|Flushes all buffers.|
+|**IgnoreColumnAttributes**|All properties are handled in order of property occurrence and mapped directly to their respective index. (ColumnAttribute is ignored.)|
 |**Separator**|Set the separator to use (default ',')|
 |**CRLFMode**|Determine which mode to use for new lines.<li>CR + LF → Used as a new line character in Windows.</li><li>CR(Carriage Return) → Used as a new line character in Mac OS before X.</li><li>LF(Line Feed) → Used as a new line character in Unix/Mac OS X</li>|
 |**NullValueBehaviour**|Determine what to do with writing null objects.<li>Skip, Ignore the object</li><li>Empty Line, Write an empty line</li>|
 |**Culture**|Sets the default Culture for decimal / double conversions etc. For more complex conversions use the ICustomCsvParse interface.|
 |**Encoding**|The character encoding to use.|
-
 
 # ColumnAttribute
 

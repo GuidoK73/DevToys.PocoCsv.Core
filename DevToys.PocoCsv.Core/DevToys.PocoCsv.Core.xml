@@ -365,6 +365,11 @@
             Indicates whether to look for byte order marks at the beginning of the file.
             </summary>
         </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.IgnoreColumnAttributes">
+            <summary>
+            All properties are handled in order of property occurrence and mapped directly to their respective index. Only use when CsvWriter has this set to true as well. (ColumnAttribute is ignored.)
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Dispose">
             <summary>
             Releases all resources used by the System.IO.TextReader object.
@@ -733,6 +738,11 @@
         <member name="P:DevToys.PocoCsv.Core.CsvWriter`1.NullValueBehaviour">
             <summary>
             How will the write behave with null objects.
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvWriter`1.IgnoreColumnAttributes">
+            <summary>
+            All properties are handled in order of property occurrence and mapped directly to their respective index. (ColumnAttribute is ignored.)
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Dispose">

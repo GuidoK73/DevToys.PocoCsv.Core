@@ -154,6 +154,11 @@ namespace DevToys.PocoCsv.Core
         public bool DetectEncodingFromByteOrderMarks { get; set; } = true;
 
         /// <summary>
+        /// All properties are handled in order of property occurrence and mapped directly to their respective index. Only use when CsvWriter has this set to true as well. (ColumnAttribute is ignored.)
+        /// </summary>
+        public bool IgnoreColumnAttributes { get; set; } = false;
+
+        /// <summary>
         /// Releases all resources used by the System.IO.TextReader object.
         /// </summary>
         public void Dispose()
@@ -1945,9 +1950,19 @@ namespace DevToys.PocoCsv.Core
 
             var _type = typeof(T);
 
-            int _max = _type.GetProperties()
+            var _propertyAttributeCollection = _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
-                .Select(p => (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index).Max();
+                .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) });
+
+            if (IgnoreColumnAttributes == true)
+            {
+                _propertyAttributeCollection = _type.GetProperties()
+                .Select((value, index) => new { Property = value, Index = index, Attrib = new ColumnAttribute() { Index = index } });
+            }
+
+            int _max = _propertyAttributeCollection
+                .Select(p => p.Index).Max();
+
 
             InitCustomCsvParseArrays(_max + 1);
 
@@ -1997,10 +2012,7 @@ namespace DevToys.PocoCsv.Core
             var _propertySettersUInt64Null = new Action<T, UInt64?>[_max + 1];
             var _propertySettersBigIntegerNull = new Action<T, BigInteger?>[_max + 1];
 
-            foreach (var property in _type.GetProperties()
-                .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
-                .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) })
-                )
+            foreach (var property in _propertyAttributeCollection)
             {
                 Type propertyType = property.Property.PropertyType;
 

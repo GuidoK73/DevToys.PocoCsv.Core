@@ -123,6 +123,11 @@ namespace DevToys.PocoCsv.Core
         public WriteNullValueBehaviour NullValueBehaviour { get; set; } = WriteNullValueBehaviour.Skip;
 
         /// <summary>
+        /// All properties are handled in order of property occurrence and mapped directly to their respective index. (ColumnAttribute is ignored.)
+        /// </summary>
+        public bool IgnoreColumnAttributes { get; set; } = false;
+
+        /// <summary>
         /// Releases all resources used by the System.IO.TextReader object.
         /// </summary>
         public void Dispose()
@@ -1337,6 +1342,12 @@ namespace DevToys.PocoCsv.Core
             var _properties = _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
                 .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) });
+
+            if (IgnoreColumnAttributes == true)
+            {
+                _properties = _type.GetProperties()
+                .Select((value, index) => new { Property = value, Index = index, Attrib = new ColumnAttribute() {  Index = index } });
+            }
 
             int _max = _properties.Max(p => p.Index);
             _MaxColumnIndex = _max;
