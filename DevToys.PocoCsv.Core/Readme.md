@@ -82,6 +82,7 @@ this reader is faster then CsvStreamReader, it is optamized to deserialize the r
     }    
 ~~~
 
+The reader does not care about the number of columns in a row, as long as the highest index on the Column Attribute does not exceed the number of columns in a row.
 
 |Methods / Property|Description|
 |:-|:-|
