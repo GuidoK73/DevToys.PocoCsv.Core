@@ -242,7 +242,7 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
-        /// Skip a dingle row.
+        /// Skip a single row.
         /// </summary>
         public void Skip()
         {
@@ -561,6 +561,7 @@ namespace DevToys.PocoCsv.Core
                     continue;
                 }
             }
+
 
             if (lineLength == 0)
             {

@@ -38,6 +38,7 @@
         ThrowException = 4
     }
 
+
     /// <summary>
     /// How will the write behave with null objects.
     /// </summary>

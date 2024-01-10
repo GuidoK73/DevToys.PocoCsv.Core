@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using TestProject2.Models;
 
@@ -46,6 +47,8 @@ namespace TestProject2
                 _writer.WriteHeader();
                 _writer.Write(LargeData());
             }
+
+            string _data = File.ReadAllText(_file);
 
             using (CsvReader<CsvSimpleNoAttribute> _reader = new(_file))
             {
