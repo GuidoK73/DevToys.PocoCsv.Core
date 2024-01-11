@@ -1,6 +1,6 @@
 ﻿# DevToys.PocoCsv.Core 
 
-## One of the fastest csv reader deserialzer available.
+## One of the fastest csv reader deserializer available.
 
 DevToys.PocoCsv.Core is a class library to read and write to Csv.
 It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader<T> and CsvWriter<T>.
@@ -192,6 +192,17 @@ The column attribute defines the properties to be serialized or deserialized.
 # CustomParserType
 CustomParserType allows the Reader<T> and Writer<T> to use a custom parsing for a specific field.
 
+Custom Parsers will run as singleton per specified column in the specific Reader<T> or Writer<T>.
+
+All values and characters at this point are unescaped / escaped as required by the CSV standards.
+
+|Interface Method|Description|
+|:-|:-|
+|Read|This function is called when using CsvReader</br> Return value must be the same as the property type the CustomParser is placed on.|
+|Reading|This method is called when using CsvReader. It can be used as a support function to the Read function when reading per char might be a performance requirement.</br> if not used, leave the method body empty.</br>c is the character to use in the result text, escaping has already been done at this point.|
+|Write|This function is called when using CsvWriter</br> T value must be the same as the property type the CustomParser is placed on.|
+
+
 
 ~~~cs
 
@@ -273,16 +284,6 @@ CustomParserType allows the Reader<T> and Writer<T> to use a custom parsing for 
     }
 
 ~~~
-
-Custom Parsers will run as singleton per specified column in the specific Reader<T> or Writer<T>.
-
-|Interface Method|Description|
-|:-|:-|
-|Read|This function is called when using CsvReader</br> Return value must be the same as the property type the CustomParser is placed on.|
-|Reading|This method is called when using CsvReader. It can be used as a support function to the Read function when reading per char might be a performance requirement.</br> if not used, leave the method body empty.</br>c is the character to use in the result text, escaping has already been done at this point.|
-|Write|This function is called when using CsvWriter</br> T value must be the same as the property type the CustomParser is placed on.|
-
-All values and characters at this point are unescaped / escaped as required by the CSV standards.
 
 # CsvAttribute
 
