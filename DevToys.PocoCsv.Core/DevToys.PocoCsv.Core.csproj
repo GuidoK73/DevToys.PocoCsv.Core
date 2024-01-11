@@ -29,12 +29,15 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Authors>GuidoK73</Authors>
 	<PackageTags>csv;export;import;comma separated;4180;delimited;poco;csv parser;parse csv;DataTable;Import Csv;Export Csv;Csv Object</PackageTags>
     <Company />
-    <Version>3.1.6</Version>
+    <Version>3.1.7</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
     <PackageReleaseNotes>
+3.1.7
+-  Added Reading method to ICustomCsvParser
+		
 3.1.5
 - Added IgnoreColumnAttributes for CsvReader and CsvWriter.
 All properties are handled in order of property occurrence and mapped directly to their respective index. (ColumnAttribute is ignored.)

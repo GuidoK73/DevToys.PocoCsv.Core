@@ -13,6 +13,9 @@ namespace Delegates
     /// </summary>
     public static partial class DelegateFactory
     {
+
+
+
         /// <summary>
         /// Creates delegate for non-void instance method with unspecified number of parameters passed as array of 
         /// objects from instance as object

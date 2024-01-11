@@ -42,6 +42,7 @@ or
 
 
 # CsvStreamWriter
+
 ~~~cs
     string file = @"D:\Temp\test.csv";
     using (CsvStreamWriter _writer = new CsvStreamWriter(file))
@@ -52,7 +53,6 @@ or
 ~~~
 
 # CsvReader\<T\>
-this reader is faster then CsvStreamReader, it is optamized to deserialize the rows to objects.
 
 ~~~cs
     public class Data
@@ -82,7 +82,9 @@ this reader is faster then CsvStreamReader, it is optamized to deserialize the r
     }    
 ~~~
 
-The reader does not care about the number of columns in a row, as long as the highest index on the Column Attribute does not exceed the number of columns in a row.
+The reader does not care about the number of columns in a row, as long as the highest index on the Column Attribute does not exceed the number of columns in a row.\
+You only specify the column indexes you need.
+
 
 |Methods / Property|Description|
 |:-|:-|
@@ -104,7 +106,7 @@ The reader does not care about the number of columns in a row, as long as the hi
 |**MoveToStart()**|Moves the reader to the start position, Skip() and Take() alter the start positions use MoveToStart() to reset the position.|
 |**Open()**|Opens the Reader.|
 |**Read()**|Reads current row into T and advances the reader to the next row. |
-|**ReadAsEnumerable()**|Reads and deserializes each csv file line per iteration in the collection, this allows for querying mega sized files. It starts from the current position, if you used Skip(), Read() or SkipHeader() the current position is determined by those methods.|
+|**ReadAsEnumerable()**|Reads and deserializes each csv file line per iteration in the collection, this allows for querying large size files. It starts from the current position, if you used Skip(), Read() or SkipHeader() the current position is determined by those methods.|
 |**Separator**|Set the separator to use (default ',')|
 |**Skip(int rows)**|Skip and advances the reader to the next row without interpreting it. This is much faster then IEnumerable.Skip(). |
 |**SkipHeader()**|Ensures stream is at start then skips the first row.|
@@ -112,7 +114,6 @@ The reader does not care about the number of columns in a row, as long as the hi
 (Skip and Last do not deserialize, that's why they are faster then normal IEnumerable operations).
 
 # CsvWriter\<T\>
-this writer is faster then CsvStreamWriter, it is optamized to serialize the objects to rows.
 
 ~~~cs
     public class Data
@@ -215,6 +216,9 @@ CustomParserType allows the Reader<T> and Writer<T> to use a custom parsing for 
             return null;
         }
 
+        public void Reading(int colIndex, int cellPosition, char c)
+        { }
+
         // for CsvWriter
         public string Write(bool? value)
         {
@@ -240,6 +244,9 @@ CustomParserType allows the Reader<T> and Writer<T> to use a custom parsing for 
         }
 
         public Decimal Read(StringBuilder value) => Decimal.Parse(value.ToString(), _culture);
+
+        public void Reading(int colIndex, int cellPosition, char c)
+        { }
 
         public string Write(Decimal value) => value.ToString(_culture);
     }
@@ -267,7 +274,15 @@ CustomParserType allows the Reader<T> and Writer<T> to use a custom parsing for 
 
 ~~~
 
-Custom Parsers will run as singleton per specified column in the specific Reader<T>.
+Custom Parsers will run as singleton per specified column in the specific Reader<T> or Writer<T>.
+
+|Interface Method|Description|
+|:-|:-|
+|Read|This function is called when using CsvReader</br> Return value must be the same as the property type the CustomParser is placed on.|
+|Reading|This method is called when using CsvReader. It can be used as a support function to the Read function when reading per char might be a performance requirement.</br> if not used, leave the method body empty.</br>c is the character to use in the result text, escaping has already been done at this point.|
+|Write|This function is called when using CsvWriter</br> T value must be the same as the property type the CustomParser is placed on.|
+
+All values and characters at this point are unescaped / escaped as required by the CSV standards.
 
 # CsvAttribute
 

@@ -129,6 +129,9 @@ namespace TestProject2.Models
         {
             return value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
+
         public string Write(string value)
         {
             return value;
@@ -139,60 +142,70 @@ namespace TestProject2.Models
     {
         public Guid Read(StringBuilder value) => Guid.Parse(value.ToString());
         public string Write(Guid value) => value.ToString();
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseDateTime : ICustomCsvParse<DateTime>
     {
         public DateTime Read(StringBuilder value) => DateTime.Parse(value.ToString());
         public string Write(DateTime value) => value.ToString();
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseDateTimeOffset : ICustomCsvParse<DateTimeOffset>
     {
         public DateTimeOffset Read(StringBuilder value) => DateTimeOffset.Parse(value.ToString());
         public string Write(DateTimeOffset value) => value.ToString();
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseTimeSpan : ICustomCsvParse<TimeSpan>
     {
         public TimeSpan Read(StringBuilder value) => TimeSpan.Parse(value.ToString());
         public string Write(TimeSpan value) => value.ToString();
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseByte : ICustomCsvParse<Byte>
     {
         public Byte Read(StringBuilder value) => Byte.Parse(value.ToString());
         public string Write(Byte value) => value.ToString();
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseSByte : ICustomCsvParse<SByte>
     {
         public SByte Read(StringBuilder value) => SByte.Parse(value.ToString());
         public string Write(SByte value) => value.ToString();
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseInt16 : ICustomCsvParse<Int16>
     {
         public Int16 Read(StringBuilder value) => Int16.Parse(value.ToString());
         public string Write(Int16 value) => value.ToString();
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseInt32 : ICustomCsvParse<Int32>
     {
         public Int32 Read(StringBuilder value) => Int32.Parse(value.ToString());
         public string Write(Int32 value) => value.ToString();
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseInt64 : ICustomCsvParse<Int64>
     {
         public Int64 Read(StringBuilder value) => Int64.Parse(value.ToString());
         public string Write(Int64 value) => value.ToString();
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseSingle : ICustomCsvParse<Single>
     {
         public Single Read(StringBuilder value) => Single.Parse(value.ToString());
         public string Write(Single value) => value.ToString();
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseDecimal : ICustomCsvParse<Decimal>
@@ -206,6 +219,8 @@ namespace TestProject2.Models
 
         public Decimal Read(StringBuilder value) => Decimal.Parse(value.ToString(), _culture);
         public string Write(Decimal value) => value.ToString(_culture);
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseDouble : ICustomCsvParse<Double>
@@ -219,24 +234,28 @@ namespace TestProject2.Models
 
         public Double Read(StringBuilder value) => Double.Parse(value.ToString(), _culture);
         public string Write(Double value) => value.ToString(_culture);
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseUInt16 : ICustomCsvParse<UInt16>
     {
         public UInt16 Read(StringBuilder value) => UInt16.Parse(value.ToString());
         public string Write(UInt16 value) => value.ToString();
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseUInt32 : ICustomCsvParse<UInt32>
     {
         public UInt32 Read(StringBuilder value) => UInt32.Parse(value.ToString());
         public string Write(UInt32 value) => value.ToString();
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseUInt64 : ICustomCsvParse<UInt64>
     {
         public UInt64 Read(StringBuilder value) => UInt64.Parse(value.ToString());
         public string Write(UInt64 value) => value.ToString();
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
 
@@ -244,6 +263,7 @@ namespace TestProject2.Models
     {
         public BigInteger Read(StringBuilder value) => BigInteger.Parse(value.ToString());
         public string Write(BigInteger value) => value.ToString();
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseBigIntegerNull : ICustomCsvParse<BigInteger?>
@@ -265,7 +285,10 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
+
 
 
     public class ParseGuidNull : ICustomCsvParse<Guid?>
@@ -287,6 +310,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseBooleanNull : ICustomCsvParse<Boolean?>
@@ -308,6 +333,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseDateTimeNull : ICustomCsvParse<DateTime?>
@@ -329,6 +356,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseDateTimeOffsetNull : ICustomCsvParse<DateTimeOffset?>
@@ -350,6 +379,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseTimeSpanNull : ICustomCsvParse<TimeSpan?>
@@ -371,6 +402,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseByteNull : ICustomCsvParse<Byte?>
@@ -392,6 +425,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseSByteNull : ICustomCsvParse<SByte?>
@@ -413,6 +448,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseInt16Null : ICustomCsvParse<Int16?>
@@ -434,6 +471,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseInt32Null : ICustomCsvParse<Int32?>
@@ -455,6 +494,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseInt64Null : ICustomCsvParse<Int64?>
@@ -476,6 +517,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseSingleNull : ICustomCsvParse<Single?>
@@ -497,6 +540,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseDecimalNull : ICustomCsvParse<Decimal?>
@@ -518,6 +563,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseDoubleNull : ICustomCsvParse<Double?>
@@ -539,6 +586,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseUInt16Null : ICustomCsvParse<UInt16?>
@@ -560,6 +609,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseUInt32Null : ICustomCsvParse<UInt32?>
@@ -581,6 +632,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
     public class ParseUInt64Null : ICustomCsvParse<UInt64?>
@@ -602,6 +655,8 @@ namespace TestProject2.Models
             }
             return value.Value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 
 
@@ -633,5 +688,7 @@ namespace TestProject2.Models
             }
             return "no";
         }
+
+        public void Reading(int colIndex, int cellPosition, char c) { }
     }
 }

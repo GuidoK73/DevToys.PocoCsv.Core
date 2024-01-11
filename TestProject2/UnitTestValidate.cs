@@ -22,98 +22,6 @@ namespace TestProject2
     [TestClass]
     public class UnitTestValidate
     {
-        #region Data
-
-        private CsvTypesData ROW1 = new()
-        {
-            
-
-            StringValue = $"Line 1",
-            GuidValue = Guid.Parse("94a6bfe9-abb4-46b6-bd7d-8f047b9ba480"),
-            GuidValueNullable = Guid.Parse("94a6bfe9-abb4-46b6-bd7d-8f047b9ba480"),
-            BooleanValue = true,
-            BooleanValueNullable = false,
-            DateTimeValue = new DateTime(2023, 3, 31),
-            DateTimeOffsetValueNullable = new DateTime(2023, 3, 31),
-            DateTimeOffsetValue = new DateTime(2023, 3, 31),
-            DateTimeValueNullable = new DateTime(2023, 3, 31),
-            TimeSpanValue = new TimeSpan(1, 2, 3, 4, 5),
-            TimeSpanValueNullable = new TimeSpan(6, 7, 8, 9, 10),
-            ByteValue = 3,
-            ByteValueNullable = 4,
-            SByteValue = 5,
-            SByteValueNullable = 6,
-            Int16Value = 8,
-            Int16ValueNullable = 9,
-            Int32Value = 10,
-            Int32ValueNullable = 11,
-            Int64Value = 12,
-            Int64ValueNullable = 13,
-            SingleValue = 15,
-            SingleValueNullable = 16,
-            DecimalValue = 10.00m,
-            DecimalValueNullable = 11.23m,
-            DoubleValue = 10.5,
-            DoubleValueNullable = 10.45,
-            UInt16Value = 22,
-            UInt16ValueNullable = 23,
-            UInt32Value = 24,
-            UInt32ValueNullable = 25,
-            UInt64Value = 26,
-            UInt64ValueNullable = 29,
-            ByteArray = new byte[] { 1, 2, 3 },
-            TestEnumItem = TestEnum.XXX
-        };
-
-        private CsvTypesData ROW2 = new()
-        {
-            StringValue = $"Line 2",
-            GuidValue = Guid.Parse("90a6bfe9-abb4-46b6-bd7d-8f047b9ba480"),
-            GuidValueNullable = null,
-            BooleanValue = true,
-            BooleanValueNullable = null,
-            DateTimeValue = new DateTime(2023, 3, 31),
-            DateTimeOffsetValueNullable = null,
-            DateTimeOffsetValue = new DateTime(2023, 3, 31),
-            DateTimeValueNullable = null,
-            TimeSpanValue = new TimeSpan(1, 2, 3, 4, 5),
-            TimeSpanValueNullable = null,
-            ByteValue = 3,
-            ByteValueNullable = null,
-            SByteValue = 5,
-            SByteValueNullable = null,
-            Int16Value = 8,
-            Int16ValueNullable = null,
-            Int32Value = 10,
-            Int32ValueNullable = null,
-            Int64Value = 12,
-            Int64ValueNullable = null,
-            SingleValue = 15,
-            SingleValueNullable = null,
-            DecimalValue = 10.00m,
-            DecimalValueNullable = null,
-            DoubleValue = 10.5,
-            DoubleValueNullable = null,
-            UInt16Value = 22,
-            UInt16ValueNullable = null,
-            UInt32Value = 24,
-            UInt32ValueNullable = null,
-            UInt64Value = 26,
-            UInt64ValueNullable = null,
-            ByteArray = null,
-            TestEnumItem = TestEnum.YYY
-        };
-
-
-
-        private CsvSimpleSmall ROWA = new() { AfBij = "111", Rekening = "AA", Tegenrekening = "X" };
-        private CsvSimpleSmall ROWB = new() { AfBij = "222", Rekening = "BB", Tegenrekening = "Y" };
-        private CsvSimpleSmall ROWC = new() { AfBij = "333", Rekening = "CC", Tegenrekening = "Z" };
-
-        private CsvSimpleSmall ROWD = new() { AfBij = "AAA1 \"\" ", Rekening = "BBB\r\n",  Tegenrekening = "AAA,BBB" };
-        private CsvSimpleSmall ROWE = new() { AfBij = "AAA2 \"\"", Rekening = "BBB\r\n \"", Tegenrekening = "CCC,DDD" };
-        private CsvSimpleSmall ROWF = new() { AfBij = "AAA3 \",\r\"", Rekening = "BBB\r,\n \"", Tegenrekening = "EEE,FFF" };
-        #endregion Data
 
         [TestMethod]
         public void Validate()
@@ -129,7 +37,7 @@ namespace TestProject2
         {
             string file = System.IO.Path.GetTempFileName();
 
-            using (CsvWriter<CsvSimpleSmall> _writer = new CsvWriter<CsvSimpleSmall>(file) { Separator = ',' } )
+            using (CsvWriter<CsvSimpleSmall> _writer = new CsvWriter<CsvSimpleSmall>(file) { Separator = ',' })
             {
                 _writer.Open();
                 _writer.CRLFMode = CRLFMode.CRLF;
@@ -526,6 +434,100 @@ Line 2,94a6bfe9-abb4-46b6-bd7d-8f047b9ba480,True,31/03/2023 00:00:00,31/03/2023 
                 }
             }
         }
+
+        #region Data
+
+        private CsvTypesData ROW1 = new()
+        {
+            
+
+            StringValue = $"Line 1",
+            GuidValue = Guid.Parse("94a6bfe9-abb4-46b6-bd7d-8f047b9ba480"),
+            GuidValueNullable = Guid.Parse("94a6bfe9-abb4-46b6-bd7d-8f047b9ba480"),
+            BooleanValue = true,
+            BooleanValueNullable = false,
+            DateTimeValue = new DateTime(2023, 3, 31),
+            DateTimeOffsetValueNullable = new DateTime(2023, 3, 31),
+            DateTimeOffsetValue = new DateTime(2023, 3, 31),
+            DateTimeValueNullable = new DateTime(2023, 3, 31),
+            TimeSpanValue = new TimeSpan(1, 2, 3, 4, 5),
+            TimeSpanValueNullable = new TimeSpan(6, 7, 8, 9, 10),
+            ByteValue = 3,
+            ByteValueNullable = 4,
+            SByteValue = 5,
+            SByteValueNullable = 6,
+            Int16Value = 8,
+            Int16ValueNullable = 9,
+            Int32Value = 10,
+            Int32ValueNullable = 11,
+            Int64Value = 12,
+            Int64ValueNullable = 13,
+            SingleValue = 15,
+            SingleValueNullable = 16,
+            DecimalValue = 10.00m,
+            DecimalValueNullable = 11.23m,
+            DoubleValue = 10.5,
+            DoubleValueNullable = 10.45,
+            UInt16Value = 22,
+            UInt16ValueNullable = 23,
+            UInt32Value = 24,
+            UInt32ValueNullable = 25,
+            UInt64Value = 26,
+            UInt64ValueNullable = 29,
+            ByteArray = new byte[] { 1, 2, 3 },
+            TestEnumItem = TestEnum.XXX
+        };
+
+        private CsvTypesData ROW2 = new()
+        {
+            StringValue = $"Line 2",
+            GuidValue = Guid.Parse("90a6bfe9-abb4-46b6-bd7d-8f047b9ba480"),
+            GuidValueNullable = null,
+            BooleanValue = true,
+            BooleanValueNullable = null,
+            DateTimeValue = new DateTime(2023, 3, 31),
+            DateTimeOffsetValueNullable = null,
+            DateTimeOffsetValue = new DateTime(2023, 3, 31),
+            DateTimeValueNullable = null,
+            TimeSpanValue = new TimeSpan(1, 2, 3, 4, 5),
+            TimeSpanValueNullable = null,
+            ByteValue = 3,
+            ByteValueNullable = null,
+            SByteValue = 5,
+            SByteValueNullable = null,
+            Int16Value = 8,
+            Int16ValueNullable = null,
+            Int32Value = 10,
+            Int32ValueNullable = null,
+            Int64Value = 12,
+            Int64ValueNullable = null,
+            SingleValue = 15,
+            SingleValueNullable = null,
+            DecimalValue = 10.00m,
+            DecimalValueNullable = null,
+            DoubleValue = 10.5,
+            DoubleValueNullable = null,
+            UInt16Value = 22,
+            UInt16ValueNullable = null,
+            UInt32Value = 24,
+            UInt32ValueNullable = null,
+            UInt64Value = 26,
+            UInt64ValueNullable = null,
+            ByteArray = null,
+            TestEnumItem = TestEnum.YYY
+        };
+
+
+
+        private CsvSimpleSmall ROWA = new() { AfBij = "111", Rekening = "AA", Tegenrekening = "X" };
+        private CsvSimpleSmall ROWB = new() { AfBij = "222", Rekening = "BB", Tegenrekening = "Y" };
+        private CsvSimpleSmall ROWC = new() { AfBij = "333", Rekening = "CC", Tegenrekening = "Z" };
+
+        private CsvSimpleSmall ROWD = new() { AfBij = "AAA1 \"\" ", Rekening = "BBB\r\n",  Tegenrekening = "AAA,BBB" };
+        private CsvSimpleSmall ROWE = new() { AfBij = "AAA2 \"\"", Rekening = "BBB\r\n \"", Tegenrekening = "CCC,DDD" };
+        private CsvSimpleSmall ROWF = new() { AfBij = "AAA3 \",\r\"", Rekening = "BBB\r,\n \"", Tegenrekening = "EEE,FFF" };
+        #endregion Data
+
     }
 
     #region Classes

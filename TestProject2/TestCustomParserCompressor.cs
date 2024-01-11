@@ -137,6 +137,9 @@ namespace TestProject2
             return false;
         }
 
+        public void Reading(int colIndex, int cellPosition, char c)
+        { }
+
         public string Write(bool value) => value == true ? "1" : "0";
     }
 
@@ -144,91 +147,72 @@ namespace TestProject2
     {
         StringBuilder _ResultBuilder = new StringBuilder(256);
 
+        StringBuilder _PrevBuilder = new StringBuilder(256);
+
         private char[] _PreviousEncode = null;
 
-        private char[] _PreviousDecode = null;
+
 
         public string Read(StringBuilder source)
         {
+            string _value = _ResultBuilder.ToString();
+            _PrevBuilder.Clear();
+            _PrevBuilder.Append(_ResultBuilder);
             _ResultBuilder.Clear();
-            string _value = source.ToString();
+            return _value;
+        }
 
-            if (_PreviousDecode == null)
+        public void Reading(int colIndex, int cellPosition, char c)
+        {
+            if (c == '%')
             {
-                _PreviousDecode = source.ToString().ToCharArray();
-                return source.ToString();
-            }
-
-            int _index = _value.IndexOf('%');
-            if (_index > -1)
-            {
-                string _part = _value.Substring(0, _index);
-                bool _succes = int.TryParse(_part, out int _length);
+                string _number = _ResultBuilder.ToString();
+                _ResultBuilder.Clear();
+                bool _succes = int.TryParse(_number, out int _length);
                 if (_succes)
                 {
-                    _ResultBuilder.Append(_PreviousDecode, 0, _length);
-                    _ResultBuilder.Append(_value, _index + 1, _value.Length - _index - 1);
-                    _PreviousDecode = _ResultBuilder.ToString().ToCharArray();
-                    return _ResultBuilder.ToString();
+                    _ResultBuilder.Append(_PrevBuilder, 0, _length);
                 }
+                return;
             }
 
-            _PreviousDecode = _value.ToCharArray();
-            return _value;
+            _ResultBuilder.Append(c);
         }
 
         public string Write(string value)
         {
             _ResultBuilder.Clear();
-            bool exited = false;
 
-            if (_PreviousEncode == null)
+            if (_PreviousEncode == null || _PreviousEncode.Length == 0)
             {
                 _PreviousEncode = value.ToCharArray();
                 return value.ToString();
             }
-            char[] _currentEncode = value.ToCharArray();
-            int position = 0;
 
-            for (int index = 0; ; index++)
+            char[] _currentEncode = value.ToCharArray();
+
+            int _min = (_currentEncode.Length < _PreviousEncode.Length) ? _currentEncode.Length : _PreviousEncode.Length;
+            int _position = 0;
+
+            for (_position = 0; _position < _min; _position++)
             {
-                if (index < _PreviousEncode.Length && index < _currentEncode.Length)
+                if (_currentEncode[_position] != _PreviousEncode[_position])
                 {
-                    if (_currentEncode[index] == _PreviousEncode[index] && exited == false)
-                    {
-                        position++;
-                    }
-                    else
-                    {
-                        exited = true;
-                        if (position > 0)
-                        {
-                            _ResultBuilder.Append(position.ToString());
-                            _ResultBuilder.Append("%");
-                            position = 0;
-                        }
-                        _ResultBuilder.Append(_currentEncode[index]);
-                    }
-                }
-                else if (index >= _PreviousEncode.Length && index < _currentEncode.Length)
-                {
-                    // Prev is shorter
-                    if (position > 0)
-                    {
-                        _ResultBuilder.Append(position.ToString());
-                        _ResultBuilder.Append("%");
-                        position = 0;
-                    }
-                    _ResultBuilder.Append(_currentEncode[index]);
-                }
-                else if (index >= _currentEncode.Length)
-                {
-                    // Current is shorter
                     break;
                 }
             }
+
+            if (_position > 0)
+            {
+                _ResultBuilder.Append(_position.ToString());
+                _ResultBuilder.Append("%");
+                _ResultBuilder.Append(_currentEncode, _position, _currentEncode.Length - _position);
+                _PreviousEncode = value.ToCharArray(); // #Should it be uncompressed?
+                return _ResultBuilder.ToString();
+            }
+
             _PreviousEncode = value.ToCharArray();
-            return _ResultBuilder.ToString();
+            return value;
         }
     }
 }

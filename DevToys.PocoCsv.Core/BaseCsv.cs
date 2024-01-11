@@ -93,9 +93,16 @@ namespace DevToys.PocoCsv.Core
         internal protected ImmutableArray<ICustomCsvParse<UInt64?>> _CustomParserUInt64Nullable;
         internal protected ImmutableArray<ICustomCsvParse<BigInteger?>> _CustomParserBigIntegerNullable;
 
+
+
         internal protected ImmutableArray<Func<object, object[], object>> _CustomParserCall;
 
+        internal protected ImmutableArray<ICustomCsvParse> _ICustomCsvParseBase;
+
         internal protected Func<object, object[], object>[] __CustomParserCall = null;
+
+        internal protected ICustomCsvParse[] __ICustomCsvParseBase;
+
 
         internal protected CsvAttribute _CsvAttribute;
 
@@ -172,6 +179,7 @@ namespace DevToys.PocoCsv.Core
             __CustomParserBigIntegerNullable = new ICustomCsvParse<BigInteger?>[size];
 
             __CustomParserCall = new Func<object, object[], object>[size];
+            __ICustomCsvParseBase = new ICustomCsvParse[size];
         }
 
         internal protected void InitImmutableArray()
@@ -211,7 +219,10 @@ namespace DevToys.PocoCsv.Core
             _CustomParserUInt32Nullable = __CustomParserUInt32Nullable.ToImmutableArray();
             _CustomParserUInt64Nullable = __CustomParserUInt64Nullable.ToImmutableArray();
             _CustomParserBigIntegerNullable = __CustomParserBigIntegerNullable.ToImmutableArray();
+
             _CustomParserCall = __CustomParserCall.ToImmutableArray();
+            _ICustomCsvParseBase = __ICustomCsvParseBase.ToImmutableArray();
+
         }
 
         /// <summary>

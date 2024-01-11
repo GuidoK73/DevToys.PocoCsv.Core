@@ -27,6 +27,9 @@ namespace TestProject2
             }
         }
 
+        public void Reading(int colIndex, int cellPosition, char c)
+        { }
+
         public string Write(bool? value)
         {
             if (value.HasValue)
@@ -51,6 +54,9 @@ namespace TestProject2
             }
             return value.ToString();
         }
+
+        public void Reading(int colIndex, int cellPosition, char c)
+        { }
 
         public string Write(string value)
         {

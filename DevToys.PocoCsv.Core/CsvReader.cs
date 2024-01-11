@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
@@ -57,6 +58,8 @@ namespace DevToys.PocoCsv.Core
         private ImmutableArray<Action<T, UInt32?>> _PropertySettersUInt32Null;
         private ImmutableArray<Action<T, UInt64?>> _PropertySettersUInt64Null;
         private ImmutableArray<Action<T, BigInteger?>> _PropertySettersBigIntegerNull;
+
+        
 
         private readonly List<CsvReadError> _Errors = new List<CsvReadError>();
         private readonly StringBuilder _sbValue = new StringBuilder(127);
@@ -430,6 +433,8 @@ namespace DevToys.PocoCsv.Core
         //  \n = LF(Line Feed) → Used as a new line character in Unix/Mac OS X
         //  \r\n = CR + LF → Used as a new line character in Windows
 
+        int _colPosition = -1;
+
         /// <summary>
         /// reads the CsvLine
         /// </summary>
@@ -444,8 +449,10 @@ namespace DevToys.PocoCsv.Core
             _byte = 0;
             _nextByte = 0;
             _colIndex = 0;
-            
-            for(;;)
+            _colPosition = -1;
+
+
+            for (;;)
             {
                 _byte = _StreamReader.BaseStream.ReadByte();
                 if (_state == State.Normal)
@@ -508,7 +515,7 @@ namespace DevToys.PocoCsv.Core
                         break; // end the while loop.
                     }
                     lineLength++;
-                    _sbValue.Append((char)_byte);
+                    AppendingChar();
                     continue;
                 }
                 else if (_state == State.Escaped)
@@ -550,13 +557,13 @@ namespace DevToys.PocoCsv.Core
                         }
                     }
                     lineLength++;
-                    _sbValue.Append((char)_byte);
+                    AppendingChar();
                     continue;
                 }
                 else if (_state == State.EscapedEscape)
                 {
                     lineLength++;
-                    _sbValue.Append((char)_byte);
+                    AppendingChar();
                     _state = State.Escaped;
                     continue;
                 }
@@ -583,6 +590,16 @@ namespace DevToys.PocoCsv.Core
                 }
             }
             return _result;
+        }
+
+        private void AppendingChar()
+        {
+            _colPosition++;
+            _sbValue.Append((char)_byte);
+            if (_colIndex < _propertyCount && _ICustomCsvParseBase[_colIndex] != null)
+            {
+                _ICustomCsvParseBase[_colIndex].Reading(_colIndex, _colPosition, (char)_byte);
+            }
         }
 
         private void SetValue(T targetObject)
@@ -2024,6 +2041,7 @@ namespace DevToys.PocoCsv.Core
                 {
                     SetCustomParserType(property.Index, property.Attrib.CustomParserType, property.Property.Name);
                     __CustomParserCall[property.Index] = DelegateFactory.InstanceMethod(property.Attrib.CustomParserType, "Read", typeof(StringBuilder));
+                    __ICustomCsvParseBase[property.Index] = __CustomParserString[property.Index];
                 }
 
                 if (propertyType == typeof(string))
@@ -2456,6 +2474,18 @@ namespace DevToys.PocoCsv.Core
                     __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBigIntegerNullable, "Read", typeof(StringBuilder));
                 }
             }
+        }
+
+
+
+        private Action<T, object> CreateSetter(PropertyInfo property)
+        {
+            var instance = Expression.Parameter(typeof(T), "instance");
+            var value = Expression.Parameter(typeof(object), "value");
+            var propertyAccess = Expression.Property(instance, property);
+            var convert = Expression.Convert(value, property.PropertyType);
+            var assign = Expression.Assign(propertyAccess, convert);
+            return Expression.Lambda<Action<T, object>>(assign, instance, value).Compile();
         }
     }
 }
