@@ -10,10 +10,13 @@ namespace DevToys.PocoCsv.Core
         /// if not used, leave the method body empty.
         /// c is the character to use in the result text, escaping has already been done at this point.
         /// </summary>
-        /// <param name="colIndex"></param>
-        /// <param name="cellPosition"></param>
-        /// <param name="c">c is the character to use in the result text, escaping has already been done at this point.</param>
-        void Reading(int colIndex, int cellPosition, char c);
+        /// <param name="line">Current line number.</param>
+        /// <param name="colIndex">Current column index.</param>
+        /// <param name="readerPos">Reader position in document.</param>
+        /// <param name="linePos">Position on csv line.</param>
+        /// <param name="colPos">Position within column.</param>
+        /// <param name="c">Current read char.</param>
+        void Reading(int line, int colIndex, long readerPos, int linePos, int colPos, char c);
     }
 
     /// <summary>

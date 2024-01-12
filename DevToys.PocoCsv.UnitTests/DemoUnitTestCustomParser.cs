@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Text;
 
-namespace TestProject2
+namespace DevToys.PocoCsv.UnitTests
 {
     public class ParseBooleanNullable : ICustomCsvParse<bool?>
     {
@@ -27,7 +27,7 @@ namespace TestProject2
             }
         }
 
-        public void Reading(int colIndex, int cellPosition, char c)
+        public void Reading(int line, int colIndex, long readerPos, int linePos, int colPos, char c)
         { }
 
         public string Write(bool? value)
@@ -55,7 +55,7 @@ namespace TestProject2
             return value.ToString();
         }
 
-        public void Reading(int colIndex, int cellPosition, char c)
+        public void Reading(int line, int colIndex, long readerPos, int linePos, int colPos, char c)
         { }
 
         public string Write(string value)

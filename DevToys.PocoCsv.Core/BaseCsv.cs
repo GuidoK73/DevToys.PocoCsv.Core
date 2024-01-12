@@ -14,6 +14,7 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public abstract class BaseCsv
     {
+        // Keep boxing at a minimum.
         internal protected ICustomCsvParse<string>[] __CustomParserString = null;
         internal protected ICustomCsvParse<Guid>[] __CustomParserGuid = null;
         internal protected ICustomCsvParse<Boolean>[] __CustomParserBoolean = null;

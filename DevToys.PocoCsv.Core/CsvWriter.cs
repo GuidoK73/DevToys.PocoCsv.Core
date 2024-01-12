@@ -16,6 +16,7 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvWriter<T> : BaseCsv, IDisposable where T : class, new()
     {
+        // Keep boxing at a minimum.
         private ImmutableArray<Func<T, object>> _PropertyGetterByteArray;
         private ImmutableArray<Func<T, Int32>> _PropertyGetterEnum;
         private ImmutableArray<Func<T, string>> _PropertyGetterString;
@@ -433,7 +434,8 @@ namespace DevToys.PocoCsv.Core
             }
             if (_value != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _value.ToString()));
+
+                _StreamWriter.Write(CsvUtils.Esc(_Separator, _value));
             }
             else
             {

@@ -1,21 +1,21 @@
 ﻿using DevToys;
 using DevToys.PocoCsv.Core;
-using DevToys.PocoCsv.Core.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.IO;
 using System.Linq;
-using TestProject2.Models;
+using DevToys.PocoCsv.UnitTests.Models;
 
-namespace TestProject2
+namespace DevToys.PocoCsv.UnitTests
 {
     [TestClass]
-    public class DemoUnitTestDataTable
+    public class DemoUnitTestStreamReader
     {
         [TestMethod]
-        public void TestDataTable()
+        public void TestStreamReader()
         {
+
             string _file = System.IO.Path.GetTempFileName();
 
             using (CsvWriter<CsvSimple> _writer = new(_file) { Separator = ',' })
@@ -29,21 +29,30 @@ namespace TestProject2
 
             _w.Start();
 
-            DataTable _table = new DataTable();
-            _table.ImportCsv(_file, ',', true);
 
+            List<string[]> _rows = new List<string[]>();
+
+            using (CsvStreamReader _reader = new CsvStreamReader(_file))
+            {
+                _reader.Separator = ',';
+
+                _reader.Skip();
+
+                while (!_reader.EndOfStream)
+                {
+                    string[] _values = _reader.ReadCsvLine();
+                    _rows.Add(_values);
+                }
+            }
 
             _w.Stop();
             Console.WriteLine(_w.Duration);
-
-            _file = System.IO.Path.GetTempFileName();
-            _table.ExportCsv(_file, ',');
-
         }
+
 
         private IEnumerable<CsvSimple> LargeData()
         {
-            for (int ii = 0; ii < 1000000; ii++)
+            for (int ii = 0; ii < 10000000; ii++)
             {
                 CsvSimple _line = new()
                 {

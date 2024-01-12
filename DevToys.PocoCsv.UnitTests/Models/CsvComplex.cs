@@ -5,21 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestProject2.Models
+namespace DevToys.PocoCsv.UnitTests.Models
 {
-    public sealed class CsvSimple
+    public sealed class CsvComplex
     {
         [Column(Index = 5)]
         public string AfBij { get; set; }
 
         [Column(Index = 6)]
-        public string Bedrag { get; set; }
+        public decimal Bedrag { get; set; }
 
         [Column(Index = 4)]
         public string Code { get; set; }
 
         [Column(Index = 0)]
-        public string Datum { get; set; }
+        public DateTime? Datum { get; set; }
 
         [Column(Index = 8)]
         public string Mededelingen { get; set; }
@@ -36,10 +36,4 @@ namespace TestProject2.Models
         [Column(Index = 3)]
         public string Tegenrekening { get; set; }
     }
-
-
-
-
-
-
 }

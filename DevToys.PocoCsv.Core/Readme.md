@@ -1,7 +1,5 @@
 ﻿# DevToys.PocoCsv.Core 
 
-## One of the fastest csv reader deserializer available.
-
 DevToys.PocoCsv.Core is a class library to read and write to Csv.
 It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader<T> and CsvWriter<T>.
 
@@ -81,6 +79,8 @@ or
         var _materialized = _data.ToList();
     }    
 ~~~
+
+The reader is for performance reasons unrelated to the CsvStreamReader.
 
 The reader does not care about the number of columns in a row, as long as the highest index on the Column Attribute does not exceed the number of columns in a row.\
 You only specify the column indexes you need.
@@ -175,6 +175,9 @@ Methods / Properties:
 |**Culture**|Sets the default Culture for decimal / double conversions etc. For more complex conversions use the ICustomCsvParse interface.|
 |**Encoding**|The character encoding to use.|
 
+The writer is for performance reasons unrelated to the CsvStreamWriter.
+
+
 # ColumnAttribute
 
 The column attribute defines the properties to be serialized or deserialized.
@@ -227,7 +230,7 @@ All values and characters at this point are unescaped / escaped as required by t
             return null;
         }
 
-        public void Reading(int colIndex, int cellPosition, char c)
+        public void Reading(int line, int colIndex, long readerPos, int linePos, int colPos, char c)
         { }
 
         // for CsvWriter
@@ -256,7 +259,7 @@ All values and characters at this point are unescaped / escaped as required by t
 
         public Decimal Read(StringBuilder value) => Decimal.Parse(value.ToString(), _culture);
 
-        public void Reading(int colIndex, int cellPosition, char c)
+        public void Reading(int line, int colIndex, long readerPos, int linePos, int colPos, char c)
         { }
 
         public string Write(Decimal value) => value.ToString(_culture);

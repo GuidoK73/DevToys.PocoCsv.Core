@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using TestProject2.Models;
+using DevToys.PocoCsv.UnitTests.Models;
 using static System.Net.WebRequestMethods;
 
-namespace TestProject2
+namespace DevToys.PocoCsv.UnitTests
 {
     [TestClass]
     public class DemoUnitTestLargeData

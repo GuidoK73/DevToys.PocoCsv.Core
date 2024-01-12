@@ -938,15 +938,18 @@
         <member name="F:DevToys.PocoCsv.Core.NetType.Null">
             <summary>Type is Null</summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.ICustomCsvParse.Reading(System.Int32,System.Int32,System.Char)">
+        <member name="M:DevToys.PocoCsv.Core.ICustomCsvParse.Reading(System.Int32,System.Int32,System.Int64,System.Int32,System.Int32,System.Char)">
             <summary>
             This method is called when using CsvReader. It can be used as a support function to the Read function when reading per char might be a performance requirement.
             if not used, leave the method body empty.
             c is the character to use in the result text, escaping has already been done at this point.
             </summary>
-            <param name="colIndex"></param>
-            <param name="cellPosition"></param>
-            <param name="c">c is the character to use in the result text, escaping has already been done at this point.</param>
+            <param name="line">Current line number.</param>
+            <param name="colIndex">Current column index.</param>
+            <param name="readerPos">Reader position in document.</param>
+            <param name="linePos">Position on csv line.</param>
+            <param name="colPos">Position within column.</param>
+            <param name="c">Current read char.</param>
         </member>
         <member name="T:DevToys.PocoCsv.Core.ICustomCsvParse`1">
             <summary>

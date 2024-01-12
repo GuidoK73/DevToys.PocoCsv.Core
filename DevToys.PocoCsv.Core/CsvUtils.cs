@@ -20,6 +20,10 @@ namespace DevToys.PocoCsv.Core
             {
                 return s;
             }
+            if (s.IndexOf('"') == -1)
+            {
+                return $"\"{s}\"";
+            }
             return $"\"{s.Replace("\"", "\"\"")}\"";
         }
 

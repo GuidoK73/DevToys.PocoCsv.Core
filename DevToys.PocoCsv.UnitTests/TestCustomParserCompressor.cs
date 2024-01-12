@@ -8,9 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using TestProject2.Models;
+using DevToys.PocoCsv.UnitTests.Models;
 
-namespace TestProject2
+namespace DevToys.PocoCsv.UnitTests
 {
     [TestClass]
     public class TestCustomParserCompressor
@@ -137,7 +137,7 @@ namespace TestProject2
             return false;
         }
 
-        public void Reading(int colIndex, int cellPosition, char c)
+        public void Reading(int line, int colIndex, long readerPos, int linePos, int colPos, char c)
         { }
 
         public string Write(bool value) => value == true ? "1" : "0";
@@ -162,7 +162,7 @@ namespace TestProject2
             return _value;
         }
 
-        public void Reading(int colIndex, int cellPosition, char c)
+        public void Reading(int line, int colIndex, long readerPos, int linePos, int colPos, char c)
         {
             if (c == '%')
             {

@@ -20,6 +20,7 @@ namespace DevToys.PocoCsv.Core
     {
         private StreamReader _StreamReader;
 
+        // Keep boxing at a minimum.
         private ImmutableArray<Action<T, Int32>> _PropertySettersEnum;
         private ImmutableArray<Action<object, object>> _PropertySetters;
         private ImmutableArray<Action<T, string>> _PropertySettersString;
@@ -58,8 +59,6 @@ namespace DevToys.PocoCsv.Core
         private ImmutableArray<Action<T, UInt32?>> _PropertySettersUInt32Null;
         private ImmutableArray<Action<T, UInt64?>> _PropertySettersUInt64Null;
         private ImmutableArray<Action<T, BigInteger?>> _PropertySettersBigIntegerNull;
-
-        
 
         private readonly List<CsvReadError> _Errors = new List<CsvReadError>();
         private readonly StringBuilder _sbValue = new StringBuilder(127);
@@ -432,6 +431,7 @@ namespace DevToys.PocoCsv.Core
         //  \r = CR(Carriage Return) → Used as a new line character in Mac OS before X
         //  \n = LF(Line Feed) → Used as a new line character in Unix/Mac OS X
         //  \r\n = CR + LF → Used as a new line character in Windows
+        //  in case of CR, peek next char, when LF, then skip the CR and let newline happen on LF.
 
         int _colPosition = -1;
 
@@ -569,7 +569,6 @@ namespace DevToys.PocoCsv.Core
                 }
             }
 
-
             if (lineLength == 0)
             {
                 switch (EmptyLineBehaviour)
@@ -598,7 +597,7 @@ namespace DevToys.PocoCsv.Core
             _sbValue.Append((char)_byte);
             if (_colIndex < _propertyCount && _ICustomCsvParseBase[_colIndex] != null)
             {
-                _ICustomCsvParseBase[_colIndex].Reading(_colIndex, _colPosition, (char)_byte);
+                _ICustomCsvParseBase[_colIndex].Reading(_CurrentLine, _colIndex, _StreamReader.BaseStream.Position, lineLength, _colPosition, (char)_byte);
             }
         }
 

@@ -4,9 +4,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TestProject2.Models;
+using DevToys.PocoCsv.UnitTests.Models;
 
-namespace TestProject2
+namespace DevToys.PocoCsv.UnitTests
 {
     [TestClass]
     public class DemoUnitTestLargeDataComplex

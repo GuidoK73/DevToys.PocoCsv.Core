@@ -5,9 +5,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using TestProject2.Models;
+using DevToys.PocoCsv.UnitTests.Models;
 
-namespace TestProject2
+namespace DevToys.PocoCsv.UnitTests
 {
 
     [TestClass]

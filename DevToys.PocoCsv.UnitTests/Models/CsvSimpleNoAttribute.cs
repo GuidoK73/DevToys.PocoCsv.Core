@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestProject2.Models
+namespace DevToys.PocoCsv.UnitTests.Models
 {
 
     public sealed class CsvSimpleNoAttribute

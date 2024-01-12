@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DevToys
+namespace DevToys.PocoCsv.UnitTests
 {
     public class StopWatch
     {
