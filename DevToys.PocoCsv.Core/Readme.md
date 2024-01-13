@@ -202,7 +202,7 @@ All values and characters at this point are unescaped / escaped as required by t
 |Interface Method|Description|
 |:-|:-|
 |Read|This function is called when using CsvReader</br> Return value must be the same as the property type the CustomParser is placed on.|
-|Reading|This method is called when using CsvReader. It can be used as a support function to the Read function when reading per char might be a performance requirement.</br> if not used, leave the method body empty.</br>c is the character to use in the result text, escaping has already been done at this point.|
+|Reading|This method is called when using CsvReader. It can be used as a support function to the Read function when reading per char might be a performance requirement.</br> don't implement this interface when you don't need it.</br>c is the character to use in the result text and should be appended to the value StringBuilder, escaping has already been done at this point.|
 |Write|This function is called when using CsvWriter</br> T value must be the same as the property type the CustomParser is placed on.|
 
 
@@ -230,8 +230,11 @@ All values and characters at this point are unescaped / escaped as required by t
             return null;
         }
 
-        public void Reading(int line, int colIndex, long readerPos, int linePos, int colPos, char c)
-        { }
+        // this is the default implementation for Reading method in order to work. you can normally leave this out.
+        public void Reading(StringBuilder value, int line, int colIndex, long readerPos, int linePos, int colPos, char c)  
+        {
+            value.Append(c);
+        }
 
         // for CsvWriter
         public string Write(bool? value)
@@ -258,9 +261,6 @@ All values and characters at this point are unescaped / escaped as required by t
         }
 
         public Decimal Read(StringBuilder value) => Decimal.Parse(value.ToString(), _culture);
-
-        public void Reading(int line, int colIndex, long readerPos, int linePos, int colPos, char c)
-        { }
 
         public string Write(Decimal value) => value.ToString(_culture);
     }

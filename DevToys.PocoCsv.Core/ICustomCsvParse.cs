@@ -16,7 +16,7 @@ namespace DevToys.PocoCsv.Core
         /// <param name="linePos">Position on csv line.</param>
         /// <param name="colPos">Position within column.</param>
         /// <param name="c">Current read char.</param>
-        void Reading(int line, int colIndex, long readerPos, int linePos, int colPos, char c);
+        void Reading(StringBuilder value, int line, int colIndex, long readerPos, int linePos, int colPos, char c) => value.Append(c);
     }
 
     /// <summary>

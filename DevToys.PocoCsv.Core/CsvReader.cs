@@ -594,10 +594,13 @@ namespace DevToys.PocoCsv.Core
         private void AppendingChar()
         {
             _colPosition++;
-            _sbValue.Append((char)_byte);
             if (_colIndex < _propertyCount && _ICustomCsvParseBase[_colIndex] != null)
             {
-                _ICustomCsvParseBase[_colIndex].Reading(_CurrentLine, _colIndex, _StreamReader.BaseStream.Position, lineLength, _colPosition, (char)_byte);
+                _ICustomCsvParseBase[_colIndex].Reading(_sbValue, _CurrentLine, _colIndex, _StreamReader.BaseStream.Position, lineLength, _colPosition, (char)_byte);
+            }
+            else
+            {
+                _sbValue.Append((char)_byte);
             }
         }
 

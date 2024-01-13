@@ -137,66 +137,61 @@ namespace DevToys.PocoCsv.UnitTests
             return false;
         }
 
-        public void Reading(int line, int colIndex, long readerPos, int linePos, int colPos, char c)
-        { }
 
         public string Write(bool value) => value == true ? "1" : "0";
     }
 
     public class ParsePathCompressor : ICustomCsvParse<string>
     {
-        StringBuilder _ResultBuilder = new StringBuilder(256);
-
-        StringBuilder _PrevBuilder = new StringBuilder(256);
-
-        private char[] _PreviousEncode = null;
-
-
+        StringBuilder _ReaderPrev = new StringBuilder(256);
 
         public string Read(StringBuilder source)
         {
-            string _value = _ResultBuilder.ToString();
-            _PrevBuilder.Clear();
-            _PrevBuilder.Append(_ResultBuilder);
-            _ResultBuilder.Clear();
+            string _value = source.ToString();
+            _ReaderPrev.Clear();
+            _ReaderPrev.Append(source);
             return _value;
         }
 
-        public void Reading(int line, int colIndex, long readerPos, int linePos, int colPos, char c)
+        public void Reading(StringBuilder value, int line, int colIndex, long readerPos, int linePos, int colPos, char c)
         {
             if (c == '%')
             {
-                string _number = _ResultBuilder.ToString();
-                _ResultBuilder.Clear();
+                string _number = value.ToString();
+                value.Clear();
                 bool _succes = int.TryParse(_number, out int _length);
                 if (_succes)
                 {
-                    _ResultBuilder.Append(_PrevBuilder, 0, _length);
+                    value.Append(_ReaderPrev, 0, _length);
                 }
                 return;
             }
 
-            _ResultBuilder.Append(c);
+            value.Append(c);
         }
+
+
+        StringBuilder _WriteResult = new StringBuilder(256);
+        private char[] _WriterPrev = null;
 
         public string Write(string value)
         {
-            _ResultBuilder.Clear();
+            _WriteResult.Clear();
 
-            if (_PreviousEncode == null || _PreviousEncode.Length == 0)
+            if (_WriterPrev == null || _WriterPrev.Length == 0)
             {
-                _PreviousEncode = value.ToCharArray();
+                _WriterPrev = value.ToCharArray();
                 return value.ToString();
             }
 
             char[] _currentEncode = value.ToCharArray();
 
-            int _min = (_currentEncode.Length < _PreviousEncode.Length) ? _currentEncode.Length : _PreviousEncode.Length;
+            int _min = (_currentEncode.Length < _WriterPrev.Length) ? _currentEncode.Length : _WriterPrev.Length;
             int _position = 0;
 
             for (_position = 0; _position < _min; _position++)
             {
-                if (_currentEncode[_position] != _PreviousEncode[_position])
+                if (_currentEncode[_position] != _WriterPrev[_position])
                 {
                     break;
                 }
@@ -204,14 +199,14 @@ namespace DevToys.PocoCsv.UnitTests
 
             if (_position > 0)
             {
-                _ResultBuilder.Append(_position.ToString());
-                _ResultBuilder.Append("%");
-                _ResultBuilder.Append(_currentEncode, _position, _currentEncode.Length - _position);
-                _PreviousEncode = value.ToCharArray(); // #Should it be uncompressed?
-                return _ResultBuilder.ToString();
+                _WriteResult.Append(_position.ToString());
+                _WriteResult.Append("%");
+                _WriteResult.Append(_currentEncode, _position, _currentEncode.Length - _position);
+                _WriterPrev = value.ToCharArray(); // #Should it be uncompressed?
+                return _WriteResult.ToString();
             }
 
-            _PreviousEncode = value.ToCharArray();
+            _WriterPrev = value.ToCharArray();
             return value;
         }
     }

@@ -938,7 +938,7 @@
         <member name="F:DevToys.PocoCsv.Core.NetType.Null">
             <summary>Type is Null</summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.ICustomCsvParse.Reading(System.Int32,System.Int32,System.Int64,System.Int32,System.Int32,System.Char)">
+        <member name="M:DevToys.PocoCsv.Core.ICustomCsvParse.Reading(System.Text.StringBuilder,System.Int32,System.Int32,System.Int64,System.Int32,System.Int32,System.Char)">
             <summary>
             This method is called when using CsvReader. It can be used as a support function to the Read function when reading per char might be a performance requirement.
             if not used, leave the method body empty.
