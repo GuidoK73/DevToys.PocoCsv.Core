@@ -27,9 +27,6 @@ namespace DevToys.PocoCsv.UnitTests
             }
         }
 
-        public void Reading(StringBuilder value, int line, int colIndex, long readerPos, int linePos, int colPos, char c) => value.Append(c);
-
-
         public string Write(bool? value)
         {
             if (value.HasValue)
@@ -54,9 +51,6 @@ namespace DevToys.PocoCsv.UnitTests
             }
             return value.ToString();
         }
-
-        public void Reading(StringBuilder value, int line, int colIndex, long readerPos, int linePos, int colPos, char c) => value.Append(c);
-
 
         public string Write(string value)
         {

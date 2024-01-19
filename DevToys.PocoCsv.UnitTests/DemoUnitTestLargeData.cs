@@ -33,29 +33,33 @@ namespace DevToys.PocoCsv.UnitTests
             _w.Stop();
             var _DurationA = _w.Duration;
             Console.WriteLine(_w.Duration);
+            //{00:00:18.4185755}
+
 
             _w.Start();
 
-            //using (var _reader = new CsvReader<CsvSimple>(_file, ',') { BufferSize = 2048 } )
-            //{
-            //    _reader.Open();
 
-            //    var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
-            //}
-            // 00:00:22.3810056
+
+            using (var _reader = new CsvReader<CsvSimple>(_file, ',') { BufferSize = 2048 })
+            {
+                _reader.Open();
+
+                var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
+            }
+            //00:00:22.3810056
             // 00:00:23.2109005
             // 00:00:21.2599918
             // 00:00:20.9277719
             // 00:00:20.4437562
             // 00:00:20.4812967
-            // {00:00:21.3921716}
-            // {00:00:20.5838151}
-            // {00:00:16.5241491}
-            // {00:00:16.7875149}
-            // {00:00:17.0972567}
+            // { 00:00:21.3921716}
+            //{ 00:00:20.5838151}
+            //{ 00:00:16.5241491}
+            //{ 00:00:16.7875149}
+            //{ 00:00:17.0972567}
 
-            //  Reader only 4
-            //  Without SetValue = 14 (setvalue 6 to 7)
+            //Reader only 4
+            //  Without SetValue = 14(setvalue 6 to 7)
             //  Reader process 10
 
             _w.Stop();

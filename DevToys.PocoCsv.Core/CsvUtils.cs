@@ -11,6 +11,8 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public static class CsvUtils
     {
+
+
         /// <summary>
         /// Escape string
         /// </summary>
@@ -24,8 +26,10 @@ namespace DevToys.PocoCsv.Core
             {
                 return $"\"{s}\"";
             }
+
             return $"\"{s.Replace("\"", "\"\"")}\"";
         }
+
 
         /// <summary>
         /// Returns first row of CSV
@@ -136,7 +140,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public static bool GetCsvSeparator(string text, out char separator)
         {
-            char[] _tests = new char[] { ',', ';', '\t', '|' };
+            char[] _tests = new char[] { ',', ';', ':', '\t', '|' };
             foreach (char c in _tests)
             {
                 if (IsCsv(text, c, 20))

@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Reflection.Metadata.Ecma335;
+using System.Text;
 
 namespace DevToys.PocoCsv.Core
 {
@@ -7,9 +9,9 @@ namespace DevToys.PocoCsv.Core
     {
         /// <summary>
         /// This method is called when using CsvReader. It can be used as a support function to the Read function when reading per char might be a performance requirement.
-        /// if not used, leave the method body empty.
         /// c is the character to use in the result text, escaping has already been done at this point.
         /// </summary>
+        /// <param name="value">Stringbuilder to be appended with c ( value.Append(c); )</param>
         /// <param name="line">Current line number.</param>
         /// <param name="colIndex">Current column index.</param>
         /// <param name="readerPos">Reader position in document.</param>
@@ -22,7 +24,7 @@ namespace DevToys.PocoCsv.Core
     /// <summary>
     /// Implement Custom parser by assigning the CustomParserType on ColumnAttribute
     /// </summary>
-    public interface ICustomCsvParse<T> : ICustomCsvParse
+    public interface ICustomCsvParse<T> : ICustomCsvParse 
     {
         /// <summary>
         /// This function is called when using CsvReader

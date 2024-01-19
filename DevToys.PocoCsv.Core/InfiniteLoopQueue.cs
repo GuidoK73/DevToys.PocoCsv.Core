@@ -2,6 +2,8 @@
 {
     /// <summary>
     /// A Queue that only holds last x items of T
+    /// The infinite loop queue does not reorder on Add it only maintains a last add position and loop around the size of the queue. 
+    /// GetQueue recontstructs the correct queue order based on last position.
     /// </summary>
     internal sealed class InfiniteLoopQueue<T>
     {

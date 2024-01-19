@@ -941,9 +941,9 @@
         <member name="M:DevToys.PocoCsv.Core.ICustomCsvParse.Reading(System.Text.StringBuilder,System.Int32,System.Int32,System.Int64,System.Int32,System.Int32,System.Char)">
             <summary>
             This method is called when using CsvReader. It can be used as a support function to the Read function when reading per char might be a performance requirement.
-            if not used, leave the method body empty.
             c is the character to use in the result text, escaping has already been done at this point.
             </summary>
+            <param name="value">Stringbuilder to be appended with c ( value.Append(c); )</param>
             <param name="line">Current line number.</param>
             <param name="colIndex">Current column index.</param>
             <param name="readerPos">Reader position in document.</param>
@@ -971,6 +971,8 @@
         <member name="T:DevToys.PocoCsv.Core.InfiniteLoopQueue`1">
             <summary>
             A Queue that only holds last x items of T
+            The infinite loop queue does not reorder on Add it only maintains a last add position and loop around the size of the queue. 
+            GetQueue recontstructs the correct queue order based on last position.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.InfiniteLoopQueue`1.#ctor(System.Int32)">

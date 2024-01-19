@@ -79,10 +79,6 @@ namespace DevToys.PocoCsv.UnitTests
         }
     }
 
-
-
-
-
     public enum DiffType
     {
         None,
@@ -136,7 +132,6 @@ namespace DevToys.PocoCsv.UnitTests
             }
             return false;
         }
-
 
         public string Write(bool value) => value == true ? "1" : "0";
     }

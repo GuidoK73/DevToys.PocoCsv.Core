@@ -29,12 +29,15 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Authors>GuidoK73</Authors>
 	<PackageTags>csv;export;import;comma separated;4180;delimited;poco;csv parser;parse csv;DataTable;Import Csv;Export Csv;Csv Object</PackageTags>
     <Company />
-    <Version>3.1.9</Version>
+    <Version>3.1.10</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2023</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
     <PackageReleaseNotes>
+3.1.10
+- Minor adjustments
+
 3.1.9
 - Changed how the ICustomCsvParser.Reading method works, now has default implementation so is not nececary to implement.
 When implemented, c should be at least appended to value ( value.Append(c); ).
