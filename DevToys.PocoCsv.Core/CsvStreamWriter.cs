@@ -13,8 +13,8 @@ namespace DevToys.PocoCsv.Core
         private const char _CR = '\r';
         private const char _LF = '\n';
         private const string _CRLF = "\r\n";
+        private char[] _EscapeChars = null;
 
-        private readonly StringBuilder _sb = new StringBuilder();
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the default encoding and buffer size.
@@ -66,10 +66,27 @@ namespace DevToys.PocoCsv.Core
         {
         }
 
+
+        private char _Separator = ',';
+
         /// <summary>
         /// Csv Seperator to use default ','
         /// </summary>
-        public char Separator { get; set; } = ',';
+        /// <summary>
+        /// Csv Seperator to use default ','
+        /// </summary>
+        public char Separator
+        {
+            get
+            {
+                return _Separator;
+            }
+            set
+            {
+                _Separator = value;
+                InitializeEscapeChars();
+            }
+        }
 
         /// <summary>
         /// \r\n = CR + LF → Used as a new line character in Windows.
@@ -84,30 +101,35 @@ namespace DevToys.PocoCsv.Core
         /// <param name="values">Array of strings</param>
         public void WriteCsvLine(params string[] values)
         {
-            _sb.Length = 0;
+            if (BaseStream.Position == 0)
+            {
+                Flush();
+            }
 
             if (BaseStream.Position > 0)
             {
                 if (CRLFMode == CRLFMode.CRLF)
                 {
-                    _sb.Append(_CRLF);
+                    Write(_CRLF);
                 }
                 else if (CRLFMode == CRLFMode.CR)
                 {
-                    _sb.Append(_CR);
+                    Write(_CR);
                 }
                 else if (CRLFMode == CRLFMode.LF)
                 {
-                    _sb.Append(_LF);
+                    Write(_LF);
                 }
             }
 
             for (int ii = 0; ii < values.Length; ii++)
             {
-                _sb.Append(CsvUtils.Esc(Separator, values[ii] ?? "")).Append(Separator);
+                Write(Esc(values[ii] ?? ""));
+                if (ii < values.Length - 1)
+                {
+                    Write(Separator);
+                }
             }
-            _sb.Length--;
-            BaseStream.Write(Encoding.Default.GetBytes(_sb.ToString()), 0, _sb.Length);
         }
 
         /// <summary>
@@ -116,62 +138,93 @@ namespace DevToys.PocoCsv.Core
         /// <param name="values">Array of objects</param>
         public void WriteCsvLine(params object[] values)
         {
-            _sb.Length = 0;
+            if (BaseStream.Position == 0)
+            {
+                Flush();
+            }
 
             if (BaseStream.Position > 0)
             {
                 if (CRLFMode == CRLFMode.CRLF)
                 {
-                    _sb.Append(_CRLF);
+                    Write(_CRLF);
                 }
                 else if (CRLFMode == CRLFMode.CR)
                 {
-                    _sb.Append(_CR);
+                    Write(_CR);
                 }
                 else if (CRLFMode == CRLFMode.LF)
                 {
-                    _sb.Append(_LF);
+                    Write(_LF);
                 }
             }
 
             for (int ii = 0; ii < values.Length; ii++)
             {
-                _sb.Append(CsvUtils.Esc(Separator, values[ii].ToString() ?? "")).Append(Separator);
+                Write(Esc(values[ii] != null ? values[ii].ToString() : ""));
+                if (ii < values.Length - 1)
+                {
+                    Write(Separator);
+                }
             }
-            _sb.Length--;
-            BaseStream.Write(Encoding.Default.GetBytes(_sb.ToString()), 0, _sb.Length);
         }
 
-        /// <summary>
+        /// <summary>: 
         /// Write an array of strings to the Csv Stream and escapes when nececary.
         /// </summary>
         /// <param name="values">Array of strings</param>
         public void WriteCsvLine(IEnumerable<string> values)
         {
-            _sb.Length = 0;
+            if (BaseStream.Position == 0)
+            {
+                Flush();
+            }
 
             if (BaseStream.Position > 0)
             {
                 if (CRLFMode == CRLFMode.CRLF)
                 {
-                    _sb.Append(_CRLF);
+                    Write(_CRLF);
                 }
                 else if (CRLFMode == CRLFMode.CR)
                 {
-                    _sb.Append(_CR);
+                    Write(_CR);
                 }
                 else if (CRLFMode == CRLFMode.LF)
                 {
-                    _sb.Append(_LF);
+                    Write(_LF);
                 }
             }
 
+            bool _first = true;
             foreach (string value in values)
             {
-                _sb.Append(CsvUtils.Esc(Separator, value ?? "")).Append(Separator);
+                if (_first == false)
+                {
+                    Write(Separator);
+                }
+                Write(Esc(value ?? ""));
+                _first = false;
             }
-            _sb.Length--;
-            BaseStream.Write(Encoding.Default.GetBytes(_sb.ToString()), 0, _sb.Length);
+        }
+
+
+        private void InitializeEscapeChars()
+        {
+            _EscapeChars = new char[] { '\r', '\n', '"', _Separator };
+        }
+
+        private string Esc(string s)
+        {
+            if (s.IndexOfAny(_EscapeChars) == -1)
+            {
+                return s;
+            }
+            if (s.IndexOf('"') == -1)
+            {
+                return $"\"{s}\""; // No need for replace.
+            }
+            return $"\"{s.Replace("\"", "\"\"")}\"";
         }
     }
 }

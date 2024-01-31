@@ -7,7 +7,7 @@ namespace Delegates
     /// <summary>
     /// Creates delegates for types members
     /// </summary>
-    public static partial class DelegateFactory
+    internal static partial class DelegateFactory
     {
         /// <summary>
         /// Creates delegate to static property setter with value of property type

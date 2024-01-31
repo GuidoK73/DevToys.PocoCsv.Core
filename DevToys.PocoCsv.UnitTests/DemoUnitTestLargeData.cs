@@ -33,7 +33,8 @@ namespace DevToys.PocoCsv.UnitTests
             _w.Stop();
             var _DurationA = _w.Duration;
             Console.WriteLine(_w.Duration);
-            //{00:00:18.4185755}
+            //{{00:00:15.7702391}}
+            //00:00:08.6757924
 
 
             _w.Start();
@@ -82,8 +83,41 @@ namespace DevToys.PocoCsv.UnitTests
 
         }
 
+
+
+        [TestMethod]
+        public void TestLargeDataCsvStreamWriter()
+        {
+            string _file = System.IO.Path.GetTempFileName();
+
+            var _w = new StopWatch();
+
+            _w.Start();
+
+            using (CsvStreamWriter _writer = new(_file) { Separator = ',' })
+            {
+                foreach (CsvSimple item in LargeData())
+                {
+                    _writer.WriteCsvLine(item.AfBij, item.Bedrag, item.Code, item.Datum, item.Mededelingen, item.Rekening, item.Tegenrekening, item.NaamOmschrijving, item.MutatieSoort);
+                }
+            }
+
+            _w.Stop();
+            var _DurationA = _w.Duration;
+            Console.WriteLine(_w.Duration);
+
+            string _text = System.IO.File.ReadAllText(_file);
+
+            // 00:00:07.5195285
+            // 00:00:06.8875798
+
+        }
+
+
+
         private IEnumerable<CsvSimple> LargeData()
         {
+            // 
             for (int ii = 0; ii < 10000000; ii++)
             {
                 CsvSimple _line = new()

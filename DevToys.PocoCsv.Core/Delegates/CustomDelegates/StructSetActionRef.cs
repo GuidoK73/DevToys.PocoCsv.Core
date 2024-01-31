@@ -13,5 +13,5 @@ namespace Delegates
     /// <typeparam name="TProp">Property type</typeparam>
     /// <param name="i">Structure type instance</param>
     /// <param name="value">Value of indexer to set at given index parameters</param>
-    public delegate void StructSetActionRef<T, in TProp>(ref T i, TProp value);
+    internal delegate void StructSetActionRef<T, in TProp>(ref T i, TProp value);
 }

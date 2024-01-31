@@ -44,5 +44,18 @@ namespace DevToys.PocoCsv.Core
         {
             return $"Line: {LineNumber}, Column: {ColumnIndex}, Property: {PropertyName}, Value: {Value}";
         }
+
+        /// <summary>
+        /// Deconstructor
+        /// </summary>
+        public void Decontruct(out int columnIndex, out string propertyName, out Type propertyType, out string value, out int lineNumber, out Exception exception)
+        {
+            columnIndex = ColumnIndex;
+            propertyName = PropertyName;
+            propertyType = PropertyType;
+            value = Value;
+            lineNumber = LineNumber;
+            exception = Exception;
+        }
     }
 }

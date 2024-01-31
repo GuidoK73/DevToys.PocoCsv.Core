@@ -12,7 +12,7 @@ namespace Delegates.Extensions
     /// <summary>
     /// Compatibility class (wrapper) if version of .NET do not support v4.5 of <see cref="EventInfo"/> class.
     /// </summary>
-    public class CEventInfo
+    internal class CEventInfo
     {
         private readonly EventInfo _event;
 

@@ -15,5 +15,5 @@ namespace Delegates.CustomDelegates
     /// <param name="i">Structure type instance</param>
     /// <param name="i1">Index parameter</param>
     /// <param name="value">Value of indexer to set at given parameter</param>
-    public delegate void StructIndex1SetAction<T, in TI1, in TProp>(ref T i, TI1 i1, TProp value);
+    internal delegate void StructIndex1SetAction<T, in TI1, in TProp>(ref T i, TI1 i1, TProp value);
 }

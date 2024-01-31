@@ -49,5 +49,27 @@ namespace DevToys.PocoCsv.Core
         {
             return Name;
         }
+
+        /// <summary>
+        /// Decontructor.
+        /// </summary>
+        /// <param name="databaseType"></param>
+        /// <param name="dotNetType"></param>
+        /// <param name="index"></param>
+        /// <param name="isLast"></param>
+        /// <param name="name"></param>
+        /// <param name="nullable"></param>
+        /// <param name="sqlDatabaseType"></param>
+        public void Decontruct(out DbType databaseType, out NetType dotNetType, int index, bool isLast, string name, bool nullable, SqlDbType sqlDatabaseType)
+        {
+            databaseType = DatabaseType;
+            dotNetType = DotNetType;
+            index = Index;
+            isLast = IsLast;
+            name = Name;
+            nullable = Nullable;
+            sqlDatabaseType = SqlDatabaseType;
+        }
+
     }
 }

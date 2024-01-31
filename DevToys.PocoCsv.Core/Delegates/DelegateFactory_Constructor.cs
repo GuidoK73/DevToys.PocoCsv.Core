@@ -8,7 +8,7 @@ namespace Delegates
     /// <summary>
     /// Creates delegates for types members
     /// </summary>
-    public static partial class DelegateFactory
+    internal static partial class DelegateFactory
     {
         /// <summary>
         /// Creates delegate for type constructor. Constructed type has to be return type of delegate.

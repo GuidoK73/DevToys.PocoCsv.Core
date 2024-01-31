@@ -7,7 +7,7 @@ namespace Delegates
     /// <summary>
     /// Creates delegates for types members
     /// </summary>
-    public static partial class DelegateFactory
+    internal static partial class DelegateFactory
     {
 #if  !NET35
         /// <summary>

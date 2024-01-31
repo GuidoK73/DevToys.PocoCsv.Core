@@ -5,6 +5,9 @@ using System.Text;
 namespace DevToys.PocoCsv.Core
 {
 
+    /// <summary>
+    /// Implement Custom parser by assigning the CustomParserType on ColumnAttribute
+    /// </summary>
     public interface ICustomCsvParse
     {
         /// <summary>

@@ -64,6 +64,8 @@ namespace DevToys.PocoCsv.Core
         private const char _LF = '\n';
         private const string _CRLF = "\r\n";
 
+        private char[] _EscapeChars = null;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -109,7 +111,18 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Csv Seperator to use default ','
         /// </summary>
-        public char Separator { get; set; } = ',';
+        public char Separator
+        {
+            get
+            {
+                return _Separator;
+            }
+            set
+            {
+                _Separator = value;
+                InitializeEscapeChars();
+            }
+        }
 
         /// <summary>
         /// \r\n = CR + LF → Used as a new line character in Windows.
@@ -187,7 +200,7 @@ namespace DevToys.PocoCsv.Core
                 }
                 if (ii < _MaxColumnIndex)
                 {
-                    _StreamWriter.Write(Separator);
+                    _StreamWriter.Write(_Separator);
                 }
                 _StreamWriter.Flush();
             }
@@ -227,17 +240,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_StreamWriter.BaseStream.Position > 0)
             {
-                if (CRLFMode == CRLFMode.CRLF)
+                switch (CRLFMode)
                 {
-                    _StreamWriter.Write(_CRLF);
-                }
-                else if (CRLFMode == CRLFMode.CR)
-                {
-                    _StreamWriter.Write(_CR);
-                }
-                else if (CRLFMode == CRLFMode.LF)
-                {
-                    _StreamWriter.Write(_LF);
+                    case CRLFMode.CRLF:
+                        _StreamWriter.Write(_CRLF);
+                        break;
+                    case CRLFMode.CR:
+                        _StreamWriter.Write(_CR);
+                        break;
+                    case CRLFMode.LF:
+                        _StreamWriter.Write(_LF);
+                        break;
                 }
             }
             if (row == null && NullValueBehaviour == WriteNullValueBehaviour.EmptyLine)
@@ -249,16 +262,13 @@ namespace DevToys.PocoCsv.Core
             {
                 if (_Properties[index] != null)
                 {
-                    var _property = _Properties[index];
-                    Type targetType = _property.PropertyType;
-
                     string _formatter = _Formatters[index];
                     string _outputNullValue = _OutputNullValues[index];
                     WriteValue(row, index, _formatter, _outputNullValue);
                 }
                 if (index < _MaxColumnIndex)
                 {
-                    _StreamWriter.Write(Separator);
+                    _StreamWriter.Write(_Separator);
                 }
             }
             if (_StreamWriter.BaseStream.Position == 0)
@@ -269,155 +279,166 @@ namespace DevToys.PocoCsv.Core
 
         private void WriteValue(T row, int index, string formatter, string outputNullValue)
         {
-            switch (_PropertyTypes[index])
+            switch (_IsNullable[index])
             {
-                case NetTypeComplete.String:
-                    WriteString(row, index);
+                case false:
+                    switch (_PropertyTypes[index])
+                    {
+                        case NetTypeComplete.String:
+                            WriteString(row, index);
+                            break;
+
+                        case NetTypeComplete.Int32:
+                            WriteInt32(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.Decimal:
+                            WriteDecimal(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.Double:
+                            WriteDouble(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.Guid:
+                            WriteGuid(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.Boolean:
+                            WriteBoolean(row, index);
+                            break;
+
+                        case NetTypeComplete.DateTime:
+                            WriteDateTime(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.Int64:
+                            WriteInt64(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.Single:
+                            WriteSingle(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.DateTimeOffset:
+                            WriteDateTimeOffset(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.TimeSpan:
+                            WriteTimeSpan(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.Byte:
+                            WriteByte(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.SByte:
+                            WriteSByte(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.Int16:
+                            WriteInt16(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.UInt16:
+                            WriteUInt16(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.UInt32:
+                            WriteUInt32(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.UInt64:
+                            WriteUInt64(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.BigInteger:
+                            WriteBigInteger(row, index, formatter);
+                            break;
+
+                        case NetTypeComplete.ByteArray:
+                            WriteByteArray(row, index);
+                            break;
+
+                        case NetTypeComplete.Enum:
+                            WriteEnum(row, index);
+                            break;
+                    }
+
+                    break;
+                case true:
+                    switch (_PropertyTypes[index])
+                    {
+                        case NetTypeComplete.GuidNullable:
+                            WriteGuidNull(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.BooleanNullable:
+                            WriteBooleanNull(row, index, outputNullValue);
+                            break;
+
+                        case NetTypeComplete.DateTimeNullable:
+                            WriteDateTimeNull(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.DateTimeOffsetNullable:
+                            WriteDateTimeOffsetNull(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.TimeSpanNullable:
+                            WriteTimeSpanNull(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.ByteNullable:
+                            WriteByteNull(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.SByteNullable:
+                            WriteSByteNull(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.Int16Nullable:
+                            WriteInt16Null(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.Int32Nullable:
+                            WriteInt32Null(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.Int64Nullable:
+                            WriteInt64Null(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.SingleNullable:
+                            WriteSingleNull(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.DecimalNullable:
+                            WriteDecimalNull(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.DoubleNullable:
+                            WriteDoubleNull(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.UInt16Nullable:
+                            WriteUInt16Null(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.UInt32Nullable:
+                            WriteUInt32Null(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.UInt64Nullable:
+                            WriteUInt64Null(row, index, outputNullValue, formatter);
+                            break;
+
+                        case NetTypeComplete.BigIntegerNullable:
+                            WriteBigIntegerNull(row, index, outputNullValue, formatter);
+                            break;
+                    }
                     break;
 
-                case NetTypeComplete.GuidNullable:
-                    WriteGuidNull(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.BooleanNullable:
-                    WriteBooleanNull(row, index, outputNullValue);
-                    break;
-
-                case NetTypeComplete.DateTimeNullable:
-                    WriteDateTimeNull(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.DateTimeOffsetNullable:
-                    WriteDateTimeOffsetNull(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.TimeSpanNullable:
-                    WriteTimeSpanNull(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.ByteNullable:
-                    WriteByteNull(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.SByteNullable:
-                    WriteSByteNull(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.Int16Nullable:
-                    WriteInt16Null(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.Int32Nullable:
-                    WriteInt32Null(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.Int64Nullable:
-                    WriteInt64Null(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.SingleNullable:
-                    WriteSingleNull(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.DecimalNullable:
-                    WriteDecimalNull(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.DoubleNullable:
-                    WriteDoubleNull(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.UInt16Nullable:
-                    WriteUInt16Null(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.UInt32Nullable:
-                    WriteUInt32Null(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.UInt64Nullable:
-                    WriteUInt64Null(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.BigIntegerNullable:
-                    WriteBigIntegerNull(row, index, outputNullValue, formatter);
-                    break;
-
-                case NetTypeComplete.Guid:
-                    WriteGuid(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.Boolean:
-                    WriteBoolean(row, index);
-                    break;
-
-                case NetTypeComplete.DateTime:
-                    WriteDateTime(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.DateTimeOffset:
-                    WriteDateTimeOffset(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.TimeSpan:
-                    WriteTimeSpan(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.Byte:
-                    WriteByte(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.SByte:
-                    WriteSByte(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.Int16:
-                    WriteInt16(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.Int32:
-                    WriteInt32(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.Int64:
-                    WriteInt64(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.Single:
-                    WriteSingle(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.Decimal:
-                    WriteDecimal(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.Double:
-                    WriteDouble(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.UInt16:
-                    WriteUInt16(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.UInt32:
-                    WriteUInt32(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.UInt64:
-                    WriteUInt64(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.BigInteger:
-                    WriteBigInteger(row, index, formatter);
-                    break;
-
-                case NetTypeComplete.ByteArray:
-                    WriteByteArray(row, index);
-                    break;
-
-                case NetTypeComplete.Enum:
-                    WriteEnum(row, index);
-                    break;
             }
         }
 
@@ -429,13 +450,13 @@ namespace DevToys.PocoCsv.Core
             string _value = _PropertyGetterString[index](row);
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserString[index], new object[] { _value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserString[index], new object[] { _value })));
                 return;
             }
             if (_value != null)
             {
 
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _value));
+                _StreamWriter.Write(Esc(_value));
             }
             else
             {
@@ -466,17 +487,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserGuid[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserGuid[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString()));
+                _StreamWriter.Write(Esc(value.ToString()));
             }
         }
 
@@ -486,7 +507,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserGuidNullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserGuidNullable[index], new object[] { value })));
                 return;
             }
 
@@ -494,16 +515,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString()));
+                    _StreamWriter.Write(Esc(value.Value.ToString()));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -517,11 +538,11 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserBoolean[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserBoolean[index], new object[] { value })));
                 return;
             }
 
-            _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+            _StreamWriter.Write(Esc(value.ToString(Culture)));
         }
 
         private void WriteBooleanNull(T row, int index, string _nullValueDefault)
@@ -530,17 +551,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserBooleanNullable[index], new object[] { value })));
+                _StreamWriter.Write(((string)_CustomParserCall[index](_CustomParserBooleanNullable[index], new object[] { value })));
                 return;
             }
 
             if (value.HasValue)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                _StreamWriter.Write((value.Value.ToString(Culture)));
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write((_nullValueDefault));
             }
             else
             {
@@ -554,17 +575,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserDateTime[index], new object[] { value })));
+                _StreamWriter.Write(((string)_CustomParserCall[index](_CustomParserDateTime[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+                _StreamWriter.Write(Esc(value.ToString(Culture)));
             }
         }
 
@@ -574,7 +595,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserDateTimeNullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserDateTimeNullable[index], new object[] { value })));
                 return;
             }
 
@@ -582,16 +603,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -605,17 +626,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserDateTimeOffset[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserDateTimeOffset[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+                _StreamWriter.Write(Esc(value.ToString(Culture)));
             }
         }
 
@@ -625,7 +646,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserDateTimeOffsetNullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserDateTimeOffsetNullable[index], new object[] { value })));
                 return;
             }
 
@@ -633,16 +654,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -656,17 +677,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserTimeSpan[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserTimeSpan[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString()));
+                _StreamWriter.Write(Esc(value.ToString()));
             }
         }
 
@@ -676,7 +697,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserTimeSpanNullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserTimeSpanNullable[index], new object[] { value })));
                 return;
             }
 
@@ -684,16 +705,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString()));
+                    _StreamWriter.Write(Esc(value.Value.ToString()));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -707,17 +728,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserByte[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserByte[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+                _StreamWriter.Write(Esc(value.ToString(Culture)));
             }
         }
 
@@ -727,7 +748,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserByteNullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserByteNullable[index], new object[] { value })));
                 return;
             }
 
@@ -735,16 +756,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -758,17 +779,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserSByte[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserSByte[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+                _StreamWriter.Write(Esc(value.ToString(Culture)));
             }
         }
 
@@ -778,7 +799,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserSByteNullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserSByteNullable[index], new object[] { value })));
                 return;
             }
 
@@ -786,16 +807,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -809,17 +830,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserInt16[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserInt16[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+                _StreamWriter.Write(Esc(value.ToString(Culture)));
             }
         }
 
@@ -829,7 +850,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserInt16Nullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserInt16Nullable[index], new object[] { value })));
                 return;
             }
 
@@ -837,16 +858,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -860,17 +881,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserInt32[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserInt32[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+                _StreamWriter.Write(Esc(value.ToString(Culture)));
             }
         }
 
@@ -880,7 +901,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserInt32Nullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserInt32Nullable[index], new object[] { value })));
                 return;
             }
 
@@ -888,16 +909,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -911,17 +932,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserInt64[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserInt64[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+                _StreamWriter.Write(Esc(value.ToString(Culture)));
             }
         }
 
@@ -931,7 +952,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserInt64Nullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserInt64Nullable[index], new object[] { value })));
                 return;
             }
 
@@ -939,16 +960,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -962,17 +983,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserSingle[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserSingle[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+                _StreamWriter.Write(Esc(value.ToString(Culture)));
             }
         }
 
@@ -982,7 +1003,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserSingleNullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserSingleNullable[index], new object[] { value })));
                 return;
             }
 
@@ -990,16 +1011,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -1013,17 +1034,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserDecimal[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserDecimal[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+                _StreamWriter.Write(Esc(value.ToString(Culture)));
             }
         }
 
@@ -1033,7 +1054,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserDecimalNullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserDecimalNullable[index], new object[] { value })));
                 return;
             }
 
@@ -1041,16 +1062,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -1064,17 +1085,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserDouble[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserDouble[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+                _StreamWriter.Write(Esc(value.ToString(Culture)));
             }
         }
 
@@ -1084,7 +1105,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserDoubleNullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserDoubleNullable[index], new object[] { value })));
                 return;
             }
 
@@ -1092,16 +1113,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -1115,17 +1136,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserUInt16[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserUInt16[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+                _StreamWriter.Write(Esc(value.ToString(Culture)));
             }
         }
 
@@ -1135,7 +1156,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserUInt16Nullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserUInt16Nullable[index], new object[] { value })));
                 return;
             }
 
@@ -1143,16 +1164,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -1166,17 +1187,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserUInt32[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserUInt32[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+                _StreamWriter.Write(Esc(value.ToString(Culture)));
             }
         }
 
@@ -1186,7 +1207,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserUInt32Nullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserUInt32Nullable[index], new object[] { value })));
                 return;
             }
 
@@ -1194,16 +1215,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -1217,17 +1238,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserUInt64[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserUInt64[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+                _StreamWriter.Write(Esc(value.ToString(Culture)));
             }
         }
 
@@ -1237,17 +1258,17 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserBigInteger[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserBigInteger[index], new object[] { value })));
                 return;
             }
 
             if (!string.IsNullOrEmpty(formatter))
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(formatter, Culture)));
+                _StreamWriter.Write(Esc(value.ToString(formatter, Culture)));
             }
             else
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, value.ToString(Culture)));
+                _StreamWriter.Write(Esc(value.ToString(Culture)));
             }
         }
 
@@ -1257,7 +1278,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserBigIntegerNullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserBigIntegerNullable[index], new object[] { value })));
                 return;
             }
 
@@ -1265,16 +1286,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -1288,7 +1309,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_CustomParserCall[index] != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, (string)_CustomParserCall[index](_CustomParserUInt64Nullable[index], new object[] { value })));
+                _StreamWriter.Write(Esc((string)_CustomParserCall[index](_CustomParserUInt64Nullable[index], new object[] { value })));
                 return;
             }
 
@@ -1296,16 +1317,16 @@ namespace DevToys.PocoCsv.Core
             {
                 if (!string.IsNullOrEmpty(formatter))
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(formatter, Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(formatter, Culture)));
                 }
                 else
                 {
-                    _StreamWriter.Write(CsvUtils.Esc(_Separator, value.Value.ToString(Culture)));
+                    _StreamWriter.Write(Esc(value.Value.ToString(Culture)));
                 }
             }
             else if (_nullValueDefault != null)
             {
-                _StreamWriter.Write(CsvUtils.Esc(_Separator, _nullValueDefault));
+                _StreamWriter.Write(Esc(_nullValueDefault));
             }
             else
             {
@@ -1870,6 +1891,24 @@ namespace DevToys.PocoCsv.Core
                     __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBigIntegerNullable, "Write", typeof(BigInteger?));
                 }
             }
+        }
+
+        private void InitializeEscapeChars()
+        {
+            _EscapeChars = new char[] { '\r', '\n', '"', _Separator };
+        }
+
+        private string Esc(string s)
+        {
+            if (s.IndexOfAny(_EscapeChars) == -1)
+            {
+                return s;
+            }
+            if (s.IndexOf('"') == -1)
+            {
+                return $"\"{s}\""; // No need for replace, just surround with quotes.
+            }
+            return $"\"{s.Replace("\"", "\"\"")}\""; // Unusual replace when string contains '"' 
         }
     }
 }

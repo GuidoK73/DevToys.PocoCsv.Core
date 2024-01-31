@@ -439,10 +439,11 @@ namespace DevToys.PocoCsv.Core
         /// reads the CsvLine
         /// </summary>
         public T Read()
-        {
-            SkipAndReadNext:
-
+        {            
             T _result = new T();
+
+            SkipEmptyLineAndReadNext:
+
             _state = State.Normal;
             _sbValue.Length = 0; // Clear the string buffer.
             lineLength = 0;
@@ -577,7 +578,7 @@ namespace DevToys.PocoCsv.Core
                     case EmptyLineBehaviour.SkipAndReadNext:
                         if (_byte != -1)
                         {
-                            goto SkipAndReadNext;
+                            goto SkipEmptyLineAndReadNext;
                         }
                         return default;
                     case EmptyLineBehaviour.LogError:

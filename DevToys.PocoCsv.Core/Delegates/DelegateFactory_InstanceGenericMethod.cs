@@ -8,7 +8,7 @@ namespace Delegates
     /// <summary>
     /// Creates delegates for types members
     /// </summary>
-    public static partial class DelegateFactory
+    internal static partial class DelegateFactory
     {
         /// <summary>
         /// Creates delegate to non-void generic instance method with unspecified number of parameters passed as array of objects from 

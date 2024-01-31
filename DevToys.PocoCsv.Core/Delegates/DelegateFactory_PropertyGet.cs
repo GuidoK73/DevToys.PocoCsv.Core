@@ -10,7 +10,7 @@ namespace Delegates
     /// <summary>
     /// Creates delegates for types members
     /// </summary>
-    public static partial class DelegateFactory
+    internal static partial class DelegateFactory
     {
         //TODO: Consider PropertyGet(string path="Property1.NestedProperty.SecondNestedProperty")
         //TODO: Consider NestedValueGet(string path="Property1._nestedfield.SecondNestedProperty._secondNestedField")

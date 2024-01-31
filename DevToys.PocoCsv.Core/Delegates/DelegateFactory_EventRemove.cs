@@ -6,7 +6,7 @@ namespace Delegates
     /// <summary>
     /// Creates delegates for types members
     /// </summary>
-    public static partial class DelegateFactory
+    internal static partial class DelegateFactory
     {
         /// <summary>
         /// Creates delegate for removing event handler with source instance as object and event argument type

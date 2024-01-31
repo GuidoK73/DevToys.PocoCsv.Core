@@ -304,6 +304,18 @@
             Returns Name
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvColumnInfo.Decontruct(System.Data.DbType@,DevToys.PocoCsv.Core.NetType@,System.Int32,System.Boolean,System.String,System.Boolean,System.Data.SqlDbType)">
+            <summary>
+            Decontructor.
+            </summary>
+            <param name="databaseType"></param>
+            <param name="dotNetType"></param>
+            <param name="index"></param>
+            <param name="isLast"></param>
+            <param name="name"></param>
+            <param name="nullable"></param>
+            <param name="sqlDatabaseType"></param>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvReader`1">
             <summary>
             Enumerate Csv Stream Reader over T.
@@ -480,6 +492,11 @@
             
              </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReadError.Decontruct(System.Int32@,System.String@,System.Type@,System.String@,System.Int32@,System.Exception@)">
+            <summary>
+            Deconstructor
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamReader">
             <summary>
             Implements a System.IO.TextReader that reads characters from a byte stream in a particular encoding.
@@ -627,6 +644,9 @@
             <summary>
             Csv Seperator to use default ','
             </summary>
+            <summary>
+            Csv Seperator to use default ','
+            </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStreamWriter.CRLFMode">
             <summary>
@@ -648,7 +668,7 @@
             <param name="values">Array of objects</param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.WriteCsvLine(System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
+            <summary>: 
             Write an array of strings to the Csv Stream and escapes when nececary.
             </summary>
             <param name="values">Array of strings</param>
@@ -937,6 +957,11 @@
         </member>
         <member name="F:DevToys.PocoCsv.Core.NetType.Null">
             <summary>Type is Null</summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.ICustomCsvParse">
+            <summary>
+            Implement Custom parser by assigning the CustomParserType on ColumnAttribute
+            </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.ICustomCsvParse.Reading(System.Text.StringBuilder,System.Int32,System.Int32,System.Int64,System.Int32,System.Int32,System.Char)">
             <summary>

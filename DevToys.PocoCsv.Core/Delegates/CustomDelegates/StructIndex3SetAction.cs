@@ -19,6 +19,6 @@ namespace Delegates.CustomDelegates
     /// <param name="i2">Second index parameter</param>
     /// <param name="i3">Third index parameter</param>
     /// <param name="value">Value of indexer to set at given index parameters</param>
-    public delegate void StructIndex3SetAction<T, in TI1, in TI2, in TI3, in TProp>(
+    internal delegate void StructIndex3SetAction<T, in TI1, in TI2, in TI3, in TProp>(
         ref T i, TI1 i1, TI2 i2, TI3 i3, TProp value);
 }

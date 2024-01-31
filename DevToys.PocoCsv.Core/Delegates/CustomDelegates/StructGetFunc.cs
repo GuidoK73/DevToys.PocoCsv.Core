@@ -13,5 +13,5 @@ namespace Delegates.CustomDelegates
     /// <typeparam name="TProp">Property type</typeparam>
     /// <param name="i">Structure type instance</param>
     /// <returns>Value of a property</returns>
-    public delegate TProp StructGetFunc<T, out TProp>(ref T i) where T : struct;
+    internal delegate TProp StructGetFunc<T, out TProp>(ref T i) where T : struct;
 }

@@ -15,5 +15,5 @@ namespace Delegates.CustomDelegates
     /// <param name="instance">Structure type instance</param>
     /// <param name="index">Index parameter</param>
     /// <returns>Value of indexer at given index</returns>
-    public delegate TReturn StructIndex1GetFunc<T, in TI1, out TReturn>(ref T instance, TI1 index) where T : struct;
+    internal delegate TReturn StructIndex1GetFunc<T, in TI1, out TReturn>(ref T instance, TI1 index) where T : struct;
 }
