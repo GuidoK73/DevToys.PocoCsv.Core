@@ -166,10 +166,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Flush all buffers.
         /// </summary>
-        public void Flush()
-        {
-            _StreamWriter.Flush();
-        }
+        public void Flush() => _StreamWriter.Flush();
 
         /// <summary>
         /// Write header with property names of T.

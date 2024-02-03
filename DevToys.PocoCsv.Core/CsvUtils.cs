@@ -140,7 +140,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public static bool GetCsvSeparator(string text, out char separator)
         {
-            char[] _tests = new char[] { ',', ';', ':', '\t', '|' };
+            char[] _tests = new char[] { ',', ';', ':', '\t', '|', (char)1643, (char)1644, (char)1616, (char)1562, (char)890, (char)885, (char)825, (char)806, (char)716 };
             foreach (char c in _tests)
             {
                 if (IsCsv(text, c, 20))
@@ -159,7 +159,6 @@ namespace DevToys.PocoCsv.Core
         public static bool IsCsv(string text, char separator, int sampleRows)
         {
             byte[] byteArray = Encoding.Default.GetBytes(text);
-
             using MemoryStream _stream = new MemoryStream(byteArray);
             using CsvStreamReader _reader = new CsvStreamReader(_stream);
             return IsCsv(_reader, separator, sampleRows);

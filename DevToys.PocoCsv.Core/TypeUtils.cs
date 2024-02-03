@@ -2,6 +2,7 @@
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -207,6 +208,9 @@ namespace DevToys.PocoCsv.Core
 
             if (type == typeof(Double))
                 return NetType.Double;
+
+            if (type == typeof(BigInteger))
+                return NetType.BigInteger;
 
             return NetType.String;
         }

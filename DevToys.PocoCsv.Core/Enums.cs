@@ -138,6 +138,9 @@
         /// <summary>Type is Enum</summary>
         Enum = 18,
 
+        /// <summary>Type is BigInteger </summary>
+        BigInteger = 19,
+
         /// <summary>Type is Null</summary>
         Null = 99
     }
