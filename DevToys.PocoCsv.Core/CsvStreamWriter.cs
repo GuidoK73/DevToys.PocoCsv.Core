@@ -124,7 +124,7 @@ namespace DevToys.PocoCsv.Core
 
             for (int ii = 0; ii < values.Length; ii++)
             {
-                Write(Esc(values[ii] ?? ""));
+                Write(Escape(values[ii] ?? ""));
                 if (ii < values.Length - 1)
                 {
                     Write(Separator);
@@ -161,7 +161,7 @@ namespace DevToys.PocoCsv.Core
 
             for (int ii = 0; ii < values.Length; ii++)
             {
-                Write(Esc(values[ii] != null ? values[ii].ToString() : ""));
+                Write(Escape(values[ii] != null ? values[ii].ToString() : ""));
                 if (ii < values.Length - 1)
                 {
                     Write(Separator);
@@ -203,7 +203,7 @@ namespace DevToys.PocoCsv.Core
                 {
                     Write(Separator);
                 }
-                Write(Esc(value ?? ""));
+                Write(Escape(value ?? ""));
                 _first = false;
             }
         }
@@ -214,7 +214,7 @@ namespace DevToys.PocoCsv.Core
             _EscapeChars = new char[] { '\r', '\n', '"', _Separator };
         }
 
-        private string Esc(string s)
+        private string Escape(string s)
         {
             if (s.IndexOfAny(_EscapeChars) == -1)
             {

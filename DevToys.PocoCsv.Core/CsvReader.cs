@@ -19,7 +19,6 @@ namespace DevToys.PocoCsv.Core
     {
         private StreamReader _StreamReader;
 
-        // Keep boxing at a minimum.
         private ImmutableArray<Action<T, Int32>> _PropertySettersEnum;
         private ImmutableArray<Action<object, object>> _PropertySetters;
         private ImmutableArray<Action<T, string>> _PropertySettersString;
@@ -40,7 +39,6 @@ namespace DevToys.PocoCsv.Core
         private ImmutableArray<Action<T, UInt32>> _PropertySettersUInt32;
         private ImmutableArray<Action<T, UInt64>> _PropertySettersUInt64;
         private ImmutableArray<Action<T, BigInteger>> _PropertySettersBigInteger;
-
         private ImmutableArray<Action<T, Guid?>> _PropertySettersGuidNull;
         private ImmutableArray<Action<T, Boolean?>> _PropertySettersBooleanNull;
         private ImmutableArray<Action<T, DateTime?>> _PropertySettersDateTimeNull;
@@ -160,9 +158,6 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public bool IgnoreColumnAttributes { get; set; } = false;
 
-
-
-
         /// <summary>
         /// Releases all resources used by the System.IO.TextReader object.
         /// </summary>
@@ -188,10 +183,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Flush all buffers.
         /// </summary>
-        public void Flush()
-        {
-            _StreamReader.BaseStream.Flush();
-        }
+        public void Flush() => _StreamReader.BaseStream.Flush();
 
         private void MoveToPosition(long position)
         {
@@ -1952,20 +1944,25 @@ namespace DevToys.PocoCsv.Core
 
             var _propertyAttributeCollection = _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
-                .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) });
+                .Select(p => new { 
+                    Property = p, 
+                    Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, 
+                    Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) 
+                });
 
             if (IgnoreColumnAttributes == true)
             {
                 _propertyAttributeCollection = _type.GetProperties()
-                .Select((value, index) => new { Property = value, Index = index, Attrib = new ColumnAttribute() { Index = index } });
+                    .Select((value, index) => new { 
+                        Property = value, 
+                        Index = index, 
+                        Attrib = new ColumnAttribute() { Index = index } 
+                    });
             }
 
-            int _max = _propertyAttributeCollection
-                .Select(p => p.Index).Max();
-
+            int _max = _propertyAttributeCollection.Select(p => p.Index).Max();
 
             InitCustomCsvParseArrays(_max + 1);
-
             InitCsvAttributeRead(_type, _max + 1);
 
             var _properties = new PropertyInfo[_max + 1];
@@ -1973,7 +1970,6 @@ namespace DevToys.PocoCsv.Core
             var _propertySetters = new Action<object, object>[_max + 1];
             var _isNullable = new Boolean[_max + 1];
             var _isAssigned = new Boolean[_max + 1];
-
             var _propertySettersEnum = new Action<T, Int32>[_max + 1];
             var _propertySettersString = new Action<T, String>[_max + 1];
             var _propertySettersGuid = new Action<T, Guid>[_max + 1];
@@ -1993,7 +1989,6 @@ namespace DevToys.PocoCsv.Core
             var _propertySettersUInt32 = new Action<T, UInt32>[_max + 1];
             var _propertySettersUInt64 = new Action<T, UInt64>[_max + 1];
             var _propertySettersBigInteger = new Action<T, BigInteger>[_max + 1];
-
             var _propertySettersGuidNull = new Action<T, Guid?>[_max + 1];
             var _propertySettersBooleanNull = new Action<T, Boolean?>[_max + 1];
             var _propertySettersDateTimeNull = new Action<T, DateTime?>[_max + 1];
@@ -2221,12 +2216,11 @@ namespace DevToys.PocoCsv.Core
 
             }
 
+            _propertyCount = _Properties.Length;
+
             _IsNullable = _isNullable.ToImmutableArray();
             _IsAssigned = _isAssigned.ToImmutableArray();
             _Properties = _properties.ToImmutableArray();
-
-            _propertyCount = _Properties.Length;
-
             _PropertySettersEnum = _propertySettersEnum.ToImmutableArray();
             _PropertySetters = _propertySetters.ToImmutableArray();
             _PropertySettersString = _propertySettersString.ToImmutableArray();
