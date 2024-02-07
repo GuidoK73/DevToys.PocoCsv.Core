@@ -10,7 +10,7 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvStreamReader : StreamReader
     {
-        private readonly StringBuilder _sbValue = new StringBuilder(127);
+        private readonly StringBuilder _buffer = new StringBuilder(1027);
         private const char _CR = '\r';
         private const char _LF = '\n';
         private const char _ESCAPE = '"';
@@ -311,7 +311,7 @@ namespace DevToys.PocoCsv.Core
         {
             _result.Clear();
             _state = State.Normal;
-            _sbValue.Length = 0; // Clear the string buffer.
+            _buffer.Length = 0; // Clear the string buffer.
             _byte = 0;
             _nextByte = 0;
 
@@ -323,8 +323,8 @@ namespace DevToys.PocoCsv.Core
                     if (_byte == Separator)
                     {
                         // End of field
-                        _result.Add(_sbValue.ToString());
-                        _sbValue.Length = 0;
+                        _result.Add(_buffer.ToString());
+                        _buffer.Length = 0;
                         continue;
                     }
                     else if (_byte == _CR)
@@ -336,16 +336,16 @@ namespace DevToys.PocoCsv.Core
                             continue; // goes to else if (_byte == '\n')
                         }
                         // end of line.
-                        _result.Add(_sbValue.ToString());
-                        _sbValue.Length = 0;
+                        _result.Add(_buffer.ToString());
+                        _buffer.Length = 0;
                         CurrentLine++;
                         break;
                     }
                     else if (_byte == _LF)
                     {
                         // end of line.
-                        _result.Add(_sbValue.ToString());
-                        _sbValue.Length = 0;
+                        _result.Add(_buffer.ToString());
+                        _buffer.Length = 0;
                         CurrentLine++;
                         break;
                     }
@@ -358,11 +358,11 @@ namespace DevToys.PocoCsv.Core
                     else if (_byte == -1)
                     {
                         // End of field
-                        _result.Add(_sbValue.ToString());
-                        _sbValue.Length = 0;
+                        _result.Add(_buffer.ToString());
+                        _buffer.Length = 0;
                         return _result.ToArray();
                     }
-                    _sbValue.Append((char)_byte);
+                    _buffer.Append((char)_byte);
                     continue;
                 }
                 else if (_state == State.Escaped)
@@ -372,7 +372,7 @@ namespace DevToys.PocoCsv.Core
                     {
                         // End of field
                         // Set the value
-                        _sbValue.Clear();
+                        _buffer.Clear();
                         break; // end the while loop.
                     }
                     else if (_byte == _ESCAPE)
@@ -389,7 +389,7 @@ namespace DevToys.PocoCsv.Core
                         if (_nextByte == -1)
                         {
                             // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.
-                            _result.Add(_sbValue.ToString());
+                            _result.Add(_buffer.ToString());
                             break;
                         }
 
@@ -399,12 +399,12 @@ namespace DevToys.PocoCsv.Core
                             continue; // Also do not add this char, we add it when we are in EscapedEscape mode and from their we turn back to normal Escape.  (basically adding one of two)
                         }
                     }
-                    _sbValue.Append((char)_byte);
+                    _buffer.Append((char)_byte);
                     continue;
                 }
                 else if (_state == State.EscapedEscape)
                 {
-                    _sbValue.Append((char)_byte);
+                    _buffer.Append((char)_byte);
                     _state = State.Escaped;
                     continue;
                 }

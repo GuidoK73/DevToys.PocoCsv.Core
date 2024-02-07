@@ -45,7 +45,7 @@ namespace DevToys.PocoCsv.UnitTests
             {
                 _reader.Open();
 
-                var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
+                var _rows = _reader.ReadAsEnumerable(); // Materialize.
             }
             //00:00:22.3810056
             // 00:00:23.2109005

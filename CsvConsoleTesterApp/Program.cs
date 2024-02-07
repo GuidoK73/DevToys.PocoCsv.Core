@@ -3,10 +3,6 @@ using ConsoleApp1;
 using ConsoleApp1.Objects;
 
 
-Console.WriteLine("Csv Reader Competition.");
-Console.WriteLine("Let's read 10 million rows with 9 columns and deserialize it to an object collection. Let's compare some existing readers on the market.");
-
-
 StopWatch _w = new();
 
 string file = @"D:\largedata.csv";

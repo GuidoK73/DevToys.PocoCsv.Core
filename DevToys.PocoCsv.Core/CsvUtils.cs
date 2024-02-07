@@ -11,26 +11,6 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public static class CsvUtils
     {
-
-
-        /// <summary>
-        /// Escape string
-        /// </summary>
-        internal static string Esc(char Separator, string s)
-        {
-            if (s.IndexOfAny(new char[] { '\r', '\n', '"', Separator }) == -1)
-            {
-                return s;
-            }
-            if (s.IndexOf('"') == -1)
-            {
-                return $"\"{s}\"";
-            }
-
-            return $"\"{s.Replace("\"", "\"\"")}\"";
-        }
-
-
         /// <summary>
         /// Returns first row of CSV
         /// </summary>
