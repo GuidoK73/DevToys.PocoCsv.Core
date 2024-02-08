@@ -2216,7 +2216,7 @@ namespace DevToys.PocoCsv.Core
 
             }
 
-            _propertyCount = _Properties.Length;
+            _propertyCount = _properties.Length;
 
             _IsNullable = _isNullable.ToImmutableArray();
             _IsAssigned = _isAssigned.ToImmutableArray();
