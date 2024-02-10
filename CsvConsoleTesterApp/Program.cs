@@ -27,29 +27,35 @@ using (DevToys.PocoCsv.Core.CsvWriter<CsvObject> _writer = new(file) { Separator
 }
 
 _w.Stop();
-Console.WriteLine(_w.Duration);
+Console.WriteLine("Writer {0}", _w.Duration);
 
-
-// ############################################################
-// DevToys.PocoCsv.Core by Guidok73
-
-
-
-Console.WriteLine("---------------------");
-Console.WriteLine("DevToys.PocoCsv.Core by Guidok73");
 
 _w.Start();
 
-using (var _reader = new DevToys.PocoCsv.Core.CsvReader<CsvObject>(file))
+using (var _reader = new DevToys.PocoCsv.Core.CsvReader<CsvObject>(file, ',') { BufferSize = 2048 })
 {
     _reader.Open();
-    _reader.Skip();
-    var x = _reader.ReadAsEnumerable().ToList();
+
+    var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
 }
 
 _w.Stop();
-Console.WriteLine(_w.Duration);
+var _Duration1 = _w.Duration;
+Console.WriteLine("Reader Large {0}", _w.Duration);
 
+
+_w.Start();
+
+using (var _reader = new DevToys.PocoCsv.Core.CsvReader<CsvObjectSmall>(file))
+{
+    _reader.Open();
+
+    var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
+}
+
+_w.Stop();
+var _Duration2 = _w.Duration;
+Console.WriteLine("Reader small {0}", _w.Duration);
 
 
 

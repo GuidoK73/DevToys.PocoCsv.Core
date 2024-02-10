@@ -95,6 +95,52 @@ namespace DevToys.PocoCsv.UnitTests
             }
         }
 
+
+
+        [TestMethod]
+        public void TestColIndex()
+        {
+            string file = System.IO.Path.GetTempFileName();
+
+            using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(file) { Separator = ',' })
+            {
+                _writer.Open();
+                var _data = CsvSimpleData();
+                _writer.Write(_data);
+            }
+
+            string _text = File.ReadAllText(file);
+
+            using (CsvReader<CsvSimpleSmall> _reader = new CsvReader<CsvSimpleSmall>(file) { Separator = ',' })
+            {
+                _reader.Open();
+                var _data = _reader.ReadAsEnumerable().ToList();
+                Console.WriteLine('X');
+            }
+        }
+
+
+        private IEnumerable<CsvSimple> CsvSimpleData()
+        {
+            // 
+            for (int ii = 0; ii < 5; ii++)
+            {
+                CsvSimple _line = new()
+                {
+                    AfBij = "bij",
+                    Bedrag = "100",
+                    Code = "test",
+                    Datum = "20200203",
+                    Mededelingen = $"test {ii}",
+                    Rekening = "3434",
+                    Tegenrekening = "3423424",
+                    NaamOmschrijving = $"bla,bla {ii}",
+                    MutatieSoort = "Bij"
+                };
+                yield return _line;
+            }
+        }
+
         [TestMethod]
         public void ValidateCsvReaderEmptyLineBehaviour()
         {

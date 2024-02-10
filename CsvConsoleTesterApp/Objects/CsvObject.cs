@@ -36,4 +36,18 @@ namespace ConsoleApp1.Objects
         public string Mededelingen { get; set; }
 
     }
+
+
+    public sealed class CsvObjectSmall
+    {
+        [Column(Index = 5)]
+        public string AfBij { get; set; }
+
+
+        [Column(Index = 2)]
+        public string Rekening { get; set; }
+
+        [Column(Index = 3)]
+        public string Tegenrekening { get; set; }
+    }
 }

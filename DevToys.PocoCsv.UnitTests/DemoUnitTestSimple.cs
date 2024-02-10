@@ -26,9 +26,9 @@ namespace DevToys.PocoCsv.UnitTests
             using (CsvReader<CsvSimple> _reader = new(_file))
             {
                 _reader.Open();
-                _reader.Skip(20);
+               // _reader.Skip(20);
 
-                var _af = _reader.ReadAsEnumerable().ToList();
+                var _af = _reader.ReadAsEnumerable().Skip(20).ToList();
             }
         }
 
@@ -56,7 +56,7 @@ namespace DevToys.PocoCsv.UnitTests
         private IEnumerable<CsvSimple> Data()
         {
             // _writer.WriteCsvLine("Row 7", "Row F\",\"F\r\nF,F\"", "\"", "F6\" ");
-            for (int ii = 0; ii < 1; ii++)
+            for (int ii = 0; ii < 100; ii++)
             {
                 CsvSimple _line = new()
                 {

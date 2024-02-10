@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -63,14 +64,15 @@ namespace DevToys.PocoCsv.Core
         private int _colIndex = 0; // column index.
         int _colPosition = -1; // char position within column
         private State _state = State.Normal;
-        private int lineLength = 0; 
+        private int _linePosition = 0; 
         internal int _byte = 0;
         private const char _CR = '\r';
         private const char _LF = '\n';
         private const char _ESCAPE = '"';
         private int _nextByte = 0;
         private int _CurrentLine = 0;
-        private InfiniteLoopQueue<long> _takeLastQueue;
+        private InfiniteLoopQueue<long> _takeLastXQueue;
+
 
         /// <summary>
         /// Constructor
@@ -253,7 +255,7 @@ namespace DevToys.PocoCsv.Core
                 _byte = _StreamReader.BaseStream.ReadByte();
                 if (_state == State.Normal)
                 {
-                    if (_byte == Separator)
+                    if (_byte == _Separator)
                     {
                         _colIndex++;
                         continue;
@@ -340,7 +342,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void MoveToLast(int rows)
         {
-            _takeLastQueue = new InfiniteLoopQueue<long>(rows);
+            _takeLastXQueue = new InfiniteLoopQueue<long>(rows);
             MoveToStart();
 
             _state = State.Normal;
@@ -353,7 +355,7 @@ namespace DevToys.PocoCsv.Core
                 _byte = _StreamReader.BaseStream.ReadByte();
                 if (_state == State.Normal)
                 {
-                    if (_byte == Separator)
+                    if (_byte == _Separator)
                     {
                         continue;
                     }
@@ -366,13 +368,13 @@ namespace DevToys.PocoCsv.Core
                             continue; // goes to else if (_byte == '\n')
                         }
                         _CurrentLine++;
-                        _takeLastQueue.Add(_StreamReader.BaseStream.Position);
+                        _takeLastXQueue.Add(_StreamReader.BaseStream.Position);
                         continue;
                     }
                     else if (_byte == _LF)
                     {
                         _CurrentLine++;
-                        _takeLastQueue.Add(_StreamReader.BaseStream.Position);
+                        _takeLastXQueue.Add(_StreamReader.BaseStream.Position);
                         continue;
                     }
                     else if (_byte == _ESCAPE)
@@ -402,7 +404,7 @@ namespace DevToys.PocoCsv.Core
                 }
             }
 
-            var _queuePosition = _takeLastQueue.GetQueue();
+            var _queuePosition = _takeLastXQueue.GetQueue();
             MoveToPosition(_queuePosition[0]); // Get first position of Queue to move to the file position of last x rows.
             _CurrentLine -= rows;
         }
@@ -423,25 +425,19 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        //  \r = CR(Carriage Return) → Used as a new line character in Mac OS before X
-        //  \n = LF(Line Feed) → Used as a new line character in Unix/Mac OS X
-        //  \r\n = CR + LF → Used as a new line character in Windows
-        //  in case of CR, peek next char, when LF, then skip the CR and let newline happen on LF, otherwise newline happens on CR.
-
-
-
         /// <summary>
         /// reads the CsvLine
         /// </summary>
+        //  # Called each line.
         public T Read()
-        {            
+        {    
             T _result = new T();
 
             SkipEmptyLineAndReadNext:
 
             _state = State.Normal;
             _buffer.Length = 0; // Clear the string buffer.
-            lineLength = 0;
+            _linePosition = 0;
             _byte = 0;
             _nextByte = 0;
             _colIndex = 0;
@@ -452,7 +448,7 @@ namespace DevToys.PocoCsv.Core
                 _byte = _StreamReader.BaseStream.ReadByte();
                 if (_state == State.Normal)
                 {
-                    if (_byte == Separator)
+                    if (_byte == _Separator)
                     {
                         // End of field
                         if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
@@ -465,11 +461,12 @@ namespace DevToys.PocoCsv.Core
                     }
                     else if (_byte == _CR)
                     {
+                        // in case of CR, peek next char, when LF, then skip the CR and let newline happen on LF, otherwise newline happens on CR.
                         _nextByte = _StreamReader.BaseStream.ReadByte();
                         _StreamReader.BaseStream.Position--; 
                         if (_nextByte == _LF)
                         {
-                            continue; // skip /r (CR) let it be handled on /n (LF)
+                            continue; 
                         }
                         // end of line.
                         if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
@@ -509,8 +506,12 @@ namespace DevToys.PocoCsv.Core
                         _buffer.Length = 0;
                         break; // end the while loop.
                     }
-                    lineLength++;
-                    AppendChar();
+                    _linePosition++;
+                    _colPosition++;
+                    if (_colIndex < _propertyCount)
+                    {
+                        AppendChar();
+                    }
                     continue;
                 }
                 else if (_state == State.Escaped)
@@ -551,20 +552,28 @@ namespace DevToys.PocoCsv.Core
                             continue; // Also do not add this char, we add it when we are in EscapedEscape mode and from their we turn back to normal Escape.  (basically adding one of two)
                         }
                     }
-                    lineLength++;
-                    AppendChar();
+                    _linePosition++;
+                    _colPosition++;
+                    if (_colIndex < _propertyCount)
+                    {
+                        AppendChar();
+                    }
                     continue;
                 }
                 else if (_state == State.EscapedEscape)
                 {
-                    lineLength++;
-                    AppendChar();
+                    _linePosition++;
+                    _colPosition++;
+                    if (_colIndex < _propertyCount)
+                    {
+                        AppendChar();
+                    }
                     _state = State.Escaped;
                     continue;
                 }
             }
 
-            if (lineLength == 0)
+            if (_linePosition == 0)
             {
                 switch (EmptyLineBehaviour)
                 {
@@ -586,19 +595,18 @@ namespace DevToys.PocoCsv.Core
             return _result;
         }
 
+        // Called each character.
         private void AppendChar()
-        {
-            _colPosition++;
-            if (_colIndex < _propertyCount && _ICustomCsvParseBase[_colIndex] != null)
-            {
-                _ICustomCsvParseBase[_colIndex].Reading(_buffer, _CurrentLine, _colIndex, _StreamReader.BaseStream.Position, lineLength, _colPosition, (char)_byte);
-            }
-            else
+        {                        
+            if (_ICustomCsvParseBase[_colIndex] == null)
             {
                 _buffer.Append((char)_byte);
+                return;
             }
+            _ICustomCsvParseBase[_colIndex].Reading(_buffer, _CurrentLine, _colIndex, _StreamReader.BaseStream.Position, _linePosition, _colPosition, (char)_byte);
         }
 
+        // Called each field value.
         private void SetValue(T targetObject)
         {
             switch (_IsNullable[_colIndex])
@@ -606,161 +614,50 @@ namespace DevToys.PocoCsv.Core
                 case false:
                     switch (_PropertyTypes[_colIndex])
                     {
-                        case NetTypeComplete.String:
-                            SetValueString(targetObject);
-                            break;
-
-                        case NetTypeComplete.Decimal:
-                            SetValueDecimal(targetObject);
-                            break;
-
-                        case NetTypeComplete.Int32:
-                            SetValueInt32(targetObject);
-                            break;
-
-                        case NetTypeComplete.Double:
-                            SetValueDouble(targetObject);
-                            break;
-
-                        case NetTypeComplete.DateTime:
-                            SetValueDateTime(targetObject);
-                            break;
-
-                        case NetTypeComplete.Int64:
-                            SetValueInt64(targetObject);
-                            break;
-
-                        case NetTypeComplete.Guid:
-                            SetValueGuid(targetObject);
-                            break;
-
-                        case NetTypeComplete.Single:
-                            SetValueSingle(targetObject);
-                            break;
-
-                        case NetTypeComplete.Boolean:
-                            SetValueBoolean(targetObject);
-                            break;
-
-                        case NetTypeComplete.TimeSpan:
-                            SetValueTimeSpan(targetObject);
-                            break;
-
-                        case NetTypeComplete.Int16:
-                            SetValueInt16(targetObject);
-                            break;
-
-                        case NetTypeComplete.Byte:
-                            SetValueByte(targetObject);
-                            break;
-
-                        case NetTypeComplete.DateTimeOffset:
-                            SetValueDateTimeOffset(targetObject);
-                            break;
-
-                        case NetTypeComplete.SByte:
-                            SetValueSByte(targetObject);
-                            break;
-
-                        case NetTypeComplete.UInt16:
-                            SetValueUInt16(targetObject);
-                            break;
-
-                        case NetTypeComplete.UInt32:
-                            SetValueUInt32(targetObject);
-                            break;
-
-                        case NetTypeComplete.UInt64:
-                            SetValueUInt64(targetObject);
-                            break;
-
-                        case NetTypeComplete.BigInteger:
-                            SetValueBigInteger(targetObject);
-                            break;
-
-
-                        case NetTypeComplete.ByteArray:
-                            SetValueByteArray(targetObject);
-                            break;
-
-                        case NetTypeComplete.Enum:
-                            SetValueEnum(targetObject);
-                            break;
+                        case NetTypeComplete.String: SetValueString(targetObject); break;
+                        case NetTypeComplete.Decimal: SetValueDecimal(targetObject); break;
+                        case NetTypeComplete.Int32: SetValueInt32(targetObject); break;
+                        case NetTypeComplete.Double: SetValueDouble(targetObject); break;
+                        case NetTypeComplete.DateTime: SetValueDateTime(targetObject); break;
+                        case NetTypeComplete.Int64: SetValueInt64(targetObject); break;
+                        case NetTypeComplete.Guid: SetValueGuid(targetObject); break;
+                        case NetTypeComplete.Single: SetValueSingle(targetObject); break;
+                        case NetTypeComplete.Boolean: SetValueBoolean(targetObject); break;
+                        case NetTypeComplete.TimeSpan: SetValueTimeSpan(targetObject); break;
+                        case NetTypeComplete.Int16: SetValueInt16(targetObject); break;
+                        case NetTypeComplete.Byte: SetValueByte(targetObject); break;
+                        case NetTypeComplete.DateTimeOffset: SetValueDateTimeOffset(targetObject); break;
+                        case NetTypeComplete.SByte: SetValueSByte(targetObject); break;
+                        case NetTypeComplete.UInt16: SetValueUInt16(targetObject); break;
+                        case NetTypeComplete.UInt32: SetValueUInt32(targetObject); break;
+                        case NetTypeComplete.UInt64: SetValueUInt64(targetObject); break;
+                        case NetTypeComplete.BigInteger: SetValueBigInteger(targetObject); break;
+                        case NetTypeComplete.ByteArray: SetValueByteArray(targetObject); break;
+                        case NetTypeComplete.Enum: SetValueEnum(targetObject); break;
                     }
-
-                    break;
+                    return;
                 case true:
                     switch (_PropertyTypes[_colIndex])
                     {
-                        case NetTypeComplete.DecimalNullable:
-                            SetValueDecimalNull(targetObject);
-                            break;
-
-                        case NetTypeComplete.Int32Nullable:
-                            SetValueInt32Null(targetObject);
-                            break;
-
-                        case NetTypeComplete.DoubleNullable:
-                            SetValueDoubleNull(targetObject);
-                            break;
-
-                        case NetTypeComplete.DateTimeNullable:
-                            SetValueDateTimeNull(targetObject);
-                            break;
-
-                        case NetTypeComplete.Int64Nullable:
-                            SetValueInt64Null(targetObject);
-                            break;
-
-                        case NetTypeComplete.GuidNullable:
-                            SetValueGuidNull(targetObject);
-                            break;
-
-                        case NetTypeComplete.SingleNullable:
-                            SetValueSingleNull(targetObject);
-                            break;
-
-                        case NetTypeComplete.BooleanNullable:
-                            SetValueBooleanNull(targetObject);
-                            break;
-
-                        case NetTypeComplete.TimeSpanNullable:
-                            SetValueTimeSpanNull(targetObject);
-                            break;
-
-                        case NetTypeComplete.Int16Nullable:
-                            SetValueInt16Null(targetObject);
-                            break;
-
-                        case NetTypeComplete.ByteNullable:
-                            SetValueByteNull(targetObject);
-                            break;
-
-                        case NetTypeComplete.DateTimeOffsetNullable:
-                            SetValueDateTimeOffsetNull(targetObject);
-                            break;
-
-                        case NetTypeComplete.SByteNullable:
-                            SetValueSByteNull(targetObject);
-                            break;
-
-                        case NetTypeComplete.UInt16Nullable:
-                            SetValueUInt16Null(targetObject);
-                            break;
-
-                        case NetTypeComplete.UInt32Nullable:
-                            SetValueUInt32Null(targetObject);
-                            break;
-
-                        case NetTypeComplete.UInt64Nullable:
-                            SetValueUInt64Null(targetObject);
-                            break;
-
-                        case NetTypeComplete.BigIntegerNullable:
-                            SetValueBigIntegerNull(targetObject);
-                            break;
+                        case NetTypeComplete.DecimalNullable: SetValueDecimalNull(targetObject); break;
+                        case NetTypeComplete.Int32Nullable: SetValueInt32Null(targetObject); break;
+                        case NetTypeComplete.DoubleNullable: SetValueDoubleNull(targetObject); break;
+                        case NetTypeComplete.DateTimeNullable: SetValueDateTimeNull(targetObject); break;
+                        case NetTypeComplete.Int64Nullable: SetValueInt64Null(targetObject); break;
+                        case NetTypeComplete.GuidNullable: SetValueGuidNull(targetObject); break;
+                        case NetTypeComplete.SingleNullable: SetValueSingleNull(targetObject); break;
+                        case NetTypeComplete.BooleanNullable: SetValueBooleanNull(targetObject); break;
+                        case NetTypeComplete.TimeSpanNullable: SetValueTimeSpanNull(targetObject); break;
+                        case NetTypeComplete.Int16Nullable: SetValueInt16Null(targetObject); break;
+                        case NetTypeComplete.ByteNullable: SetValueByteNull(targetObject); break;
+                        case NetTypeComplete.DateTimeOffsetNullable: SetValueDateTimeOffsetNull(targetObject); break;
+                        case NetTypeComplete.SByteNullable: SetValueSByteNull(targetObject); break;
+                        case NetTypeComplete.UInt16Nullable: SetValueUInt16Null(targetObject); break;
+                        case NetTypeComplete.UInt32Nullable: SetValueUInt32Null(targetObject); break;
+                        case NetTypeComplete.UInt64Nullable: SetValueUInt64Null(targetObject); break;
+                        case NetTypeComplete.BigIntegerNullable: SetValueBigIntegerNull(targetObject); break;
                     }
-                    break;
+                    return;
             }
         }
 
@@ -770,7 +667,7 @@ namespace DevToys.PocoCsv.Core
         {
             if (_CustomParserString[_colIndex] == null)
             {
-                _PropertySettersString[_colIndex](targetObject, _buffer.ToString());
+                _PropertySettersString[_colIndex](targetObject, _buffer.ToString());                
             }
             else
             {
@@ -2213,8 +2110,8 @@ namespace DevToys.PocoCsv.Core
                 
                 _properties[property.Index] = property.Property;
                 _propertySetters[property.Index] = _type.PropertySet(property.Property.Name);
-
             }
+
 
             _propertyCount = _properties.Length;
 

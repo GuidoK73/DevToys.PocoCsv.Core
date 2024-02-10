@@ -192,10 +192,6 @@ namespace DevToys.PocoCsv.Core
                     }
                     _StreamWriter.Write(_name);
                 }
-                else
-                {
-                    _StreamWriter.Write("");
-                }
                 if (ii < _MaxColumnIndex)
                 {
                     _StreamWriter.Write(_Separator);
@@ -239,15 +235,9 @@ namespace DevToys.PocoCsv.Core
             {
                 switch (CRLFMode)
                 {
-                    case CRLFMode.CRLF:
-                        _StreamWriter.Write(_CRLF);
-                        break;
-                    case CRLFMode.CR:
-                        _StreamWriter.Write(_CR);
-                        break;
-                    case CRLFMode.LF:
-                        _StreamWriter.Write(_LF);
-                        break;
+                    case CRLFMode.CRLF: _StreamWriter.Write(_CRLF); break;
+                    case CRLFMode.CR: _StreamWriter.Write(_CR); break;
+                    case CRLFMode.LF: _StreamWriter.Write(_LF); break;
                 }
             }
             if (row == null && NullValueBehaviour == WriteNullValueBehaviour.EmptyLine)
@@ -280,158 +270,48 @@ namespace DevToys.PocoCsv.Core
                 case false:
                     switch (_PropertyTypes[index])
                     {
-                        case NetTypeComplete.String:
-                            WriteString(row, index);
-                            break;
-
-                        case NetTypeComplete.Int32:
-                            WriteInt32(row, index);
-                            break;
-
-                        case NetTypeComplete.Decimal:
-                            WriteDecimal(row, index);
-                            break;
-
-                        case NetTypeComplete.Double:
-                            WriteDouble(row, index);
-                            break;
-
-                        case NetTypeComplete.Guid:
-                            WriteGuid(row, index);
-                            break;
-
-                        case NetTypeComplete.Boolean:
-                            WriteBoolean(row, index);
-                            break;
-
-                        case NetTypeComplete.DateTime:
-                            WriteDateTime(row, index);
-                            break;
-
-                        case NetTypeComplete.Int64:
-                            WriteInt64(row, index);
-                            break;
-
-                        case NetTypeComplete.Single:
-                            WriteSingle(row, index);
-                            break;
-
-                        case NetTypeComplete.DateTimeOffset:
-                            WriteDateTimeOffset(row, index);
-                            break;
-
-                        case NetTypeComplete.TimeSpan:
-                            WriteTimeSpan(row, index);
-                            break;
-
-                        case NetTypeComplete.Byte:
-                            WriteByte(row, index);
-                            break;
-
-                        case NetTypeComplete.SByte:
-                            WriteSByte(row, index);
-                            break;
-
-                        case NetTypeComplete.Int16:
-                            WriteInt16(row, index);
-                            break;
-
-                        case NetTypeComplete.UInt16:
-                            WriteUInt16(row, index);
-                            break;
-
-                        case NetTypeComplete.UInt32:
-                            WriteUInt32(row, index);
-                            break;
-
-                        case NetTypeComplete.UInt64:
-                            WriteUInt64(row, index);
-                            break;
-
-                        case NetTypeComplete.BigInteger:
-                            WriteBigInteger(row, index);
-                            break;
-
-                        case NetTypeComplete.ByteArray:
-                            WriteByteArray(row, index);
-                            break;
-
-                        case NetTypeComplete.Enum:
-                            WriteEnum(row, index);
-                            break;
+                        case NetTypeComplete.String: WriteString(row, index); break;
+                        case NetTypeComplete.Int32: WriteInt32(row, index); break;
+                        case NetTypeComplete.Decimal: WriteDecimal(row, index); break;
+                        case NetTypeComplete.Double: WriteDouble(row, index); break;
+                        case NetTypeComplete.Guid: WriteGuid(row, index); break;
+                        case NetTypeComplete.Boolean: WriteBoolean(row, index); break;
+                        case NetTypeComplete.DateTime: WriteDateTime(row, index); break;
+                        case NetTypeComplete.Int64: WriteInt64(row, index); break;
+                        case NetTypeComplete.Single: WriteSingle(row, index); break;
+                        case NetTypeComplete.DateTimeOffset: WriteDateTimeOffset(row, index); break;
+                        case NetTypeComplete.TimeSpan: WriteTimeSpan(row, index); break;
+                        case NetTypeComplete.Byte: WriteByte(row, index); break;
+                        case NetTypeComplete.SByte: WriteSByte(row, index); break;
+                        case NetTypeComplete.Int16: WriteInt16(row, index); break;
+                        case NetTypeComplete.UInt16: WriteUInt16(row, index); break;
+                        case NetTypeComplete.UInt32: WriteUInt32(row, index); break;
+                        case NetTypeComplete.UInt64: WriteUInt64(row, index); break;
+                        case NetTypeComplete.BigInteger: WriteBigInteger(row, index); break;
+                        case NetTypeComplete.ByteArray: WriteByteArray(row, index); break;
+                        case NetTypeComplete.Enum: WriteEnum(row, index); break;
                     }
-
                     break;
                 case true:
                     switch (_PropertyTypes[index])
                     {
-                        case NetTypeComplete.GuidNullable:
-                            WriteGuidNull(row, index);
-                            break;
-
-                        case NetTypeComplete.BooleanNullable:
-                            WriteBooleanNull(row, index);
-                            break;
-
-                        case NetTypeComplete.DateTimeNullable:
-                            WriteDateTimeNull(row, index);
-                            break;
-
-                        case NetTypeComplete.DateTimeOffsetNullable:
-                            WriteDateTimeOffsetNull(row, index);
-                            break;
-
-                        case NetTypeComplete.TimeSpanNullable:
-                            WriteTimeSpanNull(row, index);
-                            break;
-
-                        case NetTypeComplete.ByteNullable:
-                            WriteByteNull(row, index);
-                            break;
-
-                        case NetTypeComplete.SByteNullable:
-                            WriteSByteNull(row, index);
-                            break;
-
-                        case NetTypeComplete.Int16Nullable:
-                            WriteInt16Null(row, index);
-                            break;
-
-                        case NetTypeComplete.Int32Nullable:
-                            WriteInt32Null(row, index);
-                            break;
-
-                        case NetTypeComplete.Int64Nullable:
-                            WriteInt64Null(row, index);
-                            break;
-
-                        case NetTypeComplete.SingleNullable:
-                            WriteSingleNull(row, index);
-                            break;
-
-                        case NetTypeComplete.DecimalNullable:
-                            WriteDecimalNull(row, index);
-                            break;
-
-                        case NetTypeComplete.DoubleNullable:
-                            WriteDoubleNull(row, index);
-                            break;
-
-                        case NetTypeComplete.UInt16Nullable:
-                            WriteUInt16Null(row, index);
-                            break;
-
-                        case NetTypeComplete.UInt32Nullable:
-                            WriteUInt32Null(row, index);
-                            break;
-
-                        case NetTypeComplete.UInt64Nullable:
-                            WriteUInt64Null(row, index);
-                            break;
-
-                        case NetTypeComplete.BigIntegerNullable:
-                            WriteBigIntegerNull(row, index);
-                            break;
+                        case NetTypeComplete.GuidNullable: WriteGuidNull(row, index); break;
+                        case NetTypeComplete.BooleanNullable: WriteBooleanNull(row, index); break;
+                        case NetTypeComplete.DateTimeNullable: WriteDateTimeNull(row, index); break;
+                        case NetTypeComplete.DateTimeOffsetNullable: WriteDateTimeOffsetNull(row, index); break;
+                        case NetTypeComplete.TimeSpanNullable: WriteTimeSpanNull(row, index); break;
+                        case NetTypeComplete.ByteNullable: WriteByteNull(row, index); break;
+                        case NetTypeComplete.SByteNullable: WriteSByteNull(row, index); break;
+                        case NetTypeComplete.Int16Nullable: WriteInt16Null(row, index); break;
+                        case NetTypeComplete.Int32Nullable: WriteInt32Null(row, index); break;
+                        case NetTypeComplete.Int64Nullable: WriteInt64Null(row, index); break;
+                        case NetTypeComplete.SingleNullable: WriteSingleNull(row, index); break;
+                        case NetTypeComplete.DecimalNullable: WriteDecimalNull(row, index); break;
+                        case NetTypeComplete.DoubleNullable: WriteDoubleNull(row, index); break;
+                        case NetTypeComplete.UInt16Nullable: WriteUInt16Null(row, index); break;
+                        case NetTypeComplete.UInt32Nullable: WriteUInt32Null(row, index); break;
+                        case NetTypeComplete.UInt64Nullable: WriteUInt64Null(row, index); break;
+                        case NetTypeComplete.BigIntegerNullable: WriteBigIntegerNull(row, index); break;
                     }
                     break;
             }
