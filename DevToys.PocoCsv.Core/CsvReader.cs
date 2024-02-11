@@ -74,25 +74,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        public CsvReader(string file, char separator = ',')
-        {
-            _File = file;
-            _Separator = separator;
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public CsvReader(Stream stream, char separator = ',')
-        {
-            _Stream = stream;
-            _Separator = separator;
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public CsvReader(Stream stream, Encoding encoding, char separator = ',', int buffersize = 1024)
+        public CsvReader(Stream stream, char separator = ',', int buffersize = 1024)
         {
             _Stream = stream;
             _Separator = separator;
@@ -102,7 +84,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        public CsvReader(string file, Encoding encoding, char separator = ',', int buffersize = 1024)
+        public CsvReader(string file, char separator = ',', int buffersize = 1024)
         {
             _File = file;
             _Separator = separator;

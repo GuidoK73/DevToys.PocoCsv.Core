@@ -322,22 +322,12 @@
             Properties needs to be marked with ColumnAttribute
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.String,System.Char)">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.Stream,System.Char,System.Int32)">
             <summary>
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.Stream,System.Char)">
-            <summary>
-            Constructor
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.Stream,System.Text.Encoding,System.Char,System.Int32)">
-            <summary>
-            Constructor
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.String,System.Text.Encoding,System.Char,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.String,System.Char,System.Int32)">
             <summary>
             Constructor
             </summary>
