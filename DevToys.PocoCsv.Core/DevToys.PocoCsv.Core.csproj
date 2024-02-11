@@ -35,6 +35,9 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Copyright>2024</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
     <PackageReleaseNotes>
+3.1.14
+- Refactoring minor changes.
+
 3.1.11
 - CsvWriter performance improvements.
 - CsvStreamWriter performance improvements.
