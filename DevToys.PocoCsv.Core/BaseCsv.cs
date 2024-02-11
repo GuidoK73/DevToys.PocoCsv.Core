@@ -127,11 +127,6 @@ namespace DevToys.PocoCsv.Core
         public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
 
         /// <summary>
-        /// The character encoding to use.
-        /// </summary>
-        public Encoding Encoding { get; set; } = Encoding.Default;
-
-        /// <summary>
         /// 
         /// </summary>
         internal protected void InitCustomCsvParseArrays(int size)

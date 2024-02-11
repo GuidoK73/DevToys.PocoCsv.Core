@@ -67,6 +67,8 @@ namespace DevToys.PocoCsv.Core
         private const char _DoubleQuote = '"';
         private char[] _EscapeChars = null;
 
+        private Encoding Encoding = Encoding.Default;
+
         /// <summary>
         /// Constructor
         /// </summary>

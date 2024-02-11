@@ -34,11 +34,6 @@
             Culture info to use for serialization.
             </summary>
         </member>
-        <member name="P:DevToys.PocoCsv.Core.BaseCsv.Encoding">
-            <summary>
-            The character encoding to use.
-            </summary>
-        </member>
         <member name="M:DevToys.PocoCsv.Core.BaseCsv.InitCustomCsvParseArrays(System.Int32)">
             <summary>
             
@@ -337,12 +332,12 @@
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.Stream,System.Text.Encoding,System.Char,System.Boolean,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.Stream,System.Text.Encoding,System.Char,System.Int32)">
             <summary>
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.String,System.Text.Encoding,System.Char,System.Boolean,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.String,System.Text.Encoding,System.Char,System.Int32)">
             <summary>
             Constructor
             </summary>
@@ -375,11 +370,6 @@
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.CurrentLine">
             <summary>
             Returns current Line position.
-            </summary>
-        </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.DetectEncodingFromByteOrderMarks">
-            <summary>
-            Indicates whether to look for byte order marks at the beginning of the file.
             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.IgnoreColumnAttributes">
