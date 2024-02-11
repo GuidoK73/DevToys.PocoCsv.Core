@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -58,21 +57,21 @@ namespace DevToys.PocoCsv.Core
         private ImmutableArray<Action<T, UInt64?>> _PropertySettersUInt64Null;
         private ImmutableArray<Action<T, BigInteger?>> _PropertySettersBigIntegerNull;
 
-        private readonly List<CsvReadError> _Errors = new List<CsvReadError>();
-        private readonly StringBuilder _buffer = new StringBuilder(1027);
-        private int _propertyCount = 0; 
-        private int _colIndex = 0; // column index.
-        int _colPosition = -1; // char position within column
-        private State _state = State.Normal;
-        private int _linePosition = 0; 
-        internal int _byte = 0;
         private const char _CR = '\r';
         private const char _LF = '\n';
         private const char _ESCAPE = '"';
-        private int _nextByte = 0;
-        private int _CurrentLine = 0;
-        private InfiniteLoopQueue<long> _takeLastXQueue;
 
+        private readonly List<CsvReadError> _Errors = new List<CsvReadError>();
+        private readonly StringBuilder _buffer = new StringBuilder(1027);
+        private InfiniteLoopQueue<long> _takeLastXQueue;
+        private State _state = State.Normal;
+        private int _propertyCount = 0;
+        private int _CurrentLine = 0;
+        private int _colIndex = 0; // column index.
+        private int _colPosition = -1; // char position within column
+        private int _linePosition = 0;
+        private int _byte = 0;
+        private int _nextByte = 0;
 
         /// <summary>
         /// Constructor
@@ -428,12 +427,12 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// reads the CsvLine
         /// </summary>
-        //  # Called each line.
+        //  Called each line.
         public T Read()
-        {    
+        {
             T _result = new T();
 
-            SkipEmptyLineAndReadNext:
+        SkipEmptyLineAndReadNext:
 
             _state = State.Normal;
             _buffer.Length = 0; // Clear the string buffer.
@@ -443,7 +442,7 @@ namespace DevToys.PocoCsv.Core
             _colIndex = 0;
             _colPosition = -1;
 
-            for (;;)
+            for (; ; )
             {
                 _byte = _StreamReader.BaseStream.ReadByte();
                 if (_state == State.Normal)
@@ -463,10 +462,10 @@ namespace DevToys.PocoCsv.Core
                     {
                         // in case of CR, peek next char, when LF, then skip the CR and let newline happen on LF, otherwise newline happens on CR.
                         _nextByte = _StreamReader.BaseStream.ReadByte();
-                        _StreamReader.BaseStream.Position--; 
+                        _StreamReader.BaseStream.Position--;
                         if (_nextByte == _LF)
                         {
-                            continue; 
+                            continue;
                         }
                         // end of line.
                         if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
@@ -521,7 +520,7 @@ namespace DevToys.PocoCsv.Core
                     {
                         // In a proper CSV this would not occur.
                         if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
-                        {                            
+                        {
                             SetValue(_result);
                         }
                         _buffer.Clear();
@@ -586,7 +585,7 @@ namespace DevToys.PocoCsv.Core
                         }
                         return default;
                     case EmptyLineBehaviour.LogError:
-                        _Errors.Add(new CsvReadError() { ColumnIndex = 0, LineNumber = _CurrentLine } );
+                        _Errors.Add(new CsvReadError() { ColumnIndex = 0, LineNumber = _CurrentLine });
                         return default;
                     case EmptyLineBehaviour.ThrowException:
                         throw new CsvReadException($"Could not read empty line. Linenumber: {_CurrentLine}, Reader Position: {_StreamReader.BaseStream.Position}.");
@@ -606,7 +605,7 @@ namespace DevToys.PocoCsv.Core
             _ICustomCsvParseBase[_colIndex].Reading(_buffer, _CurrentLine, _colIndex, _StreamReader.BaseStream.Position, _linePosition, _colPosition, (char)_byte);
         }
 
-        // Called each field value.
+        // Called each field value. (if assigned)
         private void SetValue(T targetObject)
         {
             switch (_IsNullable[_colIndex])
@@ -1803,7 +1802,7 @@ namespace DevToys.PocoCsv.Core
 
             if (_Stream != null)
             {
-                _StreamReader = new StreamReader(stream: _Stream, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: BufferSize);
+                _StreamReader = new StreamReader(stream: _Stream, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: BufferSize);                
             }
             if (!string.IsNullOrEmpty(_File))
             {
@@ -1822,7 +1821,7 @@ namespace DevToys.PocoCsv.Core
 
                 _StreamReader = new StreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, options: _options);
 #endif
-#if NET50 || NETCOREAPP3_1 || NETCOREAPP3_0 || NETCOREAPP2_2 || NETCOREAPP1_0_OR_GREATER
+#if NET50 || NETCOREAPP3_1 || NETCOREAPP3_0 || NETCOREAPP2_2 || NETCOREAPP1_0_OR_GREATER               
                 _StreamReader = new StreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: DetectEncodingFromByteOrderMarks, bufferSize: BufferSize);
 
 #endif
