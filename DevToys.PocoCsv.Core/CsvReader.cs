@@ -229,7 +229,7 @@ namespace DevToys.PocoCsv.Core
             _state = State.Normal;
             _nextByte = 0;
 
-            for (; ; )
+            for (;;)
             {
                 _byte = _Stream.Read();
                 if (_state == State.Normal)
