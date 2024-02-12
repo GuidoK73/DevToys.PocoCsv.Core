@@ -164,7 +164,7 @@ namespace DevToys.PocoCsv.Core
 
             for (;;)
             {
-                _byte = BaseStream.ReadByte();
+                _byte = Read();
                 if (_state == State.Normal)
                 {
                     if (_byte == Separator)
@@ -173,8 +173,7 @@ namespace DevToys.PocoCsv.Core
                     }
                     else if (_byte == _CR)
                     {
-                        _nextByte = BaseStream.ReadByte();
-                        BaseStream.Position--;
+                        _nextByte = Peek();
                         if (_nextByte == _LF)
                         {
                             continue; // goes to else if (_byte == '\n')
@@ -218,78 +217,6 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-        /// <summary>
-        /// Move to a last row position before number of rows.
-        /// </summary>
-        public void MoveToLast(int rows = 1)
-        {
-            _takeLastQueue = new InfiniteLoopQueue<long>(rows);
-            MoveToStart();
-
-            _state = State.Normal;
-            _byte = 0;
-            _nextByte = 0;
-
-            for (;;)
-            {
-                _byte = BaseStream.ReadByte();
-                if (_state == State.Normal)
-                {
-                    if (_byte == Separator)
-                    {
-                        continue;
-                    }
-                    else if (_byte == _CR)
-                    {
-                        _nextByte = BaseStream.ReadByte();
-                        BaseStream.Position--;
-                        if (_nextByte == _LF)
-                        {
-                            continue; // goes to else if (_byte == '\n')
-                        }
-                        CurrentLine++;
-                        _takeLastQueue.Add(BaseStream.Position);
-                        continue;
-                    }
-                    else if (_byte == _LF)
-                    {
-                        CurrentLine++;
-                        _takeLastQueue.Add(BaseStream.Position);
-                        continue;
-                    }
-                    else if (_byte == _ESCAPE)
-                    {
-                        _state = State.Escaped;
-                        continue; // do not add this char. (TRIM)
-                    }
-                    else if (_byte == -1)
-                    {
-                        break; // end the while loop.
-                    }
-                    continue;
-                }
-                else if (_state == State.Escaped)
-                {
-                    // ',' and '\r' and "" are part of the value.
-                    if (_byte == -1)
-                    {
-                        break; // end the while loop.
-                    }
-                    else if (_byte == _ESCAPE)
-                    {
-                        _state = State.Normal;
-                        continue; // Move to next itteration in Normal state, do not add this char (TRIM).
-                    }
-                    continue;
-                }
-            }
-
-            var _queuePosition = _takeLastQueue.GetQueue();
-            BaseStream.Position = _queuePosition[0]; // Get first position of Queue to move to the file position of last x rows
-            _byte = 0;
-            CurrentLine -= rows;
-
-        }
 
         private void MoveToPosition(long position)
         {
@@ -317,7 +244,7 @@ namespace DevToys.PocoCsv.Core
 
             for (;;)
             {
-                _byte = BaseStream.ReadByte();
+                _byte = Read();
                 if (_state == State.Normal)
                 {
                     if (_byte == Separator)
@@ -329,8 +256,7 @@ namespace DevToys.PocoCsv.Core
                     }
                     else if (_byte == _CR)
                     {
-                        _nextByte = BaseStream.ReadByte();
-                        BaseStream.Position--;
+                        _nextByte = Peek();
                         if (_nextByte == _LF)
                         {
                             continue; // goes to else if (_byte == '\n')
@@ -378,8 +304,7 @@ namespace DevToys.PocoCsv.Core
                     else if (_byte == _ESCAPE)
                     {
                         // " aaa "" ","bbb", "ccc""","ddd """" "
-                        _nextByte = BaseStream.ReadByte();
-                        BaseStream.Position--; // Next read will read the , and act upon it in normal state.
+                        _nextByte = Peek();
                         if (_nextByte == Separator || _nextByte == _CR || _nextByte == _LF)
                         {
                             // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.

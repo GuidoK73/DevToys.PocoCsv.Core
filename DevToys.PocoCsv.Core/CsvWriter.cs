@@ -16,6 +16,8 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvWriter<T> : BaseCsv, IDisposable where T : class, new()
     {
+        private Stream _Stream = null;
+
         private ImmutableArray<Func<T, object>> _PropertyGetterByteArray;
         private ImmutableArray<Func<T, Int32>> _PropertyGetterEnum;
         private ImmutableArray<Func<T, string>> _PropertyGetterString;
@@ -180,7 +182,15 @@ namespace DevToys.PocoCsv.Core
             {
                 throw new IOException("Call Open() method first before writing.");
             }
-
+            if (_StreamWriter.BaseStream.Position > 0)
+            {
+                switch (CRLFMode)
+                {
+                    case CRLFMode.CRLF: _StreamWriter.Write(_CRLF); break;
+                    case CRLFMode.CR: _StreamWriter.Write(_CR); break;
+                    case CRLFMode.LF: _StreamWriter.Write(_LF); break;
+                }
+            }
             for (int ii = 0; ii <= _MaxColumnIndex; ii++)
             {
                 if (_Properties[ii] != null)
@@ -1225,7 +1235,7 @@ namespace DevToys.PocoCsv.Core
             }
             if (!string.IsNullOrEmpty(_File))
             {
-                _StreamWriter = new StreamWriter(path: _File, append: true, encoding: Encoding, bufferSize: BufferSize);
+                _StreamWriter = new StreamWriter(path: _File, append: true, encoding: Encoding, bufferSize: BufferSize == -1 ? 1024 : BufferSize);
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿# DevToys.PocoCsv.Core 
 
-DevToys.PocoCsv.Core is a class library to read and write to Csv.
+DevToys.PocoCsv.Core is a class library to read and write to Csv very fast.
 It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader<T> and CsvWriter<T>.
 
 Read/write serialize/deserialize data to and from Csv.
@@ -11,6 +11,7 @@ Read/write serialize/deserialize data to and from Csv.
 - DataTable import and export.
 - Deserialiser / serializer.
 - Stream reader / writer.
+- Works for all encoding types.
 
 
 # CsvStreamReader
@@ -100,7 +101,6 @@ You only specify the column indexes you need.
 |**Flush()**|Flushes all buffers.|
 |**HasErrors**|Indicates there are errors|
 |**IgnoreColumnAttributes**|All properties are handled in order of property occurrence and mapped directly to their respective index. Only use when CsvWriter has this set to true as well. (ColumnAttribute is ignored.)|
-|**Last(int rows)**|Last seeks the csv document for the last x entries. this is much faster then IEnumerable.Last().|
 |**MoveToStart()**|Moves the reader to the start position, Skip() and Take() alter the start positions use MoveToStart() to reset the position.|
 |**Open()**|Opens the Reader.|
 |**Read()**|Reads current row into T and advances the reader to the next row. |
@@ -109,7 +109,7 @@ You only specify the column indexes you need.
 |**Skip(int rows)**|Skip and advances the reader to the next row without interpreting it. This is much faster then IEnumerable.Skip(). |
 |**SkipHeader()**|Ensures stream is at start then skips the first row.|
 
-(Skip and Last do not deserialize, that's why they are faster then normal IEnumerable operations).
+(Skip does not deserialize, that's why it's faster then normal IEnumerable operations).
 
 # CsvWriter\<T\>
 
@@ -463,8 +463,6 @@ until they are overruled at property level.
         _reader.Skip(10);
         _result1 = _reader.ReadAsEnumerable().Take(10).ToList();
 
-        // Take last 10 records. Without serializing everything before it.
-        _result1 = _reader.Last(10).ToList();
     }
 
 ~~~

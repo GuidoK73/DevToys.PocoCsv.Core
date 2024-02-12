@@ -14,11 +14,6 @@
             Property Set by contructor, either File or Stream is used.
             </summary>
         </member>
-        <member name="F:DevToys.PocoCsv.Core.BaseCsv._Stream">
-            <summary>
-            Property Set by contructor, either File or Stream is used.
-            </summary>
-        </member>
         <member name="F:DevToys.PocoCsv.Core.BaseCsv._Separator">
             <summary>
             Separator to use. Default: ','
@@ -322,7 +317,12 @@
             Properties needs to be marked with ColumnAttribute
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.Stream,System.Char,System.Int32)">
+        <member name="F:DevToys.PocoCsv.Core.CsvReader`1._Stream">
+            <summary>
+            Property Set by contructor, either File or Stream is used.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.StreamReader,System.Char,System.Int32)">
             <summary>
             Constructor
             </summary>
@@ -405,16 +405,6 @@
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.SkipHeader">
             <summary>
             MoveToStart then skip first row.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Last(System.Int32)">
-            <summary>
-            Returns Last X records in the Csv Document. This one is much faster then ReadAsEnumerable().Last().
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.MoveToLast(System.Int32)">
-            <summary>
-            Move to a last row position before number of rows.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadAsEnumerable">
@@ -638,11 +628,6 @@
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.Skip(System.Int32)">
             <summary>
             Use to skip first row without materializing, usefull for skipping header.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.MoveToLast(System.Int32)">
-            <summary>
-            Move to a last row position before number of rows.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.MoveToStart(System.IO.Stream)">

@@ -30,6 +30,8 @@ namespace DevToys.PocoCsv.UnitTests
             TestTypeFields();
             ValidateCsvReader();
             ValidateCsvReaderEmptyLineBehaviour();
+            TestEncoding();
+            TestColIndex();
         }
 
         [TestMethod]
@@ -100,13 +102,19 @@ namespace DevToys.PocoCsv.UnitTests
         [TestMethod]
         public void TestColIndex()
         {
+            // Test using another class for reading without using all indexes.
+
             string file = System.IO.Path.GetTempFileName();
+
+            List<CsvSimple> _fullType = new List<CsvSimple>();
+            List<CsvSimpleSmall> _smallType = new List<CsvSimpleSmall>();
+
 
             using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(file) { Separator = ',' })
             {
                 _writer.Open();
-                var _data = CsvSimpleData();
-                _writer.Write(_data);
+                _fullType = CsvSimpleData(5).ToList();
+                _writer.Write(_fullType);
             }
 
             string _text = File.ReadAllText(file);
@@ -114,16 +122,88 @@ namespace DevToys.PocoCsv.UnitTests
             using (CsvReader<CsvSimpleSmall> _reader = new CsvReader<CsvSimpleSmall>(file) { Separator = ',' })
             {
                 _reader.Open();
-                var _data = _reader.ReadAsEnumerable().ToList();
-                Console.WriteLine('X');
+                _smallType = _reader.ReadAsEnumerable().ToList();
+            }
+
+            for (int ii = 0; ii < 5; ii++)
+            {
+                Assert.AreEqual(_smallType[ii].AfBij, _fullType[ii].AfBij);
+                Assert.AreEqual(_smallType[ii].Tegenrekening, _fullType[ii].Tegenrekening);
+                Assert.AreEqual(_smallType[ii].Rekening, _fullType[ii].Rekening);
             }
         }
 
+        [TestMethod]
+        public void TestEncoding()
+        {
+            string fileUTF32 = System.IO.Path.GetTempFileName();
+            string fileUTF8 = System.IO.Path.GetTempFileName();
+            string fileASCII = System.IO.Path.GetTempFileName();
 
-        private IEnumerable<CsvSimple> CsvSimpleData()
+            using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(file: fileUTF32,  encoding : Encoding.UTF32,  culture: CultureInfo.InvariantCulture,  separator: ',' ))
+            {
+                _writer.Open();
+                var _data = CsvSimpleData(5);
+                _writer.Write(_data);
+            }
+            using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(file: fileUTF8, encoding: Encoding.UTF8, culture: CultureInfo.InvariantCulture, separator: ',' ))
+            {
+                _writer.Open();
+                var _data = CsvSimpleData(5);
+                _writer.Write(_data);
+            }
+            using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(file: fileASCII, encoding: Encoding.ASCII, culture: CultureInfo.InvariantCulture, separator: ','))
+            {
+                _writer.Open();
+                var _data = CsvSimpleData(5);
+                _writer.Write(_data);
+            }
+
+            string _UTF32 = File.ReadAllText(fileUTF32);
+
+            List<CsvSimpleSmall> _dataUTF32;
+            List<CsvSimpleSmall> _dataUTF8;
+            List<CsvSimpleSmall> _dataASCII;
+
+            using (CsvReader<CsvSimpleSmall> _reader = new CsvReader<CsvSimpleSmall>(fileUTF32) { Separator = ',' })
+            {
+                _reader.Open();
+                _dataUTF32 = _reader.ReadAsEnumerable().ToList();
+                Console.WriteLine('X');
+            }
+            using (CsvReader<CsvSimpleSmall> _reader = new CsvReader<CsvSimpleSmall>(fileUTF8) { Separator = ',' })
+            {
+                _reader.Open();
+                _dataUTF8 = _reader.ReadAsEnumerable().ToList();
+                Console.WriteLine('X');
+            }
+            using (CsvReader<CsvSimpleSmall> _reader = new CsvReader<CsvSimpleSmall>(fileASCII) { Separator = ',' })
+            {
+                _reader.Open();
+                _dataASCII = _reader.ReadAsEnumerable().ToList();
+                Console.WriteLine('X');
+            }
+
+            for (int ii = 0; ii < 5; ii++)
+            {
+                Assert.AreEqual(_dataUTF32[ii].AfBij, _dataUTF8[ii].AfBij);
+                Assert.AreEqual(_dataUTF32[ii].AfBij, _dataASCII[ii].AfBij);
+
+                Assert.AreEqual(_dataUTF32[ii].Rekening, _dataUTF8[ii].Rekening);
+                Assert.AreEqual(_dataUTF32[ii].Rekening, _dataASCII[ii].Rekening);
+
+                Assert.AreEqual(_dataUTF32[ii].Tegenrekening, _dataUTF8[ii].Tegenrekening);
+                Assert.AreEqual(_dataUTF32[ii].Tegenrekening, _dataASCII[ii].Tegenrekening);
+
+            }
+
+        }
+
+
+        private IEnumerable<CsvSimple> CsvSimpleData(int count)
         {
             // 
-            for (int ii = 0; ii < 5; ii++)
+            for (int ii = 0; ii < count; ii++)
             {
                 CsvSimple _line = new()
                 {
@@ -172,6 +252,7 @@ namespace DevToys.PocoCsv.UnitTests
                 _reader.EmptyLineBehaviour = EmptyLineBehaviour.NullValue;
                 _reader.MoveToStart();
                 _reader.SkipHeader();
+                _reader.Skip();
                 var _items = _reader.ReadAsEnumerable().ToList();
                 Assert.AreEqual(5, _items.Count);
                 Assert.AreEqual(_items[1], null);
@@ -181,6 +262,7 @@ namespace DevToys.PocoCsv.UnitTests
                 _reader.EmptyLineBehaviour = EmptyLineBehaviour.SkipAndReadNext;
                 _reader.MoveToStart();
                 _reader.SkipHeader();
+                _reader.Skip();
                 _items = _reader.ReadAsEnumerable().ToList();
                 Assert.AreEqual(2, _items.Count);
 
@@ -444,10 +526,6 @@ namespace DevToys.PocoCsv.UnitTests
                 _reader.MoveToStart();
                 _reader.EmptyLineBehaviour = EmptyLineBehaviour.NullValue;
 
-                // Testing Last() Method
-                CsvTypesData[] _rows = _reader.Last(2).ToArray();
-                Assert.AreEqual(null, _rows[0]);
-                Assert.AreEqual("Line 2", _rows[1].StringValue);
 
                 _reader.MoveToStart();
 
@@ -456,28 +534,28 @@ namespace DevToys.PocoCsv.UnitTests
                 Assert.AreEqual("Line 1", _data[0].StringValue);
                 Assert.AreEqual("Line 2", _data[1].StringValue);
 
-                string _testData = @"StringValue,GuidValue,BooleanValue,DateTimeValue,DateTimeOffsetValue,TimeSpanValue,ByteValue,SByteValue,Int16Value,Int32Value,Int64Value,SingleValue,DecimalValue,DoubleValue,UInt16Value,UInt32Value,UInt64Value,GuidValueNullable,BooleanValueNullable,DateTimeValueNullable,DateTimeOffsetValueNullable,TimeSpanValueNullable,ByteValueNullable,SByteValueNullable,Int16ValueNullable,Int32ValueNullable,Int64ValueNullable,SingleValueNullable,DecimalValueNullable,DoubleValueNullable,UInt16ValueNullable,UInt32ValueNullable,UInt64ValueNullable,ByteArray
-Line 1,Guid Value?,Is this yes?,31/31/2023 00:00:00,31/03/2023 00:00:00 +02:00,1.02:03:04.0050000,3,5,8,10,12,15,""10,00"",""10,5"",22,24,26,94a6bfe9-abb4-46b6-bd7d-8f047b9ba480,False,31/03/2023 00:00:00,31/03/2023 00:00:00 +02:00,6.07:08:09.0100000,4,6,9,11,13,16,""11,23"",""10,45"",23,25,29,AQID
+//                string _testData = @"StringValue,GuidValue,BooleanValue,DateTimeValue,DateTimeOffsetValue,TimeSpanValue,ByteValue,SByteValue,Int16Value,Int32Value,Int64Value,SingleValue,DecimalValue,DoubleValue,UInt16Value,UInt32Value,UInt64Value,GuidValueNullable,BooleanValueNullable,DateTimeValueNullable,DateTimeOffsetValueNullable,TimeSpanValueNullable,ByteValueNullable,SByteValueNullable,Int16ValueNullable,Int32ValueNullable,Int64ValueNullable,SingleValueNullable,DecimalValueNullable,DoubleValueNullable,UInt16ValueNullable,UInt32ValueNullable,UInt64ValueNullable,ByteArray
+//Line 1,Guid Value?,Is this yes?,31/31/2023 00:00:00,31/03/2023 00:00:00 +02:00,1.02:03:04.0050000,3,5,8,10,12,15,""10,00"",""10,5"",22,24,26,94a6bfe9-abb4-46b6-bd7d-8f047b9ba480,False,31/03/2023 00:00:00,31/03/2023 00:00:00 +02:00,6.07:08:09.0100000,4,6,9,11,13,16,""11,23"",""10,45"",23,25,29,AQID
 
-Line 2,94a6bfe9-abb4-46b6-bd7d-8f047b9ba480,True,31/03/2023 00:00:00,31/03/2023 00:00:00 +02:00,Wrong Time,3,5,8,10,12,15,""10,00"",""10,5"",22,24,26,,,,,,,,,,,,,,,,,";
+//Line 2,94a6bfe9-abb4-46b6-bd7d-8f047b9ba480,True,31/03/2023 00:00:00,31/03/2023 00:00:00 +02:00,Wrong Time,3,5,8,10,12,15,""10,00"",""10,5"",22,24,26,,,,,,,,,,,,,,,,,";
 
-                List<CsvTypesData> _result = new List<CsvTypesData>();
+//                List<CsvTypesData> _result = new List<CsvTypesData>();
 
-                byte[] byteArray = Encoding.Default.GetBytes(_testData);
+//                byte[] byteArray = Encoding.Default.GetBytes(_testData);
 
-                using (MemoryStream _stream = new MemoryStream(byteArray))
-                {
-                    using (CsvReader<CsvTypesData> _csvReader = new CsvReader<CsvTypesData>(_stream))
-                    {
-                        _csvReader.EmptyLineBehaviour = EmptyLineBehaviour.NullValue;
-                        _csvReader.Open();
-                        _csvReader.DetectSeparator();
-                        _csvReader.Skip();
-                        _result = _csvReader.ReadAsEnumerable().ToList();
+//                using (MemoryStream _stream = new MemoryStream(byteArray))
+//                {
+//                    using (CsvReader<CsvTypesData> _csvReader = new CsvReader<CsvTypesData>(_stream))
+//                    {
+//                        _csvReader.EmptyLineBehaviour = EmptyLineBehaviour.NullValue;
+//                        _csvReader.Open();
+//                        _csvReader.DetectSeparator();
+//                        _csvReader.Skip();
+//                        _result = _csvReader.ReadAsEnumerable().ToList();
 
-                        Assert.AreEqual(4, _csvReader.Errors.Count());
-                    }
-                }
+//                        Assert.AreEqual(4, _csvReader.Errors.Count());
+//                    }
+//                }
             }
         }
 

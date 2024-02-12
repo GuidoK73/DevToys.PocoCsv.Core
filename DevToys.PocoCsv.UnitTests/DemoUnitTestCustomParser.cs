@@ -91,7 +91,7 @@ namespace DevToys.PocoCsv.UnitTests
             {
                 _reader.Open();
 
-                _reader.Skip(); // Slip header.
+                //_reader.Skip(); // Slip header.
                 var _rows = _reader.ReadAsEnumerable().ToArray(); // Materialize.
 
                 Assert.AreEqual(true, _rows[0].IsOk);

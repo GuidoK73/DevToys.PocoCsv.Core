@@ -106,10 +106,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         protected string _File = null;
 
-        /// <summary>
-        /// Property Set by contructor, either File or Stream is used.
-        /// </summary>
-        protected Stream _Stream = null;
+
 
         /// <summary>
         /// Separator to use. Default: ','
