@@ -15,13 +15,9 @@ namespace DevToys.PocoCsv.Core
     /// Enumerate Csv Stream Reader over T.
     /// Properties needs to be marked with ColumnAttribute
     /// </summary>
-    public sealed class CsvReader<T> : BaseCsv, IDisposable where T : class, new() 
+    public sealed class CsvReader<T> : BaseCsv, IDisposable where T : class, new()
     {
-        /// <summary>
-        /// Property Set by contructor, either File or Stream is used.
-        /// </summary>
-        protected StreamReader _Stream = null;
-
+        private StreamReader _Stream = null;
         private ImmutableArray<Action<T, Int32>> _PropertySettersEnum;
         private ImmutableArray<Action<object, object>> _PropertySetters;
         private ImmutableArray<Action<T, string>> _PropertySettersString;
@@ -84,6 +80,8 @@ namespace DevToys.PocoCsv.Core
             _Stream = stream;
             _Separator = separator;
             BufferSize = buffersize;
+            Encoding = Encoding.Default;
+            DetectEncodingFromByteOrderMarks = true;
         }
 
         /// <summary>
@@ -94,7 +92,10 @@ namespace DevToys.PocoCsv.Core
             _File = file;
             _Separator = separator;
             BufferSize = buffersize;
+            Encoding = Encoding.Default;
+            DetectEncodingFromByteOrderMarks = true;
         }
+
 
         /// <summary>
         /// Csv Seperator to use default ','
@@ -134,6 +135,16 @@ namespace DevToys.PocoCsv.Core
         /// All properties are handled in order of property occurrence and mapped directly to their respective index. Only use when CsvWriter has this set to true as well. (ColumnAttribute is ignored.)
         /// </summary>
         public bool IgnoreColumnAttributes { get; set; } = false;
+
+        /// <summary>
+        /// the character encoding to use.
+        /// </summary>
+        public Encoding Encoding { get;  set; } = Encoding.UTF8;
+
+        /// <summary>
+        /// indicates whether to look for byte order marks at the beginning of the file.
+        /// </summary>
+        public bool DetectEncodingFromByteOrderMarks { get; set; } = true;
 
         /// <summary>
         /// Releases all resources used by the System.IO.TextReader object.
@@ -1691,7 +1702,7 @@ namespace DevToys.PocoCsv.Core
                 {
                     throw new FileNotFoundException($"File '{_File}' not found.");
                 }
-                _Stream = new StreamReader(path: _File, detectEncodingFromByteOrderMarks: true);
+                _Stream = new StreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: true);
             }
         }
 

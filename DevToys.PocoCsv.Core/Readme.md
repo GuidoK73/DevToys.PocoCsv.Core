@@ -93,6 +93,7 @@ You only specify the column indexes you need.
 |**Close()**|Close the CSV stream reader|
 |**CurrentLine**|Returns the current line number.|
 |**DetectSeparator()**|To auto set the separator (looks for commonly used separators in first 10 lines).|
+|**DetectEncodingFromByteOrderMarks**|indicates whether to look for byte order marks at the beginning of the file.|
 |**Dispose()**|Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.|
 |**EmptyLineBehaviour**|EmptyLineBehaviour: <li>DefaultInstance: Return a new instance of T (Default)</li><li>NullValue: Return Null value for object.</li><li>SkipAndReadNext: if empty line has occurred, the reader will move to the next line.</li><li>LogError: Create an entry in Errors collecion</li><li>ThrowException: throw an exception when an empty line has occurred.</li> |
 |**Encoding**|The character encoding to use.|

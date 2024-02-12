@@ -317,11 +317,6 @@
             Properties needs to be marked with ColumnAttribute
             </summary>
         </member>
-        <member name="F:DevToys.PocoCsv.Core.CsvReader`1._Stream">
-            <summary>
-            Property Set by contructor, either File or Stream is used.
-            </summary>
-        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.#ctor(System.IO.StreamReader,System.Char,System.Int32)">
             <summary>
             Constructor
@@ -365,6 +360,16 @@
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.IgnoreColumnAttributes">
             <summary>
             All properties are handled in order of property occurrence and mapped directly to their respective index. Only use when CsvWriter has this set to true as well. (ColumnAttribute is ignored.)
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.Encoding">
+            <summary>
+            the character encoding to use.
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.DetectEncodingFromByteOrderMarks">
+            <summary>
+            indicates whether to look for byte order marks at the beginning of the file.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Dispose">
