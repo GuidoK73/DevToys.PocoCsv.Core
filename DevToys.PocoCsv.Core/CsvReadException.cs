@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace DevToys.PocoCsv.Core
 {
@@ -28,20 +27,6 @@ namespace DevToys.PocoCsv.Core
         /// <param name="message"></param>
         /// <param name="innerException"></param>
         public CsvReadException(string message, Exception innerException) : base(message, innerException) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        protected CsvReadException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        public override void GetObjectData(SerializationInfo info, StreamingContext context) => base.GetObjectData(info, context);
     }
 
     /// <summary>
@@ -68,19 +53,5 @@ namespace DevToys.PocoCsv.Core
         /// <param name="message"></param>
         /// <param name="innerException"></param>
         public CsvException(string message, Exception innerException) : base(message, innerException) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        protected CsvException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        public override void GetObjectData(SerializationInfo info, StreamingContext context) => base.GetObjectData(info, context);
     }
 }

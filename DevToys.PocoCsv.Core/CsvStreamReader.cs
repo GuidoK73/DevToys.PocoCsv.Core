@@ -19,7 +19,6 @@ namespace DevToys.PocoCsv.Core
         private int _nextByte = 0;
         private State _state = State.Normal;
         private readonly List<string> _result = new List<string>();
-        private InfiniteLoopQueue<long> _takeLastQueue;
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamReader class for the specified file name.
@@ -37,16 +36,6 @@ namespace DevToys.PocoCsv.Core
         /// <param name="bufferSize">The minimum buffer size.</param>
         public CsvStreamReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize) : base(path, encoding, detectEncodingFromByteOrderMarks, bufferSize)
         { }
-
-#if NET60 || NET70
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="options"></param>
-        public CsvStreamReader(string path, FileStreamOptions options) : base(path, Encoding.UTF8, true, options)
-        { }
-#endif
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamReader class for the specified stream.
@@ -151,12 +140,12 @@ namespace DevToys.PocoCsv.Core
                 {
                     break;
                 }
-                _Skip();
+                SkipRow();
                 ii++;
             }
         }
 
-        private void _Skip()
+        private void SkipRow()
         {
             _byte = 0;
             _nextByte = 0;
@@ -223,13 +212,6 @@ namespace DevToys.PocoCsv.Core
             BaseStream.Position = position;
             _byte = 0;
         }
-
-
-        /// <summary>
-        /// Move stream to start position.
-        /// </summary>
-        public void MoveToStart(Stream stream) => MoveToPosition(0);
-
 
         /// <summary>
         /// Reads a single CSV line into string array.

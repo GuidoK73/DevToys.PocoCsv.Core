@@ -62,7 +62,6 @@ namespace DevToys.PocoCsv.Core
 
         private readonly List<CsvReadError> _Errors = new List<CsvReadError>();
         private readonly StringBuilder _buffer = new StringBuilder(1027);
-        private InfiniteLoopQueue<long> _takeLastXQueue;
         private State _state = State.Normal;
         private int _propertyCount = 0;
         private int _CurrentLine = 0;
@@ -137,12 +136,12 @@ namespace DevToys.PocoCsv.Core
         public bool IgnoreColumnAttributes { get; set; } = false;
 
         /// <summary>
-        /// the character encoding to use.
+        /// the character encoding to use. (Use when DetectEncodingFromByteOrderMarks does not yield proper results.)
         /// </summary>
         public Encoding Encoding { get;  set; } = Encoding.UTF8;
 
         /// <summary>
-        /// indicates whether to look for byte order marks at the beginning of the file.
+        /// indicates whether to look for byte order marks at the beginning of the file. Default: true
         /// </summary>
         public bool DetectEncodingFromByteOrderMarks { get; set; } = true;
 
@@ -332,7 +331,6 @@ namespace DevToys.PocoCsv.Core
             _nextByte = 0;
             _colIndex = 0;
             _colPosition = -1;
-
 
             for (; ; )
             {

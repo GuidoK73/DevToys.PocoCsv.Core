@@ -60,7 +60,7 @@ namespace DevToys.PocoCsv.Core
         /// <param name="name"></param>
         /// <param name="nullable"></param>
         /// <param name="sqlDatabaseType"></param>
-        public void Decontruct(out DbType databaseType, out NetType dotNetType, int index, bool isLast, string name, bool nullable, SqlDbType sqlDatabaseType)
+        public void Decontruct(out DbType databaseType, out NetType dotNetType, out int index, out bool isLast, out string name, out bool nullable, out SqlDbType sqlDatabaseType)
         {
             databaseType = DatabaseType;
             dotNetType = DotNetType;

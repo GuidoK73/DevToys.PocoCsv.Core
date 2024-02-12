@@ -146,46 +146,124 @@
     }
 
 
+    /// <summary></summary>
     public enum NetTypeComplete
     {
+        /// <summary></summary>
         String = 0,
+
+        /// <summary></summary>
         Guid = 1,
+
+        /// <summary></summary>
         Boolean = 2,
+
+        /// <summary></summary>
         DateTime = 3,
+
+        /// <summary></summary>
         DateTimeOffset = 4,
+
+        /// <summary></summary>
         TimeSpan = 5,
+
+        /// <summary></summary>
         Byte = 6,
+
+        /// <summary></summary>
         SByte = 7,
+
+        /// <summary></summary>
         Int16 = 8,
+
+        /// <summary></summary>
         Int32 = 9,
+
+        /// <summary></summary>
         Int64 = 10,
-        Single = 11, 
-        Decimal = 12,    
-        Double = 13,    
+
+        /// <summary></summary>
+        Single = 11,
+
+        /// <summary></summary>
+        Decimal = 12,
+
+        /// <summary></summary>
+        Double = 13,
+
+        /// <summary></summary>
         UInt16 = 14,
+
+        /// <summary></summary>
         UInt32 = 15,
+
+        /// <summary></summary>
         UInt64 = 16,
+
+        /// <summary></summary>
         Enum = 17,
+
+        /// <summary></summary>
         GuidNullable = 18,
+
+        /// <summary></summary>
         BooleanNullable = 19,
+
+        /// <summary></summary>
         DateTimeNullable = 20,
+
+        /// <summary></summary>
         DateTimeOffsetNullable = 21,
+
+        /// <summary></summary>
         TimeSpanNullable = 22,
+
+        /// <summary></summary>
         ByteNullable = 23,
+
+        /// <summary></summary>
         SByteNullable = 24,
+
+        /// <summary></summary>
         Int16Nullable = 25,
+
+        /// <summary></summary>
         Int32Nullable = 26,
+
+        /// <summary></summary>
         Int64Nullable = 27,
+
+        /// <summary></summary>
         SingleNullable = 28,
+
+        /// <summary></summary>
         DecimalNullable = 29,
+
+        /// <summary></summary>
         DoubleNullable = 30,
+
+        /// <summary></summary>
         UInt16Nullable = 31,
+
+        /// <summary></summary>
         UInt32Nullable = 32,
+
+        /// <summary></summary>
         UInt64Nullable = 33,
+
+        /// <summary></summary>
         ByteArray = 34,
+
+        /// <summary></summary>
         BigInteger = 35,
+
+        /// <summary></summary>
         BigIntegerNullable = 36,
+
+        /// <summary></summary>
         EnumNullable = 37,
+
+        /// <summary></summary>
         Unknown = 999
     }
 }

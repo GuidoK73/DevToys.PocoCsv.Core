@@ -299,7 +299,7 @@
             Returns Name
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvColumnInfo.Decontruct(System.Data.DbType@,DevToys.PocoCsv.Core.NetType@,System.Int32,System.Boolean,System.String,System.Boolean,System.Data.SqlDbType)">
+        <member name="M:DevToys.PocoCsv.Core.CsvColumnInfo.Decontruct(System.Data.DbType@,DevToys.PocoCsv.Core.NetType@,System.Int32@,System.Boolean@,System.String@,System.Boolean@,System.Data.SqlDbType@)">
             <summary>
             Decontructor.
             </summary>
@@ -364,12 +364,12 @@
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.Encoding">
             <summary>
-            the character encoding to use.
+            the character encoding to use. (Use when DetectEncodingFromByteOrderMarks does not yield proper results.)
             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.DetectEncodingFromByteOrderMarks">
             <summary>
-            indicates whether to look for byte order marks at the beginning of the file.
+            indicates whether to look for byte order marks at the beginning of the file. Default: true
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Dispose">
@@ -501,20 +501,6 @@
             <param name="message"></param>
             <param name="innerException"></param>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReadException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            
-            </summary>
-            <param name="info"></param>
-            <param name="context"></param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReadException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            
-            </summary>
-            <param name="info"></param>
-            <param name="context"></param>
-        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvException">
             <summary>
             
@@ -538,20 +524,6 @@
             </summary>
             <param name="message"></param>
             <param name="innerException"></param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            
-            </summary>
-            <param name="info"></param>
-            <param name="context"></param>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            
-            </summary>
-            <param name="info"></param>
-            <param name="context"></param>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamReader">
             <summary>
@@ -633,11 +605,6 @@
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.Skip(System.Int32)">
             <summary>
             Use to skip first row without materializing, usefull for skipping header.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.MoveToStart(System.IO.Stream)">
-            <summary>
-            Move stream to start position.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadCsvLine">
@@ -1006,6 +973,126 @@
         </member>
         <member name="F:DevToys.PocoCsv.Core.NetType.Null">
             <summary>Type is Null</summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.NetTypeComplete">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.String">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.Guid">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.Boolean">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.DateTime">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.DateTimeOffset">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.TimeSpan">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.Byte">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.SByte">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.Int16">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.Int32">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.Int64">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.Single">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.Decimal">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.Double">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.UInt16">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.UInt32">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.UInt64">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.Enum">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.GuidNullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.BooleanNullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.DateTimeNullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.DateTimeOffsetNullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.TimeSpanNullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.ByteNullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.SByteNullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.Int16Nullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.Int32Nullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.Int64Nullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.SingleNullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.DecimalNullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.DoubleNullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.UInt16Nullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.UInt32Nullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.UInt64Nullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.ByteArray">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.BigInteger">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.BigIntegerNullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.EnumNullable">
+            <summary></summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.NetTypeComplete.Unknown">
+            <summary></summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.ICustomCsvParse">
             <summary>

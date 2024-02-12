@@ -15,6 +15,8 @@ namespace DevToys.PocoCsv.Core
     public abstract class BaseCsv
     {
         // Keep boxing at a minimum.
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         internal protected ICustomCsvParse<string>[] __CustomParserString = null;
         internal protected ICustomCsvParse<Guid>[] __CustomParserGuid = null;
         internal protected ICustomCsvParse<Boolean>[] __CustomParserBoolean = null;
@@ -94,12 +96,12 @@ namespace DevToys.PocoCsv.Core
         internal protected ImmutableArray<ICustomCsvParse<UInt64?>> _CustomParserUInt64Nullable;
         internal protected ImmutableArray<ICustomCsvParse<BigInteger?>> _CustomParserBigIntegerNullable;
 
-
         internal protected ImmutableArray<Func<object, object[], object>> _CustomParserCall;
         internal protected ImmutableArray<ICustomCsvParse> _ICustomCsvParseBase;
         internal protected Func<object, object[], object>[] __CustomParserCall = null;
         internal protected ICustomCsvParse[] __ICustomCsvParseBase;
         internal protected CsvAttribute _CsvAttribute;
+#pragma warning restore CS1591 
 
         /// <summary>
         /// Property Set by contructor, either File or Stream is used.
