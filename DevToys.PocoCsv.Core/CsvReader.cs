@@ -173,13 +173,6 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void Flush() => _Stream.BaseStream.Flush();
 
-        private void MoveToPosition(long position)
-        {
-            _Stream.BaseStream.Position = position;
-            _Stream.BaseStream.Flush();
-            _byte = 0;
-        }
-
         /// <summary>
         /// Detect the separator by sampling first 10 rows. Position is moved to start after execution.
         /// </summary>
