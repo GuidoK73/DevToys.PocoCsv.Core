@@ -110,10 +110,7 @@ namespace DevToys.PocoCsv.Core
 
 
 
-        /// <summary>
-        /// Separator to use. Default: ','
-        /// </summary>
-        protected char _Separator = ',';
+
 
         /// <summary>
         /// Stream buffer size, Default: 1024

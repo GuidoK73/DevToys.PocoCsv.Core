@@ -14,11 +14,6 @@
             Property Set by contructor, either File or Stream is used.
             </summary>
         </member>
-        <member name="F:DevToys.PocoCsv.Core.BaseCsv._Separator">
-            <summary>
-            Separator to use. Default: ','
-            </summary>
-        </member>
         <member name="P:DevToys.PocoCsv.Core.BaseCsv.BufferSize">
             <summary>
             Stream buffer size, Default: 1024
@@ -734,6 +729,11 @@
         <member name="T:DevToys.PocoCsv.Core.CsvWriter`1">
             <summary>
             Write T to Csv Stream from an IEnumerable source.
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.CsvWriter`1._Separator">
+            <summary>
+            Separator to use. Default: ','
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String,System.Char)">

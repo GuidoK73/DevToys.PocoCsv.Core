@@ -72,6 +72,11 @@ namespace DevToys.PocoCsv.Core
         private Encoding Encoding = Encoding.Default;
 
         /// <summary>
+        /// Separator to use. Default: ','
+        /// </summary>
+        private char _Separator = ',';
+
+        /// <summary>
         /// Constructor
         /// </summary>
         public CsvWriter(string file, char separator = ',')

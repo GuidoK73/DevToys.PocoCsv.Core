@@ -56,13 +56,16 @@ namespace DevToys.PocoCsv.Core
         private ImmutableArray<Action<T, UInt64?>> _PropertySettersUInt64Null;
         private ImmutableArray<Action<T, BigInteger?>> _PropertySettersBigIntegerNull;
 
-        private const char _CR = '\r';
-        private const char _LF = '\n';
-        private const char _ESCAPE = '"';
-
         private readonly List<CsvReadError> _Errors = new List<CsvReadError>();
         private readonly StringBuilder _buffer = new StringBuilder(1027);
+
+        private const int _CR = '\r';
+        private const int _LF = '\n';
+        private const int _ESCAPE = '"';
+        private const int _TERMINATOR = -1;
+
         private State _state = State.Normal;
+        private int _Separator = ',';
         private int _propertyCount = 0;
         private int _CurrentLine = 0;
         private int _colIndex = 0; // column index.
@@ -70,6 +73,7 @@ namespace DevToys.PocoCsv.Core
         private int _linePosition = 0;
         private int _byte = 0;
         private int _nextByte = 0;
+        
 
         /// <summary>
         /// Constructor
@@ -101,7 +105,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public char Separator
         {
-            get => _Separator;
+            get => (char)_Separator;
             set => _Separator = value;
         }
 
@@ -123,7 +127,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Indicates the stream has ended.
         /// </summary>
-        public bool EndOfStream => _byte == -1;
+        public bool EndOfStream => _byte == _TERMINATOR;
 
         /// <summary>
         /// Returns current Line position.
@@ -178,10 +182,10 @@ namespace DevToys.PocoCsv.Core
         public void DetectSeparator()
         {
             var _reader = new CsvStreamReader(_Stream.BaseStream);
-            var _succes = CsvUtils.GetCsvSeparator(_reader, out _Separator, 10);
+            var _succes = CsvUtils.GetCsvSeparator(_reader, out char separator, 10);
             if (_succes)
             {
-                Separator = _Separator;
+                Separator = separator;
             }
             MoveToStart();
         }
@@ -264,7 +268,7 @@ namespace DevToys.PocoCsv.Core
                         _state = State.Escaped;
                         continue; // do not add this char. (TRIM)
                     }
-                    else if (_byte == -1)
+                    else if (_byte == _TERMINATOR)
                     {
                         break; // end the while loop.
                     }
@@ -273,7 +277,7 @@ namespace DevToys.PocoCsv.Core
                 else if (_state == State.Escaped)
                 {
                     // ',' and '\r' and "" are part of the value.
-                    if (_byte == -1)
+                    if (_byte == _TERMINATOR)
                     {
                         break;
                     }
@@ -384,7 +388,7 @@ namespace DevToys.PocoCsv.Core
                         _state = State.Escaped;
                         continue; // do not add this char. (TRIM)
                     }
-                    else if (_byte == -1)
+                    else if (_byte == _TERMINATOR)
                     {
                         // End of field
                         if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
@@ -405,7 +409,7 @@ namespace DevToys.PocoCsv.Core
                 else if (_state == State.Escaped)
                 {
                     // ',' and '\r' and "" are part of the value.
-                    if (_byte == -1)
+                    if (_byte == _TERMINATOR)
                     {
                         // In a proper CSV this would not occur.
                         if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
@@ -419,13 +423,13 @@ namespace DevToys.PocoCsv.Core
                     {
                         // " aaa "" ","bbb", "ccc""","ddd """" "
                         _nextByte = _Stream.Peek();
-                        if (_nextByte == Separator || _nextByte == _CR || _nextByte == _LF)
+                        if (_nextByte == _Separator || _nextByte == _CR || _nextByte == _LF)
                         {
                             // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.
                             _state = State.Normal;
                             continue;
                         }
-                        else if (_nextByte == -1)
+                        else if (_nextByte == _TERMINATOR)
                         {
                             if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
                             {
@@ -467,7 +471,7 @@ namespace DevToys.PocoCsv.Core
                     case EmptyLineBehaviour.NullValue:
                         return default;
                     case EmptyLineBehaviour.SkipAndReadNext:
-                        if (_byte != -1)
+                        if (_byte != _TERMINATOR)
                         {
                             goto SkipEmptyLineAndReadNext;
                         }

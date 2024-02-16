@@ -11,9 +11,10 @@ namespace DevToys.PocoCsv.Core
     public sealed class CsvStreamReader : StreamReader
     {
         private readonly StringBuilder _buffer = new StringBuilder(1027);
-        private const char _CR = '\r';
-        private const char _LF = '\n';
-        private const char _ESCAPE = '"';
+        private const int _CR = '\r';
+        private const int _LF = '\n';
+        private const int _ESCAPE = '"';
+        private const int _TERMINATOR = -1;
         private char _Separator = ',';
         private int _byte = 0;
         private int _nextByte = 0;
@@ -58,7 +59,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Indicates the stream has ended.
         /// </summary>
-        public new bool EndOfStream => _byte == -1;
+        public new bool EndOfStream => _byte == _TERMINATOR;
 
         /// <summary>
         /// 
@@ -156,7 +157,7 @@ namespace DevToys.PocoCsv.Core
                 _byte = Read();
                 if (_state == State.Normal)
                 {
-                    if (_byte == Separator)
+                    if (_byte == _Separator)
                     {
                         continue;
                     }
@@ -183,7 +184,7 @@ namespace DevToys.PocoCsv.Core
                         _state = State.Escaped;
                         continue; // do not add this char. (TRIM)
                     }
-                    else if (_byte == -1)
+                    else if (_byte == _TERMINATOR)
                     {
                         break; // end the while loop.
                     }
@@ -192,7 +193,7 @@ namespace DevToys.PocoCsv.Core
                 else if (_state == State.Escaped)
                 {
                     // ',' and '\r' and "" are part of the value.
-                    if (_byte == -1)
+                    if (_byte == _TERMINATOR)
                     {
                         break; 
                     }
@@ -229,7 +230,7 @@ namespace DevToys.PocoCsv.Core
                 _byte = Read();
                 if (_state == State.Normal)
                 {
-                    if (_byte == Separator)
+                    if (_byte == _Separator)
                     {
                         // End of field
                         _result.Add(_buffer.ToString());
@@ -263,7 +264,7 @@ namespace DevToys.PocoCsv.Core
                         _state = State.Escaped;
                         continue; // do not add this char. (TRIM)
                     }
-                    else if (_byte == -1)
+                    else if (_byte == _TERMINATOR)
                     {
                         // End of field
                         _result.Add(_buffer.ToString());
@@ -276,7 +277,7 @@ namespace DevToys.PocoCsv.Core
                 else if (_state == State.Escaped)
                 {
                     // ',' and '\r' and "" are part of the value.
-                    if (_byte == -1)
+                    if (_byte == _TERMINATOR)
                     {
                         // End of field
                         // Set the value
@@ -287,13 +288,13 @@ namespace DevToys.PocoCsv.Core
                     {
                         // " aaa "" ","bbb", "ccc""","ddd """" "
                         _nextByte = Peek();
-                        if (_nextByte == Separator || _nextByte == _CR || _nextByte == _LF)
+                        if (_nextByte == _Separator || _nextByte == _CR || _nextByte == _LF)
                         {
                             // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.
                             _state = State.Normal;
                             continue;
                         }
-                        if (_nextByte == -1)
+                        if (_nextByte == _TERMINATOR)
                         {
                             // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.
                             _result.Add(_buffer.ToString());
@@ -330,7 +331,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public IEnumerable<string[]> ReadAsEnumerable()
         {
-            while (_byte > -1)
+            while (_byte > _TERMINATOR)
             {
                 yield return ReadCsvLine();
             }
