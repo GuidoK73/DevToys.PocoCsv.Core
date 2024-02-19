@@ -108,10 +108,6 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         protected string _File = null;
 
-
-
-
-
         /// <summary>
         /// Stream buffer size, Default: 1024
         /// </summary>

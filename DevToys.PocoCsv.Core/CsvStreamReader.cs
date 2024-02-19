@@ -105,9 +105,17 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
-        /// Detects and sets CSV Separator. over 10 sample rows
+        /// Detect the separator by sampling first 10 rows. Position is moved to start after execution.
         /// </summary>
-        public void DetectSeparator() => GetCsvSeparator(10);
+        public void DetectSeparator()
+        {
+            var _succes = CsvUtils.GetCsvSeparator(this, out char separator, 10);
+            if (_succes)
+            {
+                Separator = separator;
+            }
+            MoveToStart();
+        }
 
         /// <summary>
         /// Detects and sets CSV Separator.
@@ -122,9 +130,6 @@ namespace DevToys.PocoCsv.Core
             {
                 throw new InvalidDataException("Csv does not have valid column counts.");
             }
-
-            Separator = separator;
-
             return separator;
         }
 
@@ -152,7 +157,7 @@ namespace DevToys.PocoCsv.Core
             _nextByte = 0;
             _state = State.Normal;
 
-            for (;;)
+            for (; ; )
             {
                 _byte = Read();
                 if (_state == State.Normal)
@@ -166,42 +171,54 @@ namespace DevToys.PocoCsv.Core
                         _nextByte = Peek();
                         if (_nextByte == _LF)
                         {
-                            continue; // goes to else if (_byte == '\n')
+                            continue;
                         }
-                        // end of line.
-                        CurrentLine++;
                         break;
                     }
                     else if (_byte == _LF)
                     {
-                        // end of line.
-                        CurrentLine++;
                         break;
                     }
                     else if (_byte == _ESCAPE)
                     {
-                        // switch mode
                         _state = State.Escaped;
-                        continue; // do not add this char. (TRIM)
+                        continue;
                     }
                     else if (_byte == _TERMINATOR)
                     {
-                        break; // end the while loop.
+                        break;
                     }
                     continue;
                 }
                 else if (_state == State.Escaped)
                 {
-                    // ',' and '\r' and "" are part of the value.
                     if (_byte == _TERMINATOR)
                     {
-                        break; 
+                        break;
                     }
                     else if (_byte == _ESCAPE)
                     {
-                        _state = State.Normal;
-                        continue; // Move to next itteration in Normal state, do not add this char (TRIM).
+                        _nextByte = Peek();
+                        if (_nextByte == _Separator || _nextByte == _CR || _nextByte == _LF)
+                        {
+                            _state = State.Normal;
+                            continue;
+                        }
+                        else if (_nextByte == _TERMINATOR)
+                        {
+                            break;
+                        }
+                        else if (_nextByte == _ESCAPE)
+                        {
+                            _state = State.EscapedEscape;
+                            continue;
+                        }
                     }
+                    continue;
+                }
+                else if (_state == State.EscapedEscape)
+                {
+                    _state = State.Escaped;
                     continue;
                 }
             }

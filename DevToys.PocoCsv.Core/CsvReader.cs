@@ -74,7 +74,6 @@ namespace DevToys.PocoCsv.Core
         private int _byte = 0;
         private int _nextByte = 0;
         
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -98,7 +97,6 @@ namespace DevToys.PocoCsv.Core
             Encoding = Encoding.Default;
             DetectEncodingFromByteOrderMarks = true;
         }
-
 
         /// <summary>
         /// Csv Seperator to use default ','
@@ -233,14 +231,13 @@ namespace DevToys.PocoCsv.Core
             _state = State.Normal;
             _nextByte = 0;
 
-            for (;;)
+            for (; ; )
             {
                 _byte = _Stream.Read();
                 if (_state == State.Normal)
                 {
                     if (_byte == _Separator)
                     {
-                        _colIndex++;
                         continue;
                     }
                     else if (_byte == _CR)
@@ -248,49 +245,60 @@ namespace DevToys.PocoCsv.Core
                         _nextByte = _Stream.Peek();
                         if (_nextByte == _LF)
                         {
-                            continue; // goes to else if (_byte == '\n')
+                            continue;
                         }
-                        // end of line.
-                        _colIndex = 0;
                         _CurrentLine++;
                         break;
                     }
                     else if (_byte == _LF)
                     {
-                        // end of line.
-                        _colIndex = 0;
                         _CurrentLine++;
                         break;
                     }
                     else if (_byte == _ESCAPE)
                     {
-                        // switch mode
                         _state = State.Escaped;
-                        continue; // do not add this char. (TRIM)
+                        continue;
                     }
                     else if (_byte == _TERMINATOR)
                     {
-                        break; // end the while loop.
+                        break;
                     }
                     continue;
                 }
                 else if (_state == State.Escaped)
                 {
-                    // ',' and '\r' and "" are part of the value.
                     if (_byte == _TERMINATOR)
                     {
                         break;
                     }
                     else if (_byte == _ESCAPE)
                     {
-                        _state = State.Normal;
-                        continue; // Move to next itteration in Normal state, do not add this char (TRIM).
+                        _nextByte = _Stream.Peek();
+                        if (_nextByte == _Separator || _nextByte == _CR || _nextByte == _LF)
+                        {
+                            _state = State.Normal;
+                            continue;
+                        }
+                        else if (_nextByte == _TERMINATOR)
+                        {
+                            break;
+                        }
+                        else if (_nextByte == _ESCAPE)
+                        {
+                            _state = State.EscapedEscape;
+                            continue;
+                        }
                     }
+                    continue;
+                }
+                else if (_state == State.EscapedEscape)
+                {
+                    _state = State.Escaped;
                     continue;
                 }
             }
         }
-
 
         /// <summary>
         /// MoveToStart then skip first row.
@@ -300,7 +308,6 @@ namespace DevToys.PocoCsv.Core
             MoveToStart();
             Skip();
         }
-
 
         /// <summary>
         /// Each iteration will read the next row from stream or file

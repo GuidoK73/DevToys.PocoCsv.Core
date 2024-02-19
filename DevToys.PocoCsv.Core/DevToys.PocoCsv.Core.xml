@@ -589,7 +589,7 @@
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.DetectSeparator">
             <summary>
-            Detects and sets CSV Separator. over 10 sample rows
+            Detect the separator by sampling first 10 rows. Position is moved to start after execution.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.GetCsvSeparator(System.Int32)">
@@ -736,11 +736,7 @@
             Separator to use. Default: ','
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String,System.Char)">
-            <summary>
-            Constructor
-            </summary>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String,System.Char)" -->
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.IO.Stream,System.Char)">
             <summary>
             Constructor

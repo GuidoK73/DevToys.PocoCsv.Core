@@ -78,7 +78,7 @@ namespace DevToys.PocoCsv.Core
 
         /// <summary>
         /// Constructor
-        /// </summary>
+        /// </summary
         public CsvWriter(string file, char separator = ',')
         {
             _File = file;
@@ -226,6 +226,7 @@ namespace DevToys.PocoCsv.Core
             {
                 throw new IOException("Call Open() method first before writing.");
             }
+            
             foreach (T row in rows)
             {
                 Write(row);
