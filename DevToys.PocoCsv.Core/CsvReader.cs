@@ -1691,9 +1691,7 @@ namespace DevToys.PocoCsv.Core
         /// Open the reader
         /// </summary>
         public void Open()
-        {
-            Init();
-
+        {            
             if (_Stream == null && string.IsNullOrEmpty(_File))
             {
                 throw new IOException("No file or stream specified in constructor.");
@@ -1706,6 +1704,7 @@ namespace DevToys.PocoCsv.Core
                 }
                 _Stream = new StreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: true);
             }
+            Init();
         }
 
         /// <summary>
@@ -1724,16 +1723,42 @@ namespace DevToys.PocoCsv.Core
                     Property = p, 
                     Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, 
                     Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) 
-                });
+                }).ToList();
 
-            if (IgnoreColumnAttributes == true)
+            if (IgnoreColumnAttributes == true || _propertyAttributeCollection.Count() == 0)
             {
+                // Initialize for collection without IndexAttributes
+                // In this case we assume the Csv Header corresponds with the property names.
+
+                string[] _header = new string[0];
+                CsvStreamReader _stream = new CsvStreamReader(_Stream.BaseStream);
+                _stream.Separator = this.Separator;
+                _stream.MoveToStart();
+                _header = _stream.ReadCsvLine();
+                _stream.MoveToStart();
+                this.SkipHeader();
+
+                var _headerInfo = _header.Select((value, index) => new { Index = index, Value = value }).ToDictionary(p => p.Value, p => p.Index);
+
+                Func<string, int> _GetHeaderIndex = new Func<string, int>(p =>
+                {
+                    if (_headerInfo.ContainsKey(p))
+                    {
+                        return _headerInfo[p];
+                    }    
+                    return -1;
+                }
+                );
+
                 _propertyAttributeCollection = _type.GetProperties()
-                    .Select((value, index) => new { 
-                        Property = value, 
-                        Index = index, 
-                        Attrib = new ColumnAttribute() { Index = index } 
-                    });
+                    .Select((value, index) => new
+                    {
+                        Property = value,
+                        Index = _GetHeaderIndex(value.Name),
+                        Attrib = new ColumnAttribute() { Index = index }
+                    })
+                    .Where(p => p.Index > -1)
+                    .ToList();
             }
 
             int _max = _propertyAttributeCollection.Select(p => p.Index).Max();
@@ -2038,7 +2063,7 @@ namespace DevToys.PocoCsv.Core
 
             base.InitImmutableArray();
         }
-
+      
         private void InitCsvAttributeRead(Type type, int size)
         {
             _CsvAttribute = type.GetCustomAttribute<CsvAttribute>();

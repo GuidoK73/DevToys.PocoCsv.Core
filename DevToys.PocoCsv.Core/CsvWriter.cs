@@ -1257,12 +1257,15 @@ namespace DevToys.PocoCsv.Core
 
             var _properties = _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
-                .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) });
+                .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) })
+                .ToList();
 
-            if (IgnoreColumnAttributes == true)
+
+
+            if (IgnoreColumnAttributes == true || _properties.Count() == 0)
             {
                 _properties = _type.GetProperties()
-                .Select((value, index) => new { Property = value, Index = index, Attrib = new ColumnAttribute() {  Index = index } });
+                .Select((value, index) => new { Property = value, Index = index, Attrib = new ColumnAttribute() {  Index = index } }).ToList();
             }
 
             int _max = _properties.Max(p => p.Index);

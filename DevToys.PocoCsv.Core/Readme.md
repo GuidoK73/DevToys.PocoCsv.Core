@@ -356,6 +356,47 @@ Use MoveToStart() to move the reader to the starting position.
 
 _reader.Skip() is different then _reader.ReadAsEnumerable().Skip() as the first does not materialize to T and is faster.
 
+# Serialize / Deserialize plain C# objects without specific ColumnAttributes
+
+Mapping will be determined by the Header in the Csv, columns will only be mapped to corresponding property names.
+
+~~~cs
+    public class SimpleObject
+    {
+        public int Id { get; set; }
+        public string Field1 { get; set; }
+        public string Field2 { get; set; }
+    }
+~~~
+
+~~~cs
+    private IEnumerable<SimpleObject> Data(int count = 50)
+    {
+        for (int ii = 0; ii < count; ii++)
+        {
+            yield return  new SimpleObject() { Id = ii, Field1 = $"A{ii}", Field2 = $"b{ii}" };                
+        }
+    }
+~~~
+
+~~~cs
+    string _file = System.IO.Path.GetTempFileName();
+
+    using (CsvWriter<SimpleObject> _writer = new(_file) { Separator = ',' })
+    {
+        _writer.Open();
+        _writer.WriteHeader();
+        _writer.Write(Data());
+    }
+
+    using (CsvReader<SimpleObject> _reader = new(_file))
+    {
+        _reader.Open();
+        List<SimpleObject> _materialized = _reader.ReadAsEnumerable().ToList();
+    }
+~~~
+
+
 
 # DataTable Import / Export
 
