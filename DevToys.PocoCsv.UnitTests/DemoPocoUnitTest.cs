@@ -31,7 +31,7 @@ namespace DevToys.PocoCsv.UnitTests
             {
                 _writer.Open();
                 _writer.WriteHeader();
-                _writer.Write(Data());
+                _writer.Write(SimpleData());
             }
 
             string _text = File.ReadAllText(_file);
@@ -43,7 +43,7 @@ namespace DevToys.PocoCsv.UnitTests
             }
         }
 
-        private IEnumerable<SimpleObject> Data(int count = 50)
+        private IEnumerable<SimpleObject> SimpleData(int count = 50)
         {
             for (int ii = 0; ii < count; ii++)
             {

@@ -1741,13 +1741,13 @@ namespace DevToys.PocoCsv.Core
                 var _headerInfo = _header.Select((value, index) => new { Index = index, Value = value }).ToDictionary(p => p.Value, p => p.Index);
 
                 Func<string, int> _GetHeaderIndex = new Func<string, int>(p =>
-                {
-                    if (_headerInfo.ContainsKey(p))
                     {
-                        return _headerInfo[p];
-                    }    
-                    return -1;
-                }
+                        if (_headerInfo.ContainsKey(p))
+                        {
+                            return _headerInfo[p];
+                        }    
+                        return -1;
+                    }
                 );
 
                 _propertyAttributeCollection = _type.GetProperties()

@@ -32,7 +32,61 @@ namespace DevToys.PocoCsv.UnitTests
             ValidateCsvReaderEmptyLineBehaviour();
             TestEncoding();
             TestColIndex();
+            TestReaderSimple();
         }
+
+
+        public class SimpleObjectA
+        {
+            public int Id { get; set; }
+            public string Field1 { get; set; }
+            public string Field2 { get; set; }
+        }
+
+        public class SimpleObjectB
+        {
+            public int Id { get; set; }
+            public string Field2 { get; set; }
+            public string Field3 { get; set; }
+        }
+
+
+        [TestMethod]
+        public void TestReaderSimple()
+        {
+            string _file = System.IO.Path.GetTempFileName();
+
+            using (CsvWriter<SimpleObjectA> _writer = new(_file) { Separator = ',' })
+            {
+                _writer.Open();
+                _writer.WriteHeader();
+                _writer.Write(SimpleData(1));
+            }
+
+            string _text = File.ReadAllText(_file);
+
+            using (CsvReader<SimpleObjectB> _reader = new(_file))
+            {
+                _reader.Open();
+                List<SimpleObjectB> _materialized = _reader.ReadAsEnumerable().ToList();
+
+                var _item = _materialized.FirstOrDefault();
+                Assert.IsNotNull(_item);
+
+                Assert.AreEqual(_item.Id, 0);
+                Assert.AreEqual(_item.Field2, "b0");
+                Assert.AreEqual(_item.Field3, null);
+            }
+        }
+
+        private IEnumerable<SimpleObjectA> SimpleData(int count = 50)
+        {
+            for (int ii = 0; ii < count; ii++)
+            {
+                yield return new SimpleObjectA() { Id = ii, Field1 = $"A{ii}", Field2 = $"b{ii}" };
+            }
+        }
+
 
         [TestMethod]
         public void ValidateCsvReader()
@@ -96,8 +150,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             }
         }
-
-
 
         [TestMethod]
         public void TestColIndex()
