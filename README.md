@@ -93,6 +93,7 @@ You only specify the column indexes you need.
 |**Close()**|Close the CSV stream reader|
 |**CurrentLine**|Returns the current line number.|
 |**DetectSeparator()**|To auto set the separator (looks for commonly used separators in first 10 lines).|
+|**DetectEncodingFromByteOrderMarks**|indicates whether to look for byte order marks at the beginning of the file.|
 |**Dispose()**|Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.|
 |**EmptyLineBehaviour**|EmptyLineBehaviour: <li>DefaultInstance: Return a new instance of T (Default)</li><li>NullValue: Return Null value for object.</li><li>SkipAndReadNext: if empty line has occurred, the reader will move to the next line.</li><li>LogError: Create an entry in Errors collecion</li><li>ThrowException: throw an exception when an empty line has occurred.</li> |
 |**Encoding**|The character encoding to use.|
@@ -354,6 +355,47 @@ executing another _reader.ReadAsEnumerable().Where(p => p...).ToList() will Quer
 Use MoveToStart() to move the reader to the starting position.
 
 _reader.Skip() is different then _reader.ReadAsEnumerable().Skip() as the first does not materialize to T and is faster.
+
+# Serialize / Deserialize plain C# objects without specific ColumnAttributes
+
+Mapping will be determined by the Header in the Csv, columns will only be mapped to corresponding property names.
+
+~~~cs
+    public class SimpleObject
+    {
+        public int Id { get; set; }
+        public string Field1 { get; set; }
+        public string Field2 { get; set; }
+    }
+~~~
+
+~~~cs
+    private IEnumerable<SimpleObject> Data(int count = 50)
+    {
+        for (int ii = 0; ii < count; ii++)
+        {
+            yield return  new SimpleObject() { Id = ii, Field1 = $"A{ii}", Field2 = $"b{ii}" };                
+        }
+    }
+~~~
+
+~~~cs
+    string _file = System.IO.Path.GetTempFileName();
+
+    using (CsvWriter<SimpleObject> _writer = new(_file) { Separator = ',' })
+    {
+        _writer.Open();
+        _writer.WriteHeader();
+        _writer.Write(Data());
+    }
+
+    using (CsvReader<SimpleObject> _reader = new(_file))
+    {
+        _reader.Open();
+        List<SimpleObject> _materialized = _reader.ReadAsEnumerable().ToList();
+    }
+~~~
+
 
 
 # DataTable Import / Export
