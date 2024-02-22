@@ -1719,44 +1719,22 @@ namespace DevToys.PocoCsv.Core
 
             var _propertyAttributeCollection = _type.GetProperties()
                 .Where(p => p.GetCustomAttribute(typeof(ColumnAttribute)) != null)
-                .Select(p => new { 
-                    Property = p, 
-                    Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, 
-                    Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) 
-                }).ToList();
+                .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) })
+                .ToList();
 
-            if (IgnoreColumnAttributes == true || _propertyAttributeCollection.Count() == 0)
+            if (IgnoreColumnAttributes == true || _propertyAttributeCollection.Count == 0)
             {
-                // Initialize for collection without IndexAttributes
-                // In this case we assume the Csv Header corresponds with the property names.
-
                 string[] _header = new string[0];
                 CsvStreamReader _stream = new CsvStreamReader(_Stream.BaseStream);
                 _stream.Separator = this.Separator;
                 _stream.MoveToStart();
                 _header = _stream.ReadCsvLine();
-                _stream.MoveToStart();
-                this.SkipHeader();
+                SkipHeader();
 
                 var _headerInfo = _header.Select((value, index) => new { Index = index, Value = value }).ToDictionary(p => p.Value, p => p.Index);
 
-                Func<string, int> _GetHeaderIndex = new Func<string, int>(p =>
-                    {
-                        if (_headerInfo.ContainsKey(p))
-                        {
-                            return _headerInfo[p];
-                        }    
-                        return -1;
-                    }
-                );
-
                 _propertyAttributeCollection = _type.GetProperties()
-                    .Select((value, index) => new
-                    {
-                        Property = value,
-                        Index = _GetHeaderIndex(value.Name),
-                        Attrib = new ColumnAttribute() { Index = index }
-                    })
+                    .Select(p => new { Property = p, Index = _headerInfo.ContainsKey(p.Name) ? _headerInfo[p.Name] : -1, Attrib = new ColumnAttribute() { Index = _headerInfo.ContainsKey(p.Name) ? _headerInfo[p.Name] : -1 } })
                     .Where(p => p.Index > -1)
                     .ToList();
             }

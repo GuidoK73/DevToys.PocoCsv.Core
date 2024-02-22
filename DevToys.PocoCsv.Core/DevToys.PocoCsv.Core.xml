@@ -736,7 +736,11 @@
             Separator to use. Default: ','
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String,System.Char)" -->
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String,System.Char)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.IO.Stream,System.Char)">
             <summary>
             Constructor

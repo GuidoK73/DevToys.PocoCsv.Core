@@ -78,7 +78,7 @@ namespace DevToys.PocoCsv.Core
 
         /// <summary>
         /// Constructor
-        /// </summary
+        /// </summary>
         public CsvWriter(string file, char separator = ',')
         {
             _File = file;
@@ -1262,7 +1262,7 @@ namespace DevToys.PocoCsv.Core
 
 
 
-            if (IgnoreColumnAttributes == true || _properties.Count() == 0)
+            if (IgnoreColumnAttributes == true || _properties.Count == 0)
             {
                 _properties = _type.GetProperties()
                 .Select((value, index) => new { Property = value, Index = index, Attrib = new ColumnAttribute() {  Index = index } }).ToList();
