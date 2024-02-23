@@ -58,6 +58,8 @@ namespace DevToys.PocoCsv.Core
 
         private readonly List<CsvReadError> _Errors = new List<CsvReadError>();
         private readonly StringBuilder _buffer = new StringBuilder(1027);
+        private readonly List<string> _CsvLineReaderResult = new List<string>();
+
 
         private const int _CR = '\r';
         private const int _LF = '\n';
@@ -309,6 +311,12 @@ namespace DevToys.PocoCsv.Core
             Skip();
         }
 
+        public string[] ReadHeader()
+        {
+            MoveToStart();
+            return ReadCsvLine();
+        }
+
         /// <summary>
         /// Each iteration will read the next row from stream or file
         /// </summary>
@@ -326,7 +334,7 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
-        /// reads the CsvLine
+        /// reads the CsvLine and advances to the next.
         /// </summary>
         //  Called each line.
         public T Read()
@@ -492,6 +500,111 @@ namespace DevToys.PocoCsv.Core
             }
             return _result;
         }
+
+        /// <summary>
+        /// Reads a single CSV line into string array, and advances to the next.
+        /// </summary>
+        public string[] ReadCsvLine()
+        {
+            _CsvLineReaderResult.Clear();
+            _state = State.Normal;
+            _buffer.Length = 0; // Clear the string buffer.
+            _byte = 0;
+            _nextByte = 0;
+
+            for (; ; )
+            {
+                _byte = _Stream.Read();
+                if (_state == State.Normal)
+                {
+                    if (_byte == _Separator)
+                    {
+                        // End of field
+                        _CsvLineReaderResult.Add(_buffer.ToString());
+                        _buffer.Length = 0;
+                        continue;
+                    }
+                    else if (_byte == _CR)
+                    {
+                        _nextByte = _Stream.Peek();
+                        if (_nextByte == _LF)
+                        {
+                            continue; // goes to else if (_byte == '\n')
+                        }
+                        // end of line.
+                        _CsvLineReaderResult.Add(_buffer.ToString());
+                        _buffer.Length = 0;
+                        break;
+                    }
+                    else if (_byte == _LF)
+                    {
+                        // end of line.
+                        _CsvLineReaderResult.Add(_buffer.ToString());
+                        _buffer.Length = 0;
+                        break;
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        // switch mode
+                        _state = State.Escaped;
+                        continue; // do not add this char. (TRIM)
+                    }
+                    else if (_byte == _TERMINATOR)
+                    {
+                        // End of field
+                        _CsvLineReaderResult.Add(_buffer.ToString());
+                        _buffer.Length = 0;
+                        return _CsvLineReaderResult.ToArray();
+                    }
+                    _buffer.Append((char)_byte);
+                    continue;
+                }
+                else if (_state == State.Escaped)
+                {
+                    // ',' and '\r' and "" are part of the value.
+                    if (_byte == _TERMINATOR)
+                    {
+                        // End of field
+                        // Set the value
+                        _buffer.Clear();
+                        break; // end the while loop.
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        // " aaa "" ","bbb", "ccc""","ddd """" "
+                        _nextByte = _Stream.Peek();
+                        if (_nextByte == _Separator || _nextByte == _CR || _nextByte == _LF)
+                        {
+                            // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.
+                            _state = State.Normal;
+                            continue;
+                        }
+                        if (_nextByte == _TERMINATOR)
+                        {
+                            // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.
+                            _CsvLineReaderResult.Add(_buffer.ToString());
+                            break;
+                        }
+
+                        else if (_nextByte == _ESCAPE)
+                        {
+                            _state = State.EscapedEscape;
+                            continue; // Also do not add this char, we add it when we are in EscapedEscape mode and from their we turn back to normal Escape.  (basically adding one of two)
+                        }
+                    }
+                    _buffer.Append((char)_byte);
+                    continue;
+                }
+                else if (_state == State.EscapedEscape)
+                {
+                    _buffer.Append((char)_byte);
+                    _state = State.Escaped;
+                    continue;
+                }
+            }
+            return _CsvLineReaderResult.ToArray();
+        }
+
 
         // Called each character.
         private void AppendChar()
@@ -2224,17 +2337,6 @@ namespace DevToys.PocoCsv.Core
                     __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBigIntegerNullable, "Read", typeof(StringBuilder));
                 }
             }
-        }
-
-        private string[] ReadHeader()
-        {
-            string[] _header = new string[0];
-            CsvStreamReader _stream = new CsvStreamReader(_Stream.BaseStream);
-            _stream.Separator = this.Separator;
-            _stream.MoveToStart();
-            _header = _stream.ReadCsvLine();
-            SkipHeader();
-            return _header;
         }
     }
 }

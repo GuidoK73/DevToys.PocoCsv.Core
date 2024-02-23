@@ -26,6 +26,13 @@ namespace DevToys.PocoCsv.UnitTests
         [TestMethod]
         public void TestReaderSimple()
         {
+            var _CsvDto1 = new CsvDataTypeObject5() { Field1 = "01", Field2 = "02", Field3 = "03", Field4 = "04", Field5 = "05" };
+            CsvDataTypeObject5 _CsvDto2 = "01,02,03,04,05"; // Implicit csv string to csv data type object.
+
+            bool _equals = _CsvDto1 == _CsvDto2; // Compare by value
+
+            string _csv = _CsvDto1; // implicit convert csv data type object to csv string.
+
             string _file = System.IO.Path.GetTempFileName();
 
             using (CsvWriter<CsvDataTypeObject5> _writer = new(_file) { Separator = ',' })
@@ -40,7 +47,10 @@ namespace DevToys.PocoCsv.UnitTests
             using (CsvReader<CsvDataTypeObject10> _reader = new(_file))
             {
                 _reader.Open();
-                List<CsvDataTypeObject10> _materialized = _reader.ReadAsEnumerable().ToList();
+                foreach (var (id, name) in _reader.ReadAsEnumerable())
+                {
+
+                }
             }
         }
 

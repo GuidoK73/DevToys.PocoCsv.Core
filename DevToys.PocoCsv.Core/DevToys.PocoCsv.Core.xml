@@ -306,6 +306,181 @@
             <param name="nullable"></param>
             <param name="sqlDatabaseType"></param>
         </member>
+        <member name="T:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject10">
+            <summary>
+            Class to read 10 CsvColumns from a Csv document
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject10.Equals(DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject10)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject10.Equals(System.Object)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject10.GetHashCode">
+            <summary>
+            Serves as the default hash function.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject10.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject10.Serialize">
+            <summary>
+            Convert to Csv String
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject10.Deserialize(System.String)">
+            <summary>
+            Convert csv string to Object.
+            </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject100">
+            <summary>
+            Class to read 100 CsvColumns from a Csv document
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject100.Equals(DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject100)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject100.Equals(System.Object)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject100.GetHashCode">
+            <summary>
+            Serves as the default hash function.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject100.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject100.Serialize">
+            <summary>
+            Convert to Csv String
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject100.Deserialize(System.String)">
+            <summary>
+            Convert csv string to Object.
+            </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject25">
+            <summary>
+            Class to read 25 CsvColumns from a Csv document
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject25.Equals(DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject25)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject25.Equals(System.Object)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject25.GetHashCode">
+            <summary>
+            Serves as the default hash function.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject25.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject25.Serialize">
+            <summary>
+            Convert to Csv String
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject25.Deserialize(System.String)">
+            <summary>
+            Convert csv string to Object.
+            </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject5">
+            <summary>
+            Class to read 5 CsvColumns from a Csv document
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject5.Equals(DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject5)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject5.Equals(System.Object)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject5.GetHashCode">
+            <summary>
+            Serves as the default hash function.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject5.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject5.Serialize">
+            <summary>
+            Convert to Csv String
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject5.Deserialize(System.String)">
+            <summary>
+            Convert csv string to Object.
+            </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject50">
+            <summary>
+            Class to read 50 CsvColumns from a Csv document
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject50.Equals(DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject50)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject50.Equals(System.Object)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject50.GetHashCode">
+            <summary>
+            Serves as the default hash function.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject50.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject50.Serialize">
+            <summary>
+            Convert to Csv String
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject50.Deserialize(System.String)">
+            <summary>
+            Convert csv string to Object.
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvReader`1">
             <summary>
             Enumerate Csv Stream Reader over T.
@@ -414,7 +589,12 @@
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Read">
             <summary>
-            reads the CsvLine
+            reads the CsvLine and advances to the next.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadCsvLine">
+            <summary>
+            Reads a single CSV line into string array, and advances to the next.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Open">

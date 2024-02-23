@@ -36,7 +36,9 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Product>DevToys.Poco.Csv.Core</Product>
     <PackageReleaseNotes>
 4.2.0
-- Added new objects: CsvDataTypeObject5, CsvDataTypeObject10, CsvDataTypeObject25, CsvDataTypeObject50, CsvDataTypeObject100
+- Added new objects: CsvDataTypeObject5, CsvDataTypeObject10, CsvDataTypeObject25, CsvDataTypeObject50, CsvDataTypeObject100 ( see Readme for more info ).
+- Added ReadHeader() to CsvReader
+- Added ReadCsvLine() to CsvReader
 
 4.1.0
 - Added new feature: Serialize / Deserialize plain C# objects without specific ColumnAttributes

@@ -184,5 +184,144 @@ namespace DevToys.PocoCsv.Core
 
             return true;
         }
+
+
+
+        private static char[] _EscapeChars = new char[] { '\r', '\n', '"', ',' };
+
+        internal static string Escape(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                return string.Empty;
+            }
+            if (s.IndexOfAny(_EscapeChars) == -1)
+            {
+                return s;
+            }
+
+            if (s.IndexOf('"') == -1)
+            {
+                return $"\"{s}\""; // No need for replace, just surround with quotes.
+            }
+            return $"\"{s.Replace("\"", "\"\"")}\""; // Unusual replace when string contains '"' 
+        }
+
+        internal static string ToCsvString(params string[] values)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (string value in values)
+            {
+                sb.Append(Escape(value));
+                sb.Append(',');
+            }
+            sb.Length--;
+            return sb.ToString();
+        }
+
+        private const int _CR = '\r';
+        private const int _LF = '\n';
+        private const int _ESCAPE = '"';
+        private const int _TERMINATOR = -1;
+
+        internal static string[] SplitCsvString(string s, char separator)
+        {
+            List<string> _result = new List<string>();
+            StringBuilder _buffer = new StringBuilder();
+            State _state = State.Normal;
+            int _byte = 0;
+            int _nextByte = 0;
+
+
+            for (int ii = 0; ii < s.Length ; ii++)
+            {
+                _byte = s[ii];
+                if (_state == State.Normal)
+                {
+                    if (_byte == separator)
+                    {
+                        // End of field
+                        _result.Add(_buffer.ToString());
+                        _buffer.Length = 0;
+                        continue;
+                    }
+                    else if (_byte == _CR)
+                    {
+                        if (ii + 1 < s.Length)
+                        {
+                            _nextByte = s[ii + 1];
+                            if (_nextByte == _LF)
+                            {
+                                continue; // goes to else if (_byte == '\n')
+                            }
+                        }
+                        // end of line.
+                        _result.Add(_buffer.ToString());
+                        _buffer.Length = 0;
+                        break;
+                    }
+                    else if (_byte == _LF)
+                    {
+                        // end of line.
+                        _result.Add(_buffer.ToString());
+                        _buffer.Length = 0;
+                        break;
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        // switch mode
+                        _state = State.Escaped;
+                        continue; // do not add this char. (TRIM)
+                    }
+                    _buffer.Append((char)_byte);
+                    continue;
+                }
+                else if (_state == State.Escaped)
+                {
+                    // ',' and '\r' and "" are part of the value.
+                    if (_byte == _ESCAPE)
+                    {
+                        // " aaa "" ","bbb", "ccc""","ddd """" "
+                        if (ii + 1 < s.Length)
+                        {
+                            _nextByte = s[ii + 1];
+                            if (_nextByte == separator || _nextByte == _CR || _nextByte == _LF)
+                            {
+                                // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.
+                                _state = State.Normal;
+                                continue;
+                            }
+                            else if (_nextByte == _ESCAPE)
+                            {
+                                _state = State.EscapedEscape;
+                                continue; // Also do not add this char, we add it when we are in EscapedEscape mode and from their we turn back to normal Escape.  (basically adding one of two)
+                            }
+                        }
+                    }
+                    _buffer.Append((char)_byte);
+                    continue;
+                }
+                else if (_state == State.EscapedEscape)
+                {
+                    _buffer.Append((char)_byte);
+                    _state = State.Escaped;
+                    continue;
+                }
+            }
+            _result.Add(_buffer.ToString());
+
+            return _result.ToArray();
+
+        }
+
+        internal static int Lowest(int value1, int value2)
+        {
+            if (value1 < value2)
+            {
+                return value1;
+            }
+            return value2;
+        }
+
     }
 }
