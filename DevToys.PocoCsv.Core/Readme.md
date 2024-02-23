@@ -397,6 +397,19 @@ Mapping will be determined by the Header in the Csv, columns will only be mapped
 ~~~
 
 
+# CsvDataTypeObject5, CsvDataTypeObject10, CsvDataTypeObject25, CsvDataTypeObject50, CsvDataTypeObject100
+
+5 simple mapping objects mapping to 5, 10, 25, 50 or 100 columns ready to use. all fields are string only.\
+these objects can be usefull if you want to use the CsvReader<T> on unknown csv files.\
+it's an alternative to CsvStreamReader.
+
+~~~cs
+    using (CsvReader<CsvDataTypeObject10> _reader = new(_file))
+    {
+        _reader.Open();
+        List<CsvDataTypeObject10> _materialized = _reader.ReadAsEnumerable().ToList();
+    }
+~~~
 
 # DataTable Import / Export
 
