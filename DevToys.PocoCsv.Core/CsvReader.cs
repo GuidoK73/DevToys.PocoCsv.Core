@@ -73,7 +73,7 @@ namespace DevToys.PocoCsv.Core
         private int _linePosition = 0;
         private int _byte = 0;
         private int _nextByte = 0;
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -140,7 +140,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// the character encoding to use. (Use when DetectEncodingFromByteOrderMarks does not yield proper results.)
         /// </summary>
-        public Encoding Encoding { get;  set; } = Encoding.UTF8;
+        public Encoding Encoding { get; set; } = Encoding.UTF8;
 
         /// <summary>
         /// indicates whether to look for byte order marks at the beginning of the file. Default: true
@@ -495,7 +495,7 @@ namespace DevToys.PocoCsv.Core
 
         // Called each character.
         private void AppendChar()
-        {                        
+        {
             if (_ICustomCsvParseBase[_colIndex] == null)
             {
                 _buffer.Append((char)_byte);
@@ -565,7 +565,7 @@ namespace DevToys.PocoCsv.Core
         {
             if (_CustomParserString[_colIndex] == null)
             {
-                _PropertySettersString[_colIndex](targetObject, _buffer.ToString());                
+                _PropertySettersString[_colIndex](targetObject, _buffer.ToString());
             }
             else
             {
@@ -576,7 +576,7 @@ namespace DevToys.PocoCsv.Core
                 }
                 catch (Exception ex)
                 {
-                    _Errors.Add(new CsvReadError() { Exception = ex,  ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _buffer.ToString(), LineNumber = CurrentLine });
+                    _Errors.Add(new CsvReadError() { Exception = ex, ColumnIndex = _colIndex, PropertyName = _Properties[_colIndex].Name, PropertyType = _Properties[_colIndex].PropertyType, Value = _buffer.ToString(), LineNumber = CurrentLine });
                 }
             }
         }
@@ -1691,7 +1691,7 @@ namespace DevToys.PocoCsv.Core
         /// Open the reader
         /// </summary>
         public void Open()
-        {            
+        {
             if (_Stream == null && string.IsNullOrEmpty(_File))
             {
                 throw new IOException("No file or stream specified in constructor.");
@@ -1724,17 +1724,12 @@ namespace DevToys.PocoCsv.Core
 
             if (IgnoreColumnAttributes == true || _propertyAttributeCollection.Count == 0)
             {
-                string[] _header = new string[0];
-                CsvStreamReader _stream = new CsvStreamReader(_Stream.BaseStream);
-                _stream.Separator = this.Separator;
-                _stream.MoveToStart();
-                _header = _stream.ReadCsvLine();
-                SkipHeader();
+                var _header = ReadHeader();
 
-                var _headerInfo = _header.Select((value, index) => new { Index = index, Value = value }).ToDictionary(p => p.Value, p => p.Index);
+                var _headerNameIndexDict = _header.Select((value, index) => new { Index = index, Value = value }).ToDictionary(p => p.Value, p => p.Index);
 
                 _propertyAttributeCollection = _type.GetProperties()
-                    .Select(p => new { Property = p, Index = _headerInfo.ContainsKey(p.Name) ? _headerInfo[p.Name] : -1, Attrib = new ColumnAttribute() { Index = _headerInfo.ContainsKey(p.Name) ? _headerInfo[p.Name] : -1 } })
+                    .Select(p => new { Property = p, Index = _headerNameIndexDict.ContainsKey(p.Name) ? _headerNameIndexDict[p.Name] : -1, Attrib = new ColumnAttribute() { Index = _headerNameIndexDict.ContainsKey(p.Name) ? _headerNameIndexDict[p.Name] : -1 } })
                     .Where(p => p.Index > -1)
                     .ToList();
             }
@@ -2229,6 +2224,17 @@ namespace DevToys.PocoCsv.Core
                     __CustomParserCall[index] = DelegateFactory.InstanceMethod(_CsvAttribute.DefaultCustomParserTypeBigIntegerNullable, "Read", typeof(StringBuilder));
                 }
             }
+        }
+
+        private string[] ReadHeader()
+        {
+            string[] _header = new string[0];
+            CsvStreamReader _stream = new CsvStreamReader(_Stream.BaseStream);
+            _stream.Separator = this.Separator;
+            _stream.MoveToStart();
+            _header = _stream.ReadCsvLine();
+            SkipHeader();
+            return _header;
         }
     }
 }
