@@ -399,10 +399,10 @@ Mapping will be determined by the Header in the Csv, columns will only be mapped
 ~~~
 
 
-# CsvDataTypeObject5, CsvDataTypeObject10, CsvDataTypeObject25, CsvDataTypeObject50, CsvDataTypeObject100
+# CsvDataTypeObject
 
-- 5 simple mapping objects mapping to 5, 10, 25, 50 or 100 columns ready to use. all fields are string only.
-- These objects can be usefull if you want to use the CsvReader<T> on unknown csv files.
+- 5 simple mapping objects mapping to  50 columns ready to use. all fields are string only.
+- this object can be usefull if you want to use the CsvReader<T> on unknown csv files.
 - All five objects can be used on any Csv regardless their number of columns.
 - All classes have the Deconstruct implemented so you can use shorthands for fields.
 - All classes are comparable by value.
@@ -410,7 +410,7 @@ Mapping will be determined by the Header in the Csv, columns will only be mapped
 it's an alternative to CsvStreamReader.
 
 ~~~cs
-    using (CsvReader<CsvDataTypeObject10> _reader = new(_file))
+    using (CsvReader<CsvDataTypeObject> _reader = new(_file))
     {
         _reader.Open();
         foreach (var item in _reader.ReadAsEnumerable())
@@ -424,7 +424,7 @@ it's an alternative to CsvStreamReader.
 you can use the Deconstruct shorthand:
 
 ~~~cs   
-    using (CsvReader<CsvDataTypeObject10> _reader = new(_file))
+    using (CsvReader<CsvDataTypeObject> _reader = new(_file))
     {
         _reader.Open();
         foreach (var (id, name) in _reader.ReadAsEnumerable())
@@ -432,6 +432,28 @@ you can use the Deconstruct shorthand:
         }
     }
 ~~~
+
+if you would like to use it with the writer you can limit the number of output columns with the ColumnLimit property.
+
+~~~cs
+    string _file = System.IO.Path.GetTempFileName();
+
+    using (CsvWriter<CsvDataTypeObject> _writer = new(_file) { Separator = ',', ColumnLimit = 5 })
+    {
+        _writer.Open();
+        _writer.WriteHeader();
+        _writer.Write(SimpleData(50));
+    }
+
+    private IEnumerable<CsvDataTypeObject> SimpleData(int count)
+    {
+        for (int ii = 0; ii < count; ii++)
+        {
+            yield return new CsvDataTypeObject() { Field01 = $"A{ii}", Field02 = $"b{ii}", Field03 = $"c{ii}", Field04 = $"d{ii}", Field05 = $"e{ii}" };
+        }
+    }
+~~~
+
 
 Other things you can do with the Csv DataType objects
 

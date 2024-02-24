@@ -222,7 +222,6 @@ namespace DevToys.PocoCsv.Core
         private const int _CR = '\r';
         private const int _LF = '\n';
         private const int _ESCAPE = '"';
-        private const int _TERMINATOR = -1;
 
         internal static string[] SplitCsvString(string s, char separator)
         {

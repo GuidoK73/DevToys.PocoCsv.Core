@@ -174,6 +174,11 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
+        /// Limit number of columns to a maximum ammount. (Default 0, no limit).
+        /// </summary>
+        public int ColumnLimit { get; set; } = 0;
+
+        /// <summary>
         /// Flush all buffers.
         /// </summary>
         public void Flush() => _StreamWriter.Flush();
@@ -1269,6 +1274,15 @@ namespace DevToys.PocoCsv.Core
             }
 
             int _max = _properties.Max(p => p.Index);
+
+            if (ColumnLimit > 0)
+            {
+                if (_max > ColumnLimit)
+                {
+                    _max = ColumnLimit - 1;
+                }
+            }
+
             _MaxColumnIndex = _max;
 
             var _propertiesInfo = new PropertyInfo[_max + 1];
@@ -1321,6 +1335,10 @@ namespace DevToys.PocoCsv.Core
             foreach (var property in _properties)
             {
                 int _index = property.Index;
+                if (_index > _max)
+                {
+                    continue;
+                }
                 Type _propertyType = property.Property.PropertyType;
 
                 _propertiesInfo[_index] = property.Property;
@@ -1533,6 +1551,7 @@ namespace DevToys.PocoCsv.Core
                     Value = p, 
                     Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).OutputFormat 
                 })
+                .Where(p => p.Key < _max)
                 .ToDictionary(p => p.Key, p => p.OutputFormat);
 
             foreach (int key in _formattersDict.Keys)
@@ -1548,6 +1567,7 @@ namespace DevToys.PocoCsv.Core
                     Value = p, 
                     Key = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).OutputNullValue 
                 })
+                .Where(p => p.Key < _max)
                 .ToDictionary(p => p.Key, p => p.OutputNullValue);
 
             foreach (int key in _outputNullValuesDict.Keys)

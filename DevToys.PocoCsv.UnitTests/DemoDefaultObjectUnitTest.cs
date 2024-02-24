@@ -26,8 +26,8 @@ namespace DevToys.PocoCsv.UnitTests
         [TestMethod]
         public void TestReaderSimple()
         {
-            var _CsvDto1 = new CsvDataTypeObject5() { Field1 = "01", Field2 = "02", Field3 = "03", Field4 = "04", Field5 = "05" };
-            CsvDataTypeObject5 _CsvDto2 = "01,02,03,04,05"; // Implicit csv string to csv data type object.
+            var _CsvDto1 = new CsvDataTypeObject() { Field01 = "01", Field02 = "02", Field03 = "03", Field04 = "04", Field05 = "05" };
+            CsvDataTypeObject _CsvDto2 = "01,02,03,04,05"; // Implicit csv string to csv data type object.
 
             bool _equals = _CsvDto1 == _CsvDto2; // Compare by value
 
@@ -35,7 +35,7 @@ namespace DevToys.PocoCsv.UnitTests
 
             string _file = System.IO.Path.GetTempFileName();
 
-            using (CsvWriter<CsvDataTypeObject5> _writer = new(_file) { Separator = ',' })
+            using (CsvWriter<CsvDataTypeObject> _writer = new(_file) { Separator = ',', ColumnLimit = 5 })
             {
                 _writer.Open();
                 _writer.WriteHeader();
@@ -44,7 +44,7 @@ namespace DevToys.PocoCsv.UnitTests
 
             string _text = File.ReadAllText(_file);
 
-            using (CsvReader<CsvDataTypeObject10> _reader = new(_file))
+            using (CsvReader<CsvDataTypeObject> _reader = new(_file))
             {
                 _reader.Open();
                 foreach (var (id, name) in _reader.ReadAsEnumerable())
@@ -54,12 +54,15 @@ namespace DevToys.PocoCsv.UnitTests
             }
         }
 
-        private IEnumerable<CsvDataTypeObject5> SimpleData(int count = 50)
+
+
+        private IEnumerable<CsvDataTypeObject> SimpleData(int count = 50)
         {
             for (int ii = 0; ii < count; ii++)
             {
-                yield return  new CsvDataTypeObject5() { Field1 = $"A{ii}", Field2 = $"b{ii}", Field3 = $"c{ii}", Field4 = $"d{ii}",  Field5= $"e{ii}" };                
+                yield return new CsvDataTypeObject() { Field01 = $"A{ii}", Field02 = $"b{ii}", Field03 = $"c{ii}", Field04 = $"d{ii}", Field05 = $"e{ii}" };
             }
         }
+
     }
 }
