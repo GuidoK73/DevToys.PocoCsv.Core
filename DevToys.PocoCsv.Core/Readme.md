@@ -401,11 +401,11 @@ Mapping will be determined by the Header in the Csv, columns will only be mapped
 
 # CsvDataTypeObject
 
-- 5 simple mapping objects mapping to  50 columns ready to use. all fields are string only.
+- Simple mapping object mapping to 50 columns ready to use. all fields are string only.
 - this object can be usefull if you want to use the CsvReader<T> on unknown csv files.
-- All five objects can be used on any Csv regardless their number of columns.
-- All classes have the Deconstruct implemented so you can use shorthands for fields.
-- All classes are comparable by value.
+- Object can be used on any Csv regardless their number of columns. (Column indexes above 50 will be ignored)
+- Object has the Deconstruct implemented so you can use shorthands for fields.
+- Object is comparable by value.
 
 it's an alternative to CsvStreamReader.
 
