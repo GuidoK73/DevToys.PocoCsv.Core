@@ -105,6 +105,8 @@ You only specify the column indexes you need.
 |**MoveToStart()**|Moves the reader to the start position, Skip() and Take() alter the start positions use MoveToStart() to reset the position.|
 |**Open()**|Opens the Reader.|
 |**Read()**|Reads current row into T and advances the reader to the next row. |
+|**ReadCsvLine()**|Reads current row into a string[] just like the CsvStreamReader. and advances the reader to the next row.|
+|**ReadHeader()**|Moves to start and performs a ReadCsvLine()|
 |**ReadAsEnumerable()**|Reads and deserializes each csv file line per iteration in the collection, this allows for querying large size files. It starts from the current position, if you used Skip(), Read() or SkipHeader() the current position is determined by those methods.|
 |**Separator**|Set the separator to use (default ',')|
 |**Skip(int rows)**|Skip and advances the reader to the next row without interpreting it. This is much faster then IEnumerable.Skip(). |
@@ -397,10 +399,84 @@ Mapping will be determined by the Header in the Csv, columns will only be mapped
 ~~~
 
 
+# CsvDataTypeObject
+
+- Simple mapping object mapping to 50 columns ready to use. all fields are string only.
+- this object can be usefull if you want to use the CsvReader<T> on unknown csv files.
+- Object can be used on any Csv regardless their number of columns. (Column indexes above 50 will be ignored)
+- Object has the Deconstruct implemented so you can use shorthands for fields.
+- Object is comparable by value.
+
+it's an alternative to CsvStreamReader.
+
+~~~cs
+    using (CsvReader<CsvDataTypeObject> _reader = new(_file))
+    {
+        _reader.Open();
+        foreach (var item in _reader.ReadAsEnumerable())
+        {
+            string id = item.Field01;
+            string name = item.Field02;
+        }
+    }
+~~~
+
+you can use the Deconstruct shorthand:
+
+~~~cs   
+    using (CsvReader<CsvDataTypeObject> _reader = new(_file))
+    {
+        _reader.Open();
+        foreach (var (id, name) in _reader.ReadAsEnumerable())
+        {            
+        }
+    }
+~~~
+
+if you would like to use it with the writer you can limit the number of output columns with the ColumnLimit property.
+
+~~~cs
+    string _file = System.IO.Path.GetTempFileName();
+
+    using (CsvWriter<CsvDataTypeObject> _writer = new(_file) { Separator = ',', ColumnLimit = 5 })
+    {
+        _writer.Open();
+        _writer.WriteHeader();
+        _writer.Write(SimpleData(50));
+    }
+
+    private IEnumerable<CsvDataTypeObject> SimpleData(int count)
+    {
+        for (int ii = 0; ii < count; ii++)
+        {
+            yield return new CsvDataTypeObject() { Field01 = $"A{ii}", Field02 = $"b{ii}", Field03 = $"c{ii}", Field04 = $"d{ii}", Field05 = $"e{ii}" };
+        }
+    }
+~~~
+
+
+Other things you can do with the Csv DataType objects
+
+~~~cs
+    var _CsvDto1 = new CsvDataTypeObject5() { Field1 = "01", Field2 = "02", Field3 = "03", Field4 = "04", Field5 = "05" };
+            
+    // Implicit csv string to csv data type object.
+    CsvDataTypeObject5 _CsvDto2 = "01,02,03,04,05"; 
+
+    // Compare by value
+    bool _equals = _CsvDto1 == _CsvDto2; 
+
+    // implicit convert csv data type object to csv string.
+    string _csv = _CsvDto1; 
+~~~
 
 # DataTable Import / Export
 
+2 Extension methods on the DataTable object.
+
 ~~~cs
+
+    using DevToys.PocoCsv.Core.Extensions;
 
     // Import
     var _file = @"C:\data.csv";
