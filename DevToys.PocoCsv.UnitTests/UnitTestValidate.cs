@@ -1,4 +1,5 @@
 ﻿using DevToys.PocoCsv.Core;
+using DevToys.PocoCsv.Core.CsvDataTypeObject;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -33,8 +34,8 @@ namespace DevToys.PocoCsv.UnitTests
             TestEncoding();
             TestColIndex();
             TestReaderSimple();
+            TestCsvDataTypeObject();
         }
-
 
         public class SimpleObjectA
         {
@@ -48,6 +49,48 @@ namespace DevToys.PocoCsv.UnitTests
             public int Id { get; set; }
             public string Field2 { get; set; }
             public string Field3 { get; set; }
+        }
+
+        [TestMethod]
+        public void TestCsvDataTypeObject()
+        {
+            var _CsvDto1 = new CsvDataTypeObject() { Field01 = "01", Field02 = "02", Field03 = "03", Field04 = "04", Field05 = "05" };
+            CsvDataTypeObject _CsvDto2 = "01,02,03,04,05"; // Implicit csv string to csv data type object.
+
+            Assert.IsTrue(_CsvDto1 == _CsvDto2);
+
+            string _csv = _CsvDto1; // implicit convert csv data type object to csv string.
+
+            Assert.AreEqual(_csv, "01,02,03,04,05");
+
+            _CsvDto1 = "1,2,4";
+            _CsvDto2 = "1,2,3";
+            Assert.IsTrue(_CsvDto1 > _CsvDto2);
+
+            _CsvDto1 = "1,2,3";
+            _CsvDto2 = "1,2,4";
+            Assert.IsTrue(_CsvDto1 < _CsvDto2);
+
+            _CsvDto1 = "1,2,3";
+            _CsvDto2 = null;
+            Assert.IsTrue(_CsvDto1 > _CsvDto2);
+
+            _CsvDto1 = null;
+            _CsvDto2 = "1,2,3";
+            Assert.IsTrue(_CsvDto1 < _CsvDto2);
+
+            _CsvDto1 = null;
+            _CsvDto2 = null;
+            Assert.IsTrue(_CsvDto1 == _CsvDto2);
+
+            _CsvDto1 = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50";
+            _CsvDto2 = _CsvDto1.Clone() as CsvDataTypeObject;
+            Assert.IsTrue(_CsvDto1 == _CsvDto2);
+
+            _CsvDto1 = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,aaa";
+            _CsvDto2 = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,bbb";
+            Assert.IsTrue(_CsvDto1 < _CsvDto2);
+
         }
 
 

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DevToys.PocoCsv.UnitTests.Models;
+using System.Reflection.PortableExecutable;
 
 namespace DevToys.PocoCsv.UnitTests
 {
@@ -29,7 +30,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             _w.Start();
 
-
             List<string[]> _rows = new List<string[]>();
 
             using (CsvStreamReader _reader = new CsvStreamReader(_file))
@@ -44,9 +44,7 @@ namespace DevToys.PocoCsv.UnitTests
                     _rows.Add(_values);
                 }
             }
-
             _w.Stop();
-            Console.WriteLine(_w.Duration);
         }
 
 

@@ -252,7 +252,7 @@ All values and characters at this point are unescaped / escaped as required by t
         }
     }
 
-    public class ParsePrice : ICustomCsvParse<Decimal>
+    public class ParseDecimal : ICustomCsvParse<Decimal>
     {
         private CultureInfo _culture;
 
@@ -275,7 +275,7 @@ All values and characters at this point are unescaped / escaped as required by t
         [Column(Index = 1)]
         public string Name { get; set; }
 
-        [Column(Index = 3, CustomParserType = typeof(ParsePrice))]
+        [Column(Index = 3, CustomParserType = typeof(ParseDecimal))]
         public Decimal Price { get; set; }
     }
 
@@ -400,14 +400,14 @@ Mapping will be determined by the Header in the Csv, columns will only be mapped
 
 
 # CsvDataTypeObject
+Convenience class to read up to 50 CsvColumns from a Csv document.
 
-- Simple mapping object mapping to 50 columns ready to use. all fields are string only.
+- All fields are string only.
 - this object can be usefull if you want to use the CsvReader<T> on unknown csv files.
 - Object can be used on any Csv regardless their number of columns. (Column indexes above 50 will be ignored)
 - Object has the Deconstruct implemented so you can use shorthands for fields.
 - Object is comparable by value.
-
-it's an alternative to CsvStreamReader.
+- Implicit convert from Csv line string to CsvDataTypeObject and back to string.
 
 ~~~cs
     using (CsvReader<CsvDataTypeObject> _reader = new(_file))
@@ -454,21 +454,6 @@ if you would like to use it with the writer you can limit the number of output c
     }
 ~~~
 
-
-Other things you can do with the Csv DataType objects
-
-~~~cs
-    var _CsvDto1 = new CsvDataTypeObject5() { Field1 = "01", Field2 = "02", Field3 = "03", Field4 = "04", Field5 = "05" };
-            
-    // Implicit csv string to csv data type object.
-    CsvDataTypeObject5 _CsvDto2 = "01,02,03,04,05"; 
-
-    // Compare by value
-    bool _equals = _CsvDto1 == _CsvDto2; 
-
-    // implicit convert csv data type object to csv string.
-    string _csv = _CsvDto1; 
-~~~
 
 # DataTable Import / Export
 

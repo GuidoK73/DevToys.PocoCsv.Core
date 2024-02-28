@@ -16,7 +16,8 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvWriter<T> : BaseCsv, IDisposable where T : class, new()
     {
-        private Stream _Stream = null;
+        private readonly Stream _Stream = null;
+        private readonly string _File = null;
 
         private ImmutableArray<Func<T, object>> _PropertyGetterByteArray;
         private ImmutableArray<Func<T, Int32>> _PropertyGetterEnum;
@@ -152,6 +153,16 @@ namespace DevToys.PocoCsv.Core
         public bool IgnoreColumnAttributes { get; set; } = false;
 
         /// <summary>
+        /// Stream buffer size, Default: 1024
+        /// </summary>
+        public int BufferSize { get; set; } = 1024;
+
+        /// <summary>
+        /// Culture info to use for serialization.
+        /// </summary>
+        public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
+
+        /// <summary>
         /// Releases all resources used by the System.IO.TextReader object.
         /// </summary>
         public void Dispose()
@@ -284,7 +295,6 @@ namespace DevToys.PocoCsv.Core
                 _StreamWriter.Flush();
             }
         }
-
 
         private void WriteValue(T row, int index)
         {

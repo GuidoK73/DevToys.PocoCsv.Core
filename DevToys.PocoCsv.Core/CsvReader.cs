@@ -18,6 +18,8 @@ namespace DevToys.PocoCsv.Core
     public sealed class CsvReader<T> : BaseCsv, IDisposable where T : class, new()
     {
         private StreamReader _Stream = null;
+        private readonly string _File = null;
+
         private ImmutableArray<Action<T, Int32>> _PropertySettersEnum;
         private ImmutableArray<Action<object, object>> _PropertySetters;
         private ImmutableArray<Action<T, string>> _PropertySettersString;
@@ -59,7 +61,6 @@ namespace DevToys.PocoCsv.Core
         private readonly List<CsvReadError> _Errors = new List<CsvReadError>();
         private readonly StringBuilder _buffer = new StringBuilder(1027);
         private readonly List<string> _CsvLineReaderResult = new List<string>();
-
 
         private const int _CR = '\r';
         private const int _LF = '\n';
@@ -148,6 +149,16 @@ namespace DevToys.PocoCsv.Core
         /// indicates whether to look for byte order marks at the beginning of the file. Default: true
         /// </summary>
         public bool DetectEncodingFromByteOrderMarks { get; set; } = true;
+
+        /// <summary>
+        /// Stream buffer size, Default: 1024
+        /// </summary>
+        public int BufferSize { get; set; } = 1024;
+
+        /// <summary>
+        /// Culture info to use for serialization.
+        /// </summary>
+        public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
 
         /// <summary>
         /// Releases all resources used by the System.IO.TextReader object.
@@ -305,12 +316,14 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// MoveToStart then skip first row.
         /// </summary>
-        public void SkipHeader()
+        public string[] SkipHeader()
         {
-            MoveToStart();
-            Skip();
+            return ReadHeader();
         }
 
+        /// <summary>
+        /// MoveToStart and reads the header as a string[] array.
+        /// </summary>
         public string[] ReadHeader()
         {
             MoveToStart();

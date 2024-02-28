@@ -9,6 +9,8 @@ using System.Text;
 using DevToys.PocoCsv.UnitTests.Models;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
+
 
 
 namespace DevToys.PocoCsv.UnitTests
@@ -35,6 +37,19 @@ namespace DevToys.PocoCsv.UnitTests
 
             string _file = System.IO.Path.GetTempFileName();
 
+            CsvDataTypeObject _CsvDto3 = "1,2,4";
+            CsvDataTypeObject _CsvDto4 = "1,2,3";
+
+
+            bool x = _CsvDto3 > _CsvDto4;
+
+
+            CsvDataTypeObject _CsvDto5 = "1,2,3";
+            CsvDataTypeObject _CsvDto6 = null;
+
+            bool x2 = _CsvDto5 > _CsvDto6; 
+
+
             using (CsvWriter<CsvDataTypeObject> _writer = new(_file) { Separator = ',', ColumnLimit = 5 })
             {
                 _writer.Open();
@@ -60,7 +75,7 @@ namespace DevToys.PocoCsv.UnitTests
         {
             for (int ii = 0; ii < count; ii++)
             {
-                yield return new CsvDataTypeObject() { Field01 = $"A{ii}", Field02 = $"b{ii}", Field03 = $"c{ii}", Field04 = $"d{ii}", Field05 = $"e{ii}" };
+                yield return new CsvDataTypeObject($"A{ii},B{ii},C{ii},D{ii},E{ii}");
             }
         }
 

@@ -29,18 +29,20 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Authors>GuidoK73</Authors>
 	<PackageTags>csv;export;import;comma separated;4180;delimited;poco;csv parser;parse csv;DataTable;Import Csv;Export Csv;Csv Object</PackageTags>
     <Company />
-    <Version>4.2.1</Version>
+    <Version>4.2.2</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2024</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
     <PackageReleaseNotes>
+4.2.2
+- Minor improvements on CsvDataTypeObject
+
 4.2.1
 - Dropped: CsvDataTypeObject5, CsvDataTypeObject10, CsvDataTypeObject25, CsvDataTypeObject50, CsvDataTypeObject100
 - Introduced: CsvDataTypeObject, this object is the 50 column version.
 - Added ColumnLimit to CsvWriter, this can be used to limit the output columns, this can be used in combination with CsvDataTypeObject. Default = 0 (No Limit).
 
-		
 4.2.0
 - Added new objects: CsvDataTypeObject5, CsvDataTypeObject10, CsvDataTypeObject25, CsvDataTypeObject50, CsvDataTypeObject100 ( see Readme for more info ).
 - Added ReadHeader() to CsvReader

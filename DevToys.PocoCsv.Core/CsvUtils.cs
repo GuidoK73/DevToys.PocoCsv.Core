@@ -207,7 +207,7 @@ namespace DevToys.PocoCsv.Core
             return $"\"{s.Replace("\"", "\"\"")}\""; // Unusual replace when string contains '"' 
         }
 
-        internal static string ToCsvString(params string[] values)
+        public static string JoinCsvLine(params string[] values)
         {
             StringBuilder sb = new StringBuilder();
             foreach (string value in values)
@@ -219,11 +219,27 @@ namespace DevToys.PocoCsv.Core
             return sb.ToString();
         }
 
+        internal static string JoinCsvLine(int max, params string[] values)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (values.Length < max)
+            {
+                max = values.Length;
+            }
+            for (int ii = 0; ii < max; ii++)
+            {
+                sb.Append(Escape(values[ii]));
+                sb.Append(',');
+            }
+            sb.Length--;
+            return sb.ToString();
+        }
+
         private const int _CR = '\r';
         private const int _LF = '\n';
         private const int _ESCAPE = '"';
 
-        internal static string[] SplitCsvString(string s, char separator)
+        public static string[] SplitCsvLine(string s, char separator)
         {
             List<string> _result = new List<string>();
             StringBuilder _buffer = new StringBuilder();
@@ -310,7 +326,6 @@ namespace DevToys.PocoCsv.Core
             _result.Add(_buffer.ToString());
 
             return _result.ToArray();
-
         }
 
         internal static int Lowest(int value1, int value2)

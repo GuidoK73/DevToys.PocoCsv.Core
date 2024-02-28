@@ -14,8 +14,6 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public abstract class BaseCsv
     {
-        // Keep boxing at a minimum.
-
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         internal protected ICustomCsvParse<string>[] __CustomParserString = null;
         internal protected ICustomCsvParse<Guid>[] __CustomParserGuid = null;
@@ -102,21 +100,6 @@ namespace DevToys.PocoCsv.Core
         internal protected ICustomCsvParse[] __ICustomCsvParseBase;
         internal protected CsvAttribute _CsvAttribute;
 #pragma warning restore CS1591 
-
-        /// <summary>
-        /// Property Set by contructor, either File or Stream is used.
-        /// </summary>
-        protected string _File = null;
-
-        /// <summary>
-        /// Stream buffer size, Default: 1024
-        /// </summary>
-        public int BufferSize { get; set; } = 1024;
-
-        /// <summary>
-        /// Culture info to use for serialization.
-        /// </summary>
-        public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
 
         /// <summary>
         /// 

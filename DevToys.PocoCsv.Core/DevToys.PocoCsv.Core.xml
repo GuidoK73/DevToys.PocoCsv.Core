@@ -9,21 +9,6 @@
             Base class for BaseCsvReader and BaseCsvWriter
             </summary>
         </member>
-        <member name="F:DevToys.PocoCsv.Core.BaseCsv._File">
-            <summary>
-            Property Set by contructor, either File or Stream is used.
-            </summary>
-        </member>
-        <member name="P:DevToys.PocoCsv.Core.BaseCsv.BufferSize">
-            <summary>
-            Stream buffer size, Default: 1024
-            </summary>
-        </member>
-        <member name="P:DevToys.PocoCsv.Core.BaseCsv.Culture">
-            <summary>
-            Culture info to use for serialization.
-            </summary>
-        </member>
         <member name="M:DevToys.PocoCsv.Core.BaseCsv.InitCustomCsvParseArrays(System.Int32)">
             <summary>
             
@@ -308,7 +293,335 @@
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject">
             <summary>
-            Class to read 50 CsvColumns from a Csv document
+            Convenience class to read up to 50 CsvColumns from a Csv document
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field01">
+            <summary>Column 1</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field02">
+            <summary>Column 2</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field03">
+            <summary>Column 3</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field04">
+            <summary>Column 4</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field05">
+            <summary>Column 5</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field06">
+            <summary>Column 6</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field07">
+            <summary>Column 7</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field08">
+            <summary>Column 8</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field09">
+            <summary>Column 9</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field10">
+            <summary>Column 10</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field11">
+            <summary>Column 11</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field12">
+            <summary>Column 12</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field13">
+            <summary>Column 13</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field14">
+            <summary>Column 14</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field15">
+            <summary>Column 15</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field16">
+            <summary>Column 16</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field17">
+            <summary>Column 17</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field18">
+            <summary>Column 18</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field19">
+            <summary>Column 19</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field20">
+            <summary>Column 20</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field21">
+            <summary>Column 21</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field22">
+            <summary>Column 22</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field23">
+            <summary>Column 23</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field24">
+            <summary>Column 24</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field25">
+            <summary>Column 25</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field26">
+            <summary>Column 26</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field27">
+            <summary>Column 27</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field28">
+            <summary>Column 28</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field29">
+            <summary>Column 29</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field30">
+            <summary>Column 30</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field31">
+            <summary>Column 31</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field32">
+            <summary>Column 32</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field33">
+            <summary>Column 33</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field34">
+            <summary>Column 34</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field35">
+            <summary>Column 35</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field36">
+            <summary>Column 36</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field37">
+            <summary>Column 37</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field38">
+            <summary>Column 38</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field39">
+            <summary>Column 39</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field40">
+            <summary>Column 40</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field41">
+            <summary>Column 41</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field42">
+            <summary>Column 42</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field43">
+            <summary>Column 43</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field44">
+            <summary>Column 44</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field45">
+            <summary>Column 45</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field46">
+            <summary>Column 46</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field47">
+            <summary>Column 47</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field48">
+            <summary>Column 48</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field49">
+            <summary>Column 49</summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Field50">
+            <summary>Column 50</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 50</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 49</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 48</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 47</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 46</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 45</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 44</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 43</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 42</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 41</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 40</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 39</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 38</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 37</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 36</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 35</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 34</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 33</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 32</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 31</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 30</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 29</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 28</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 27</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 26</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 25</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 24</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 23</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 22</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 21</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 20</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 19</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 18</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 17</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 16</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 15</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 14</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 13</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 12</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 11</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 10</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 9</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 8</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 7</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 6</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 5</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 4</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@,System.String@)">
+            <summary>Deconstruct 3</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@,System.String@)">
+            <summary>Deconstruct 2</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deconstruct(System.String@)">
+            <summary>Deconstruct 1</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.op_Equality(DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject,DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject)">
+            <summary>Equal operator ==</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.op_Inequality(DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject,DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject)">
+            <summary>Not equal operator !=</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.op_LessThan(DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject,DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject)">
+            <summary>Smaller then</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.op_GreaterThan(DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject,DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject)">
+            <summary>Larger then</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.op_Implicit(System.String)~DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject">
+            <summary>Implicit cast from string to CsvDataTypeObject</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.op_Implicit(DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject)~System.String">
+            <summary>Implicit cast from CsvDataTypeObject to string</summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Serialize">
+            <summary>
+            Convert to Csv String
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deserialize(System.String)">
+            <summary>
+            Convert csv string to Object.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Equals(DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject)">
@@ -331,15 +644,24 @@
             Creates a new object that is a copy of the current instance.
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Serialize">
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
             <summary>
-            Convert to Csv String
+            ISerializable implementation.
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.Deserialize(System.String)">
+        <member name="M:DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject.CompareTo(DevToys.PocoCsv.Core.CsvDataTypeObject.CsvDataTypeObject)">
             <summary>
-            Convert csv string to Object.
+            Compares the current instance with another object of the same type and returns
+            an integer that indicates whether the current instance precedes, follows, or
+            occurs in the same position in the sort order as the other object.
             </summary>
+            <returns>
+            A value that indicates the relative order of the objects being compared. The
+            return value has these meanings: Value Meaning Less than zero This instance precedes
+            other in the sort order. Zero This instance occurs in the same position in the
+            sort order as other. Greater than zero This instance follows other in the sort
+            order.
+            </returns>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvReader`1">
             <summary>
@@ -402,6 +724,16 @@
             indicates whether to look for byte order marks at the beginning of the file. Default: true
             </summary>
         </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.BufferSize">
+            <summary>
+            Stream buffer size, Default: 1024
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.Culture">
+            <summary>
+            Culture info to use for serialization.
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Dispose">
             <summary>
             Releases all resources used by the System.IO.TextReader object.
@@ -440,6 +772,11 @@
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.SkipHeader">
             <summary>
             MoveToStart then skip first row.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadHeader">
+            <summary>
+            MoveToStart and reads the header as a string[] array.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadAsEnumerable">
@@ -816,6 +1153,16 @@
         <member name="P:DevToys.PocoCsv.Core.CsvWriter`1.IgnoreColumnAttributes">
             <summary>
             All properties are handled in order of property occurrence and mapped directly to their respective index. (ColumnAttribute is ignored.)
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvWriter`1.BufferSize">
+            <summary>
+            Stream buffer size, Default: 1024
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvWriter`1.Culture">
+            <summary>
+            Culture info to use for serialization.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.Dispose">
