@@ -48,6 +48,7 @@ namespace DevToys.PocoCsv.UnitTests
         }
 
 
+
         private IEnumerable<CsvSimple> LargeData()
         {
             for (int ii = 0; ii < 10000000; ii++)

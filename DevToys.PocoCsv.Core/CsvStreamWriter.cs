@@ -22,6 +22,7 @@ namespace DevToys.PocoCsv.Core
         /// <param name="path">The complete file path to write to. path can be a file name.</param>
         public CsvStreamWriter(string path) : base(path)
         {
+            Separator = ',';
         }
 
         /// <summary>
@@ -33,6 +34,7 @@ namespace DevToys.PocoCsv.Core
         /// <param name="bufferSize">The buffer size, in bytes.</param>
         public CsvStreamWriter(string path, bool append = false, Encoding encoding = null, int bufferSize = -1) : base(path, append, encoding, bufferSize)
         {
+            Separator = ',';
         }
 
 #if NET60 || NET70
@@ -53,6 +55,7 @@ namespace DevToys.PocoCsv.Core
         /// <param name="stream">The stream to write to.</param>
         public CsvStreamWriter(Stream stream) : base(stream)
         {
+            Separator = ',';
         }
 
         /// <summary>
@@ -64,6 +67,7 @@ namespace DevToys.PocoCsv.Core
         /// <param name="leaveOpen">true to leave the stream open after the System.IO.StreamWriter object is disposed; otherwise, false.</param>
         public CsvStreamWriter(Stream stream, Encoding encoding = null, int bufferSize = -1, bool leaveOpen = false) : base(stream, encoding, bufferSize, leaveOpen)
         {
+            Separator = ',';
         }
 
 

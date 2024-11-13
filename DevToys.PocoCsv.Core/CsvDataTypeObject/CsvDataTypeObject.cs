@@ -2036,8 +2036,6 @@ namespace DevToys.PocoCsv.Core.CsvDataTypeObject
 
         #endregion
 
-        #region Operators
-
         /// <summary>Equal operator ==</summary>
         public static bool operator ==(CsvDataTypeObject left, CsvDataTypeObject right) => Equals(left, right);
 
@@ -2090,8 +2088,6 @@ namespace DevToys.PocoCsv.Core.CsvDataTypeObject
             return left.CompareTo(right);
         }
 
-        #endregion
-
         /// <summary>
         /// Convert to Csv String
         /// </summary>
@@ -2113,8 +2109,6 @@ namespace DevToys.PocoCsv.Core.CsvDataTypeObject
             }
             return _new;
         }
-
-        #region Interface Implementations
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
@@ -2212,7 +2206,5 @@ namespace DevToys.PocoCsv.Core.CsvDataTypeObject
             }
             return 0;
         }
-
-        #endregion
     }
 }

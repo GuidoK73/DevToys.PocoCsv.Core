@@ -786,12 +786,12 @@
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Read">
             <summary>
-            reads the CsvLine and advances to the next.
+            Reads the Csv line into object of type T and advances to the next.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadCsvLine">
             <summary>
-            Reads a single CSV line into string array, and advances to the next.
+            Reads the CSV line into string array, and advances to the next.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Open">

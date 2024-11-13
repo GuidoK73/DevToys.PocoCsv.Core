@@ -347,7 +347,7 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
-        /// reads the CsvLine and advances to the next.
+        /// Reads the Csv line into object of type T and advances to the next.
         /// </summary>
         //  Called each line.
         public T Read()
@@ -382,7 +382,7 @@ namespace DevToys.PocoCsv.Core
                     }
                     else if (_byte == _CR)
                     {
-                        // in case of CR, peek next char, when LF, then skip the CR and let newline happen on LF, otherwise newline happens on CR.
+                        // in case of CR, peek next char, when next char is LF, then skip the CR and let newline happen on LF, otherwise newline happens on CR.
                         _nextByte = _Stream.Peek();
                         if (_nextByte == _LF)
                         {
@@ -515,7 +515,7 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
-        /// Reads a single CSV line into string array, and advances to the next.
+        /// Reads the CSV line into string array, and advances to the next.
         /// </summary>
         public string[] ReadCsvLine()
         {
