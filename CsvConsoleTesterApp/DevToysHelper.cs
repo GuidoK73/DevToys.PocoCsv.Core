@@ -11,7 +11,7 @@ namespace ConsoleApp1
     {
         public IEnumerable<CsvObject> LargeData()
         {
-            for (int ii = 0; ii < 10000000; ii++)
+            for (int ii = 0; ii < 1000000; ii++)
             {
                 CsvObject _line = new()
                 {

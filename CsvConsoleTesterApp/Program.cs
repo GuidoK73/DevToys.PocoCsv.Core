@@ -32,7 +32,6 @@ Console.WriteLine("Writer {0}", _w.Duration);
 
 
 _w.Start();
-
 using (var _reader = new DevToys.PocoCsv.Core.CsvReader<CsvObject>(file, ',') { BufferSize = 2048 })
 {
     _reader.Open();

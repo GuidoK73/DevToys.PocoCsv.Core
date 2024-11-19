@@ -80,9 +80,14 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        public CsvWriter(string file, char separator = ',')
+        /// <param name="path">File or directory, in case of directory, filename will be generated based on T</param>
+        public CsvWriter(string path, char separator = ',')
         {
-            _File = file;
+            _File = path;
+            if (Directory.Exists(_File))
+            {
+                _File = Path.Combine(path.TrimEnd(new char[] { '\\' }), $"{typeof(T).Name}.csv");
+            }
             Separator = separator;
         }
 
@@ -98,13 +103,18 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        public CsvWriter(string file, Encoding encoding, CultureInfo culture, char separator = ',', int buffersize = -1)
+        /// <param name="path">File or directory, in case of directory, filename will be generated based on T</param>
+        public CsvWriter(string path, Encoding encoding, CultureInfo culture, char separator = ',', int buffersize = -1)
         {
             Culture = culture;
             Separator = separator;
             Encoding = encoding;
             BufferSize = buffersize;
-            _File = file;
+            _File = path;
+            if (Directory.Exists(_File))
+            {
+                _File = Path.Combine(path.TrimEnd(new char[] { '\\' }), $"{typeof(T).Name}.csv");
+            }
         }
 
         /// <summary>

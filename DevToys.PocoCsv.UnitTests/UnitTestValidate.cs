@@ -235,19 +235,19 @@ namespace DevToys.PocoCsv.UnitTests
             string fileUTF8 = System.IO.Path.GetTempFileName();
             string fileASCII = System.IO.Path.GetTempFileName();
 
-            using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(file: fileUTF32,  encoding : Encoding.UTF32,  culture: CultureInfo.InvariantCulture,  separator: ',' ))
+            using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(path: fileUTF32,  encoding : Encoding.UTF32,  culture: CultureInfo.InvariantCulture,  separator: ',' ))
             {
                 _writer.Open();
                 var _data = CsvSimpleData(5);
                 _writer.Write(_data);
             }
-            using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(file: fileUTF8, encoding: Encoding.UTF8, culture: CultureInfo.InvariantCulture, separator: ',' ))
+            using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(path: fileUTF8, encoding: Encoding.UTF8, culture: CultureInfo.InvariantCulture, separator: ',' ))
             {
                 _writer.Open();
                 var _data = CsvSimpleData(5);
                 _writer.Write(_data);
             }
-            using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(file: fileASCII, encoding: Encoding.ASCII, culture: CultureInfo.InvariantCulture, separator: ','))
+            using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(path: fileASCII, encoding: Encoding.ASCII, culture: CultureInfo.InvariantCulture, separator: ','))
             {
                 _writer.Open();
                 var _data = CsvSimpleData(5);

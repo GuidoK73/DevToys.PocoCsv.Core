@@ -5,6 +5,7 @@ It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader
 
 Read/write serialize/deserialize data to and from Csv.
 
+- Extremely fast.
 - RFC 4180 compliant.
 - Sequential read with ReadAsEnumerable().
 - Csv schema Retrieval with CsvUtils.GetCsvSchema().
@@ -252,6 +253,10 @@ All values and characters at this point are unescaped / escaped as required by t
         }
     }
 
+~~~
+
+~~~cs
+
     public class ParseDecimal : ICustomCsvParse<Decimal>
     {
         private CultureInfo _culture;
@@ -266,6 +271,9 @@ All values and characters at this point are unescaped / escaped as required by t
         public string Write(Decimal value) => value.ToString(_culture);
     }
 
+~~~
+
+~~~cs
 
     public sealed class CsvPreParseTestObject
     {
@@ -279,6 +287,9 @@ All values and characters at this point are unescaped / escaped as required by t
         public Decimal Price { get; set; }
     }
 
+~~~
+
+~~~cs
 
     using (var _reader = new CsvReader<CsvPreParseTestObject>(_file))
     {
