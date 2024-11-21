@@ -75,7 +75,6 @@ or
     using (CsvReader<Data> _reader = new(file))
     {        
         _reader.Culture = CultureInfo.GetCultureInfo("en-us") ;
-        _reader.Open();
         _reader.SkipHeader();
         var _data = _reader.ReadAsEnumerable().Where(p => p.Column1.Contains("16"));
         var _materialized = _data.ToList();
@@ -104,7 +103,7 @@ You only specify the column indexes you need.
 |**HasErrors**|Indicates there are errors|
 |**IgnoreColumnAttributes**|All properties are handled in order of property occurrence and mapped directly to their respective index. Only use when CsvWriter has this set to true as well. (ColumnAttribute is ignored.)|
 |**MoveToStart()**|Moves the reader to the start position, Skip() and Take() alter the start positions use MoveToStart() to reset the position.|
-|**Open()**|Opens the Reader.|
+|**Open()**|Opens the Reader. (this method is optional, the reader will auto open when nececary)|
 |**Read()**|Reads current row into T and advances the reader to the next row. |
 |**ReadCsvLine()**|Reads current row into a string[] just like the CsvStreamReader. and advances the reader to the next row.|
 |**ReadHeader()**|Moves to start and performs a ReadCsvLine()|
@@ -112,6 +111,8 @@ You only specify the column indexes you need.
 |**Separator**|Set the separator to use (default ',')|
 |**Skip(int rows)**|Skip and advances the reader to the next row without interpreting it. This is much faster then IEnumerable.Skip(). |
 |**SkipHeader()**|Ensures stream is at start then skips the first row.|
+
+The path given to the constructor can be a specific file or directory, in case a directory is given, the filename will be expected as [TYPENAME].csv.
 
 (Skip does not deserialize, that's why it's faster then normal IEnumerable operations).
 
@@ -155,7 +156,6 @@ You only specify the column indexes you need.
     using (CsvWriter<CsvSimple> _writer = new(file) { Separator = ',', Append = true })
     {
         _writer.Culture = CultureInfo.GetCultureInfo("en-us");
-        _writer.Open();
         _writer.Write(LargeData());
     }
       
@@ -166,7 +166,8 @@ Methods / Properties:
 
 |Item|Description|
 |:-|:-|
-|**Open()**|Opens the Writer.|
+|**FileMode**|Determine whether to create a new file or append to existing files.|
+|**Open()**|Opens the Writer. (this method is optional, the writer will auto open when nececary)|
 |**WriteHeader()**|Write header with property names of T.|
 |**Write(IEnumerable<T> rows)**|Writes data to Csv while consuming rows.|
 |**Flush()**|Flushes all buffers.|
@@ -176,6 +177,8 @@ Methods / Properties:
 |**NullValueBehaviour**|Determine what to do with writing null objects.<li>Skip, Ignore the object</li><li>Empty Line, Write an empty line</li>|
 |**Culture**|Sets the default Culture for decimal / double conversions etc. For more complex conversions use the ICustomCsvParse interface.|
 |**Encoding**|The character encoding to use.|
+
+The path given to the constructor can be a specific file or directory, in case a directory is given, the filename will be generated based on the T typename.
 
 The writer is for performance reasons unrelated to the CsvStreamWriter.
 
@@ -347,8 +350,6 @@ until they are overruled at property level.
 
     using (CsvReader<CsvSimple> _reader = new CsvReader<CsvSimple>(file))
     {
-        _reader.Open();
-
         _reader.Skip(); // skip the Header row.
 
         // Materializes 20 records but returns 10.
@@ -397,14 +398,12 @@ Mapping will be determined by the Header in the Csv, columns will only be mapped
 
     using (CsvWriter<SimpleObject> _writer = new(_file) { Separator = ',' })
     {
-        _writer.Open();
         _writer.WriteHeader();
         _writer.Write(Data());
     }
 
     using (CsvReader<SimpleObject> _reader = new(_file))
     {
-        _reader.Open();
         List<SimpleObject> _materialized = _reader.ReadAsEnumerable().ToList();
     }
 ~~~
@@ -423,7 +422,6 @@ Convenience class to read up to 50 CsvColumns from a Csv document.
 ~~~cs
     using (CsvReader<CsvDataTypeObject> _reader = new(_file))
     {
-        _reader.Open();
         foreach (var item in _reader.ReadAsEnumerable())
         {
             string id = item.Field01;
@@ -437,7 +435,6 @@ you can use the Deconstruct shorthand:
 ~~~cs   
     using (CsvReader<CsvDataTypeObject> _reader = new(_file))
     {
-        _reader.Open();
         foreach (var (id, name) in _reader.ReadAsEnumerable())
         {            
         }
@@ -451,7 +448,6 @@ if you would like to use it with the writer you can limit the number of output c
 
     using (CsvWriter<CsvDataTypeObject> _writer = new(_file) { Separator = ',', ColumnLimit = 5 })
     {
-        _writer.Open();
         _writer.WriteHeader();
         _writer.Write(SimpleData(50));
     }

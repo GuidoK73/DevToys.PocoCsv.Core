@@ -29,7 +29,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvWriter<SimpleObject> _writer = new(_file) { Separator = ',' })
             {
-                _writer.Open();
                 _writer.WriteHeader();
                 _writer.Write(SimpleData());
             }
@@ -38,7 +37,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvReader<SimpleObject> _reader = new(_file))
             {
-                _reader.Open();
                 List<SimpleObject> _materialized = _reader.ReadAsEnumerable().ToList();
             }
         }

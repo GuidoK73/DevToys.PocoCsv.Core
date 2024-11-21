@@ -198,6 +198,8 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void DetectSeparator()
         {
+            AutoOpen();
+
             var _reader = new CsvStreamReader(_Stream.BaseStream);
             var _succes = CsvUtils.GetCsvSeparator(_reader, out char separator, 10);
             if (_succes)
@@ -212,6 +214,8 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void MoveToStart()
         {
+            AutoOpen();
+
             _CurrentLine = 0;
             _byte = 0;
             _Stream.BaseStream.Position = 0;
@@ -222,10 +226,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void Skip(int rows)
         {
-            if (_Stream == null)
-            {
-                throw new IOException("Reader is closed!");
-            }
+            AutoOpen();
 
             int ii = 0;
 
@@ -245,6 +246,8 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void Skip()
         {
+            AutoOpen();
+
             _byte = 0;
             _colIndex = 0;
             _state = State.Normal;
@@ -341,10 +344,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public IEnumerable<T> ReadAsEnumerable()
         {
-            if (_Stream == null)
-            {
-                throw new IOException("Reader is closed!");
-            }
+            AutoOpen();
 
             while (!EndOfStream)
             {
@@ -358,6 +358,8 @@ namespace DevToys.PocoCsv.Core
         //  Called each line.
         public T Read()
         {
+            AutoOpen();
+
             T _result = new T();
 
         SkipEmptyLineAndReadNext:
@@ -525,6 +527,8 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public string[] ReadCsvLine()
         {
+            AutoOpen();
+
             _CsvLineReaderResult.Clear();
             _state = State.Normal;
             _buffer.Length = 0; // Clear the string buffer.
@@ -1839,11 +1843,34 @@ namespace DevToys.PocoCsv.Core
             Init();
         }
 
+        private void AutoOpen()
+        {
+            if (_IsInitializing)
+            {
+                return;
+            }
+            if (_Properties == null)
+            {
+                // Not initialized.
+                Open();  // Initialize and Open the Stream.
+                return;
+            }
+            if (_Stream == null)
+            {
+                // Initialized but the Close() method has been called.
+                throw new IOException("Reader is closed!");
+            }
+        }
+
+
+        private bool _IsInitializing = false;
+
         /// <summary>
         /// Initialize the CsvReader
         /// </summary>
         private void Init()
         {
+            _IsInitializing = true; 
             if (_Properties != null)
                 return;
 
@@ -2167,6 +2194,7 @@ namespace DevToys.PocoCsv.Core
             _PropertyTypes = _propertyTypes.ToImmutableArray();
 
             base.InitImmutableArray();
+            _IsInitializing = false;
         }
       
         private void InitCsvAttributeRead(Type type, int size)

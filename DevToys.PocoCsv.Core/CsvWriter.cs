@@ -69,6 +69,7 @@ namespace DevToys.PocoCsv.Core
         private const string _CRLF = "\r\n";
         private const char _DoubleQuote = '"';
         private char[] _EscapeChars = null;
+        private FileWriteMode _FileMode = FileWriteMode.CreateNew;
 
         private Encoding Encoding = Encoding.Default;
 
@@ -104,13 +105,14 @@ namespace DevToys.PocoCsv.Core
         /// Constructor
         /// </summary>
         /// <param name="path">File or directory, in case of directory, filename will be generated based on T</param>
-        public CsvWriter(string path, Encoding encoding, CultureInfo culture, char separator = ',', int buffersize = -1)
+        public CsvWriter(string path, Encoding encoding, CultureInfo culture, FileWriteMode fileWriteMode = FileWriteMode.CreateNew, char separator = ',', int buffersize = -1)
         {
             Culture = culture;
             Separator = separator;
             Encoding = encoding;
             BufferSize = buffersize;
             _File = path;
+            _FileMode = fileWriteMode;
             if (Directory.Exists(_File))
             {
                 _File = Path.Combine(path.TrimEnd(new char[] { '\\' }), $"{typeof(T).Name}.csv");
@@ -127,6 +129,21 @@ namespace DevToys.PocoCsv.Core
             Separator = separator;
             Encoding = encoding;
             BufferSize = buffersize;
+        }
+
+        /// <summary>
+        /// Append or Create new, determined on the Open() method.
+        /// </summary>
+        public FileWriteMode FileMode
+        {
+            get
+            {
+                return _FileMode;
+            }
+            set 
+            { 
+                _FileMode = value; 
+            }
         }
 
         /// <summary>
@@ -172,6 +189,9 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
 
+
+        
+
         /// <summary>
         /// Releases all resources used by the System.IO.TextReader object.
         /// </summary>
@@ -209,10 +229,8 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void WriteHeader()
         {
-            if (_Properties.Length == 0)
-            {
-                throw new IOException("Call Open() method first before writing.");
-            }
+            AutoOpen();
+
             if (_StreamWriter.BaseStream.Position > 0)
             {
                 switch (CRLFMode)
@@ -248,11 +266,8 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void Write(IEnumerable<T> rows)
         {
-            if (_Properties.Length == 0)
-            {
-                throw new IOException("Call Open() method first before writing.");
-            }
-            
+            AutoOpen();
+
             foreach (T row in rows)
             {
                 Write(row);
@@ -265,10 +280,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void Write(T row)
         {
-            if (_Properties.Length == 0)
-            {
-                throw new IOException("Call Open() method first before writing.");
-            }
+            AutoOpen();
 
             if (row == null && NullValueBehaviour == WriteNullValueBehaviour.Skip)
             {
@@ -1266,7 +1278,26 @@ namespace DevToys.PocoCsv.Core
             }
             if (!string.IsNullOrEmpty(_File))
             {
+                if (_FileMode == FileWriteMode.CreateNew)
+                {
+                    File.Delete(_File);
+                }
                 _StreamWriter = new StreamWriter(path: _File, append: true, encoding: Encoding, bufferSize: BufferSize == -1 ? 1024 : BufferSize);
+            }
+        }
+
+        private void AutoOpen()
+        {
+            if (_Properties == null)
+            {
+                // Not initialized.
+                Open();  // Initialize and Open the Stream.
+                return;
+            }
+            if (_StreamWriter == null)
+            {
+                // Initialized but the Close() method has been called.
+                throw new IOException("Writer is closed!");
             }
         }
 

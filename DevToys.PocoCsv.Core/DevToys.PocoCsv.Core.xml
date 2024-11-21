@@ -1125,7 +1125,7 @@
             Constructor
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.String,System.Text.Encoding,System.Globalization.CultureInfo,DevToys.PocoCsv.Core.FileWriteMode,System.Char,System.Int32)">
             <summary>
             Constructor
             </summary>
@@ -1134,6 +1134,11 @@
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.IO.Stream,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Int32)">
             <summary>
             Constructor
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvWriter`1.FileMode">
+            <summary>
+            Append or Create new, determined on the Open() method.
             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvWriter`1.Separator">
@@ -1235,6 +1240,16 @@
             <param name="table"></param>
             <param name="file"></param>
             <param name="separator"></param>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.FileWriteMode.CreateNew">
+            <summary>
+            Delete existing, create new.
+            </summary>
+        </member>
+        <member name="F:DevToys.PocoCsv.Core.FileWriteMode.Append">
+            <summary>
+            Append to existing file
+            </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.EmptyLineBehaviour">
             <summary>
