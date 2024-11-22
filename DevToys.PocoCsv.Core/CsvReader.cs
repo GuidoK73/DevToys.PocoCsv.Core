@@ -92,13 +92,23 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="path">File or directory, in case of directory, filename will be generated based on T</param>
+        /// <param name="path">File or directory, in case of directory, filename will be generated based on T or the FileName property from the CsvAttribute will be used.</param>
+        /// <param name="separator">The separator to use, default: ','</param>
+        /// <param name="buffersize"></param>
         public CsvReader(string path, char separator = ',', int buffersize = 1024)
         {
             _File = path;
             if (Directory.Exists(_File))
             {
-                _File = Path.Combine(path.TrimEnd(new char[] { '\\' }), $"{typeof(T).Name}.csv");
+                var _attrib = typeof(T).GetCustomAttribute<CsvAttribute>();
+                if (_attrib != null && !string.IsNullOrEmpty(_attrib.FileName))
+                {                    
+                    _File = Path.Combine(path.TrimEnd(new char[] { '\\' }), $"{_attrib.FileName}");
+                }
+                else
+                {
+                    _File = Path.Combine(path.TrimEnd(new char[] { '\\' }), $"{typeof(T).Name}.csv");
+                }
             }
 
             _Separator = separator;
@@ -2204,6 +2214,8 @@ namespace DevToys.PocoCsv.Core
             {
                 return;
             }
+
+            
 
             for (int index = 0; index < size; index++)
             {

@@ -69,7 +69,7 @@ namespace DevToys.PocoCsv.Core
         private const string _CRLF = "\r\n";
         private const char _DoubleQuote = '"';
         private char[] _EscapeChars = null;
-        private FileWriteMode _FileMode = FileWriteMode.CreateNew;
+        private FileWriteMode _FileMode = FileWriteMode.Overwrite;
 
         private Encoding Encoding = Encoding.Default;
 
@@ -81,13 +81,22 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="path">File or directory, in case of directory, filename will be generated based on T</param>
+        /// <param name="path">File or directory, in case of directory, filename will be generated based on T or the FileName property from the CsvAttribute will be used.</param>
+        /// <param name="separator">The separator to use, default: ','</param>
         public CsvWriter(string path, char separator = ',')
         {
             _File = path;
             if (Directory.Exists(_File))
             {
-                _File = Path.Combine(path.TrimEnd(new char[] { '\\' }), $"{typeof(T).Name}.csv");
+                var _attrib = typeof(T).GetCustomAttribute<CsvAttribute>();
+                if (_attrib != null && !string.IsNullOrEmpty(_attrib.FileName))
+                {
+                    _File = Path.Combine(path.TrimEnd(new char[] { '\\' }), $"{_attrib.FileName}");
+                }
+                else
+                {
+                    _File = Path.Combine(path.TrimEnd(new char[] { '\\' }), $"{typeof(T).Name}.csv");
+                }
             }
             Separator = separator;
         }
@@ -104,8 +113,13 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="path">File or directory, in case of directory, filename will be generated based on T</param>
-        public CsvWriter(string path, Encoding encoding, CultureInfo culture, FileWriteMode fileWriteMode = FileWriteMode.CreateNew, char separator = ',', int buffersize = -1)
+        /// <param name="path">File or directory, in case of directory, filename will be generated based on T or the FileName property from the CsvAttribute will be used.</param>
+        /// <param name="separator">The separator to use, default: ','</param>
+        /// <param name="encoding"></param>
+        /// <param name="buffersize"></param>
+        /// <param name="culture"></param>
+        /// <param name="fileWriteMode"></param>
+        public CsvWriter(string path, Encoding encoding, CultureInfo culture, FileWriteMode fileWriteMode = FileWriteMode.Overwrite, char separator = ',', int buffersize = -1)
         {
             Culture = culture;
             Separator = separator;
@@ -115,7 +129,15 @@ namespace DevToys.PocoCsv.Core
             _FileMode = fileWriteMode;
             if (Directory.Exists(_File))
             {
-                _File = Path.Combine(path.TrimEnd(new char[] { '\\' }), $"{typeof(T).Name}.csv");
+                var _attrib = typeof(T).GetCustomAttribute<CsvAttribute>();
+                if (_attrib != null && !string.IsNullOrEmpty(_attrib.FileName))
+                {
+                    _File = Path.Combine(path.TrimEnd(new char[] { '\\' }), $"{_attrib.FileName}");
+                }
+                else
+                {
+                    _File = Path.Combine(path.TrimEnd(new char[] { '\\' }), $"{typeof(T).Name}.csv");
+                }
             }
         }
 
@@ -1278,7 +1300,7 @@ namespace DevToys.PocoCsv.Core
             }
             if (!string.IsNullOrEmpty(_File))
             {
-                if (_FileMode == FileWriteMode.CreateNew)
+                if (_FileMode == FileWriteMode.Overwrite)
                 {
                     File.Delete(_File);
                 }

@@ -59,6 +59,11 @@
             Csv Class Attribute, use this to set default custom parsers.
             </summary>
         </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvAttribute.FileName">
+            <summary>
+            File name only, can be used for the reader and writer when a directory is used in the contructor instead of a full file path.
+            </summary>
+        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeString">
             <summary>
             Type implementing ICustomCsvParse string
@@ -678,7 +683,9 @@
             <summary>
             Constructor
             </summary>
-            <param name="path">File or directory, in case of directory, filename will be generated based on T</param>
+            <param name="path">File or directory, in case of directory, filename will be generated based on T or the FileName property from the CsvAttribute will be used.</param>
+            <param name="separator">The separator to use, default: ','</param>
+            <param name="buffersize"></param>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.Separator">
             <summary>
@@ -1118,7 +1125,8 @@
             <summary>
             Constructor
             </summary>
-            <param name="path">File or directory, in case of directory, filename will be generated based on T</param>
+            <param name="path">File or directory, in case of directory, filename will be generated based on T or the FileName property from the CsvAttribute will be used.</param>
+            <param name="separator">The separator to use, default: ','</param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.IO.Stream,System.Char)">
             <summary>
@@ -1129,7 +1137,12 @@
             <summary>
             Constructor
             </summary>
-            <param name="path">File or directory, in case of directory, filename will be generated based on T</param>
+            <param name="path">File or directory, in case of directory, filename will be generated based on T or the FileName property from the CsvAttribute will be used.</param>
+            <param name="separator">The separator to use, default: ','</param>
+            <param name="encoding"></param>
+            <param name="buffersize"></param>
+            <param name="culture"></param>
+            <param name="fileWriteMode"></param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvWriter`1.#ctor(System.IO.Stream,System.Text.Encoding,System.Globalization.CultureInfo,System.Char,System.Int32)">
             <summary>
@@ -1241,7 +1254,7 @@
             <param name="file"></param>
             <param name="separator"></param>
         </member>
-        <member name="F:DevToys.PocoCsv.Core.FileWriteMode.CreateNew">
+        <member name="F:DevToys.PocoCsv.Core.FileWriteMode.Overwrite">
             <summary>
             Delete existing, create new.
             </summary>

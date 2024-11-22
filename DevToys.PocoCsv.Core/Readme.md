@@ -309,6 +309,46 @@ the CsvAttribute can be set at defaults for CustomParserType, these CustomParser
 until they are overruled at property level.
 
 
+|Item|Description|
+|:-|:-|
+|**FileName**|When a directory is specified on the constructor for CsvReader or CsvWriter instead of a file, this FileName will be used within specified directory. |
+|**DefaultCustomParserTypeString**|Default Custom Parse Type|
+|**DefaultCustomParserTypeGuid**|Default Custom Parse Type|
+|**DefaultCustomParserTypeBoolean**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDateTime**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDateTimeOffset**|Default Custom Parse Type|
+|**DefaultCustomParserTypeTimeSpan**|Default Custom Parse Type|
+|**DefaultCustomParserTypeByte**|Default Custom Parse Type|
+|**DefaultCustomParserTypeSByte**|Default Custom Parse Type|
+|**DefaultCustomParserTypeInt16**|Default Custom Parse Type|
+|**DefaultCustomParserTypeInt32**|Default Custom Parse Type|
+|**DefaultCustomParserTypeInt64**|Default Custom Parse Type|
+|**DefaultCustomParserTypeSingle**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDecimal**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDouble**|Default Custom Parse Type|
+|**DefaultCustomParserTypeUInt16**|Default Custom Parse Type|
+|**DefaultCustomParserTypeUInt32**|Default Custom Parse Type|
+|**DefaultCustomParserTypeUInt64**|Default Custom Parse Type|
+|**DefaultCustomParserTypeBigInteger**|Default Custom Parse Type|
+|**DefaultCustomParserTypeGuidNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeBooleanNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDateTimeNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDateTimeOffsetNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeTimeSpanNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeByteNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeSByteNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeInt16Nullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeInt32Nullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeInt64Nullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeSingleNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDecimalNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDoubleNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeUInt16Nullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeUInt32Nullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeUInt64Nullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeBigIntegerNullable**|Default Custom Parse Type|
+
+
 ~~~cs
 
     public class Parsestring : ICustomCsvParse<string>

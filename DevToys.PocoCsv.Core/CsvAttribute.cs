@@ -9,6 +9,10 @@ namespace DevToys.PocoCsv.Core
     public sealed class CsvAttribute : Attribute
     {
         /// <summary>
+        /// File name only, can be used for the reader and writer when a directory is used in the contructor instead of a full file path.
+        /// </summary>
+        public string FileName { get; set; }
+        /// <summary>
         /// Type implementing ICustomCsvParse string
         /// </summary>
         public Type DefaultCustomParserTypeString { get; set; } = null;

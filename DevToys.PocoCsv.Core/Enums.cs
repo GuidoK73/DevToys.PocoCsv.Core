@@ -5,7 +5,7 @@
         /// <summary>
         /// Delete existing, create new.
         /// </summary>
-        CreateNew = 0,
+        Overwrite = 0,
         /// <summary>
         /// Append to existing file
         /// </summary>
