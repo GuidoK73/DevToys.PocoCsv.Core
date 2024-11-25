@@ -105,12 +105,8 @@ _w.Stop();
 Console.WriteLine(_w.Duration);
 
 
-
-
-
 // ############################################################
 // DevToys.PocoCsv.Core by Guidok73
-
 
 
 Console.WriteLine("---------------------");
@@ -120,8 +116,7 @@ _w.Start();
 
 using (var _reader = new DevToys.PocoCsv.Core.CsvReader<CsvObject>(file))
 {
-    _reader.Open();
-    _reader.Skip();
+    _reader.SkipHeader();
     var x = _reader.ReadAsEnumerable().ToList();
 }
 

@@ -18,16 +18,13 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvWriter<CsvSimple> _writer = new(_file) { Separator = ',' })
             {
-                _writer.Open();
                 _writer.WriteHeader();
                 _writer.Write(Data());
             }
 
             using (CsvReader<CsvSimple> _reader = new(_file))
             {
-                _reader.Open();
-               // _reader.Skip(20);
-
+                _reader.SkipHeader();
                 var _af = _reader.ReadAsEnumerable().Skip(20).ToList();
             }
         }
@@ -39,7 +36,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvWriter<CsvSimple> _writer = new(_file) { Separator = ',' })
             {
-                _writer.Open();
                 //_writer.WriteHeader();
                 _writer.Write(Data());
             }
@@ -48,7 +44,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvReader<CsvSimple> _reader = new(_file))
             {
-                _reader.Open();
                 var _data = _reader.ReadAsEnumerable().ToList();
             }
         }

@@ -20,7 +20,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvWriter<CsvComplex> _writer = new(_file) { Separator = ',' })
             {
-                _writer.Open();
                 _writer.WriteHeader();
                 _writer.Write(LargeData());
             }
@@ -31,9 +30,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (var _reader = new CsvReader<CsvComplex>(_file))
             {
-                _reader.Open();
-
-
                 while (!_reader.EndOfStream)
                 {
                     CsvComplex _data = _reader.Read();

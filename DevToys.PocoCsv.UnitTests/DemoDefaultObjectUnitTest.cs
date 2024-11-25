@@ -52,7 +52,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvWriter<CsvDataTypeObject> _writer = new(_file) { Separator = ',', ColumnLimit = 5 })
             {
-                _writer.Open();
                 _writer.WriteHeader();
                 _writer.Write(SimpleData());
             }
@@ -61,7 +60,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvReader<CsvDataTypeObject> _reader = new(_file))
             {
-                _reader.Open();
                 foreach (var (id, name) in _reader.ReadAsEnumerable())
                 {
 

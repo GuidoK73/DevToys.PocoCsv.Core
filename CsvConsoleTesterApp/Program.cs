@@ -22,7 +22,6 @@ var _DevToysHelper = new DevToysHelper();
 
 using (DevToys.PocoCsv.Core.CsvWriter<CsvObject> _writer = new(file) { Separator = ',' })
 {
-    _writer.Open();
     _writer.WriteHeader();
     _writer.Write(_DevToysHelper.LargeData());
 }
@@ -34,8 +33,6 @@ Console.WriteLine("Writer {0}", _w.Duration);
 _w.Start();
 using (var _reader = new DevToys.PocoCsv.Core.CsvReader<CsvObject>(file, ',') { BufferSize = 2048 })
 {
-    _reader.Open();
-
     var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
 }
 
@@ -48,8 +45,6 @@ _w.Start();
 
 using (var _reader = new DevToys.PocoCsv.Core.CsvReader<CsvDataTypeObject>(file, ',') { BufferSize = 2048 })
 {
-    _reader.Open();
-
     var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
 }
 
@@ -61,8 +56,6 @@ _w.Start();
 
 using (var _reader = new DevToys.PocoCsv.Core.CsvReader<CsvObjectSmall>(file))
 {
-    _reader.Open();
-
     var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
 }
 

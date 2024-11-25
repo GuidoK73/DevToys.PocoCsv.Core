@@ -1836,6 +1836,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Open the reader
         /// </summary>
+        [Obsolete("No longer needed to call Open() command", false)]
         public void Open()
         {
             if (_Stream == null && string.IsNullOrEmpty(_File))

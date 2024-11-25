@@ -20,8 +20,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (var _writer = new CsvWriter<CsvAllTypes>(_file))
             {
-                _writer.Open();
-
                 _writer.WriteHeader();
                 _writer.Culture = CultureInfo.GetCultureInfo("en-us");
 
@@ -118,8 +116,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (var _reader = new CsvReader<CsvAllTypes>(_file))
             {
-                _reader.Open();
-
                 _reader.Skip(); // Slip header.
                 var _rows = _reader.ReadAsEnumerable().ToArray(); // Materialize.
 

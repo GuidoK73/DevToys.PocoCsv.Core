@@ -43,7 +43,6 @@ namespace DevToys.PocoCsv.UnitTests
             using (CsvWriter<CsvSimpleNoAttribute> _writer = new(_file) { Separator = ',' })
             {
                 _writer.IgnoreColumnAttributes = true;
-                _writer.Open();
                 _writer.WriteHeader();
                 _writer.Write(LargeData());
             }
@@ -53,8 +52,6 @@ namespace DevToys.PocoCsv.UnitTests
             using (CsvReader<CsvSimpleNoAttribute> _reader = new(_file))
             {
                 _reader.IgnoreColumnAttributes = true;
-                _reader.Open();
-
                 var _result = _reader.ReadAsEnumerable().ToList();
             }
         }

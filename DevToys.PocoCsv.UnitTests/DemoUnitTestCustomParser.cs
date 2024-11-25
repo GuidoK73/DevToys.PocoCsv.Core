@@ -89,8 +89,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (var _reader = new CsvReader<CsvPreParseTestObject>(_file))
             {
-                _reader.Open();
-
                 //_reader.Skip(); // Slip header.
                 var _rows = _reader.ReadAsEnumerable().ToArray(); // Materialize.
 

@@ -24,7 +24,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvWriter<CsvSimple> _writer = new(_file) { Separator = ',' })
             {
-                _writer.Open();
                 _writer.WriteHeader();
                 _writer.Write(LargeData());
             }

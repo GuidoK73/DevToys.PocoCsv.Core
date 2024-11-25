@@ -101,7 +101,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvWriter<SimpleObjectA> _writer = new(_file) { Separator = ',' })
             {
-                _writer.Open();
                 _writer.WriteHeader();
                 _writer.Write(SimpleData(1));
             }
@@ -110,7 +109,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvReader<SimpleObjectB> _reader = new(_file))
             {
-                _reader.Open();
                 List<SimpleObjectB> _materialized = _reader.ReadAsEnumerable().ToList();
 
                 var _item = _materialized.FirstOrDefault();
@@ -138,7 +136,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvWriter<CsvSimpleSmall> _writer = new CsvWriter<CsvSimpleSmall>(file) { Separator = ',' })
             {
-                _writer.Open();
                 _writer.CRLFMode = CRLFMode.CRLF;
                 _writer.Write(ROWA);
                 _writer.CRLFMode = CRLFMode.LF;
@@ -157,7 +154,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvReader<CsvSimpleSmall> _reader = new CsvReader<CsvSimpleSmall>(file) { Separator = ',' })
             {
-                _reader.Open();
                 var _rowA = _reader.Read();
                 var _rowB = _reader.Read();
                 var _rowC = _reader.Read();
@@ -207,7 +203,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(file) { Separator = ',' })
             {
-                _writer.Open();
                 _fullType = CsvSimpleData(5).ToList();
                 _writer.Write(_fullType);
             }
@@ -216,7 +211,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvReader<CsvSimpleSmall> _reader = new CsvReader<CsvSimpleSmall>(file) { Separator = ',' })
             {
-                _reader.Open();
                 _smallType = _reader.ReadAsEnumerable().ToList();
             }
 
@@ -237,19 +231,16 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(path: fileUTF32,  encoding : Encoding.UTF32,  culture: CultureInfo.InvariantCulture,  separator: ',' ))
             {
-                _writer.Open();
                 var _data = CsvSimpleData(5);
                 _writer.Write(_data);
             }
             using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(path: fileUTF8, encoding: Encoding.UTF8, culture: CultureInfo.InvariantCulture, separator: ',' ))
             {
-                _writer.Open();
                 var _data = CsvSimpleData(5);
                 _writer.Write(_data);
             }
             using (CsvWriter<CsvSimple> _writer = new CsvWriter<CsvSimple>(path: fileASCII, encoding: Encoding.ASCII, culture: CultureInfo.InvariantCulture, separator: ','))
             {
-                _writer.Open();
                 var _data = CsvSimpleData(5);
                 _writer.Write(_data);
             }
@@ -262,19 +253,16 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvReader<CsvSimpleSmall> _reader = new CsvReader<CsvSimpleSmall>(fileUTF32) { Separator = ',' })
             {
-                _reader.Open();
                 _dataUTF32 = _reader.ReadAsEnumerable().ToList();
                 Console.WriteLine('X');
             }
             using (CsvReader<CsvSimpleSmall> _reader = new CsvReader<CsvSimpleSmall>(fileUTF8) { Separator = ',' })
             {
-                _reader.Open();
                 _dataUTF8 = _reader.ReadAsEnumerable().ToList();
                 Console.WriteLine('X');
             }
             using (CsvReader<CsvSimpleSmall> _reader = new CsvReader<CsvSimpleSmall>(fileASCII) { Separator = ',' })
             {
-                _reader.Open();
                 _dataASCII = _reader.ReadAsEnumerable().ToList();
                 Console.WriteLine('X');
             }
@@ -323,7 +311,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvWriter<CsvTypesData> _writer = new(file) { Separator = ',' })
             {
-                _writer.Open();
                 //_writer.Culture = CultureInfo.GetCultureInfo("en-US");
                 _writer.WriteHeader();
                 _writer.NullValueBehaviour = WriteNullValueBehaviour.EmptyLine;
@@ -343,7 +330,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvReader<CsvTypesData> _reader = new(file) { Separator = ',' })
             {
-                _reader.Open();
                 _reader.EmptyLineBehaviour = EmptyLineBehaviour.NullValue;
                 _reader.MoveToStart();
                 _reader.SkipHeader();
@@ -496,7 +482,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvWriter<CsvTypesData> _writer = new(file) { Separator = ',' })
             {
-                _writer.Open();
                 //_writer.Culture = CultureInfo.GetCultureInfo("en-US");
                 _writer.NullValueBehaviour = WriteNullValueBehaviour.EmptyLine;
                 _writer.CRLFMode = CRLFMode.CRLF;
@@ -515,7 +500,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvReader<CsvTypesData> _reader = new(file) { Separator = ',' })
             {
-                _reader.Open();
                 //_reader.Culture = CultureInfo.GetCultureInfo("en-US");
 
                 _reader.DetectSeparator();
