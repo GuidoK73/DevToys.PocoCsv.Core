@@ -1892,6 +1892,25 @@ namespace DevToys.PocoCsv.Core
                 .Select(p => new { Property = p, Index = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute).Index, Attrib = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute) })
                 .ToList();
 
+            var _duplicates = _propertyAttributeCollection
+                .GroupBy(p => p.Index)
+                .Select(group => new { Key = group.Key, Count = group.Count() })
+                .Where(p => p.Count > 1)
+                .ToList();
+
+            if (_duplicates.Count() > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append($"Duplicate indexes are not allowed on Column attributes for {typeof(T).Name}. Indexes: ");
+                foreach (var dup in _duplicates)
+                {
+                    sb.Append(dup.Key);
+                    sb.Append(", ");
+                }
+                sb.Length -= 2;
+                throw new CsvException(sb.ToString());
+            }
+
             if (IgnoreColumnAttributes == true || _propertyAttributeCollection.Count == 0)
             {
                 var _header = ReadHeader();

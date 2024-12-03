@@ -45,6 +45,19 @@ namespace DevToys.PocoCsv.UnitTests
                 }
             }
             _w.Stop();
+
+
+            _w.Start();
+
+
+            using (CsvStreamReader _reader = new CsvStreamReader(_file))
+            {
+                foreach(var (first, second, third) in _reader.ReadAsEnumerable())
+                {
+                    Console.WriteLine(first, second, third);
+                }
+            }
+            _w.Stop();
         }
 
 

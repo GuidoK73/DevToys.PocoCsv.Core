@@ -12,9 +12,15 @@ namespace DevToys.PocoCsv.Core.CsvDataTypeObject
         private string[] _Backing = new string[50];
         private int _Count = 0;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public CsvDataTypeObject() 
         { }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public CsvDataTypeObject(string csv)
         {
             string[] _items = CsvUtils.SplitCsvLine(csv, ',');

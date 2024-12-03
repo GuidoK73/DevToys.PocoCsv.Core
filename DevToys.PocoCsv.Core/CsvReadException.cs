@@ -19,14 +19,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         /// <param name="message"></param>
         /// <param name="values"></param>
-        public CsvReadException(string message, params object[] values) : base(string.Format(message, values)) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
-        public CsvReadException(string message, Exception innerException) : base(message, innerException) { }
+        public CsvReadException(string message) : base(message) { }
     }
 
     /// <summary>
@@ -40,18 +33,12 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public CsvException() { }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="values"></param>
-        public CsvException(string message, params object[] values) : base(string.Format(message, values)) { }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="message"></param>
-        /// <param name="innerException"></param>
-        public CsvException(string message, Exception innerException) : base(message, innerException) { }
+        public CsvException(string message) : base(message) { }
+
     }
 }

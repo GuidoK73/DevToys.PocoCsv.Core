@@ -185,8 +185,6 @@ namespace DevToys.PocoCsv.Core
             return true;
         }
 
-
-
         private static char[] _EscapeChars = new char[] { '\r', '\n', '"', ',' };
 
         internal static string Escape(string s)
@@ -204,9 +202,14 @@ namespace DevToys.PocoCsv.Core
             {
                 return $"\"{s}\""; // No need for replace, just surround with quotes.
             }
-            return $"\"{s.Replace("\"", "\"\"")}\""; // Unusual replace when string contains '"' 
+            return $"\"{s.Replace("\"", "\"\"")}\""; // Unusual replace when string contains '"'
         }
 
+        /// <summary>
+        /// Join a string as a CSV line.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public static string JoinCsvLine(params string[] values)
         {
             StringBuilder sb = new StringBuilder();
@@ -214,6 +217,22 @@ namespace DevToys.PocoCsv.Core
             {
                 sb.Append(Escape(value));
                 sb.Append(',');
+            }
+            sb.Length--;
+            return sb.ToString();
+        }
+
+
+        /// <summary>
+        /// Join a string as a CSV line.
+        /// </summary>
+        public static string JoinCsvLine(char separator, params string[] values)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (string value in values)
+            {
+                sb.Append(Escape(value));
+                sb.Append(separator);
             }
             sb.Length--;
             return sb.ToString();
@@ -239,6 +258,12 @@ namespace DevToys.PocoCsv.Core
         private const int _LF = '\n';
         private const int _ESCAPE = '"';
 
+        /// <summary>
+        /// Split a CSV based line.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
         public static string[] SplitCsvLine(string s, char separator)
         {
             List<string> _result = new List<string>();
@@ -247,8 +272,7 @@ namespace DevToys.PocoCsv.Core
             int _byte = 0;
             int _nextByte = 0;
 
-
-            for (int ii = 0; ii < s.Length ; ii++)
+            for (int ii = 0; ii < s.Length; ii++)
             {
                 _byte = s[ii];
                 if (_state == State.Normal)
@@ -336,6 +360,5 @@ namespace DevToys.PocoCsv.Core
             }
             return value2;
         }
-
     }
 }

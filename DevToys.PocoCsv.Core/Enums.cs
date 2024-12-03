@@ -1,5 +1,8 @@
 ﻿namespace DevToys.PocoCsv.Core
 {
+    /// <summary>
+    /// Determine behaviour on existing files.
+    /// </summary>
     public enum FileWriteMode
     {
         /// <summary>
@@ -12,6 +15,9 @@
         Append = 1
     }
 
+    /// <summary>
+    /// escaping state while parsing 
+    /// </summary>
     internal enum State 
     {
         Normal = 0, // Field separator: ',' Line ending: "\r\n" or '\r' or '\n', Switch to Escape mode: '"'

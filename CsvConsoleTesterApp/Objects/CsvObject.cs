@@ -9,7 +9,7 @@ namespace ConsoleApp1.Objects
 {
     public sealed class CsvObject
     {
-        [Column(Index = 0, Header = "Datum")]
+        [Column(Index = 1, Header = "Datum")]
         public string Datum { get; set; }
 
         [Column(Index = 1, Header = "NaamOmschrijving")]

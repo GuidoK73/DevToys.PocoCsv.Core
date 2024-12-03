@@ -29,12 +29,16 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Authors>GuidoK73</Authors>
 	<PackageTags>csv;export;import;comma separated;4180;delimited;poco;csv parser;parse csv;DataTable;Import Csv;Export Csv;Csv Object</PackageTags>
     <Company />
-    <Version>4.3.1</Version>
+    <Version>4.3.2</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2024</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>4.3.1
+    <PackageReleaseNotes>4.3.2
+- Added string[] decontructor extensions to use with CsvStreamReader.ReadAsEnumerable().
+- Bux fix, exceptions not thrown correctly and clearer messages.
+
+4.3.1
 - Added FileName to CsvAttribute
 
 4.3

@@ -6,6 +6,7 @@ It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader
 Read/write serialize/deserialize data to and from Csv.
 
 - Extremely fast.
+- Handle unlimited file sizes.
 - RFC 4180 compliant.
 - Sequential read with ReadAsEnumerable().
 - Csv schema Retrieval with CsvUtils.GetCsvSchema().
@@ -17,7 +18,7 @@ Read/write serialize/deserialize data to and from Csv.
 
 # CsvStreamReader
 ~~~cs
-    string _file = "C:\Temp\data.csv";
+    string _file = @"C:\Temp\data.csv";
     using (CsvStreamReader _reader = new CsvStreamReader(_file))
     {
         while (!_reader.EndOfStream)
@@ -30,12 +31,24 @@ Read/write serialize/deserialize data to and from Csv.
 or 
 
 ~~~cs
-    string _file = "C:\Temp\data.csv";
+    string _file = @"C:\Temp\data.csv";
     using (CsvStreamReader _reader = new CsvStreamReader(_file))
     {
         foreach (string[] items in _reader.ReadAsEnumerable())
         {
             
+        }
+    }
+~~~
+
+or use the string[] decontruct extension methods (max 10 parameters)
+
+~~~cs
+    using (CsvStreamReader _reader = new CsvStreamReader(_file))
+    {
+        foreach(var (first, second, third) in _reader.ReadAsEnumerable())
+        {
+
         }
     }
 ~~~
@@ -296,7 +309,6 @@ All values and characters at this point are unescaped / escaped as required by t
 
     using (var _reader = new CsvReader<CsvPreParseTestObject>(_file))
     {
-        _reader.Open();
         _reader.Skip(); // Slip header.
         var _rows = _reader.ReadAsEnumerable().ToArray(); // Materialize.
     }

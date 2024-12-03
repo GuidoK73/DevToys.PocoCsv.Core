@@ -1339,6 +1339,25 @@ namespace DevToys.PocoCsv.Core
                 .ToList();
 
 
+            var _duplicates = _properties
+                .GroupBy(p => p.Index)
+                .Select(group => new { Key = group.Key, Count = group.Count() })
+                .Where(p => p.Count > 1)
+                .ToList();
+
+           if (_duplicates.Count() > 0)
+           {
+                StringBuilder sb = new StringBuilder();
+                sb.Append($"Duplicate indexes are not allowed on Column attributes for {typeof(T).Name}. Indexes: ");
+                foreach ( var dup in _duplicates )
+                {
+                    sb.Append(dup.Key);
+                    sb.Append(", ");
+                }
+                sb.Length -= 2;
+                throw new CsvException(sb.ToString());
+           }
+
 
             if (IgnoreColumnAttributes == true || _properties.Count == 0)
             {
