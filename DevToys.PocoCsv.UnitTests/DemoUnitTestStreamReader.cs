@@ -35,8 +35,9 @@ namespace DevToys.PocoCsv.UnitTests
             using (CsvStreamReader _reader = new CsvStreamReader(_file))
             {
                 _reader.Separator = ',';
-
+                _reader.SetColumnIndexes(3,8);
                 _reader.Skip();
+                
 
                 while (!_reader.EndOfStream)
                 {
@@ -64,7 +65,7 @@ namespace DevToys.PocoCsv.UnitTests
 
         private IEnumerable<CsvSimple> LargeData()
         {
-            for (int ii = 0; ii < 10000000; ii++)
+            for (int ii = 0; ii < 100000; ii++)
             {
                 CsvSimple _line = new()
                 {

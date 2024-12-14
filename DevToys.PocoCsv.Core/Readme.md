@@ -23,7 +23,7 @@ Read/write serialize/deserialize data to and from Csv.
     {
         while (!_reader.EndOfStream)
         {
-            string[] _values = _reader.ReadCsvLine();
+            string[] _resultArray = _reader.ReadCsvLine();
         }
     }
 ~~~
@@ -34,6 +34,8 @@ or
     string _file = @"C:\Temp\data.csv";
     using (CsvStreamReader _reader = new CsvStreamReader(_file))
     {
+        _reader.SetColumnIndexes(2,5); // only include column 2 and 5 in the result array. This is optional.
+
         foreach (string[] items in _reader.ReadAsEnumerable())
         {
             
@@ -212,6 +214,10 @@ The column attribute defines the properties to be serialized or deserialized.
 
 # CustomParserType
 CustomParserType allows the Reader<T> and Writer<T> to use a custom parsing for a specific field.
+
+In general you can use the Column attribute on any simple type and the value will be converted if possible.
+When using the reader you might have csv's from third party sources where columns might require some extra conversion, 
+this is where Custom parsers come in handy.
 
 Custom Parsers will run as singleton per specified column in the specific Reader<T> or Writer<T>.
 

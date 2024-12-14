@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,10 @@ namespace DevToys.PocoCsv.Core
         private int _nextByte = 0;
         private State _state = State.Normal;
         private readonly List<string> _result = new List<string>();
+        
+        private int _CollIndex = 0;
+        private int _IndexesIndex = 0;
+        private int[] _Indexes = new int[0];
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamReader class for the specified file name.
@@ -56,6 +61,22 @@ namespace DevToys.PocoCsv.Core
         /// <param name="leaveOpen">true to leave the stream open after the System.IO.StreamReader object is disposed; otherwise, false.</param>
         public CsvStreamReader(Stream stream, Encoding encoding = null, bool detectEncodingFromByteOrderMarks = true, int bufferSize = -1, bool leaveOpen = false) : base(stream, encoding, detectEncodingFromByteOrderMarks, bufferSize, leaveOpen)
         { }
+
+        /// <summary>
+        /// Limit the result array for ReadCsvLine to only these columns.
+        /// </summary>
+        public void SetColumnIndexes(params int[] indexes)
+        {
+            _Indexes = indexes.OrderBy(p => p).ToArray();
+        }
+
+        /// <summary>
+        /// Reset the column indexes to default, including all columns in the result array.
+        /// </summary>
+        public void ResetColumnIndexes()
+        {
+            _Indexes = new int[0];
+        }
 
         /// <summary>
         /// Indicates the stream has ended.
@@ -232,9 +253,7 @@ namespace DevToys.PocoCsv.Core
             _byte = 0;
         }
 
-        /// <summary>
-        /// Reads a single CSV line into string array.
-        /// </summary>
+
         public string[] ReadCsvLine()
         {
             _result.Clear();
@@ -242,17 +261,24 @@ namespace DevToys.PocoCsv.Core
             _buffer.Length = 0; // Clear the string buffer.
             _byte = 0;
             _nextByte = 0;
+            _CollIndex = 0;
+            _IndexesIndex = 0;
 
-            for (;;)
+            for (; ; )
             {
                 _byte = Read();
                 if (_state == State.Normal)
                 {
                     if (_byte == _Separator)
                     {
-                        // End of field
-                        _result.Add(_buffer.ToString());
+                        // End of field'
+                        if (_Indexes.Length == 0 || _IndexesIndex < _Indexes.Length && _Indexes[_IndexesIndex] == _CollIndex)
+                        {
+                            _result.Add(_buffer.ToString());
+                            _IndexesIndex++;
+                        }
                         _buffer.Length = 0;
+                        _CollIndex++;
                         continue;
                     }
                     else if (_byte == _CR)
@@ -263,7 +289,10 @@ namespace DevToys.PocoCsv.Core
                             continue; // goes to else if (_byte == '\n')
                         }
                         // end of line.
-                        _result.Add(_buffer.ToString());
+                        if (_Indexes.Length == 0  || _IndexesIndex < _Indexes.Length && _Indexes[_IndexesIndex] == _CollIndex)
+                        {
+                            _result.Add(_buffer.ToString());
+                        }
                         _buffer.Length = 0;
                         CurrentLine++;
                         break;
@@ -271,7 +300,10 @@ namespace DevToys.PocoCsv.Core
                     else if (_byte == _LF)
                     {
                         // end of line.
-                        _result.Add(_buffer.ToString());
+                        if (_Indexes.Length == 0 || _IndexesIndex < _Indexes.Length && _Indexes[_IndexesIndex] == _CollIndex)
+                        {
+                            _result.Add(_buffer.ToString());
+                        }
                         _buffer.Length = 0;
                         CurrentLine++;
                         break;
@@ -284,8 +316,11 @@ namespace DevToys.PocoCsv.Core
                     }
                     else if (_byte == _TERMINATOR)
                     {
-                        // End of field
-                        _result.Add(_buffer.ToString());
+                        // End of doc
+                        if (_Indexes.Length == 0 || _IndexesIndex < _Indexes.Length && _Indexes[_IndexesIndex] == _CollIndex)
+                        {
+                            _result.Add(_buffer.ToString());
+                        }
                         _buffer.Length = 0;
                         return _result.ToArray();
                     }
@@ -315,7 +350,10 @@ namespace DevToys.PocoCsv.Core
                         if (_nextByte == _TERMINATOR)
                         {
                             // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.
-                            _result.Add(_buffer.ToString());
+                            if (_Indexes.Length == 0 || _IndexesIndex < _Indexes.Length && _Indexes[_IndexesIndex] == _CollIndex)
+                            {
+                                _result.Add(_buffer.ToString());
+                            }
                             break;
                         }
 
@@ -337,6 +375,7 @@ namespace DevToys.PocoCsv.Core
             }
             return _result.ToArray();
         }
+
 
 
         /// <summary>

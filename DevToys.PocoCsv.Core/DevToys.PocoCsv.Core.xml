@@ -937,6 +937,16 @@
             <param name="bufferSize">The minimum buffer size.</param>
             <param name="leaveOpen">true to leave the stream open after the System.IO.StreamReader object is disposed; otherwise, false.</param>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.SetColumnIndexes(System.Int32[])">
+            <summary>
+            Limit the result array for ReadCsvLine to only these columns.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ResetColumnIndexes">
+            <summary>
+            Reset the column indexes to default, including all columns in the result array.
+            </summary>
+        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.EndOfStream">
             <summary>
             Indicates the stream has ended.
@@ -980,11 +990,6 @@
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.Skip(System.Int32)">
             <summary>
             Use to skip first row without materializing, usefull for skipping header.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadCsvLine">
-            <summary>
-            Reads a single CSV line into string array.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadLine">
