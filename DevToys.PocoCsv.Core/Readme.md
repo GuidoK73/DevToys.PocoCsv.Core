@@ -56,6 +56,25 @@ or use the string[] decontruct extension methods (max 10 parameters)
 ~~~
 
 
+|Methods / Property|Description|
+|:-|:-|
+|**CurrentLine**|Returns the current line number|
+|**DetectSeparator()**|Detect the separator by sampling first 10 rows. Position is moved to start after execution.|
+|**EndOfStream**|Indicates the stream has ended.|
+|**GetCsvSchema()**|Returns a schema for the CSV with best fitted types to use.|
+|**GetCsvSeparator()**|Detects and sets CSV Separator.|
+|**MoveToStart()**|Move reader to the start position 0|
+|**Position**|Get / Sets the position.|
+|**ReadAsEnumerable()**|Each iteration will read the next row from stream or file|
+|**ReadCsvLine()**|Reads the CSV line into string array, and advances to the next.|
+|**ReadLine()**|Perform ReadCsvLine.|
+|**ResetColumnIndexes()**|Reset the column indexes to default, including all columns in the result array.|
+|**Separator**|Get / Sets the Separator character to use.|
+|**SetColumnIndexes()**|Limit the result array for ReadCsvLine to only these columns.|
+|**Skip()**|Use to skip first row without materializing, usefull for skipping header.|
+
+
+
 # CsvStreamWriter
 
 ~~~cs
@@ -66,6 +85,14 @@ or use the string[] decontruct extension methods (max 10 parameters)
         _writer.WriteCsvLine(_line);
     }
 ~~~
+
+
+|Item|Description|
+|:-|:-|
+|**Separator**|Csv Seperator to use default ','|
+|**CRLFMode**|Determine which mode to use for new lines.<li>CR + LF ? Used as a new line character in Windows.</li><li>CR(Carriage Return) ? Used as a new line character in Mac OS before X.</li><li>LF(Line Feed) ? Used as a new line character in Unix/Mac OS X</li>|
+|**WriteCsvLine()**|Write an array of strings to the Csv Stream and escapes when nececary.|
+
 
 # CsvReader\<T\>
 

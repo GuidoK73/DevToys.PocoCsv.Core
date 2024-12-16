@@ -77,6 +77,9 @@ namespace DevToys.PocoCsv.Core
         private int _byte = 0;
         private int _nextByte = 0;
 
+        private int _CollIndex = 0;
+        private int _IndexesIndex = 0;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -535,8 +538,14 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Reads the CSV line into string array, and advances to the next.
         /// </summary>
-        public string[] ReadCsvLine()
+        /// <param name="selectIndexes">Optionally select the indexes you need,</param>
+        public string[] ReadCsvLine(params int[] selectIndexes)
         {
+            if (selectIndexes == null)
+            {
+                selectIndexes = new int[0];
+            }
+
             AutoOpen();
 
             _CsvLineReaderResult.Clear();
@@ -544,6 +553,8 @@ namespace DevToys.PocoCsv.Core
             _buffer.Length = 0; // Clear the string buffer.
             _byte = 0;
             _nextByte = 0;
+            _CollIndex = 0;
+            _IndexesIndex = 0;
 
             for (; ; )
             {
@@ -553,8 +564,13 @@ namespace DevToys.PocoCsv.Core
                     if (_byte == _Separator)
                     {
                         // End of field
-                        _CsvLineReaderResult.Add(_buffer.ToString());
+                        if (selectIndexes.Length == 0 || _IndexesIndex < selectIndexes.Length && selectIndexes[_IndexesIndex] == _CollIndex)
+                        {
+                            _CsvLineReaderResult.Add(_buffer.ToString());
+                            _IndexesIndex++;
+                        }                        
                         _buffer.Length = 0;
+                        _CollIndex++;
                         continue;
                     }
                     else if (_byte == _CR)
@@ -565,14 +581,20 @@ namespace DevToys.PocoCsv.Core
                             continue; // goes to else if (_byte == '\n')
                         }
                         // end of line.
-                        _CsvLineReaderResult.Add(_buffer.ToString());
+                        if (selectIndexes.Length == 0 || _IndexesIndex < selectIndexes.Length && selectIndexes[_IndexesIndex] == _CollIndex)
+                        {
+                            _CsvLineReaderResult.Add(_buffer.ToString());
+                        }
                         _buffer.Length = 0;
                         break;
                     }
                     else if (_byte == _LF)
                     {
                         // end of line.
-                        _CsvLineReaderResult.Add(_buffer.ToString());
+                        if (selectIndexes.Length == 0 || _IndexesIndex < selectIndexes.Length && selectIndexes[_IndexesIndex] == _CollIndex)
+                        {
+                            _CsvLineReaderResult.Add(_buffer.ToString());
+                        }
                         _buffer.Length = 0;
                         break;
                     }
@@ -585,7 +607,10 @@ namespace DevToys.PocoCsv.Core
                     else if (_byte == _TERMINATOR)
                     {
                         // End of field
-                        _CsvLineReaderResult.Add(_buffer.ToString());
+                        if (selectIndexes.Length == 0 || _IndexesIndex < selectIndexes.Length && selectIndexes[_IndexesIndex] == _CollIndex)
+                        {
+                            _CsvLineReaderResult.Add(_buffer.ToString());
+                        }
                         _buffer.Length = 0;
                         return _CsvLineReaderResult.ToArray();
                     }
@@ -615,7 +640,10 @@ namespace DevToys.PocoCsv.Core
                         if (_nextByte == _TERMINATOR)
                         {
                             // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.
-                            _CsvLineReaderResult.Add(_buffer.ToString());
+                            if (selectIndexes.Length == 0 || _IndexesIndex < selectIndexes.Length && selectIndexes[_IndexesIndex] == _CollIndex)
+                            {
+                                _CsvLineReaderResult.Add(_buffer.ToString());
+                            }
                             break;
                         }
 

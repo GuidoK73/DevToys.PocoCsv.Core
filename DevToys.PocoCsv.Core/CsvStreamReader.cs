@@ -67,6 +67,11 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public void SetColumnIndexes(params int[] indexes)
         {
+            if (indexes == null)
+            {
+                _Indexes = new int[0];
+                return;
+            }
             _Indexes = indexes.OrderBy(p => p).ToArray();
         }
 
@@ -84,7 +89,7 @@ namespace DevToys.PocoCsv.Core
         public new bool EndOfStream => _byte == _TERMINATOR;
 
         /// <summary>
-        /// 
+        /// Returns the current line number
         /// </summary>
         public int CurrentLine { get; private set; }
 
@@ -253,7 +258,9 @@ namespace DevToys.PocoCsv.Core
             _byte = 0;
         }
 
-
+        /// <summary>
+        /// Reads the CSV line into string array, and advances to the next.
+        /// </summary>
         public string[] ReadCsvLine()
         {
             _result.Clear();
@@ -375,8 +382,6 @@ namespace DevToys.PocoCsv.Core
             }
             return _result.ToArray();
         }
-
-
 
         /// <summary>
         /// Perform ReadCsvLine.

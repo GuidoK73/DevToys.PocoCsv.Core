@@ -76,9 +76,6 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Csv Seperator to use default ','
         /// </summary>
-        /// <summary>
-        /// Csv Seperator to use default ','
-        /// </summary>
         public char Separator
         {
             get
@@ -172,6 +169,7 @@ namespace DevToys.PocoCsv.Core
                 }
             }
         }
+
 
         /// <summary>: 
         /// Write an array of strings to the Csv Stream and escapes when nececary.

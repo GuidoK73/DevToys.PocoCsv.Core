@@ -13,6 +13,12 @@
             return CsvUtils.JoinCsvLine(separator, values);
         }
 
+        /// <summary>
+        /// Split string on Csv rules.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
         public static string[] SplitCsv(this string value, char separator)
         {
             return CsvUtils.SplitCsvLine(value, separator);

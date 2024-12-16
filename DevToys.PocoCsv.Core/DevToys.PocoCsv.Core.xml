@@ -807,10 +807,11 @@
             Reads the Csv line into object of type T and advances to the next.
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadCsvLine">
+        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.ReadCsvLine(System.Int32[])">
             <summary>
             Reads the CSV line into string array, and advances to the next.
             </summary>
+            <param name="selectIndexes">Optionally select the indexes you need,</param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Open">
             <summary>
@@ -954,7 +955,7 @@
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.CurrentLine">
             <summary>
-            
+            Returns the current line number
             </summary>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStreamReader.Position">
@@ -990,6 +991,11 @@
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.Skip(System.Int32)">
             <summary>
             Use to skip first row without materializing, usefull for skipping header.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadCsvLine">
+            <summary>
+            Reads the CSV line into string array, and advances to the next.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadLine">
@@ -1039,9 +1045,6 @@
             <param name="leaveOpen">true to leave the stream open after the System.IO.StreamWriter object is disposed; otherwise, false.</param>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStreamWriter.Separator">
-            <summary>
-            Csv Seperator to use default ','
-            </summary>
             <summary>
             Csv Seperator to use default ','
             </summary>
@@ -1615,6 +1618,14 @@
             <summary>
             Join array to Csv Line.
             </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReaderExtensions.SplitCsv(System.String,System.Char)">
+            <summary>
+            Split string on Csv rules.
+            </summary>
+            <param name="value"></param>
+            <param name="separator"></param>
+            <returns></returns>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReaderExtensions.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
             <summary>
