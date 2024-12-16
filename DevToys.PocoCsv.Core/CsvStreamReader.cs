@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,7 +21,8 @@ namespace DevToys.PocoCsv.Core
         private int _nextByte = 0;
         private State _state = State.Normal;
         private readonly List<string> _result = new List<string>();
-        
+        private string[] _ColumnNames = null;
+
         private int _CollIndex = 0;
         private int _IndexesIndex = 0;
         private int[] _Indexes = new int[0];
@@ -396,6 +396,150 @@ namespace DevToys.PocoCsv.Core
             while (_byte > _TERMINATOR)
             {
                 yield return ReadCsvLine();
+            }
+        }
+
+        /// <summary>
+        /// Assumes first line is the Header with column names. 
+        /// REMARK: The reader must start at Position 0.
+        /// </summary>
+        public Dictionary<string, string> ReadCsvLineAsDictionary()
+        {
+            if (Position == 0 || _ColumnNames == null)
+            {
+                _ColumnNames = ReadCsvLine();
+            }
+
+            _result.Clear();
+            Dictionary<string, string> _Dict = new Dictionary<string, string>();
+            _state = State.Normal;
+            _buffer.Length = 0; // Clear the string buffer.
+            _byte = 0;
+            _nextByte = 0;
+            _CollIndex = 0;
+            _IndexesIndex = 0;
+
+            for (; ; )
+            {
+                _byte = Read();
+                if (_state == State.Normal)
+                {
+                    if (_byte == _Separator)
+                    {
+                        // End of field'
+                        if (_Indexes.Length == 0 || _IndexesIndex < _Indexes.Length && _Indexes[_IndexesIndex] == _CollIndex)
+                        {
+                            _Dict.Add(_ColumnNames[_IndexesIndex], _buffer.ToString());
+                            _IndexesIndex++;
+                        }
+                        _buffer.Length = 0;
+                        _CollIndex++;
+                        continue;
+                    }
+                    else if (_byte == _CR)
+                    {
+                        _nextByte = Peek();
+                        if (_nextByte == _LF)
+                        {
+                            continue; // goes to else if (_byte == '\n')
+                        }
+                        // end of line.
+                        if (_Indexes.Length == 0 || _IndexesIndex < _Indexes.Length && _Indexes[_IndexesIndex] == _CollIndex)
+                        {
+                            _Dict.Add(_ColumnNames[_IndexesIndex], _buffer.ToString());
+                        }
+                        _buffer.Length = 0;
+                        CurrentLine++;
+                        break;
+                    }
+                    else if (_byte == _LF)
+                    {
+                        // end of line.
+                        if (_Indexes.Length == 0 || _IndexesIndex < _Indexes.Length && _Indexes[_IndexesIndex] == _CollIndex)
+                        {
+                            _Dict.Add(_ColumnNames[_IndexesIndex], _buffer.ToString());
+                        }
+                        _buffer.Length = 0;
+                        CurrentLine++;
+                        break;
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        // switch mode
+                        _state = State.Escaped;
+                        continue; // do not add this char. (TRIM)
+                    }
+                    else if (_byte == _TERMINATOR)
+                    {
+                        // End of doc
+                        if (_Indexes.Length == 0 || _IndexesIndex < _Indexes.Length && _Indexes[_IndexesIndex] == _CollIndex)
+                        {
+                            _Dict.Add(_ColumnNames[_IndexesIndex], _buffer.ToString());
+                        }
+                        _buffer.Length = 0;
+                        return _Dict;
+                    }
+                    _buffer.Append((char)_byte);
+                    continue;
+                }
+                else if (_state == State.Escaped)
+                {
+                    // ',' and '\r' and "" are part of the value.
+                    if (_byte == _TERMINATOR)
+                    {
+                        // End of field
+                        // Set the value
+                        _buffer.Clear();
+                        break; // end the while loop.
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        // " aaa "" ","bbb", "ccc""","ddd """" "
+                        _nextByte = Peek();
+                        if (_nextByte == _Separator || _nextByte == _CR || _nextByte == _LF)
+                        {
+                            // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.
+                            _state = State.Normal;
+                            continue;
+                        }
+                        if (_nextByte == _TERMINATOR)
+                        {
+                            // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.
+                            if (_Indexes.Length == 0 || _IndexesIndex < _Indexes.Length && _Indexes[_IndexesIndex] == _CollIndex)
+                            {
+                                _Dict.Add(_ColumnNames[_IndexesIndex], _buffer.ToString());
+                            }
+                            break;
+                        }
+
+                        else if (_nextByte == _ESCAPE)
+                        {
+                            _state = State.EscapedEscape;
+                            continue; // Also do not add this char, we add it when we are in EscapedEscape mode and from their we turn back to normal Escape.  (basically adding one of two)
+                        }
+                    }
+                    _buffer.Append((char)_byte);
+                    continue;
+                }
+                else if (_state == State.EscapedEscape)
+                {
+                    _buffer.Append((char)_byte);
+                    _state = State.Escaped;
+                    continue;
+                }
+            }
+            return _Dict;
+        }
+
+        /// <summary>
+        /// Assumes first line is the Header with column names. 
+        /// REMARK: The reader must start at Position 0.
+        /// </summary>
+        public IEnumerable<Dictionary<string, string>> ReadAsEnumerableDictionary()
+        {
+            while (_byte > _TERMINATOR)
+            {
+                yield return ReadCsvLineAsDictionary();
             }
         }
     }

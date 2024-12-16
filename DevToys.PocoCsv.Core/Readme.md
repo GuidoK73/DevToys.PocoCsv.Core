@@ -1,9 +1,8 @@
 ﻿# DevToys.PocoCsv.Core 
 
 DevToys.PocoCsv.Core is a class library to read and write to Csv very fast.
-It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader<T> and CsvWriter<T>.
-
-Read/write serialize/deserialize data to and from Csv.
+It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader<T> and CsvWriter<T>.\
+It provides plenty of options on how you would either read from or write to CSV files.
 
 - Extremely fast.
 - Handle unlimited file sizes.
@@ -55,6 +54,23 @@ or use the string[] decontruct extension methods (max 10 parameters)
     }
 ~~~
 
+or use the Dictionary functions\
+Note: this option may have some performance degradation.
+
+~~~cs
+    using (CsvStreamReader _reader = new CsvStreamReader(_file))
+    {
+        // Make sure the reader start at Position 0.!
+        // Do not use Skip or SkipHeader or any other function that advances the position.
+        while (!_reader.EndOfStream)
+        {            
+            Dictionary<string,string> _values = _reader.ReadCsvLineAsDictionary(); 
+            string _id = _values["Id"];
+            string _name = _values["Name"];
+        }
+    }
+~~~
+
 
 |Methods / Property|Description|
 |:-|:-|
@@ -67,12 +83,13 @@ or use the string[] decontruct extension methods (max 10 parameters)
 |**Position**|Get / Sets the position.|
 |**ReadAsEnumerable()**|Each iteration will read the next row from stream or file|
 |**ReadCsvLine()**|Reads the CSV line into string array, and advances to the next.|
+|**ReadCsvLineAsDictionary()**|Assumes first line is the Header with column names. REMARK: The reader must start at Position 0.|
+|**ReadAsEnumerableDictionary()**|Assumes first line is the Header with column names. REMARK: The reader must start at Position 0.|
 |**ReadLine()**|Perform ReadCsvLine.|
 |**ResetColumnIndexes()**|Reset the column indexes to default, including all columns in the result array.|
 |**Separator**|Get / Sets the Separator character to use.|
 |**SetColumnIndexes()**|Limit the result array for ReadCsvLine to only these columns.|
 |**Skip()**|Use to skip first row without materializing, usefull for skipping header.|
-
 
 
 # CsvStreamWriter
@@ -96,6 +113,9 @@ or use the string[] decontruct extension methods (max 10 parameters)
 
 # CsvReader\<T\>
 
+The CsvReader is a full type CSV deserializer.\
+properties can be all simple types.
+
 ~~~cs
     public class Data
     {
@@ -103,7 +123,7 @@ or use the string[] decontruct extension methods (max 10 parameters)
         public string Column1 { get; set; }
 
         [Column(Index = 1)]
-        public string Column2 { get; set; }
+        public decimal Column2 { get; set; }
 
         [Column(Index = 2)]
         public string Column3 { get; set; }
@@ -154,11 +174,14 @@ You only specify the column indexes you need.
 |**Skip(int rows)**|Skip and advances the reader to the next row without interpreting it. This is much faster then IEnumerable.Skip(). |
 |**SkipHeader()**|Ensures stream is at start then skips the first row.|
 
-The path given to the constructor can be a specific file or directory, in case a directory is given, the filename will be expected as [TYPENAME].csv.
+The path given to the constructor can be a specific file or directory, in case a directory is given, the filename will be expected as [TYPENAME].csv, or based on the FileName given by the CsvAttribute.
 
 (Skip does not deserialize, that's why it's faster then normal IEnumerable operations).
 
 # CsvWriter\<T\>
+
+The CsvReader is a full type CSV serializer.\
+properties can be all simple types.
 
 ~~~cs
     public class Data
@@ -167,7 +190,7 @@ The path given to the constructor can be a specific file or directory, in case a
         public string Column1 { get; set; }
 
         [Column(Index = 1)]
-        public string Column2 { get; set; }
+        public decimal Column2 { get; set; }
 
         [Column(Index = 2)]
         public string Column3 { get; set; }
@@ -179,12 +202,12 @@ The path given to the constructor can be a specific file or directory, in case a
 
     private IEnumerable<CsvSimple> LargeData()
     {
-        for (int ii = 0; ii < 10000000; ii++)
+        for (int ii = 0; ii < 10000; ii++)
         {
             Data _line = new()
             {
                 Column1 = "bij",
-                Column2 = "100",
+                Column2 = 109.59M,
                 Column3 = "test",
                 Column5 = $"{ii}",
                 
@@ -220,7 +243,7 @@ Methods / Properties:
 |**Culture**|Sets the default Culture for decimal / double conversions etc. For more complex conversions use the ICustomCsvParse interface.|
 |**Encoding**|The character encoding to use.|
 
-The path given to the constructor can be a specific file or directory, in case a directory is given, the filename will be generated based on the T typename.
+The path given to the constructor can be a specific file or directory, in case a directory is given, the filename will be generated based on the T typename, or based on the FileName given by the CsvAttribute.
 
 The writer is for performance reasons unrelated to the CsvStreamWriter.
 

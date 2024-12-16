@@ -2009,7 +2009,7 @@ namespace DevToys.PocoCsv.Core
                 {
                     SetCustomParserType(property.Index, property.Attrib.CustomParserType, property.Property.Name);
                     __CustomParserCall[property.Index] = DelegateFactory.InstanceMethod(property.Attrib.CustomParserType, "Read", typeof(StringBuilder));
-                    __ICustomCsvParseBase[property.Index] = __CustomParserString[property.Index];
+                    __ICustomCsvParseBase[property.Index] = __CustomParser[property.Index];
                 }
 
                 if (propertyType == typeof(string))

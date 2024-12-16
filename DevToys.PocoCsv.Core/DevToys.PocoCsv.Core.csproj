@@ -34,7 +34,13 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2024</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>4.4.1
+    <PackageReleaseNotes>4.5
+- Added ability to use only ICustomCsvParse with the Reading method.
+- Added CustomBooleanParserNullable and CustomBooleanParser to CsvReader&lt;T&gt;.
+- Added CustomLowerCaseParser and CustomUpperCaseParser to be used with CsvReader&lt;T&gt;.
+- Added ReadCsvLineAsDictionary() and ReadAsEnumerableDictionary() to CsvStreamReader.
+
+4.4.1
 - Added selectIndexes to CsvReader&lt;T&gt;.ReadCsvLine()
 
 4.4

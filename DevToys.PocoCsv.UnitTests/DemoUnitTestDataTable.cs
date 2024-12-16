@@ -1,6 +1,5 @@
 ﻿using DevToys;
 using DevToys.PocoCsv.Core;
-using DevToys.PocoCsv.Core.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

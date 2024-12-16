@@ -6,6 +6,15 @@ using System.Text;
 
 namespace DevToys.PocoCsv.UnitTests
 {
+    public class LowerCaseParser : ICustomCsvParse
+    {
+        public void Reading(StringBuilder value, int line, int colIndex, long readerPos, int linePos, int colPos, char c)
+        {
+            value.Append(Char.ToLower(c));
+        }
+    }
+
+
     public class ParseBooleanNullable : ICustomCsvParse<bool?>
     {
         public bool? Read(StringBuilder value)
@@ -63,7 +72,7 @@ namespace DevToys.PocoCsv.UnitTests
         [Column(Index = 0, CustomParserType = typeof(ParseBooleanNullable))]
         public Boolean? IsOk { get; set; }
 
-        [Column(Index = 1)]
+        [Column(Index = 1, CustomParserType = typeof(LowerCaseParser))]
         public string Name { get; set; }
 
         [Column(Index = 2, CustomParserType = typeof(ParseText))]

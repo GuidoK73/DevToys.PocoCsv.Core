@@ -62,6 +62,52 @@ namespace DevToys.PocoCsv.UnitTests
         }
 
 
+        [TestMethod]
+        public void TestStreamReaderDict()
+        {
+
+            string _file = System.IO.Path.GetTempFileName();
+
+            using (CsvWriter<CsvSimple> _writer = new(_file) { Separator = ',' })
+            {
+                _writer.Open();
+                _writer.WriteHeader();
+                _writer.Write(LargeData());
+            }
+
+            var _w = new StopWatch();
+
+            _w.Start();
+
+            List<Dictionary<string, string>> _rows = new List<Dictionary<string, string>>();
+
+            using (CsvStreamReader _reader = new CsvStreamReader(_file))
+            {
+                _reader.Separator = ',';
+                _reader.SetColumnIndexes(3, 8);
+
+                while (!_reader.EndOfStream)
+                {
+                    Dictionary<string,string> _values = _reader.ReadCsvLineAsDictionary();
+                    string tegenRekening = _values["Tegenrekening"];
+
+                    _rows.Add(_values);
+                }
+            }
+            _w.Stop();
+
+
+            _w.Start();
+
+
+            using (CsvStreamReader _reader = new CsvStreamReader(_file))
+            {
+                List<Dictionary<string, string>> _items = _reader.ReadAsEnumerableDictionary().ToList();
+
+                Console.WriteLine("");
+            }
+            _w.Stop();
+        }
 
         private IEnumerable<CsvSimple> LargeData()
         {

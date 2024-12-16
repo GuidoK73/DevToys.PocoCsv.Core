@@ -15,6 +15,9 @@ namespace DevToys.PocoCsv.Core
     public abstract class BaseCsv
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
+        internal protected ICustomCsvParse[] __CustomParser = null;
+
         internal protected ICustomCsvParse<string>[] __CustomParserString = null;
         internal protected ICustomCsvParse<Guid>[] __CustomParserGuid = null;
         internal protected ICustomCsvParse<Boolean>[] __CustomParserBoolean = null;
@@ -106,6 +109,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         internal protected void InitCustomCsvParseArrays(int size)
         {
+            __CustomParser = new ICustomCsvParse[size];
             __CustomParserString = new ICustomCsvParse<string>[size];
             __CustomParserGuid = new ICustomCsvParse<Guid>[size];
             __CustomParserBoolean = new ICustomCsvParse<Boolean>[size];
@@ -338,9 +342,14 @@ namespace DevToys.PocoCsv.Core
             {
                 __CustomParserBigIntegerNullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<BigInteger?>;
             }
+            else if (TypeUtils.HasInterface<ICustomCsvParse>(customAttributeType))
+            {
+                // only the Parsing method will work.
+                __CustomParser[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse;
+            }
             else
             {
-                throw new TypeLoadException($"PreParser type must implement PreParse interface. Property: {propertyname}");
+                throw new TypeLoadException($"CustomParserType type must implement CustomParserType interface. Property: {propertyname}");
             }
         }
     }

@@ -678,6 +678,92 @@
             order.
             </returns>
         </member>
+        <member name="T:DevToys.PocoCsv.Core.CsvExtensionMethods">
+            <summary>
+            Deconstruct extension methods for string[]
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.ImportCsv(System.Data.DataTable,System.String,System.Nullable{System.Char},System.Boolean,System.Int32)">
+            <summary>
+            Import Csv into DataTable
+            </summary>
+            <param name="table"></param>
+            <param name="file"></param>
+            <param name="separator">null for auto detect.</param>
+            <param name="setSchema">default true, in case of importing multiple of the same documents set it to false on the second call.</param>
+            <param name="skipRows">First row is usually the header.</param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.ExportCsv(System.Data.DataTable,System.String,System.Char)">
+            <summary>
+            Export datatable to Csv file
+            </summary>
+            <param name="table"></param>
+            <param name="file"></param>
+            <param name="separator"></param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.JoinCsv(System.String[],System.Char)">
+            <summary>
+            Join array to Csv Line.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.SplitCsv(System.String,System.Char)">
+            <summary>
+            Split string on Csv rules.
+            </summary>
+            <param name="value"></param>
+            <param name="separator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>
+            string Deconstruct for 10 parameters.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>
+            string Deconstruct for 9 parameters.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>
+            string Deconstruct for 8 parameters.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>
+            string Deconstruct for 7 parameters.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>
+            string Deconstruct for 6 parameters.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <summary>
+            string Deconstruct for 5 parameters.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@)">
+            <summary>
+            string Deconstruct for 4 parameters.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.Deconstruct(System.String[],System.String@,System.String@,System.String@)">
+            <summary>
+            string Deconstruct for 3 parameters.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.Deconstruct(System.String[],System.String@,System.String@)">
+            <summary>
+            string Deconstruct for 2 parameters.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.Deconstruct(System.String[],System.String@)">
+            <summary>
+            string Deconstruct for 1 parameters.
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvReader`1">
             <summary>
             Enumerate Csv Stream Reader over T.
@@ -1008,6 +1094,18 @@
             Each iteration will read the next row from stream or file
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadCsvLineAsDictionary">
+            <summary>
+            Assumes first line is the Header with column names. 
+            REMARK: The reader must start at Position 0.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadAsEnumerableDictionary">
+            <summary>
+            Assumes first line is the Header with column names. 
+            REMARK: The reader must start at Position 0.
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamWriter">
             <summary>
             Implements a System.IO.TextWriter for writing characters to a stream in a particular encoding.
@@ -1254,28 +1352,55 @@
             Initialize
             </summary>
         </member>
-        <member name="T:DevToys.PocoCsv.Core.Extensions.DataTableExtensions">
+        <member name="T:DevToys.PocoCsv.Core.CustomParsers.CustomBooleanParserNullable">
             <summary>
-            Cv extensions for DataTable.
+            Parses boolean values like on,true,yes,1 to True and off,false,no,0 to false, anything else is converted to Null.
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.Extensions.DataTableExtensions.ImportCsv(System.Data.DataTable,System.String,System.Nullable{System.Char},System.Boolean,System.Int32)">
+        <member name="M:DevToys.PocoCsv.Core.CustomParsers.CustomBooleanParserNullable.Read(System.Text.StringBuilder)">
             <summary>
-            Import Csv into DataTable
+            
             </summary>
-            <param name="table"></param>
-            <param name="file"></param>
-            <param name="separator">null for auto detect.</param>
-            <param name="setSchema">default true, in case of importing multiple of the same documents set it to false on the second call.</param>
-            <param name="skipRows">First row is usually the header.</param>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.Extensions.DataTableExtensions.ExportCsv(System.Data.DataTable,System.String,System.Char)">
+        <member name="M:DevToys.PocoCsv.Core.CustomParsers.CustomBooleanParserNullable.Write(System.Nullable{System.Boolean})">
             <summary>
-            Export datatable to Csv file
+            
             </summary>
-            <param name="table"></param>
-            <param name="file"></param>
-            <param name="separator"></param>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.CustomParsers.CustomBooleanParser">
+            <summary>
+            Parses boolean values like on,true,yes,1 to True and off,false,no,0 to false.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CustomParsers.CustomBooleanParser.Read(System.Text.StringBuilder)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CustomParsers.CustomBooleanParser.Write(System.Boolean)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.CustomParsers.CustomLowerCaseParser">
+            <summary>
+            Converts a field to lower case.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CustomParsers.CustomLowerCaseParser.Reading(System.Text.StringBuilder,System.Int32,System.Int32,System.Int64,System.Int32,System.Int32,System.Char)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.CustomParsers.CustomUpperCaseParser">
+            <summary>
+            Converts a field to upper case.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CustomParsers.CustomUpperCaseParser.Reading(System.Text.StringBuilder,System.Int32,System.Int32,System.Int64,System.Int32,System.Int32,System.Char)">
+            <summary>
+            
+            </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.FileWriteMode">
             <summary>
@@ -1607,74 +1732,6 @@
         <member name="M:DevToys.PocoCsv.Core.InfiniteLoopQueue`1.GetQueue">
             <summary>
             Materialize the Queue
-            </summary>
-        </member>
-        <member name="T:DevToys.PocoCsv.Core.CsvStreamReaderExtensions">
-            <summary>
-            Deconstruct extension methods for string[]
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReaderExtensions.JoinCsv(System.String[],System.Char)">
-            <summary>
-            Join array to Csv Line.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReaderExtensions.SplitCsv(System.String,System.Char)">
-            <summary>
-            Split string on Csv rules.
-            </summary>
-            <param name="value"></param>
-            <param name="separator"></param>
-            <returns></returns>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReaderExtensions.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
-            <summary>
-            string Deconstruct for 10 parameters.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReaderExtensions.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
-            <summary>
-            string Deconstruct for 9 parameters.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReaderExtensions.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
-            <summary>
-            string Deconstruct for 8 parameters.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReaderExtensions.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
-            <summary>
-            string Deconstruct for 7 parameters.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReaderExtensions.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@,System.String@,System.String@)">
-            <summary>
-            string Deconstruct for 6 parameters.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReaderExtensions.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@,System.String@)">
-            <summary>
-            string Deconstruct for 5 parameters.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReaderExtensions.Deconstruct(System.String[],System.String@,System.String@,System.String@,System.String@)">
-            <summary>
-            string Deconstruct for 4 parameters.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReaderExtensions.Deconstruct(System.String[],System.String@,System.String@,System.String@)">
-            <summary>
-            string Deconstruct for 3 parameters.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReaderExtensions.Deconstruct(System.String[],System.String@,System.String@)">
-            <summary>
-            string Deconstruct for 2 parameters.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStreamReaderExtensions.Deconstruct(System.String[],System.String@)">
-            <summary>
-            string Deconstruct for 1 parameters.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.TypeUtils.BestNetType(DevToys.PocoCsv.Core.NetType,System.String)">
