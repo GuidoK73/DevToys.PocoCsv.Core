@@ -71,8 +71,9 @@ namespace DevToys.PocoCsv.Core
             {
                 _Indexes = new int[0];
                 return;
-            }
+            }            
             _Indexes = indexes.OrderBy(p => p).ToArray();
+            MoveToStart();
         }
 
         /// <summary>
@@ -81,6 +82,7 @@ namespace DevToys.PocoCsv.Core
         public void ResetColumnIndexes()
         {
             _Indexes = new int[0];
+            MoveToStart();
         }
 
         /// <summary>
@@ -401,12 +403,12 @@ namespace DevToys.PocoCsv.Core
 
         /// <summary>
         /// Assumes first line is the Header with column names. 
-        /// REMARK: The reader must start at Position 0.
         /// </summary>
         public Dictionary<string, string> ReadCsvLineAsDictionary()
         {
-            if (Position == 0 || _ColumnNames == null)
+            if (_ColumnNames == null)
             {
+                MoveToStart();
                 _ColumnNames = ReadCsvLine();
             }
 
@@ -533,7 +535,6 @@ namespace DevToys.PocoCsv.Core
 
         /// <summary>
         /// Assumes first line is the Header with column names. 
-        /// REMARK: The reader must start at Position 0.
         /// </summary>
         public IEnumerable<Dictionary<string, string>> ReadAsEnumerableDictionary()
         {

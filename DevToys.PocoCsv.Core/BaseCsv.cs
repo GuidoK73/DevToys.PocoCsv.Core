@@ -1,11 +1,7 @@
-﻿using Delegates;
-using System;
+﻿using System;
 using System.Collections.Immutable;
-using System.Globalization;
-using System.IO;
 using System.Numerics;
 using System.Reflection;
-using System.Text;
 
 namespace DevToys.PocoCsv.Core
 {

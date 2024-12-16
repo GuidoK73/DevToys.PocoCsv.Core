@@ -60,8 +60,6 @@ Note: this option may have some performance degradation.
 ~~~cs
     using (CsvStreamReader _reader = new CsvStreamReader(_file))
     {
-        // Make sure the reader start at Position 0.!
-        // Do not use Skip or SkipHeader or any other function that advances the position.
         while (!_reader.EndOfStream)
         {            
             Dictionary<string,string> _values = _reader.ReadCsvLineAsDictionary(); 
@@ -83,8 +81,8 @@ Note: this option may have some performance degradation.
 |**Position**|Get / Sets the position.|
 |**ReadAsEnumerable()**|Each iteration will read the next row from stream or file|
 |**ReadCsvLine()**|Reads the CSV line into string array, and advances to the next.|
-|**ReadCsvLineAsDictionary()**|Assumes first line is the Header with column names. REMARK: The reader must start at Position 0.|
-|**ReadAsEnumerableDictionary()**|Assumes first line is the Header with column names. REMARK: The reader must start at Position 0.|
+|**ReadCsvLineAsDictionary()**|Assumes first line is the Header with column names.|
+|**ReadAsEnumerableDictionary()**|Assumes first line is the Header with column names.|
 |**ReadLine()**|Perform ReadCsvLine.|
 |**ResetColumnIndexes()**|Reset the column indexes to default, including all columns in the result array.|
 |**Separator**|Get / Sets the Separator character to use.|

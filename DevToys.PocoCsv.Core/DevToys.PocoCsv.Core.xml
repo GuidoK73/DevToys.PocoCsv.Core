@@ -4,26 +4,6 @@
         <name>DevToys.PocoCsv.Core</name>
     </assembly>
     <members>
-        <member name="T:DevToys.PocoCsv.Core.BaseCsv">
-            <summary>
-            Base class for BaseCsvReader and BaseCsvWriter
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.BaseCsv.InitCustomCsvParseArrays(System.Int32)">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.BaseCsv.InitImmutableArray">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.BaseCsv.SetCustomParserType(System.Int32,System.Type,System.String)">
-            <summary>
-            
-            </summary>
-        </member>
         <member name="T:DevToys.PocoCsv.Core.ColumnAttribute">
             <summary>
             Csv Column Attribute to assign to POCO Properties.
@@ -237,6 +217,26 @@
         <member name="P:DevToys.PocoCsv.Core.CsvAttribute.DefaultCustomParserTypeBigIntegerNullable">
             <summary>
             Type implementing ICustomCsvParse BigInteger?
+            </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.BaseCsv">
+            <summary>
+            Base class for BaseCsvReader and BaseCsvWriter
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsv.InitCustomCsvParseArrays(System.Int32)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsv.InitImmutableArray">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsv.SetCustomParserType(System.Int32,System.Type,System.String)">
+            <summary>
+            
             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvColumnInfo">
@@ -1097,13 +1097,11 @@
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadCsvLineAsDictionary">
             <summary>
             Assumes first line is the Header with column names. 
-            REMARK: The reader must start at Position 0.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStreamReader.ReadAsEnumerableDictionary">
             <summary>
             Assumes first line is the Header with column names. 
-            REMARK: The reader must start at Position 0.
             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamWriter">
