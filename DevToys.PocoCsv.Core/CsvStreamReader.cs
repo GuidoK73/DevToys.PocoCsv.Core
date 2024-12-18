@@ -11,18 +11,17 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvStreamReader : StreamReader
     {
+        private char _Separator = ',';
         private readonly StringBuilder _buffer = new StringBuilder(1027);
         private const int _CR = '\r';
         private const int _LF = '\n';
         private const int _ESCAPE = '"';
         private const int _TERMINATOR = -1;
-        private char _Separator = ',';
         private int _byte = 0;
         private int _nextByte = 0;
         private State _state = State.Normal;
         private readonly List<string> _result = new List<string>();
         private string[] _ColumnNames = null;
-
         private int _CollIndex = 0;
         private int _IndexesIndex = 0;
         private int[] _Indexes = new int[0];
@@ -538,7 +537,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public IEnumerable<Dictionary<string, string>> ReadAsEnumerableDictionary()
         {
-            while (_byte > _TERMINATOR)
+            while (_byte != _TERMINATOR)
             {
                 yield return ReadCsvLineAsDictionary();
             }

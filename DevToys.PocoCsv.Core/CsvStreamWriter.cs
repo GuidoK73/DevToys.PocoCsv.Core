@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
@@ -10,11 +11,13 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public sealed class CsvStreamWriter : StreamWriter
     {
+        private char _Separator = ',';
         private const char _CR = '\r';
         private const char _LF = '\n';
         private const string _CRLF = "\r\n";
         private char[] _EscapeChars = null;
-
+        private int[] _Indexes = new int[0];
+        private int _IndexesIndex = 0;
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamWriter class for the specified file by using the default encoding and buffer size.
@@ -70,9 +73,19 @@ namespace DevToys.PocoCsv.Core
             Separator = ',';
         }
 
-
-        private char _Separator = ',';
-
+        /// <summary>
+        /// Limit the output to selected indexes.
+        /// </summary>
+        public void SetColumnIndexes(params int[] indexes)
+        {
+            if (indexes == null)
+            {
+                _Indexes = new int[0];
+                return;
+            }
+            _Indexes = indexes.OrderBy(p => p).ToArray();
+        }
+        
         /// <summary>
         /// Csv Seperator to use default ','
         /// </summary>
@@ -123,12 +136,19 @@ namespace DevToys.PocoCsv.Core
                 }
             }
 
+            bool _first = true;
+            _IndexesIndex = 0;
             for (int ii = 0; ii < values.Length; ii++)
             {
-                Write(Escape(values[ii] ?? ""));
-                if (ii < values.Length - 1)
+                if (_Indexes.Length == 0 || _IndexesIndex < _Indexes.Length && _Indexes[_IndexesIndex] == ii)
                 {
-                    Write(Separator);
+                    if (_first == false)
+                    {
+                        Write(Separator);
+                    }
+                    _first = false;
+                    Write(Escape(values[ii] ?? ""));
+                    _IndexesIndex++;
                 }
             }
         }
@@ -160,16 +180,22 @@ namespace DevToys.PocoCsv.Core
                 }
             }
 
+            bool _first = true;
+            _IndexesIndex = 0;
             for (int ii = 0; ii < values.Length; ii++)
             {
-                Write(Escape(values[ii] != null ? values[ii].ToString() : ""));
-                if (ii < values.Length - 1)
+                if (_Indexes.Length == 0 || _IndexesIndex < _Indexes.Length && _Indexes[_IndexesIndex] == ii)
                 {
-                    Write(Separator);
+                    if (_first == false)
+                    {
+                        Write(Separator);
+                    }
+                    _first = false;
+                    Write(Escape(values[ii] != null ? values[ii].ToString() : ""));
+                    _IndexesIndex++;
                 }
             }
         }
-
 
         /// <summary>: 
         /// Write an array of strings to the Csv Stream and escapes when nececary.
@@ -199,17 +225,24 @@ namespace DevToys.PocoCsv.Core
             }
 
             bool _first = true;
+            int _index = 0;
+            _IndexesIndex = 0;
+
             foreach (string value in values)
             {
-                if (_first == false)
+                if (_Indexes.Length == 0 || _IndexesIndex < _Indexes.Length && _Indexes[_IndexesIndex] == _index)
                 {
-                    Write(Separator);
+                    if (_first == false)
+                    {
+                        Write(Separator);
+                    }
+                    _first = false;
+                    Write(Escape(value ?? ""));
+                    _IndexesIndex++;
                 }
-                Write(Escape(value ?? ""));
-                _first = false;
+                _index++;
             }
         }
-
 
         private void InitializeEscapeChars()
         {

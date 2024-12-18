@@ -1140,6 +1140,11 @@
             <param name="bufferSize">The buffer size, in bytes.</param>
             <param name="leaveOpen">true to leave the stream open after the System.IO.StreamWriter object is disposed; otherwise, false.</param>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamWriter.SetColumnIndexes(System.Int32[])">
+            <summary>
+            Limit the output to selected indexes.
+            </summary>
+        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStreamWriter.Separator">
             <summary>
             Csv Seperator to use default ','
@@ -1706,30 +1711,6 @@
             <summary>
             This function is called when using CsvWriter
             T value must be the same as the property type the CustomParser is placed on.
-            </summary>
-        </member>
-        <member name="T:DevToys.PocoCsv.Core.InfiniteLoopQueue`1">
-             <summary>
-             A Queue that only holds last x items of T
-             The infinite loop queue does not reorder on Add it only maintains a last add position and loop around the size of the queue.
-             GetQueue recontstructs the correct queue order based on last position.
-            
-             It is similar to a LIFO but differs with a fixed size.
-             </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.InfiniteLoopQueue`1.#ctor(System.Int32)">
-            <summary>
-            Construct the Queue with it's size.
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.InfiniteLoopQueue`1.Add(`0)">
-            <summary>
-            Add item to the Queue
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.InfiniteLoopQueue`1.GetQueue">
-            <summary>
-            Materialize the Queue
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.TypeUtils.BestNetType(DevToys.PocoCsv.Core.NetType,System.String)">

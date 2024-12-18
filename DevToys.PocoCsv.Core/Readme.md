@@ -107,12 +107,12 @@ Note: this option may have some performance degradation.
 |**Separator**|Csv Seperator to use default ','|
 |**CRLFMode**|Determine which mode to use for new lines.<li>CR + LF ? Used as a new line character in Windows.</li><li>CR(Carriage Return) ? Used as a new line character in Mac OS before X.</li><li>LF(Line Feed) ? Used as a new line character in Unix/Mac OS X</li>|
 |**WriteCsvLine()**|Write an array of strings to the Csv Stream and escapes when nececary.|
-
+|**SetColumnIndexes()|Limit the output columns from the source array|
 
 # CsvReader\<T\>
 
 The CsvReader is a full type CSV deserializer.\
-properties can be all simple types.
+All simple types are allowed to be used as property type, including byte[]. All other complex types are ignored.
 
 ~~~cs
     public class Data
@@ -179,7 +179,7 @@ The path given to the constructor can be a specific file or directory, in case a
 # CsvWriter\<T\>
 
 The CsvReader is a full type CSV serializer.\
-properties can be all simple types.
+All simple types are allowed to be used as property type, including byte[]. All other complex types are ignored.
 
 ~~~cs
     public class Data

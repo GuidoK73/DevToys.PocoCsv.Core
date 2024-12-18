@@ -1,6 +1,7 @@
 ﻿using DevToys.PocoCsv.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -95,6 +96,9 @@ namespace DevToys.PocoCsv.UnitTests
                 _writer.WriteCsvLine("", "name 3", "AAA");
                 _writer.Flush();
             }
+
+
+            string _text = File.ReadAllText(_file);
 
             using (var _reader = new CsvReader<CsvPreParseTestObject>(_file))
             {
