@@ -1,10 +1,11 @@
 # DevToys.PocoCsv.Core 
 
 DevToys.PocoCsv.Core is a class library to read and write to Csv very fast.
-It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader<T> and CsvWriter<T>.
+It contains CsvStreamReader, CsvStreamWriter and Serialization classes CsvReader<T> and CsvWriter<T>.\
+It provides plenty of options on how you would either read from or write to CSV files.
 
-Read/write serialize/deserialize data to and from Csv.
-
+- Extremely fast.
+- Handle unlimited file sizes.
 - RFC 4180 compliant.
 - Sequential read with ReadAsEnumerable().
 - Csv schema Retrieval with CsvUtils.GetCsvSchema().
@@ -16,12 +17,12 @@ Read/write serialize/deserialize data to and from Csv.
 
 # CsvStreamReader
 ~~~cs
-    string _file = "C:\Temp\data.csv";
+    string _file = @"C:\Temp\data.csv";
     using (CsvStreamReader _reader = new CsvStreamReader(_file))
     {
         while (!_reader.EndOfStream)
         {
-            string[] _values = _reader.ReadCsvLine();
+            string[] _resultArray = _reader.ReadCsvLine();
         }
     }
 ~~~
@@ -29,15 +30,64 @@ Read/write serialize/deserialize data to and from Csv.
 or 
 
 ~~~cs
-    string _file = "C:\Temp\data.csv";
+    string _file = @"C:\Temp\data.csv";
     using (CsvStreamReader _reader = new CsvStreamReader(_file))
     {
+        _reader.SetColumnIndexes(2,5); // only include column 2 and 5 in the result array. This is optional.
+
         foreach (string[] items in _reader.ReadAsEnumerable())
         {
             
         }
     }
 ~~~
+
+or use the string[] decontruct extension methods (max 10 parameters)
+
+~~~cs
+    using (CsvStreamReader _reader = new CsvStreamReader(_file))
+    {
+        foreach(var (first, second, third) in _reader.ReadAsEnumerable())
+        {
+
+        }
+    }
+~~~
+
+or use the Dictionary functions\
+Note: this option may have some performance degradation.
+
+~~~cs
+    using (CsvStreamReader _reader = new CsvStreamReader(_file))
+    {
+        while (!_reader.EndOfStream)
+        {            
+            Dictionary<string,string> _values = _reader.ReadCsvLineAsDictionary(); 
+            string _id = _values["Id"];
+            string _name = _values["Name"];
+        }
+    }
+~~~
+
+
+|Methods / Property|Description|
+|:-|:-|
+|**CurrentLine**|Returns the current line number|
+|**DetectSeparator()**|Detect the separator by sampling first 10 rows. Position is moved to start after execution.|
+|**EndOfStream**|Indicates the stream has ended.|
+|**GetCsvSchema()**|Returns a schema for the CSV with best fitted types to use.|
+|**GetCsvSeparator()**|Detects and sets CSV Separator.|
+|**MoveToStart()**|Move reader to the start position 0|
+|**Position**|Get / Sets the position.|
+|**ReadAsEnumerable()**|Each iteration will read the next row from stream or file|
+|**ReadCsvLine()**|Reads the CSV line into string array, and advances to the next.|
+|**ReadCsvLineAsDictionary()**|Assumes first line is the Header with column names.|
+|**ReadAsEnumerableDictionary()**|Assumes first line is the Header with column names.|
+|**ReadLine()**|Perform ReadCsvLine.|
+|**ResetColumnIndexes()**|Reset the column indexes to default, including all columns in the result array.|
+|**Separator**|Get / Sets the Separator character to use.|
+|**SetColumnIndexes()**|Limit the result array for ReadCsvLine to only these columns.|
+|**Skip()**|Use to skip first row without materializing, usefull for skipping header.|
 
 
 # CsvStreamWriter
@@ -51,7 +101,18 @@ or
     }
 ~~~
 
+
+|Item|Description|
+|:-|:-|
+|**Separator**|Csv Seperator to use default ','|
+|**CRLFMode**|Determine which mode to use for new lines.<li>CR + LF ? Used as a new line character in Windows.</li><li>CR(Carriage Return) ? Used as a new line character in Mac OS before X.</li><li>LF(Line Feed) ? Used as a new line character in Unix/Mac OS X</li>|
+|**WriteCsvLine()**|Write an array of strings to the Csv Stream and escapes when nececary.|
+|**SetColumnIndexes()|Limit the output columns from the source array|
+
 # CsvReader\<T\>
+
+The CsvReader is a full type CSV deserializer.\
+All simple types are allowed to be used as property type, including byte[]. All other complex types are ignored.
 
 ~~~cs
     public class Data
@@ -60,7 +121,7 @@ or
         public string Column1 { get; set; }
 
         [Column(Index = 1)]
-        public string Column2 { get; set; }
+        public decimal Column2 { get; set; }
 
         [Column(Index = 2)]
         public string Column3 { get; set; }
@@ -74,7 +135,6 @@ or
     using (CsvReader<Data> _reader = new(file))
     {        
         _reader.Culture = CultureInfo.GetCultureInfo("en-us") ;
-        _reader.Open();
         _reader.SkipHeader();
         var _data = _reader.ReadAsEnumerable().Where(p => p.Column1.Contains("16"));
         var _materialized = _data.ToList();
@@ -103,7 +163,7 @@ You only specify the column indexes you need.
 |**HasErrors**|Indicates there are errors|
 |**IgnoreColumnAttributes**|All properties are handled in order of property occurrence and mapped directly to their respective index. Only use when CsvWriter has this set to true as well. (ColumnAttribute is ignored.)|
 |**MoveToStart()**|Moves the reader to the start position, Skip() and Take() alter the start positions use MoveToStart() to reset the position.|
-|**Open()**|Opens the Reader.|
+|**Open()**|Opens the Reader. (this method is optional, the reader will auto open when nececary)|
 |**Read()**|Reads current row into T and advances the reader to the next row. |
 |**ReadCsvLine()**|Reads current row into a string[] just like the CsvStreamReader. and advances the reader to the next row.|
 |**ReadHeader()**|Moves to start and performs a ReadCsvLine()|
@@ -112,9 +172,14 @@ You only specify the column indexes you need.
 |**Skip(int rows)**|Skip and advances the reader to the next row without interpreting it. This is much faster then IEnumerable.Skip(). |
 |**SkipHeader()**|Ensures stream is at start then skips the first row.|
 
+The path given to the constructor can be a specific file or directory, in case a directory is given, the filename will be expected as [TYPENAME].csv, or based on the FileName given by the CsvAttribute.
+
 (Skip does not deserialize, that's why it's faster then normal IEnumerable operations).
 
 # CsvWriter\<T\>
+
+The CsvReader is a full type CSV serializer.\
+All simple types are allowed to be used as property type, including byte[]. All other complex types are ignored.
 
 ~~~cs
     public class Data
@@ -123,7 +188,7 @@ You only specify the column indexes you need.
         public string Column1 { get; set; }
 
         [Column(Index = 1)]
-        public string Column2 { get; set; }
+        public decimal Column2 { get; set; }
 
         [Column(Index = 2)]
         public string Column3 { get; set; }
@@ -135,12 +200,12 @@ You only specify the column indexes you need.
 
     private IEnumerable<CsvSimple> LargeData()
     {
-        for (int ii = 0; ii < 10000000; ii++)
+        for (int ii = 0; ii < 10000; ii++)
         {
             Data _line = new()
             {
                 Column1 = "bij",
-                Column2 = "100",
+                Column2 = 109.59M,
                 Column3 = "test",
                 Column5 = $"{ii}",
                 
@@ -154,7 +219,6 @@ You only specify the column indexes you need.
     using (CsvWriter<CsvSimple> _writer = new(file) { Separator = ',', Append = true })
     {
         _writer.Culture = CultureInfo.GetCultureInfo("en-us");
-        _writer.Open();
         _writer.Write(LargeData());
     }
       
@@ -165,7 +229,8 @@ Methods / Properties:
 
 |Item|Description|
 |:-|:-|
-|**Open()**|Opens the Writer.|
+|**FileMode**|Determine whether to create a new file or append to existing files.|
+|**Open()**|Opens the Writer. (this method is optional, the writer will auto open when nececary)|
 |**WriteHeader()**|Write header with property names of T.|
 |**Write(IEnumerable<T> rows)**|Writes data to Csv while consuming rows.|
 |**Flush()**|Flushes all buffers.|
@@ -175,6 +240,8 @@ Methods / Properties:
 |**NullValueBehaviour**|Determine what to do with writing null objects.<li>Skip, Ignore the object</li><li>Empty Line, Write an empty line</li>|
 |**Culture**|Sets the default Culture for decimal / double conversions etc. For more complex conversions use the ICustomCsvParse interface.|
 |**Encoding**|The character encoding to use.|
+
+The path given to the constructor can be a specific file or directory, in case a directory is given, the filename will be generated based on the T typename, or based on the FileName given by the CsvAttribute.
 
 The writer is for performance reasons unrelated to the CsvStreamWriter.
 
@@ -195,6 +262,10 @@ The column attribute defines the properties to be serialized or deserialized.
 
 # CustomParserType
 CustomParserType allows the Reader<T> and Writer<T> to use a custom parsing for a specific field.
+
+In general you can use the Column attribute on any simple type and the value will be converted if possible.
+When using the reader you might have csv's from third party sources where columns might require some extra conversion, 
+this is where Custom parsers come in handy.
 
 Custom Parsers will run as singleton per specified column in the specific Reader<T> or Writer<T>.
 
@@ -252,6 +323,10 @@ All values and characters at this point are unescaped / escaped as required by t
         }
     }
 
+~~~
+
+~~~cs
+
     public class ParseDecimal : ICustomCsvParse<Decimal>
     {
         private CultureInfo _culture;
@@ -266,6 +341,9 @@ All values and characters at this point are unescaped / escaped as required by t
         public string Write(Decimal value) => value.ToString(_culture);
     }
 
+~~~
+
+~~~cs
 
     public sealed class CsvPreParseTestObject
     {
@@ -279,10 +357,12 @@ All values and characters at this point are unescaped / escaped as required by t
         public Decimal Price { get; set; }
     }
 
+~~~
+
+~~~cs
 
     using (var _reader = new CsvReader<CsvPreParseTestObject>(_file))
     {
-        _reader.Open();
         _reader.Skip(); // Slip header.
         var _rows = _reader.ReadAsEnumerable().ToArray(); // Materialize.
     }
@@ -293,6 +373,46 @@ All values and characters at this point are unescaped / escaped as required by t
 
 the CsvAttribute can be set at defaults for CustomParserType, these CustomParserTypes will be applied to all properties of that specific type.\
 until they are overruled at property level.
+
+
+|Item|Description|
+|:-|:-|
+|**FileName**|When a directory is specified on the constructor for CsvReader or CsvWriter instead of a file, this FileName will be used within specified directory. |
+|**DefaultCustomParserTypeString**|Default Custom Parse Type|
+|**DefaultCustomParserTypeGuid**|Default Custom Parse Type|
+|**DefaultCustomParserTypeBoolean**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDateTime**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDateTimeOffset**|Default Custom Parse Type|
+|**DefaultCustomParserTypeTimeSpan**|Default Custom Parse Type|
+|**DefaultCustomParserTypeByte**|Default Custom Parse Type|
+|**DefaultCustomParserTypeSByte**|Default Custom Parse Type|
+|**DefaultCustomParserTypeInt16**|Default Custom Parse Type|
+|**DefaultCustomParserTypeInt32**|Default Custom Parse Type|
+|**DefaultCustomParserTypeInt64**|Default Custom Parse Type|
+|**DefaultCustomParserTypeSingle**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDecimal**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDouble**|Default Custom Parse Type|
+|**DefaultCustomParserTypeUInt16**|Default Custom Parse Type|
+|**DefaultCustomParserTypeUInt32**|Default Custom Parse Type|
+|**DefaultCustomParserTypeUInt64**|Default Custom Parse Type|
+|**DefaultCustomParserTypeBigInteger**|Default Custom Parse Type|
+|**DefaultCustomParserTypeGuidNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeBooleanNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDateTimeNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDateTimeOffsetNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeTimeSpanNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeByteNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeSByteNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeInt16Nullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeInt32Nullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeInt64Nullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeSingleNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDecimalNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeDoubleNullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeUInt16Nullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeUInt32Nullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeUInt64Nullable**|Default Custom Parse Type|
+|**DefaultCustomParserTypeBigIntegerNullable**|Default Custom Parse Type|
 
 
 ~~~cs
@@ -336,8 +456,6 @@ until they are overruled at property level.
 
     using (CsvReader<CsvSimple> _reader = new CsvReader<CsvSimple>(file))
     {
-        _reader.Open();
-
         _reader.Skip(); // skip the Header row.
 
         // Materializes 20 records but returns 10.
@@ -386,14 +504,12 @@ Mapping will be determined by the Header in the Csv, columns will only be mapped
 
     using (CsvWriter<SimpleObject> _writer = new(_file) { Separator = ',' })
     {
-        _writer.Open();
         _writer.WriteHeader();
         _writer.Write(Data());
     }
 
     using (CsvReader<SimpleObject> _reader = new(_file))
     {
-        _reader.Open();
         List<SimpleObject> _materialized = _reader.ReadAsEnumerable().ToList();
     }
 ~~~
@@ -412,7 +528,6 @@ Convenience class to read up to 50 CsvColumns from a Csv document.
 ~~~cs
     using (CsvReader<CsvDataTypeObject> _reader = new(_file))
     {
-        _reader.Open();
         foreach (var item in _reader.ReadAsEnumerable())
         {
             string id = item.Field01;
@@ -426,7 +541,6 @@ you can use the Deconstruct shorthand:
 ~~~cs   
     using (CsvReader<CsvDataTypeObject> _reader = new(_file))
     {
-        _reader.Open();
         foreach (var (id, name) in _reader.ReadAsEnumerable())
         {            
         }
@@ -440,7 +554,6 @@ if you would like to use it with the writer you can limit the number of output c
 
     using (CsvWriter<CsvDataTypeObject> _writer = new(_file) { Separator = ',', ColumnLimit = 5 })
     {
-        _writer.Open();
         _writer.WriteHeader();
         _writer.Write(SimpleData(50));
     }
