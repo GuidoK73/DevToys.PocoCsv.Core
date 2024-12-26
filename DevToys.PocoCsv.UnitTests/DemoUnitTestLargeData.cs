@@ -63,8 +63,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (var _reader = new CsvReader<CsvSimpleSmall>(_file))
             {
-                _reader.Open();
-
                 var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
             }
 

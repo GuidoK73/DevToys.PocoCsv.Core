@@ -59,7 +59,8 @@ namespace DevToys.PocoCsv.UnitTests
                     _UInt32Value = 22,
                     _UInt32ValueNull = null,
                     _UInt64Value = 23,
-                    _UInt64ValueNull = null
+                    _UInt64ValueNull = null,
+                    _Enum = Models.TestEnum.Something
                 };
 
                 _writer.Write(_x);
@@ -100,7 +101,8 @@ namespace DevToys.PocoCsv.UnitTests
                     _UInt32Value = 22,
                     _UInt32ValueNull = 42,
                     _UInt64Value = 23,
-                    _UInt64ValueNull = 43
+                    _UInt64ValueNull = 43,
+                    _Enum = Models.TestEnum.None
                 };
 
                 _writer.Write(_x2);

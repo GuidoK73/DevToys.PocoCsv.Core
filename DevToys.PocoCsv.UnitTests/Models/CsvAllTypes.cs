@@ -7,6 +7,13 @@ using System.Text;
 namespace DevToys.PocoCsv.UnitTests.Models
 {
 
+    public enum TestEnum
+    {
+        None = 0,
+        Something = 1,
+        Everything = 2
+    }
+
     [Csv( DefaultCustomParserTypeString = typeof(Parsestring))]
     public class CsvAllTypes
     {
@@ -117,6 +124,10 @@ namespace DevToys.PocoCsv.UnitTests.Models
 
         [Column(Index = 34, CustomParserType = typeof(ParseBigIntegerNull), OutputFormat = "", OutputNullValue = "")]
         public BigInteger? _BigIntegerValueNull { get; set; }
+
+        [Column(Index = 36, OutputFormat = "", OutputNullValue = "")]
+        public TestEnum _Enum { get; set; }
+
 
     }
 

@@ -432,6 +432,7 @@ namespace DevToys.PocoCsv.Core
             _StreamWriter.Write(_value);
         }
 
+
         private void WriteGuid(T row, int index)
         {
             Guid value = _PropertyGetterGuid[index](row);
@@ -1291,6 +1292,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Initialize and open the CSV Stream Writer.
         /// </summary>
+        [Obsolete("No longer required to call Open() command.", false)]
         public void Open()
         {
             Init();
@@ -1313,7 +1315,9 @@ namespace DevToys.PocoCsv.Core
             if (_Properties == null)
             {
                 // Not initialized.
+#pragma warning disable CS0618 // Type or member is obsolete
                 Open();  // Initialize and Open the Stream.
+#pragma warning restore CS0618 // Type or member is obsolete
                 return;
             }
             if (_StreamWriter == null)
@@ -1626,7 +1630,7 @@ namespace DevToys.PocoCsv.Core
                 }
                 else if (_propertyType.IsEnum)
                 {
-                    _propertyGetterEnum[_index] = DelegateFactory.PropertyGet<T, int>(property.Property.Name);
+                    _propertyGetterEnum[_index] = DelegateFactory.PropertyGet<T, Int32>(property.Property.Name);
                     _propertyTypes[_index] = NetTypeComplete.Enum;
                 }
                 else
@@ -1916,6 +1920,10 @@ namespace DevToys.PocoCsv.Core
 
         private string Escape(string s)
         {
+            if (s == null)
+            {
+                return string.Empty;
+            }
             if (s.IndexOfAny(_EscapeChars) == -1)
             {
                 return s;

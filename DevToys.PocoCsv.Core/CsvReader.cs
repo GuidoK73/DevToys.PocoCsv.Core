@@ -1864,7 +1864,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Open the reader
         /// </summary>
-        [Obsolete("No longer needed to call Open() command", false)]
+        [Obsolete("No longer required to call Open() command.", false)]
         public void Open()
         {
             if (_Stream == null && string.IsNullOrEmpty(_File))
@@ -1891,7 +1891,9 @@ namespace DevToys.PocoCsv.Core
             if (_Properties == null)
             {
                 // Not initialized.
+#pragma warning disable CS0618 // Type or member is obsolete
                 Open();  // Initialize and Open the Stream.
+#pragma warning restore CS0618 // Type or member is obsolete
                 return;
             }
             if (_Stream == null)

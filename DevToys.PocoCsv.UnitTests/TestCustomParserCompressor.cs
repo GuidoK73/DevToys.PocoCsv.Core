@@ -30,7 +30,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvWriter<PathObject> _writer = new CsvWriter<PathObject>(file) { Separator = '~' })
             {
-                _writer.Open();
                 _writer.Write(_p1);
                 _writer.Write(_p2);
                 _writer.Write(_p3);
@@ -43,7 +42,6 @@ namespace DevToys.PocoCsv.UnitTests
 
             using (CsvReader<PathObject> _reader = new CsvReader<PathObject>(file) { Separator = '~' } )
             {
-                _reader.Open();
                 List<PathObject> _result = _reader.ReadAsEnumerable().ToList();
                 Console.WriteLine("X");
             }
@@ -61,7 +59,6 @@ namespace DevToys.PocoCsv.UnitTests
             using (CsvReader<PathObject> _reader = new CsvReader<PathObject>(_file) { Separator = '~' })
             {
                 _reader.EmptyLineBehaviour = EmptyLineBehaviour.ThrowException;
-                _reader.Open();
 
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
