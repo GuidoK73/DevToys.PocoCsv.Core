@@ -185,7 +185,7 @@ namespace DevToys.PocoCsv.Core
             _nextByte = 0;
             _state = State.Normal;
 
-            for (; ; )
+            while (true)
             {
                 _byte = Read();
                 if (_state == State.Normal)
@@ -272,7 +272,7 @@ namespace DevToys.PocoCsv.Core
             _CollIndex = 0;
             _IndexesIndex = 0;
 
-            for (; ; )
+            while (true)
             {
                 _byte = Read();
                 if (_state == State.Normal)
@@ -420,7 +420,7 @@ namespace DevToys.PocoCsv.Core
             _CollIndex = 0;
             _IndexesIndex = 0;
 
-            for (; ; )
+            while (true)
             {
                 _byte = Read();
                 if (_state == State.Normal)

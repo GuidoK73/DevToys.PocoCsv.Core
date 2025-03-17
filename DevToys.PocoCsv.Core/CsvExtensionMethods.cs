@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Text;
 
 namespace DevToys.PocoCsv.Core
 {
@@ -8,92 +9,33 @@ namespace DevToys.PocoCsv.Core
     /// </summary>
     public static class CsvExtensionMethods
     {
-
         /// <summary>
-        /// Import Csv into DataTable
+        /// Add Csv Line to StringBuilders
         /// </summary>
-        /// <param name="table"></param>
-        /// <param name="file"></param>
-        /// <param name="separator">null for auto detect.</param>
-        /// <param name="setSchema">default true, in case of importing multiple of the same documents set it to false on the second call.</param>
-        /// <param name="skipRows">First row is usually the header.</param>
-        public static void ImportCsv(this DataTable table, string file, char? separator = ',', bool setSchema = true, int skipRows = 1)
+        public static StringBuilder AppendCsv(this StringBuilder sb, char separator, params string[] values)
         {
-            int _rowcounter = 0;
-
-            using (CsvStreamReader _reader = new CsvStreamReader(file))
+            foreach (string value in values)
             {
-                if (separator == null)
-                {
-                    _reader.DetectSeparator();
-                }
-                else
-                {
-                    _reader.Separator = separator.Value;
-                }
-
-                if (setSchema)
-                {
-                    table.Clear();
-
-                    IEnumerable<CsvColumnInfo> _schema = _reader.GetCsvSchema(20);
-
-                    foreach (var _column in _schema)
-                    {
-                        table.Columns.Add(_column.Name, typeof(string));
-                    }
-                }
-
-                table.BeginLoadData();
-                while (!_reader.EndOfStream)
-                {
-                    var _values = _reader.ReadCsvLine();
-                    if (_rowcounter >= skipRows)
-                    {
-                        table.Rows.Add(_values);
-                    }
-                    _rowcounter++;
-                }
-                table.EndLoadData();
+                sb.Append(CsvUtils.Escape(value));
+                sb.Append(',');
             }
+            sb.Length--;
+            return sb;
         }
 
         /// <summary>
-        /// Export datatable to Csv file
+        /// Add Csv Line to StringBuilders
         /// </summary>
-        /// <param name="table"></param>
-        /// <param name="file"></param>
-        /// <param name="separator"></param>
-        public static void ExportCsv(this DataTable table, string file, char separator = ',')
+        public static StringBuilder AppendCsvLine(this StringBuilder sb, char separator, params string[] values)
         {
-            using (CsvStreamWriter _writer = new CsvStreamWriter(file))
+            foreach (string value in values)
             {
-                _writer.Separator = separator;
-                foreach (DataRow row in table.Rows)
-                {
-                    _writer.WriteCsvLine(row.ItemArray);
-                }
-                _writer.Flush();
+                sb.Append(CsvUtils.Escape(value));
+                sb.Append(',');
             }
-        }
-
-        /// <summary>
-        /// Join array to Csv Line.
-        /// </summary>
-        public static string JoinCsv(this string[] values, char separator = ',')
-        {
-            return CsvUtils.JoinCsvLine(separator, values);
-        }
-
-        /// <summary>
-        /// Split string on Csv rules.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="separator"></param>
-        /// <returns></returns>
-        public static string[] SplitCsv(this string value, char separator)
-        {
-            return CsvUtils.SplitCsvLine(value, separator);
+            sb.Length--;
+            sb.AppendLine();
+            return sb;
         }
 
         /// <summary>
@@ -219,6 +161,93 @@ namespace DevToys.PocoCsv.Core
         public static void Deconstruct(this string[] array, out string first)
         {
             first = array[0];
+        }
+
+        /// <summary>
+        /// Export datatable to Csv file
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="file"></param>
+        /// <param name="separator"></param>
+        public static void ExportCsv(this DataTable table, string file, char separator = ',')
+        {
+            using (CsvStreamWriter _writer = new CsvStreamWriter(file))
+            {
+                _writer.Separator = separator;
+                foreach (DataRow row in table.Rows)
+                {
+                    _writer.WriteCsvLine(row.ItemArray);
+                }
+                _writer.Flush();
+            }
+        }
+
+        /// <summary>
+        /// Import Csv into DataTable
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="file"></param>
+        /// <param name="separator">null for auto detect.</param>
+        /// <param name="setSchema">default true, in case of importing multiple of the same documents set it to false on the second call.</param>
+        /// <param name="skipRows">First row is usually the header.</param>
+        public static void ImportCsv(this DataTable table, string file, char? separator = ',', bool setSchema = true, int skipRows = 1)
+        {
+            int _rowcounter = 0;
+
+            using (CsvStreamReader _reader = new CsvStreamReader(file))
+            {
+                if (separator == null)
+                {
+                    _reader.DetectSeparator();
+                }
+                else
+                {
+                    _reader.Separator = separator.Value;
+                }
+
+                if (setSchema)
+                {
+                    table.Clear();
+
+                    IEnumerable<CsvColumnInfo> _schema = _reader.GetCsvSchema(20);
+
+                    foreach (var _column in _schema)
+                    {
+                        table.Columns.Add(_column.Name, typeof(string));
+                    }
+                }
+
+                table.BeginLoadData();
+                while (!_reader.EndOfStream)
+                {
+                    var _values = _reader.ReadCsvLine();
+                    if (_rowcounter >= skipRows)
+                    {
+                        table.Rows.Add(_values);
+                    }
+                    _rowcounter++;
+                }
+                table.EndLoadData();
+            }
+        }
+
+        /// <summary>
+        /// Join array to Csv Line.
+        /// </summary>
+        public static string JoinCsv(this string[] values, char separator = ',')
+        {
+            return CsvUtils.JoinCsvLine(separator, values);
+        }
+
+        /// <summary>
+        /// Split string on Csv rules.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
+        public static string[] SplitCsv(this string value, char separator)
+        {
+            return CsvUtils.SplitCsvLine(value, separator);
         }
     }
 }

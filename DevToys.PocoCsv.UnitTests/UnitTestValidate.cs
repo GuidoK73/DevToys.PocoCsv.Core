@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using DevToys.PocoCsv.UnitTests.Models;
+using System.Security.Cryptography.X509Certificates;
 
 namespace DevToys.PocoCsv.UnitTests
 {
@@ -36,6 +37,10 @@ namespace DevToys.PocoCsv.UnitTests
             TestReaderSimple();
             TestCsvDataTypeObject();
             CustomParseTest();
+
+            // CsvSerializer tests
+            ValidateCRLFCsvSerializer();
+            TestTypeFieldsCsvSerializer();
         }
 
         public class SimpleObjectA
@@ -463,6 +468,79 @@ namespace DevToys.PocoCsv.UnitTests
         }
 
 
+        private const char _CR = '\r';
+        private const char _LF = '\n';
+        private const string _CRLF = "\r\n";
+
+        /// <summary>
+        /// This TestMethod tests the CsvStreamReader and the CsvStreamWriter
+        /// 1. Testing varying cases of line breaks.
+        /// 2. Testing Escaping ',' '\r' '\n'
+        /// 3. Testing DetectSeparator()
+        /// 4. Testing Escaping of Alternate Separators
+        /// </summary>
+        [TestMethod]
+        public void ValidateCRLFCsvSerializer()
+        {
+            StringBuilder _sb = new StringBuilder();
+
+            _sb.AppendCsv(',', "Row 1", "Row A,A\rA", "A", "A1").Append(_CRLF);                
+            _sb.AppendCsv(',', "Row 2", "Row B,B\nB", "B", "B2").Append(_CRLF);
+            _sb.AppendCsv(',', "Row 3", "Row C;C", "C", "C3").Append(_LF);
+            _sb.AppendCsv(',', "Row 4", "Row D;D", "D", "D4").Append(_LF);
+            _sb.AppendCsv(',', "Row 5", "Row E,E", "E", "E5").Append(_CR);
+            _sb.AppendCsv(',', "Row 6", "Row F,F\r\nF,F", "F", "F6").Append(_CR);
+            _sb.AppendCsv(',', "Row F\";\"F\r\nF,F\"", "Row 7", "\"", "F6\" ").Append(_CR);
+            _sb.AppendCsv(',', "A\" ", "\"\"\"", "B\"", "\"\"\"").Append(_CR);
+
+            string _text = _sb.ToString();
+
+            CsvSerializer serializer = new CsvSerializer(new CsvSerializerSettings() { Separator = ',' });
+
+            List<string[]> _data = serializer.Deserialize(_text).ToList();
+
+            Assert.AreEqual(_data[0][0], "Row 1");
+            Assert.AreEqual(_data[0][1], "Row A,A\rA");
+            Assert.AreEqual(_data[0][2], "A");
+            Assert.AreEqual(_data[0][3], "A1");
+
+            Assert.AreEqual(_data[1][0], "Row 2");
+            Assert.AreEqual(_data[1][1], "Row B,B\nB");
+            Assert.AreEqual(_data[1][2], "B");
+            Assert.AreEqual(_data[1][3], "B2");
+
+            Assert.AreEqual(_data[2][0], "Row 3");
+            Assert.AreEqual(_data[2][1], "Row C;C");
+            Assert.AreEqual(_data[2][2], "C");
+            Assert.AreEqual(_data[2][3], "C3");
+
+            Assert.AreEqual(_data[3][0], "Row 4");
+            Assert.AreEqual(_data[3][1], "Row D;D");
+            Assert.AreEqual(_data[3][2], "D");
+            Assert.AreEqual(_data[3][3], "D4");
+
+            Assert.AreEqual(_data[4][0], "Row 5");
+            Assert.AreEqual(_data[4][1], "Row E,E");
+            Assert.AreEqual(_data[4][2], "E");
+            Assert.AreEqual(_data[4][3], "E5");
+
+            Assert.AreEqual(_data[5][0], "Row 6");
+            Assert.AreEqual(_data[5][1], "Row F,F\r\nF,F");
+            Assert.AreEqual(_data[5][2], "F");
+            Assert.AreEqual(_data[5][3], "F6");
+
+            Assert.AreEqual(_data[6][0], "Row F\";\"F\r\nF,F\"");
+            Assert.AreEqual(_data[6][1], "Row 7");
+            Assert.AreEqual(_data[6][2], "\"");
+            Assert.AreEqual(_data[6][3], "F6\" ");
+
+            Assert.AreEqual(_data[7][0], "A\" ");
+            Assert.AreEqual(_data[7][1], "\"\"\"");
+            Assert.AreEqual(_data[7][2], "B\"");
+            Assert.AreEqual(_data[7][3], "\"\"\"");
+        }
+
+
         [TestMethod]
         public void CustomParseTest()
         {
@@ -750,6 +828,105 @@ namespace DevToys.PocoCsv.UnitTests
 //                }
             }
         }
+
+
+
+        /// <summary>
+        /// This TestMethod tests the CsvWriter<T> and CsvReader<T>
+        /// 1. Test DetectSeparator
+        /// 2. Test all supported property types
+        /// 3. Test all supported property types as nullable
+        /// 4. Test Skip() method
+        /// 5. Test Empty line in csv
+        /// 6. Test MoveToStart()
+        /// 7. Test Read Header into object (should not crash).
+        /// 8. Test Last() method.
+        /// 9. Test varying cases of line breaks.
+        /// 10. Test ReadAsEnumerable()
+        /// 11. Test Reader.CurrentLine
+        /// </summary>
+        [TestMethod]
+        public void TestTypeFieldsCsvSerializer()
+        {
+            CsvSerializer csvSerializer = new CsvSerializer(new CsvSerializerSettings() { Separator = ','});
+            StringBuilder sb = new StringBuilder();
+
+
+            csvSerializer.SerializeObject<CsvTypesData>(sb, new List<CsvTypesData>() { ROW1, ROW2 });
+
+            string _text = sb.ToString();
+
+            List<CsvTypesData> _data = csvSerializer.DeserializeObject<CsvTypesData>(_text).ToList();
+
+            Assert.AreEqual("Line 1", _data[0].StringValue);
+            Assert.AreEqual(Guid.Parse("94a6bfe9-abb4-46b6-bd7d-8f047b9ba480"), _data[0].GuidValue);
+            Assert.AreEqual(Guid.Parse("94a6bfe9-abb4-46b6-bd7d-8f047b9ba480"), _data[0].GuidValueNullable);
+            Assert.AreEqual(true, _data[0].BooleanValue);
+            Assert.AreEqual(false, _data[0].BooleanValueNullable);
+            Assert.AreEqual(new DateTime(2023, 3, 31), _data[0].DateTimeValue);
+            Assert.AreEqual(new DateTime(2023, 3, 31), _data[0].DateTimeOffsetValueNullable);
+            Assert.AreEqual(new DateTime(2023, 3, 31), _data[0].DateTimeOffsetValue);
+            Assert.AreEqual(new DateTime(2023, 3, 31), _data[0].DateTimeValueNullable);
+            Assert.AreEqual(new TimeSpan(1, 2, 3, 4, 5), _data[0].TimeSpanValue);
+            Assert.AreEqual(new TimeSpan(6, 7, 8, 9, 10), _data[0].TimeSpanValueNullable);
+            Assert.AreEqual((byte)3, _data[0].ByteValue);
+            Assert.AreEqual((byte?)4, _data[0].ByteValueNullable);
+            Assert.AreEqual((sbyte)5, _data[0].SByteValue);
+            Assert.AreEqual((sbyte?)6, _data[0].SByteValueNullable);
+            Assert.AreEqual((short)8, _data[0].Int16Value);
+            Assert.AreEqual((short?)9, _data[0].Int16ValueNullable);
+            Assert.AreEqual(10, _data[0].Int32Value);
+            Assert.AreEqual(11, _data[0].Int32ValueNullable);
+            Assert.AreEqual((long)12, _data[0].Int64Value);
+            Assert.AreEqual((long?)13, _data[0].Int64ValueNullable);
+            Assert.AreEqual((UInt16)22, _data[0].UInt16Value);
+            Assert.AreEqual((UInt16?)23, _data[0].UInt16ValueNullable);
+            Assert.AreEqual((UInt32)24, _data[0].UInt32Value);
+            Assert.AreEqual((UInt32?)25, _data[0].UInt32ValueNullable);
+            Assert.AreEqual((UInt64)26, _data[0].UInt64Value);
+            Assert.AreEqual((UInt64?)29, _data[0].UInt64ValueNullable);
+            Assert.AreEqual(TestEnum.XXX, _data[0].TestEnumItem);
+
+
+
+
+            Assert.AreEqual("Line 2", _data[1].StringValue);
+            Assert.AreEqual(Guid.Parse("90a6bfe9-abb4-46b6-bd7d-8f047b9ba480"), _data[1].GuidValue);
+            Assert.AreEqual(null, _data[1].GuidValueNullable);
+            Assert.AreEqual(true, _data[1].BooleanValue);
+            Assert.AreEqual(null, _data[1].BooleanValueNullable);
+            Assert.AreEqual(new DateTime(2023, 3, 31), _data[1].DateTimeValue);
+            Assert.AreEqual(null, _data[1].DateTimeOffsetValueNullable);
+            Assert.AreEqual(new DateTime(2023, 3, 31), _data[1].DateTimeOffsetValue);
+            Assert.AreEqual(null, _data[1].DateTimeValueNullable);
+            Assert.AreEqual(new TimeSpan(1, 2, 3, 4, 5), _data[1].TimeSpanValue);
+            Assert.AreEqual(null, _data[1].TimeSpanValueNullable);
+            Assert.AreEqual((byte)3, _data[1].ByteValue);
+            Assert.AreEqual(null, _data[1].ByteValueNullable);
+            Assert.AreEqual((sbyte)5, _data[1].SByteValue);
+            Assert.AreEqual(null, _data[1].SByteValueNullable);
+            Assert.AreEqual((short)8, _data[1].Int16Value);
+            Assert.AreEqual(null, _data[1].Int16ValueNullable);
+            Assert.AreEqual(10, _data[1].Int32Value);
+            Assert.AreEqual(null, _data[1].Int32ValueNullable);
+            Assert.AreEqual((long)12, _data[1].Int64Value);
+            Assert.AreEqual(null, _data[1].Int64ValueNullable);
+            Assert.AreEqual((UInt16)22, _data[1].UInt16Value);
+            Assert.AreEqual(null, _data[1].UInt16ValueNullable);
+            Assert.AreEqual((UInt32)24, _data[1].UInt32Value);
+            Assert.AreEqual(null, _data[1].UInt32ValueNullable);
+            Assert.AreEqual((UInt64)26, _data[1].UInt64Value);
+            Assert.AreEqual(null, _data[1].UInt64ValueNullable);
+            Assert.AreEqual(TestEnum.YYY, _data[1].TestEnumItem);
+
+        }
+
+
+
+
+
+
+
 
         #region Data
 

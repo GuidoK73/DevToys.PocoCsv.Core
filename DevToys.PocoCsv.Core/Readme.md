@@ -10,10 +10,10 @@ It provides plenty of options on how you would either read from or write to CSV 
 - Sequential read with ReadAsEnumerable().
 - Csv schema Retrieval with CsvUtils.GetCsvSchema().
 - DataTable import and export.
-- Deserialiser / serializer.
-- Stream reader / writer.
 - Works for all encoding types.
-
+- CsvWriter<T> / CsvReader<T> for serialization of object from and to streams or files.
+- StreamReader / StreamWriter for writing CSV from and to streams or files.
+- CsvSerializer to serialize objects to and from strings. (NEW in v5)
 
 # CsvStreamReader
 ~~~cs
@@ -244,6 +244,45 @@ Methods / Properties:
 The path given to the constructor can be a specific file or directory, in case a directory is given, the filename will be generated based on the T typename, or based on the FileName given by the CsvAttribute.
 
 The writer is for performance reasons unrelated to the CsvStreamWriter.
+
+
+# CsvSerializer
+
+Class to serialize and deserialize to and from strings. (this is also possible with stream, but this is faster).
+
+
+Example 1:
+
+~~~cs
+
+    public class TestSerializerObject
+    {
+        [Column(Index = 0)]
+        public int Id { get; set; }
+        [Column(Index = 1)]
+        public string Field1 { get; set; }
+        [Column(Index = 2)]
+        public string Field2 { get; set; }
+    }
+
+    private IEnumerable<TestSerializerObject> SimpleData(int count = 10)
+    {
+        for (int ii = 0; ii < count; ii++)
+        {
+            yield return new TestSerializerObject() { Id = ii, Field1 = $"A{ii}", Field2 = $"b{ii}" };
+        }
+    }
+
+    public void Test()
+    {
+        CsvSerializer serializer = new CsvSerializer(new CsvSerializerSettings() { Header = true } );
+
+        string _data = serializer.Serialize(SimpleData());
+
+        var _resultData = serializer.Deserialize<TestSerializerObject>(_data).ToList();
+    }
+
+~~~
 
 
 # ColumnAttribute
@@ -584,5 +623,59 @@ if you would like to use it with the writer you can limit the number of output c
     // Export
     _file = @"C:\data2.csv";
     _table.ExportCsv(_file, ',');
+
+~~~
+
+
+# Other examples
+
+Writing and reading to strings by using memory streams.
+
+~~~cs
+
+    public class SimpleObject
+    {
+        public int Id { get; set; }
+        public string Field1 { get; set; }
+        public string Field2 { get; set; }
+    }
+
+
+    private IEnumerable<SimpleObject> SimpleData(int count = 50)
+    {
+        for (int ii = 0; ii < count; ii++)
+        {
+            yield return new SimpleObject() { Id = ii, Field1 = $"A{ii}", Field2 = $"b{ii}" };
+        }
+    }
+
+    public void Test()
+    {
+        // Writing CSV directly into string.
+        string _stringResult = string.Empty;
+
+        using (var stream = new MemoryStream())
+        using (var writer = new CsvWriter<SimpleObject>(stream))
+        {
+            writer.WriteHeader();
+            writer.Write(SimpleData());
+            writer.Flush();
+
+            stream.Position = 0;
+            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            {
+                _stringResult = reader.ReadToEnd();
+            }
+        }
+
+        // Reading from string into collection.
+        byte[] byteArray = Encoding.UTF8.GetBytes(_stringResult);
+        using (var memStream = new MemoryStream(byteArray))
+        using (var streamReader = new StreamReader(memStream))
+        using (var reader = new CsvReader<SimpleObject>(streamReader))
+        {
+            List<SimpleObject> _materialized = reader.ReadAsEnumerable().ToList();
+        }
+    }
 
 ~~~

@@ -22,6 +22,34 @@ namespace DevToys.PocoCsv.UnitTests
     [TestClass]
     public class DemoPocoUnitTest
     {
+
+        [TestMethod]
+        public void TestReaderSimple2()
+        {
+            var _data = SimpleData(30);
+            while (true)
+            {
+                var _batch = _data.Take(10);
+                if (!_batch.Any())
+                {
+                    break;
+                }
+                var _materialized = _batch.ToList();
+                foreach (var item in _batch)
+                { }
+
+            }
+        }
+
+        private IEnumerable<SimpleObject> SimpleData(int count = 50)
+        {
+            for (int ii = 0; ii < count; ii++)
+            {
+                yield return new SimpleObject() { Id = ii, Field1 = $"A{ii}", Field2 = $"b{ii}" };
+            }
+        }
+
+
         [TestMethod]
         public void TestReaderSimple()
         {
@@ -41,12 +69,38 @@ namespace DevToys.PocoCsv.UnitTests
             }
         }
 
-        private IEnumerable<SimpleObject> SimpleData(int count = 50)
+
+        [TestMethod]
+        public void TestWriteString()
         {
-            for (int ii = 0; ii < count; ii++)
+
+            // Writing CSV directly into string.
+            string _stringResult = string.Empty;
+
+            using (var stream = new MemoryStream())
+            using (var writer = new CsvWriter<SimpleObject>(stream))
             {
-                yield return  new SimpleObject() { Id = ii, Field1 = $"A{ii}", Field2 = $"b{ii}" };                
+                writer.WriteHeader();
+                writer.Write(SimpleData());
+                writer.Flush();
+
+                stream.Position = 0;
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                {
+                    _stringResult = reader.ReadToEnd();
+                }
             }
+
+            // Reading from string into collection.
+            byte[] byteArray = Encoding.UTF8.GetBytes(_stringResult);
+            using (var memStream = new MemoryStream(byteArray))
+            using (var streamReader = new StreamReader(memStream))
+            using (var reader = new CsvReader<SimpleObject>(streamReader))
+            {
+                List<SimpleObject> _materialized = reader.ReadAsEnumerable().ToList();
+            }
+
         }
+
     }
 }
