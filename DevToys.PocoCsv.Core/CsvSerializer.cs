@@ -3,9 +3,9 @@ using System.Linq;
 using System.Text;
 
 namespace DevToys.PocoCsv.Core
-{
+{ 
     /// <summary>
-    /// Csv serialization to strings.
+    /// Csv serialization/deserialization from and to strings.
     /// </summary>
     public sealed class CsvSerializer
     {
@@ -85,6 +85,7 @@ namespace DevToys.PocoCsv.Core
         public string SerializeObject<T>(IEnumerable<T> items) where T : class, new()
         {
             CsvStringWriter<T> _writer = new CsvStringWriter<T>(Settings.Culture, Settings.Separator);
+            _writer.Culture = Settings.Culture;
             _writer.CRLFMode = Settings.CRLFMode;
             if (Settings.Header)
             {

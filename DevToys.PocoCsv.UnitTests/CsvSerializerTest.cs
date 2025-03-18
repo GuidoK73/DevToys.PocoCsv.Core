@@ -40,19 +40,16 @@ namespace DevToys.PocoCsv.UnitTests
             string _data = serializer.SerializeObject(SimpleData());
 
             var _resultData = serializer.DeserializeObject<TestSerializerObject>(_data).ToList();
-        }
+        } 
 
         [TestMethod]
         public void TestSerialize2()
         {
             CsvSerializer _serializer = new CsvSerializer();
-
             string _data = @"1,2,3
 a,b,c
 d,e,f";
-
             List<string[]> _result = _serializer.Deserialize(_data).ToList();
-
             string _data2 = _serializer.Serialize(_result);
 
         }

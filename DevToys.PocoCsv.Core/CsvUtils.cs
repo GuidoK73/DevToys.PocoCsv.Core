@@ -12,11 +12,8 @@ namespace DevToys.PocoCsv.Core
     public static class CsvUtils
     {
         private const int _CR = '\r';
-
         private const int _ESCAPE = '"';
-
         private const int _LF = '\n';
-
         private static char[] _EscapeChars = new char[] { '\r', '\n', '"', ',' };
 
         /// <summary>
@@ -39,7 +36,7 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
-        /// Returns a schema for the CSV with best fitted types to use.
+        /// Returns a schema for the CSV with best fitted types to use. 
         /// </summary>
         public static IEnumerable<CsvColumnInfo> GetCsvSchema(CsvStreamReader reader, int sampleRows)
         {

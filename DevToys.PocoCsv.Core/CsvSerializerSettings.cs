@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 
 namespace DevToys.PocoCsv.Core
-{
+{ 
     public sealed class CsvSerializerSettings
     {
         /// <summary>
@@ -22,7 +22,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Culture to use.
         /// </summary>
-        public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
+        public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
 
         /// <summary>
         /// CRLF mode to use for the Serializer.

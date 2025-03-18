@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Text;
-
+ 
 namespace DevToys.PocoCsv.Core
 {
     /// <summary>
@@ -234,7 +234,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Join array to Csv Line.
         /// </summary>
-        public static string JoinCsv(this string[] values, char separator = ',')
+        public static string JoinCsvLine(this string[] values, char separator = ',')
         {
             return CsvUtils.JoinCsvLine(separator, values);
         }
@@ -245,7 +245,7 @@ namespace DevToys.PocoCsv.Core
         /// <param name="value"></param>
         /// <param name="separator"></param>
         /// <returns></returns>
-        public static string[] SplitCsv(this string value, char separator)
+        public static string[] SplitCsvLine(this string value, char separator = ',')
         {
             return CsvUtils.SplitCsvLine(value, separator);
         }
