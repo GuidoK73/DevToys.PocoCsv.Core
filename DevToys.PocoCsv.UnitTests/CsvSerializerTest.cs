@@ -53,5 +53,23 @@ d,e,f";
             string _data2 = _serializer.Serialize(_result);
 
         }
+
+        [TestMethod]
+        public void TestSerialize3()
+        {
+            CsvSerializer _serializer = new CsvSerializer();
+
+            StringBuilder _sb = new StringBuilder();
+            _sb.AppendCsvLine(',', "a", "b", "c");
+            _sb.AppendCsvLine(',', "1", "2", "3");
+            _sb.AppendCsvLine(',', "d", "e", "f");
+
+            List<string[]> _result = _serializer.Deserialize(_sb).ToList();
+
+            StringBuilder _sbResult = new StringBuilder();
+            _serializer.Serialize(_result, ref _sbResult);
+            string _stringResult = _sbResult.ToString();
+
+        }
     }
 }

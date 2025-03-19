@@ -41,6 +41,7 @@ namespace DevToys.PocoCsv.UnitTests
             // CsvSerializer tests
             ValidateCRLFCsvSerializer();
             TestTypeFieldsCsvSerializer();
+            TestColIndexCsvSerializer();
         }
 
         public class SimpleObjectA
@@ -540,6 +541,27 @@ namespace DevToys.PocoCsv.UnitTests
             Assert.AreEqual(_data[7][3], "\"\"\"");
         }
 
+
+
+        [TestMethod]
+        public void TestColIndexCsvSerializer()
+        {
+            // Test using another class for reading without using all indexes.
+            CsvSerializer serializer = new CsvSerializer();
+
+            List<CsvSimple> _fullType = CsvSimpleData(5).ToList();
+
+            string _text = serializer.SerializeObject<CsvSimple>(_fullType);
+
+            List<CsvSimpleSmall> _smallType = serializer.DeserializeObject<CsvSimpleSmall>(_text).ToList();
+
+            for (int ii = 0; ii < 5; ii++)
+            {
+                Assert.AreEqual(_smallType[ii].AfBij, _fullType[ii].AfBij);
+                Assert.AreEqual(_smallType[ii].Tegenrekening, _fullType[ii].Tegenrekening);
+                Assert.AreEqual(_smallType[ii].Rekening, _fullType[ii].Rekening);
+            }
+        }
 
         [TestMethod]
         public void CustomParseTest()

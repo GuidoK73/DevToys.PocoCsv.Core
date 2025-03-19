@@ -250,7 +250,7 @@ The writer is for performance reasons unrelated to the CsvStreamWriter.
 
 # CsvSerializer
 
-Class to serialize and deserialize to and from strings. (this is also possible with stream, but this is faster).
+Class to serialize and deserialize to and from strings or StringBuilders. (this is also possible with stream, but this is faster).
 
 
 Example 1:
@@ -291,13 +291,22 @@ Example 2:
 ~~~cs
 
     CsvSerializer _serializer = new CsvSerializer();
-    string _data = @"1,2,3
-a,b,c
-d,e,f";
-    List<string[]> _result = _serializer.Deserialize(_data).ToList();
-    string _data2 = _serializer.Serialize(_result);
+
+    StringBuilder _sb = new StringBuilder();
+    _sb.AppendCsvLine(',', "a", "b", "c");
+    _sb.AppendCsvLine(',', "1", "2", "3");
+    _sb.AppendCsvLine(',', "d", "e", "f");
+
+    List<string[]> _result = _serializer.Deserialize(_sb).ToList();
+
+    StringBuilder _sbResult = new StringBuilder();
+    _serializer.Serialize(_result, ref _sbResult);
+
+    string _stringResult = _sbResult.ToString();
 
 ~~~
+
+both examples work with string or StringBuilder.
 
 #### CsvSerializerSettings
 

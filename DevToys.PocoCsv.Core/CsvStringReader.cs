@@ -30,7 +30,7 @@ namespace DevToys.PocoCsv.Core
         private int _colPosition = -1;
 
         private int _CurrentLine = 0;
-        private string _Data = string.Empty;
+        private StringBuilder _Data = new StringBuilder();
         private int _IndexesIndex = 0;
         // char position within column
         private int _linePosition = 0;
@@ -80,7 +80,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        public CsvStringReader(string data, char separator = ',')
+        public CsvStringReader(StringBuilder data, char separator = ',')
         {
             _Data = data;
             _Separator = separator;
@@ -704,7 +704,7 @@ namespace DevToys.PocoCsv.Core
             _Position = 0;
         }
 
-        private int Peek(ref string data, int position)
+        private int Peek(ref StringBuilder data, int position)
         {
             if (position + 1 > data.Length - 1)
             {
@@ -896,7 +896,7 @@ namespace DevToys.PocoCsv.Core
             MoveToStart();
             return ReadLine(_Data, (char)_Separator);
         }
-        private string[] ReadLine(string data, char seperator, params int[] selectIndexes)
+        private string[] ReadLine(StringBuilder data, char seperator, params int[] selectIndexes)
         {
             StringBuilder _buffer = new StringBuilder(1027);
 

@@ -48,11 +48,51 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
+        /// Deserializes a CSV string to IEnumerable string[]
+        /// </summary>
+        /// <param name="data">string to convert</param>
+        /// <param name="seperator">separator to use</param>
+        /// <param name="selectIndexes">columns to select starting at 0, specify none for all columns</param>
+        /// <returns></returns>
+        public IEnumerable<string[]> Deserialize(StringBuilder data, params int[] selectIndexes)
+        {
+            int _lastposition = data.Length;
+            int _position = 0;
+            char _separator = Settings.Separator;
+            if (Settings.DetectSeparator)
+            {
+                CsvUtils.GetCsvSeparator(data, out _separator);
+            }
+            while (_position < _lastposition)
+            {
+                string[] _result = Deserialize(data, ref _position, _separator, selectIndexes);
+                yield return _result;
+            }
+        }
+
+
+        /// <summary>
+        /// Deserialize a CSV formatted string to a collection.
+        /// </summary>
+        public IEnumerable<T> DeserializeObject<T>(StringBuilder data) where T : class, new()
+        {
+            CsvStringReader<T> _reader = new CsvStringReader<T>(data, Settings.Separator);
+            _reader.Culture = Settings.Culture;
+            _reader.DetectSeparator = Settings.DetectSeparator;
+            if (Settings.Header)
+            {
+                return _reader.ReadAsEnumerable().Skip(1);
+            }
+            return _reader.ReadAsEnumerable();
+        }
+
+        /// <summary>
         /// Deserialize a CSV formatted string to a collection.
         /// </summary>
         public IEnumerable<T> DeserializeObject<T>(string data) where T : class, new()
         {
-            CsvStringReader<T> _reader = new CsvStringReader<T>(data, Settings.Separator);
+            StringBuilder _sb = new StringBuilder(data);
+            CsvStringReader<T> _reader = new CsvStringReader<T>(_sb, Settings.Separator);
             _reader.Culture = Settings.Culture;
             _reader.DetectSeparator = Settings.DetectSeparator;
             if (Settings.Header)
@@ -70,13 +110,24 @@ namespace DevToys.PocoCsv.Core
         /// <returns></returns>
         public string Serialize(IEnumerable<string[]> data, params int[] selectIndexes)
         {
-            InitializeEscapeChars();
             StringBuilder _sb = new StringBuilder();
+            Serialize(data, ref _sb, selectIndexes);
+            return _sb.ToString();
+        }
+
+        /// <summary>
+        /// Serialize a IEnumerable string[] collection to CSV.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="selectIndexes"></param>
+        /// <returns></returns>
+        public void Serialize(IEnumerable<string[]> data, ref StringBuilder result, params int[] selectIndexes)
+        {
+            InitializeEscapeChars();
             foreach (var item in data)
             {
-                WriteCsvLine(ref _sb, item, selectIndexes);
+                WriteCsvLine(ref result, item, selectIndexes);
             }
-            return _sb.ToString();
         }
 
         /// <summary>
@@ -228,6 +279,127 @@ namespace DevToys.PocoCsv.Core
             return _result.ToArray();
         }
 
+        private string[] Deserialize(StringBuilder data, ref int position, char seperator, params int[] selectIndexes)
+        {
+            StringBuilder _buffer = new StringBuilder(1027);
+
+            int _byte = 0;
+            int _nextByte = 0;
+            State _state = State.Normal;
+            List<string> _result = new List<string>();
+            int _collIndex = 0;
+            int _selectIndexesIndex = 0;
+
+            int _resultPosition = position;
+
+            for (int ii = position; ii < data.Length; ii++)
+            {
+                _resultPosition = ii;
+                _byte = (int)data[ii];
+                if (_state == State.Normal)
+                {
+                    if (_byte == seperator)
+                    {
+                        // End of field'
+                        if (selectIndexes.Length == 0 || _selectIndexesIndex < selectIndexes.Length && selectIndexes[_selectIndexesIndex] == _collIndex)
+                        {
+                            _result.Add(_buffer.ToString());
+                            _selectIndexesIndex++;
+                        }
+                        _buffer.Length = 0;
+                        _collIndex++;
+                        continue;
+                    }
+                    else if (_byte == _CR)
+                    {
+                        _nextByte = Peek(ref data, ii);
+                        if (_nextByte == _LF)
+                        {
+                            continue; // goes to else if (_byte == '\n')
+                        }
+                        // end of line.
+                        if (selectIndexes.Length == 0 || _selectIndexesIndex < selectIndexes.Length && selectIndexes[_selectIndexesIndex] == _collIndex)
+                        {
+                            _result.Add(_buffer.ToString());
+                        }
+                        _buffer.Length = 0;
+                        break;
+                    }
+                    else if (_byte == _LF)
+                    {
+                        // end of line.
+                        if (selectIndexes.Length == 0 || _selectIndexesIndex < selectIndexes.Length && selectIndexes[_selectIndexesIndex] == _collIndex)
+                        {
+                            _result.Add(_buffer.ToString());
+                        }
+                        _buffer.Length = 0;
+                        break;
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        // switch mode
+                        _state = State.Escaped;
+                        continue; // do not add this char. (TRIM)
+                    }
+                    else if (_byte == _TERMINATOR)
+                    {
+                        break; // end the while loop.
+                    }
+                    _buffer.Append((char)_byte);
+                    continue;
+                }
+                else if (_state == State.Escaped)
+                {
+                    // ',' and '\r' and "" are part of the value.
+                    if (_byte == _TERMINATOR)
+                    {
+                        break; // end the while loop.
+                    }
+                    else if (_byte == _ESCAPE)
+                    {
+                        // " aaa "" ","bbb", "ccc""","ddd """" "
+                        _nextByte = Peek(ref data, ii);
+                        if (_nextByte == seperator || _nextByte == _CR || _nextByte == _LF)
+                        {
+                            // this quote is followed by a , so it ends the escape. we continue to next itteration where we read a ',' in nomral mode.
+                            _state = State.Normal;
+                            continue;
+                        }
+                        else if (_nextByte == _ESCAPE)
+                        {
+                            _state = State.EscapedEscape;
+                            continue; // Also do not add this char, we add it when we are in EscapedEscape mode and from their we turn back to normal Escape.  (basically adding one of two)
+                        }
+                    }
+                    _buffer.Append((char)_byte);
+                    continue;
+                }
+                else if (_state == State.EscapedEscape)
+                {
+                    _buffer.Append((char)_byte);
+                    _state = State.Escaped;
+                    continue;
+                }
+                else if (_byte == _TERMINATOR)
+                {
+                    break;
+                }
+            }
+
+            _resultPosition++;
+            position = _resultPosition;
+            if (_buffer.Length > 0)
+            {
+                if (selectIndexes.Length == 0 || _selectIndexesIndex < selectIndexes.Length && selectIndexes[_selectIndexesIndex] == _collIndex)
+                {
+                    _result.Add(_buffer.ToString());
+                }
+                _buffer.Length = 0;
+            }
+            return _result.ToArray();
+        }
+
+
         private string Escape(string s)
         {
             if (s.IndexOfAny(_EscapeChars) == -1)
@@ -247,6 +419,15 @@ namespace DevToys.PocoCsv.Core
         }
 
         private int Peek(ref string data, int position)
+        {
+            if (position + 1 > data.Length - 1)
+            {
+                return _TERMINATOR;
+            }
+            return (int)data[position + 1];
+        }
+
+        private int Peek(ref StringBuilder data, int position)
         {
             if (position + 1 > data.Length - 1)
             {
