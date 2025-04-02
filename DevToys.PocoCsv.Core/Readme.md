@@ -250,7 +250,7 @@ The writer is for performance reasons unrelated to the CsvStreamWriter.
 
 # CsvSerializer
 
-Class to serialize and deserialize to and from strings or StringBuilders. (this is also possible with stream, but this is faster).
+Class to serialize and deserialize to and from strings or StringBuilders.
 
 
 Example 1:

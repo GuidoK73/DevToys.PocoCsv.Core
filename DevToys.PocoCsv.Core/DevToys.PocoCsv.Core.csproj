@@ -35,7 +35,7 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Copyright>2024</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
     <PackageReleaseNotes>5.0.0
-- Added a new CsvSerializer class to serialize / deserialize directly from and to string.
+- Added a new CsvSerializer class to serialize / deserialize directly from and to strings.
 		
 4.5.3
 - Bugfix: nullable value combined with CustomParser.
