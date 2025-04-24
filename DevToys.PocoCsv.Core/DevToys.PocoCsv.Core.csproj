@@ -29,12 +29,15 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Authors>GuidoK73</Authors>
 	<PackageTags>csv;export;import;comma separated;4180;delimited;poco;csv parser;parse csv;DataTable;Import Csv;Export Csv;Csv Object</PackageTags>
     <Company />
-    <Version>5.0.0</Version>
+    <Version>5.0.1</Version>
     <PackageLicenseFile>GPL.txt</PackageLicenseFile>
     <Title>DevToys.Poco.Csv.Core</Title>
     <Copyright>2024</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
-    <PackageReleaseNotes>5.0.0
+    <PackageReleaseNotes>5.0.1
+- Bug Fix: ICustomCsvParse.Reading new implementations not executed.
+
+5.0.0
 - Added a new CsvSerializer class to serialize / deserialize directly from and to strings.
 		
 4.5.3

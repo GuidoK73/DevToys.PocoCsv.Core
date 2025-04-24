@@ -201,142 +201,177 @@ namespace DevToys.PocoCsv.Core
             if (TypeUtils.HasInterface<ICustomCsvParse<string>>(customAttributeType))
             {
                 __CustomParserString[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<string>;
+                __CustomParser[index] = __CustomParserString[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Guid>>(customAttributeType))
             {
                 __CustomParserGuid[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Guid>;
+                __CustomParser[index] = __CustomParserGuid[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Boolean>>(customAttributeType))
             {
                 __CustomParserBoolean[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Boolean>;
+                __CustomParser[index] = __CustomParserBoolean[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<DateTime>>(customAttributeType))
             {
                 __CustomParserDateTime[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<DateTime>;
+                __CustomParser[index] = __CustomParserDateTime[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<DateTimeOffset>>(customAttributeType))
             {
                 __CustomParserDateTimeOffset[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<DateTimeOffset>;
+                __CustomParser[index] = __CustomParserDateTimeOffset[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<TimeSpan>>(customAttributeType))
             {
                 __CustomParserTimeSpan[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<TimeSpan>;
+                __CustomParser[index] = __CustomParserTimeSpan[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Byte>>(customAttributeType))
             {
                 __CustomParserByte[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Byte>;
+                __CustomParser[index] = __CustomParserByte[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<SByte>>(customAttributeType))
             {
                 __CustomParserSByte[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<SByte>;
+                __CustomParser[index] = __CustomParserSByte[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Int16>>(customAttributeType))
             {
                 __CustomParserInt16[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Int16>;
+                __CustomParser[index] = __CustomParserInt16[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Int32>>(customAttributeType))
             {
                 __CustomParserInt32[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Int32>;
+                __CustomParser[index] = __CustomParserInt32[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Int64>>(customAttributeType))
             {
                 __CustomParserInt64[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Int64>;
+                __CustomParser[index] = __CustomParserInt64[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Single>>(customAttributeType))
             {
                 __CustomParserSingle[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Single>;
+                __CustomParser[index] = __CustomParserSingle[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Decimal>>(customAttributeType))
             {
                 __CustomParserDecimal[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Decimal>;
+                __CustomParser[index] = __CustomParserDecimal[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Double>>(customAttributeType))
             {
                 __CustomParserDouble[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Double>;
+                __CustomParser[index] = __CustomParserDouble[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<UInt16>>(customAttributeType))
             {
                 __CustomParserUInt16[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<UInt16>;
+                __CustomParser[index] = __CustomParserUInt16[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<UInt32>>(customAttributeType))
             {
                 __CustomParserUInt32[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<UInt32>;
+                __CustomParser[index] = __CustomParserUInt32[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<UInt64>>(customAttributeType))
             {
                 __CustomParserUInt64[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<UInt64>;
+                __CustomParser[index] = __CustomParserUInt64[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<BigInteger>>(customAttributeType))
             {
                 __CustomParserBigInteger[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<BigInteger>;
+                __CustomParser[index] = __CustomParserBigInteger[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Guid?>>(customAttributeType))
             {
                 __CustomParserGuidNullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Guid?>;
+                __CustomParser[index] = __CustomParserGuidNullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Boolean?>>(customAttributeType))
             {
                 __CustomParserBooleanNullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Boolean?>;
+                __CustomParser[index] = __CustomParserBooleanNullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<DateTime?>>(customAttributeType))
             {
                 __CustomParserDateTimeNullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<DateTime?>;
+                __CustomParser[index] = __CustomParserDateTimeNullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<DateTimeOffset?>>(customAttributeType))
             {
                 __CustomParserDateTimeOffsetNullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<DateTimeOffset?>;
+                __CustomParser[index] = __CustomParserDateTimeOffsetNullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<TimeSpan?>>(customAttributeType))
             {
                 __CustomParserTimeSpanNullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<TimeSpan?>;
+                __CustomParser[index] = __CustomParserTimeSpanNullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Byte?>>(customAttributeType))
             {
                 __CustomParserByteNullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Byte?>;
+                __CustomParser[index] = __CustomParserByteNullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<SByte?>>(customAttributeType))
             {
                 __CustomParserSByteNullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<SByte?>;
+                __CustomParser[index] = __CustomParserSByteNullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Int16?>>(customAttributeType))
             {
                 __CustomParserInt16Nullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Int16?>;
+                __CustomParser[index] = __CustomParserInt16Nullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Int32?>>(customAttributeType))
             {
                 __CustomParserInt32Nullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Int32?>;
+                __CustomParser[index] = __CustomParserInt32Nullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Int64?>>(customAttributeType))
             {
                 __CustomParserInt64Nullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Int64?>;
+                __CustomParser[index] = __CustomParserInt64Nullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Single?>>(customAttributeType))
             {
                 __CustomParserSingleNullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Single?>;
+                __CustomParser[index] = __CustomParserSingleNullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Decimal?>>(customAttributeType))
             {
                 __CustomParserDecimalNullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Decimal?>;
+                __CustomParser[index] = __CustomParserDecimalNullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<Double?>>(customAttributeType))
             {
                 __CustomParserDoubleNullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<Double?>;
+                __CustomParser[index] = __CustomParserDoubleNullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<UInt16?>>(customAttributeType))
             {
                 __CustomParserUInt16Nullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<UInt16?>;
+                __CustomParser[index] = __CustomParserUInt16Nullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<UInt32?>>(customAttributeType))
             {
                 __CustomParserUInt32Nullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<UInt32?>;
+                __CustomParser[index] = __CustomParserUInt32Nullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<UInt64?>>(customAttributeType))
             {
                 __CustomParserUInt64Nullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<UInt64?>;
+                __CustomParser[index] = __CustomParserUInt64Nullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse<BigInteger?>>(customAttributeType))
             {
                 __CustomParserBigIntegerNullable[index] = Activator.CreateInstance(customAttributeType) as ICustomCsvParse<BigInteger?>;
+                __CustomParser[index] = __CustomParserBigIntegerNullable[index];
             }
             else if (TypeUtils.HasInterface<ICustomCsvParse>(customAttributeType))
             {
