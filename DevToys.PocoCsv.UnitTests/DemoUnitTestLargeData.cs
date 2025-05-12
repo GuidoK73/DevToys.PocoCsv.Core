@@ -3,11 +3,9 @@ using DevToys.PocoCsv.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using DevToys.PocoCsv.UnitTests.Models;
-using static System.Net.WebRequestMethods;
+
 
 namespace DevToys.PocoCsv.UnitTests
 {
@@ -32,31 +30,39 @@ namespace DevToys.PocoCsv.UnitTests
             _w.Stop();
             var _DurationA = _w.Duration;
             Console.WriteLine(_w.Duration);
-            //{{00:00:15.7702391}}
-            //00:00:08.6757924
+
+
+
 
 
             _w.Start();
 
-            using (var _reader = new CsvReader<CsvSimple>(_file, ',') { BufferSize = 2048 })
+            using (var _reader = new CsvReader<CsvSimple>(_file, ','))
             {
                 var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
             }
-            //00:00:22.3810056
-            // 00:00:23.2109005
-            // 00:00:21.2599918
-            // 00:00:20.9277719
-            // 00:00:20.4437562
-            // 00:00:20.4812967
-            // { 00:00:21.3921716}
-            //{ 00:00:20.5838151}
-            //{ 00:00:16.5241491}
-            //{ 00:00:16.7875149}
-            //{ 00:00:17.0972567}
 
             _w.Stop();
             var _Duration1 = _w.Duration;
             Console.WriteLine(_w.Duration);
+
+
+
+
+            _w.Start();
+
+            string _text = System.IO.File.ReadAllText(_file);
+
+            CsvSerializer _se = new CsvSerializer();
+
+            var _rows2 = _se.DeserializeObject<CsvSimple>(_text).ToList();
+
+
+            _w.Stop();
+            var _Duration2 = _w.Duration;
+            Console.WriteLine(_w.Duration);
+
+
 
 
             _w.Start();
@@ -67,7 +73,7 @@ namespace DevToys.PocoCsv.UnitTests
             }
 
             _w.Stop();
-            var _Duration2 = _w.Duration;
+            var _Duration3 = _w.Duration;
             Console.WriteLine(_w.Duration);
         }
 

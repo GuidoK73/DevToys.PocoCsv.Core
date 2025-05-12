@@ -139,6 +139,7 @@ namespace DevToys.PocoCsv.Core
                     _File = Path.Combine(path.TrimEnd(new char[] { '\\' }), $"{typeof(T).Name}.csv");
                 }
             }
+            
         }
 
         /// <summary>

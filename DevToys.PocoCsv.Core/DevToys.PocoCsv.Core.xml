@@ -683,7 +683,7 @@
             Deconstruct extension methods for string[]
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.AppendCsv(System.Text.StringBuilder,System.Char,System.String[])">
+        <member name="M:DevToys.PocoCsv.Core.CsvExtensionMethods.AppendCsvValues(System.Text.StringBuilder,System.Char,System.String[])">
             <summary>
             Add Csv Line to StringBuilders
             </summary>
@@ -838,11 +838,6 @@
             indicates whether to look for byte order marks at the beginning of the file. Default: true
             </summary>
         </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.BufferSize">
-            <summary>
-            Stream buffer size, Default: 1024
-            </summary>
-        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.Culture">
             <summary>
             Culture info to use for serialization.
@@ -979,7 +974,6 @@
             
             </summary>
             <param name="message"></param>
-            <param name="values"></param>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvException">
             <summary>
@@ -1002,12 +996,27 @@
             Csv serialization/deserialization from and to strings.
             </summary>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvSerializer.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvSerializer.#ctor(DevToys.PocoCsv.Core.CsvSerializerSettings)">
+            <summary>
+            
+            </summary>
+            <param name="settings"></param>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvSerializer.Settings">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvSerializer.Deserialize(System.String,System.Int32[])">
             <summary>
             Deserializes a CSV string to IEnumerable string[]
             </summary>
             <param name="data">string to convert</param>
-            <param name="seperator">separator to use</param>
             <param name="selectIndexes">columns to select starting at 0, specify none for all columns</param>
             <returns></returns>
         </member>
@@ -1016,26 +1025,31 @@
             Deserializes a CSV string to IEnumerable string[]
             </summary>
             <param name="data">string to convert</param>
-            <param name="seperator">separator to use</param>
-            <param name="selectIndexes">columns to select starting at 0, specify none for all columns</param>
+            <param name="selectIndexes">columns to select starting at 0, skip for all columns</param>
             <returns></returns>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvSerializer.DeserializeObject``1(System.Text.StringBuilder)">
             <summary>
             Deserialize a CSV formatted string to a collection.
             </summary>
+            <typeparam name="T"></typeparam>
+            <param name="data"></param>
+            <returns></returns>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvSerializer.DeserializeObject``1(System.String)">
             <summary>
             Deserialize a CSV formatted string to a collection.
             </summary>
+            <typeparam name="T"></typeparam>
+            <param name="data"></param>
+            <returns></returns>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvSerializer.Serialize(System.Collections.Generic.IEnumerable{System.String[]},System.Int32[])">
             <summary>
             Serialize a IEnumerable string[] collection to CSV.
             </summary>
             <param name="data"></param>
-            <param name="selectIndexes"></param>
+            <param name="selectIndexes">Limit the result array to only these columns.</param>
             <returns></returns>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvSerializer.Serialize(System.Collections.Generic.IEnumerable{System.String[]},System.Text.StringBuilder@,System.Int32[])">
@@ -1043,24 +1057,29 @@
             Serialize a IEnumerable string[] collection to CSV.
             </summary>
             <param name="data"></param>
-            <param name="selectIndexes"></param>
-            <returns></returns>
+            <param name="result"></param>
+            <param name="selectIndexes">Limit the result array to only these columns.</param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvSerializer.SerializeObject``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Serialize a collection to string in CSV format.
             </summary>
+            <param name="items">Items collection to serialize.</param>
+            <returns></returns>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvSerializer.SerializeObject``1(System.Text.StringBuilder,System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Serialize a collection to string in CSV format.
             </summary>
+            <typeparam name="T"></typeparam>
+            <param name="target">Target StringBuilder to write the result to.</param>
+            <param name="items">Items collection to serialize.</param>
+            <returns></returns>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvSerializer.WriteCsvLine(System.Text.StringBuilder@,System.String[],System.Int32[])">
+        <member name="T:DevToys.PocoCsv.Core.CsvSerializerSettings">
             <summary>
-            Write an array of strings to the Csv Stream and escapes when nececary.
+            
             </summary>
-            <param name="values">Array of strings</param>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvSerializerSettings.Header">
             <summary>
@@ -1085,6 +1104,11 @@
         <member name="P:DevToys.PocoCsv.Core.CsvSerializerSettings.CRLFMode">
             <summary>
             CRLF mode to use for the Serializer.
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvSerializerSettings.BufferSize">
+            <summary>
+            Size of StringBuilder buffer.
             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamReader">
@@ -1281,7 +1305,7 @@
             Properties needs to be marked with ColumnAttribute
             </summary>
         </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStringReader`1.#ctor(System.Text.StringBuilder,System.Char)">
+        <member name="M:DevToys.PocoCsv.Core.CsvStringReader`1.#ctor(System.Text.StringBuilder,System.Char,System.Int32)">
             <summary>
             Constructor
             </summary>
@@ -1362,21 +1386,21 @@
             Constructor
             </summary>
             <param name="separator">The separator to use, default: ','</param>
-            <param name="encoding"></param>
             <param name="culture"></param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStringWriter`1.#ctor(System.Text.StringBuilder,System.Char)">
             <summary>
             Constructor
             </summary>
+            <param name="stringBuilder"></param>
             <param name="separator">The separator to use, default: ','</param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStringWriter`1.#ctor(System.Text.StringBuilder,System.Globalization.CultureInfo,System.Char)">
             <summary>
             Constructor
             </summary>
+            <param name="stringBuilder"></param>
             <param name="separator">The separator to use, default: ','</param>
-            <param name="encoding"></param>
             <param name="culture"></param>
         </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStringWriter`1.ColumnLimit">
@@ -1468,17 +1492,17 @@
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvUtils.GetCsvSeparator(DevToys.PocoCsv.Core.CsvStreamReader,System.Char@,System.Int32)">
             <summary>
-            Retrieves CSV separator from text.
+            Guesses CSV separator from text.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvUtils.GetCsvSeparator(System.String,System.Char@,System.Int32)">
             <summary>
-            Retrieves CSV separator from text.
+            Guesses CSV separator from text.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvUtils.GetCsvSeparator(System.Text.StringBuilder,System.Char@,System.Int32)">
             <summary>
-            Retrieves CSV separator from text.
+            Guesses CSV separator from text.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvUtils.IsCsv(System.String,System.Char,System.Int32)">
@@ -1500,8 +1524,6 @@
             <summary>
             Join a string as a CSV line.
             </summary>
-            <param name="values"></param>
-            <returns></returns>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvUtils.JoinCsvLine(System.Char,System.String[])">
             <summary>

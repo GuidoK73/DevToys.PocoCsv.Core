@@ -12,7 +12,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Add Csv Line to StringBuilders
         /// </summary>
-        public static StringBuilder AppendCsv(this StringBuilder sb, char separator, params string[] values)
+        public static StringBuilder AppendCsvValues(this StringBuilder sb, char separator, params string[] values)
         {
             foreach (string value in values)
             {

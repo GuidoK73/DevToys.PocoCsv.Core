@@ -31,7 +31,7 @@ Console.WriteLine("Writer {0}", _w.Duration);
 
 
 _w.Start();
-using (var _reader = new DevToys.PocoCsv.Core.CsvReader<CsvObject>(file, ',') { BufferSize = 2048 })
+using (var _reader = new DevToys.PocoCsv.Core.CsvReader<CsvObject>(file, ','))
 {
     var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
 }
@@ -43,7 +43,7 @@ Console.WriteLine("Reader Large {0}", _w.Duration);
 
 _w.Start();
 
-using (var _reader = new DevToys.PocoCsv.Core.CsvReader<CsvDataTypeObject>(file, ',') { BufferSize = 2048 })
+using (var _reader = new DevToys.PocoCsv.Core.CsvReader<CsvDataTypeObject>(file, ','))
 {
     var _rows = _reader.ReadAsEnumerable().ToList(); // Materialize.
 }

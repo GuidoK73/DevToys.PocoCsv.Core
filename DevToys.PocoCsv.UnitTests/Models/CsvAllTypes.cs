@@ -128,6 +128,10 @@ namespace DevToys.PocoCsv.UnitTests.Models
         [Column(Index = 36, OutputFormat = "", OutputNullValue = "")]
         public TestEnum _Enum { get; set; }
 
+        [Column(Index = 37, OutputFormat = "", OutputNullValue = "", CustomParserType = typeof(LowerCaseParser))]
+        public string _LowerCaseParserReading { get; set; }
+
+
 
     }
 

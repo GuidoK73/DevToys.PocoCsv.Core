@@ -70,6 +70,5 @@ namespace DevToys.PocoCsv.Core
             nullable = Nullable;
             sqlDatabaseType = SqlDatabaseType;
         }
-
     }
 }

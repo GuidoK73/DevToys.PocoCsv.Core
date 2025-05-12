@@ -2,6 +2,9 @@
 
 namespace DevToys.PocoCsv.Core
 { 
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class CsvSerializerSettings
     {
         /// <summary>
@@ -28,5 +31,11 @@ namespace DevToys.PocoCsv.Core
         /// CRLF mode to use for the Serializer.
         /// </summary>
         public CRLFMode CRLFMode { get; set; } = CRLFMode.CRLF;
+
+
+        /// <summary>
+        /// Size of StringBuilder buffer.
+        /// </summary>
+        public int BufferSize { get; set; } = 1024;
     }
 }

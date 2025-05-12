@@ -317,6 +317,7 @@ both examples work with string or StringBuilder.
 | DetectSeparator | Automatic separator detection.       |
 | Culture         | Culture to use.                      |
 | CRLFMode        | CRLF mode to use for the Serializer. |
+| BufferSize      | Buffersize to use                    |
 
 
 

@@ -18,7 +18,6 @@ namespace DevToys.PocoCsv.Core
         /// 
         /// </summary>
         /// <param name="message"></param>
-        /// <param name="values"></param>
         public CsvReadException(string message) : base(message) { }
     }
 

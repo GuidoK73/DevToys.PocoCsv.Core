@@ -38,7 +38,6 @@ var _DevToysHelper = new DevToysHelper();
 
 using (DevToys.PocoCsv.Core.CsvWriter<CsvObject> _writer = new(file) { Separator = ',' })
 {
-    _writer.Open();
     _writer.WriteHeader();
     _writer.Write(_DevToysHelper.LargeData());
 }

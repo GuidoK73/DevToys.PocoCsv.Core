@@ -12,7 +12,7 @@ namespace DevToys.PocoCsv.Core
     public sealed class CsvStreamReader : StreamReader
     {
         private char _Separator = ',';
-        private readonly StringBuilder _buffer = new StringBuilder(1027);
+        private readonly StringBuilder _buffer = new StringBuilder(1024);
         private const int _CR = '\r';
         private const int _LF = '\n';
         private const int _ESCAPE = '"';
@@ -41,7 +41,13 @@ namespace DevToys.PocoCsv.Core
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
         /// <param name="bufferSize">The minimum buffer size.</param>
         public CsvStreamReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, int bufferSize) : base(path, encoding, detectEncodingFromByteOrderMarks, bufferSize)
-        { }
+        {
+            if (bufferSize < 256)
+            {
+                bufferSize = 256;
+            }
+            _buffer = new StringBuilder(bufferSize);
+        }
 
         /// <summary>
         /// Initializes a new instance of the System.IO.StreamReader class for the specified stream.
@@ -59,7 +65,12 @@ namespace DevToys.PocoCsv.Core
         /// <param name="bufferSize">The minimum buffer size.</param>
         /// <param name="leaveOpen">true to leave the stream open after the System.IO.StreamReader object is disposed; otherwise, false.</param>
         public CsvStreamReader(Stream stream, Encoding encoding = null, bool detectEncodingFromByteOrderMarks = true, int bufferSize = -1, bool leaveOpen = false) : base(stream, encoding, detectEncodingFromByteOrderMarks, bufferSize, leaveOpen)
-        { }
+        {
+            if (bufferSize < 256)
+            {
+                bufferSize = 256;
+            }
+        }
 
         /// <summary>
         /// Limit the result array for ReadCsvLine to only these columns.

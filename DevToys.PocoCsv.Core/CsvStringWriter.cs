@@ -13,7 +13,7 @@ namespace DevToys.PocoCsv.Core
     /// <summary>
     /// Write T to Csv Stream from an IEnumerable source.
     /// </summary>
-    public sealed class CsvStringWriter<T> : BaseCsv where T : class, new()
+    internal sealed class CsvStringWriter<T> : BaseCsv where T : class, new()
     {
         private const char _CR = '\r';
         private const string _CRLF = "\r\n";
@@ -81,7 +81,6 @@ namespace DevToys.PocoCsv.Core
         /// Constructor
         /// </summary>
         /// <param name="separator">The separator to use, default: ','</param>
-        /// <param name="encoding"></param>
         /// <param name="culture"></param>
         public CsvStringWriter(CultureInfo culture, char separator = ',')
         {
@@ -92,6 +91,7 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="stringBuilder"></param>
         /// <param name="separator">The separator to use, default: ','</param>
         public CsvStringWriter(StringBuilder stringBuilder, char separator = ',')
         {
@@ -102,8 +102,8 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="stringBuilder"></param>
         /// <param name="separator">The separator to use, default: ','</param>
-        /// <param name="encoding"></param>
         /// <param name="culture"></param>
         public CsvStringWriter(StringBuilder stringBuilder, CultureInfo culture, char separator = ',')
         {

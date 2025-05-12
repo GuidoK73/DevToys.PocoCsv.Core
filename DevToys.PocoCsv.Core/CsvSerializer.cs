@@ -15,20 +15,30 @@ namespace DevToys.PocoCsv.Core
         private const int _LF = '\n';
         private const int _TERMINATOR = -1;
         private char[] _EscapeChars = null;
+        
+        /// <summary>
+        /// 
+        /// </summary>
         public CsvSerializer()
         { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="settings"></param>
         public CsvSerializer(CsvSerializerSettings settings)
         {
             Settings = settings;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public CsvSerializerSettings Settings { get; private set; } = new CsvSerializerSettings();
         /// <summary>
         /// Deserializes a CSV string to IEnumerable string[]
         /// </summary>
         /// <param name="data">string to convert</param>
-        /// <param name="seperator">separator to use</param>
         /// <param name="selectIndexes">columns to select starting at 0, specify none for all columns</param>
         /// <returns></returns>
         public IEnumerable<string[]> Deserialize(string data, params int[] selectIndexes)
@@ -36,13 +46,14 @@ namespace DevToys.PocoCsv.Core
             int _lastposition = data.Length;
             int _position = 0;
             char _separator = Settings.Separator;
+            int _bufferSize = Settings.BufferSize;
             if (Settings.DetectSeparator)
             {
                 CsvUtils.GetCsvSeparator(data, out _separator);
             }
             while (_position < _lastposition)
             {
-                string[] _result = Deserialize(data, ref _position, _separator, selectIndexes);
+                string[] _result = Deserialize(data, ref _position, _separator, _bufferSize, selectIndexes);
                 yield return _result;
             }
         }
@@ -51,21 +62,21 @@ namespace DevToys.PocoCsv.Core
         /// Deserializes a CSV string to IEnumerable string[]
         /// </summary>
         /// <param name="data">string to convert</param>
-        /// <param name="seperator">separator to use</param>
-        /// <param name="selectIndexes">columns to select starting at 0, specify none for all columns</param>
+        /// <param name="selectIndexes">columns to select starting at 0, skip for all columns</param>
         /// <returns></returns>
         public IEnumerable<string[]> Deserialize(StringBuilder data, params int[] selectIndexes)
         {
             int _lastposition = data.Length;
             int _position = 0;
             char _separator = Settings.Separator;
+            int _bufferSize = Settings.BufferSize;
             if (Settings.DetectSeparator)
             {
                 CsvUtils.GetCsvSeparator(data, out _separator);
             }
             while (_position < _lastposition)
             {
-                string[] _result = Deserialize(data, ref _position, _separator, selectIndexes);
+                string[] _result = Deserialize(data, ref _position, _separator, _bufferSize, selectIndexes);
                 yield return _result;
             }
         }
@@ -74,9 +85,12 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Deserialize a CSV formatted string to a collection.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public IEnumerable<T> DeserializeObject<T>(StringBuilder data) where T : class, new()
         {
-            CsvStringReader<T> _reader = new CsvStringReader<T>(data, Settings.Separator);
+            CsvStringReader<T> _reader = new CsvStringReader<T>(data, Settings.Separator, Settings.BufferSize);
             _reader.Culture = Settings.Culture;
             _reader.DetectSeparator = Settings.DetectSeparator;
             if (Settings.Header)
@@ -89,6 +103,9 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Deserialize a CSV formatted string to a collection.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public IEnumerable<T> DeserializeObject<T>(string data) where T : class, new()
         {
             StringBuilder _sb = new StringBuilder(data);
@@ -106,7 +123,7 @@ namespace DevToys.PocoCsv.Core
         /// Serialize a IEnumerable string[] collection to CSV.
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="selectIndexes"></param>
+        /// <param name="selectIndexes">Limit the result array to only these columns.</param>
         /// <returns></returns>
         public string Serialize(IEnumerable<string[]> data, params int[] selectIndexes)
         {
@@ -119,8 +136,8 @@ namespace DevToys.PocoCsv.Core
         /// Serialize a IEnumerable string[] collection to CSV.
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="selectIndexes"></param>
-        /// <returns></returns>
+        /// <param name="result"></param>
+        /// <param name="selectIndexes">Limit the result array to only these columns.</param>
         public void Serialize(IEnumerable<string[]> data, ref StringBuilder result, params int[] selectIndexes)
         {
             InitializeEscapeChars();
@@ -133,9 +150,11 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Serialize a collection to string in CSV format.
         /// </summary>
+        /// <param name="items">Items collection to serialize.</param>
+        /// <returns></returns>
         public string SerializeObject<T>(IEnumerable<T> items) where T : class, new()
         {
-            CsvStringWriter<T> _writer = new CsvStringWriter<T>(Settings.Culture, Settings.Separator);
+            var _writer = new CsvStringWriter<T>(Settings.Culture, Settings.Separator);
             _writer.Culture = Settings.Culture;
             _writer.CRLFMode = Settings.CRLFMode;
             if (Settings.Header)
@@ -148,6 +167,10 @@ namespace DevToys.PocoCsv.Core
         /// <summary>
         /// Serialize a collection to string in CSV format.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target">Target StringBuilder to write the result to.</param>
+        /// <param name="items">Items collection to serialize.</param>
+        /// <returns></returns>
         public StringBuilder SerializeObject<T>(StringBuilder target, IEnumerable<T> items) where T : class, new()
         {
             CsvStringWriter<T> _writer = new CsvStringWriter<T>(target, Settings.Culture, Settings.Separator);
@@ -159,9 +182,9 @@ namespace DevToys.PocoCsv.Core
             return _writer.Write(items);
         }
 
-        private string[] Deserialize(string data, ref int position, char seperator, params int[] selectIndexes)
+        private string[] Deserialize(string data, ref int position, char seperator, int bufferSize, params int[] selectIndexes)
         {
-            StringBuilder _buffer = new StringBuilder(1027);
+            StringBuilder _buffer = new StringBuilder(bufferSize);
 
             int _byte = 0;
             int _nextByte = 0;
@@ -279,9 +302,9 @@ namespace DevToys.PocoCsv.Core
             return _result.ToArray();
         }
 
-        private string[] Deserialize(StringBuilder data, ref int position, char seperator, params int[] selectIndexes)
+        private string[] Deserialize(StringBuilder data, ref int position, char seperator, int bufferSize, params int[] selectIndexes)
         {
-            StringBuilder _buffer = new StringBuilder(1027);
+            StringBuilder _buffer = new StringBuilder(bufferSize);
 
             int _byte = 0;
             int _nextByte = 0;
@@ -398,7 +421,6 @@ namespace DevToys.PocoCsv.Core
             }
             return _result.ToArray();
         }
-
 
         private string Escape(string s)
         {
@@ -436,10 +458,6 @@ namespace DevToys.PocoCsv.Core
             return (int)data[position + 1];
         }
 
-        /// <summary>
-        /// Write an array of strings to the Csv Stream and escapes when nececary.
-        /// </summary>
-        /// <param name="values">Array of strings</param>
         private void WriteCsvLine(ref StringBuilder sb, string[] values, params int[] selectIndexes)
         {
             int _selectIndexesIndex = 0;

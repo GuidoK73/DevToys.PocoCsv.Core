@@ -118,7 +118,6 @@ namespace DevToys.PocoCsv.Core
             bool[] _columnNullable = new bool[_header.Length];
 
             bool _first = true;
-            int _row = 0;
 
             CsvSerializer csvSerializer = new CsvSerializer(new CsvSerializerSettings() { Separator = _separator });
 
@@ -177,7 +176,6 @@ namespace DevToys.PocoCsv.Core
             bool[] _columnNullable = new bool[_header.Length];
 
             bool _first = true;
-            int _row = 0;
 
             CsvSerializer csvSerializer = new CsvSerializer(new CsvSerializerSettings() { Separator = _separator });
 
@@ -223,8 +221,10 @@ namespace DevToys.PocoCsv.Core
         }
 
 
+
+
         /// <summary>
-        /// Retrieves CSV separator from text.
+        /// Guesses CSV separator from text.
         /// </summary>
         public static bool GetCsvSeparator(CsvStreamReader reader, out char separator, int sampleRows = 20)
         {
@@ -242,7 +242,7 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
-        /// Retrieves CSV separator from text.
+        /// Guesses CSV separator from text.
         /// </summary>
         public static bool GetCsvSeparator(string text, out char separator, int sampleRows = 20)
         {
@@ -260,7 +260,7 @@ namespace DevToys.PocoCsv.Core
         }
 
         /// <summary>
-        /// Retrieves CSV separator from text.
+        /// Guesses CSV separator from text.
         /// </summary>
         public static bool GetCsvSeparator(StringBuilder text, out char separator, int sampleRows = 20)
         {
@@ -397,11 +397,10 @@ namespace DevToys.PocoCsv.Core
 
             return true;
         }
+
         /// <summary>
         /// Join a string as a CSV line.
         /// </summary>
-        /// <param name="values"></param>
-        /// <returns></returns>
         public static string JoinCsvLine(params string[] values)
         {
             StringBuilder sb = new StringBuilder();
@@ -557,13 +556,6 @@ namespace DevToys.PocoCsv.Core
             return sb.ToString();
         }
 
-        internal static int Lowest(int value1, int value2)
-        {
-            if (value1 < value2)
-            {
-                return value1;
-            }
-            return value2;
-        }
+        internal static int Lowest(int value1, int value2) => (value1 < value2) ? value1 : value2;
     }
 }

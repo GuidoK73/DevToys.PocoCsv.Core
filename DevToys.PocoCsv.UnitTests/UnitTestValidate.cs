@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using DevToys.PocoCsv.UnitTests.Models;
 using System.Security.Cryptography.X509Certificates;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DevToys.PocoCsv.UnitTests
 {
@@ -485,14 +486,14 @@ namespace DevToys.PocoCsv.UnitTests
         {
             StringBuilder _sb = new StringBuilder();
 
-            _sb.AppendCsv(',', "Row 1", "Row A,A\rA", "A", "A1").Append(_CRLF);                
-            _sb.AppendCsv(',', "Row 2", "Row B,B\nB", "B", "B2").Append(_CRLF);
-            _sb.AppendCsv(',', "Row 3", "Row C;C", "C", "C3").Append(_LF);
-            _sb.AppendCsv(',', "Row 4", "Row D;D", "D", "D4").Append(_LF);
-            _sb.AppendCsv(',', "Row 5", "Row E,E", "E", "E5").Append(_CR);
-            _sb.AppendCsv(',', "Row 6", "Row F,F\r\nF,F", "F", "F6").Append(_CR);
-            _sb.AppendCsv(',', "Row F\";\"F\r\nF,F\"", "Row 7", "\"", "F6\" ").Append(_CR);
-            _sb.AppendCsv(',', "A\" ", "\"\"\"", "B\"", "\"\"\"").Append(_CR);
+            _sb.AppendCsvValues(',', "Row 1", "Row A,A\rA", "A", "A1").Append(_CRLF);                
+            _sb.AppendCsvValues(',', "Row 2", "Row B,B\nB", "B", "B2").Append(_CRLF);
+            _sb.AppendCsvValues(',', "Row 3", "Row C;C", "C", "C3").Append(_LF);
+            _sb.AppendCsvValues(',', "Row 4", "Row D;D", "D", "D4").Append(_LF);
+            _sb.AppendCsvValues(',', "Row 5", "Row E,E", "E", "E5").Append(_CR);
+            _sb.AppendCsvValues(',', "Row 6", "Row F,F\r\nF,F", "F", "F6").Append(_CR);
+            _sb.AppendCsvValues(',', "Row F\";\"F\r\nF,F\"", "Row 7", "\"", "F6\" ").Append(_CR);
+            _sb.AppendCsvValues(',', "A\" ", "\"\"\"", "B\"", "\"\"\"").Append(_CR);
 
             string _text = _sb.ToString();
 
@@ -542,6 +543,28 @@ namespace DevToys.PocoCsv.UnitTests
         }
 
 
+        [TestMethod]
+        public void TestIsCsv()
+        {
+            StringBuilder _sb = new StringBuilder();
+            _sb.AppendCsvLine(',', "1", "2", "3");
+            _sb.AppendCsvLine(',', "4", "5", "6");
+
+            bool _isCsv = CsvUtils.IsCsv(_sb, ',');
+
+
+            string _file = System.IO.Path.GetTempFileName();
+            File.WriteAllText(_file, _sb.ToString());
+
+
+            using (CsvStreamReader _reader = new CsvStreamReader(_file))
+            {
+                _isCsv = CsvUtils.IsCsv(_reader, ',');
+            }
+
+
+        }
+
 
         [TestMethod]
         public void TestColIndexCsvSerializer()
@@ -577,19 +600,19 @@ namespace DevToys.PocoCsv.UnitTests
                 {
                     _BigIntegerValue = 1,
                     _BigIntegerValueNull = null,
-                    _DateTimeValue = DateTime.Now,
+                    _DateTimeValue = new DateTime(2025, 10,10, 12, 44, 23),
                     _BooleanValue = true,
                     _BooleanValueNull = null,
                     _ByteValue = 2,
                     _ByteValueNull = null,
                     _DateTimeOffsetValueNull = null,
-                    _DateTimeOffsetValue = DateTimeOffset.Now,
+                    _DateTimeOffsetValue = new DateTime(2025, 10, 10, 12, 44, 23),
                     _DateTimeValueNull = null,
                     _DecimalValue = 5,
                     _DecimalValueNull = null,
                     _DoubleValue = 6.8,
                     _DoubleValueNull = null,
-                    _GuidValue = Guid.NewGuid(),
+                    _GuidValue = Guid.Parse("68f92586-2306-4f77-b5bc-e412ac017504"),
                     _GuidValueNull = null,
                     _Int16Value = 16,
                     _Int16ValueNull = null,
@@ -610,7 +633,8 @@ namespace DevToys.PocoCsv.UnitTests
                     _UInt32ValueNull = null,
                     _UInt64Value = 23,
                     _UInt64ValueNull = null,
-                    _Enum = Models.TestEnum.Something
+                    _Enum = Models.TestEnum.Something,
+                    _LowerCaseParserReading = "ABC123",
                 };
 
                 _writer.Write(_x);
@@ -619,20 +643,20 @@ namespace DevToys.PocoCsv.UnitTests
                 {
                     _BigIntegerValue = 1,
                     _BigIntegerValueNull = 1,
-                    _DateTimeValue = DateTime.Now,
+                    _DateTimeValue = new DateTime(2025, 10, 10, 12, 44, 23),
                     _BooleanValue = true,
                     _BooleanValueNull = false,
                     _ByteValue = 2,
                     _ByteValueNull = 3,
-                    _DateTimeOffsetValueNull = DateTimeOffset.Now,
-                    _DateTimeOffsetValue = DateTimeOffset.Now,
-                    _DateTimeValueNull = DateTime.Now,
+                    _DateTimeOffsetValueNull = new DateTime(2025, 10, 10, 12, 44, 23),
+                    _DateTimeOffsetValue = new DateTime(2025, 10, 10, 12, 44, 23),
+                    _DateTimeValueNull = new DateTime(2025, 10, 10, 12, 44, 23),
                     _DecimalValue = 5.65M,
                     _DecimalValueNull = 4.23M,
                     _DoubleValue = 6.8,
                     _DoubleValueNull = 10.89,
-                    _GuidValue = Guid.NewGuid(),
-                    _GuidValueNull = Guid.Empty,
+                    _GuidValue = Guid.Parse("68f92586-2306-4f77-b5bc-e412ac017505"),
+                    _GuidValueNull = Guid.Parse("68f92586-2306-4f77-b5bc-e412ac017506"),
                     _Int16Value = 16,
                     _Int16ValueNull = 26,
                     _Int32Value = 17,
@@ -652,7 +676,8 @@ namespace DevToys.PocoCsv.UnitTests
                     _UInt32ValueNull = 42,
                     _UInt64Value = 23,
                     _UInt64ValueNull = 43,
-                    _Enum = Models.TestEnum.None
+                    _Enum = Models.TestEnum.None,
+                    _LowerCaseParserReading = "aBc123"
                 };
 
                 _writer.Write(_x2);
@@ -665,11 +690,89 @@ namespace DevToys.PocoCsv.UnitTests
             string _text = File.ReadAllText(_file);
 
 
+            CsvAllTypes[] _rows;
 
             using (var _reader = new CsvReader<CsvAllTypes>(_file))
             {
                 _reader.Skip(); // Slip header.
-                var _rows = _reader.ReadAsEnumerable().ToArray(); // Materialize.
+                _rows = _reader.ReadAsEnumerable().ToArray(); // Materialize.
+
+                Assert.AreEqual(_rows[0]._BigIntegerValue, 1);
+                Assert.AreEqual(_rows[0]._BigIntegerValueNull, null);
+                Assert.AreEqual(_rows[0]._DateTimeValue, new DateTime(2025, 10, 10, 12, 44, 23));
+                Assert.AreEqual(_rows[0]._BooleanValue, true);
+                Assert.AreEqual(_rows[0]._BooleanValueNull, null);
+                Assert.AreEqual(_rows[0]._ByteValue, 2);
+                Assert.AreEqual(_rows[0]._ByteValueNull, null);
+                Assert.AreEqual(_rows[0]._DateTimeOffsetValueNull, null);
+                Assert.AreEqual(_rows[0]._DateTimeOffsetValue, new DateTime(2025, 10, 10, 12, 44, 23));
+                Assert.AreEqual(_rows[0]._DateTimeValueNull, null);
+                Assert.AreEqual(_rows[0]._DecimalValue, 5);
+                Assert.AreEqual(_rows[0]._DecimalValueNull, null);
+                Assert.AreEqual(_rows[0]._DoubleValue, 6.8);
+                Assert.AreEqual(_rows[0]._DoubleValueNull, null);
+                Assert.AreEqual(_rows[0]._GuidValue, Guid.Parse("68f92586-2306-4f77-b5bc-e412ac017504"));
+                Assert.AreEqual(_rows[0]._GuidValueNull, null);
+                Assert.AreEqual(_rows[0]._Int16Value, 16);
+                Assert.AreEqual(_rows[0]._Int16ValueNull, null);
+                Assert.AreEqual(_rows[0]._Int32Value, 17);
+                Assert.AreEqual(_rows[0]._Int32ValueNull, null);
+                Assert.AreEqual(_rows[0]._Int64Value, 18);
+                Assert.AreEqual(_rows[0]._Int64ValueNull, null);
+                Assert.AreEqual(_rows[0]._SByteValue, 19);
+                Assert.AreEqual(_rows[0]._SByteValueNull, null);
+                Assert.AreEqual(_rows[0]._SingleValue, 20);
+                Assert.AreEqual(_rows[0]._SingleValueNull, null);
+                Assert.AreEqual(_rows[0]._stringValue, "Test");
+                Assert.AreEqual(_rows[0]._TimeSpanValue, TimeSpan.MaxValue);
+                Assert.AreEqual(_rows[0]._TimeSpanValueNull, null);
+                Assert.AreEqual(_rows[0]._UInt16Value, (uint)21);
+                Assert.AreEqual(_rows[0]._UInt16ValueNull, null);
+                Assert.AreEqual(_rows[0]._UInt32Value, (uint)22);
+                Assert.AreEqual(_rows[0]._UInt32ValueNull, null);
+                Assert.AreEqual(_rows[0]._UInt64Value, (uint)23);
+                Assert.AreEqual(_rows[0]._UInt64ValueNull, null);
+                Assert.AreEqual(_rows[0]._Enum, Models.TestEnum.Something);
+                Assert.AreEqual(_rows[0]._LowerCaseParserReading, "abc123");
+
+
+                Assert.AreEqual(_rows[1]._BigIntegerValue, 1);
+                Assert.AreEqual(_rows[1]._BigIntegerValueNull, 1);
+                Assert.AreEqual(_rows[1]._DateTimeValue, new DateTime(2025, 10, 10, 12, 44, 23));
+                Assert.AreEqual(_rows[1]._BooleanValue, true);
+                Assert.AreEqual(_rows[1]._BooleanValueNull, false);
+                Assert.AreEqual(_rows[1]._ByteValue, 2);
+                Assert.AreEqual(_rows[1]._ByteValueNull, (byte?)3);
+                Assert.AreEqual(_rows[1]._DateTimeOffsetValueNull, new DateTime(2025, 10, 10, 12, 44, 23));
+                Assert.AreEqual(_rows[1]._DateTimeOffsetValue, new DateTime(2025, 10, 10, 12, 44, 23));
+                Assert.AreEqual(_rows[1]._DateTimeValueNull, new DateTime(2025, 10, 10, 12, 44, 23));
+                Assert.AreEqual(_rows[1]._DecimalValue, 5.65M);
+                Assert.AreEqual(_rows[1]._DecimalValueNull, 4.23M);
+                Assert.AreEqual(_rows[1]._DoubleValue, 6.8);
+                Assert.AreEqual(_rows[1]._DoubleValueNull, 10.89);
+                Assert.AreEqual(_rows[1]._GuidValue, Guid.Parse("68f92586-2306-4f77-b5bc-e412ac017505"));
+                Assert.AreEqual(_rows[1]._GuidValueNull, Guid.Parse("68f92586-2306-4f77-b5bc-e412ac017506"));
+                Assert.AreEqual(_rows[1]._Int16Value, 16);
+                Assert.AreEqual(_rows[1]._Int16ValueNull, (Int16?)26);
+                Assert.AreEqual(_rows[1]._Int32Value, 17);
+                Assert.AreEqual(_rows[1]._Int32ValueNull, 27);
+                Assert.AreEqual(_rows[1]._Int64Value, 18);
+                Assert.AreEqual(_rows[1]._Int64ValueNull, 28);
+                Assert.AreEqual(_rows[1]._SByteValue, 19);
+                Assert.AreEqual(_rows[1]._SByteValueNull, (SByte?)29);
+                Assert.AreEqual(_rows[1]._SingleValue, 20);
+                Assert.AreEqual(_rows[1]._SingleValueNull, 30);
+                Assert.AreEqual(_rows[1]._stringValue, "Test2");
+                Assert.AreEqual(_rows[1]._TimeSpanValue, TimeSpan.MaxValue);
+                Assert.AreEqual(_rows[1]._TimeSpanValueNull, TimeSpan.MinValue);
+                Assert.AreEqual(_rows[1]._UInt16Value, 21);
+                Assert.AreEqual(_rows[1]._UInt16ValueNull, (UInt16?)41);
+                Assert.AreEqual(_rows[1]._UInt32Value, (UInt32)22);
+                Assert.AreEqual(_rows[1]._UInt32ValueNull, (UInt32?)42);
+                Assert.AreEqual(_rows[1]._UInt64Value, (UInt64)23);
+                Assert.AreEqual(_rows[1]._UInt64ValueNull, (UInt64?)43);
+                Assert.AreEqual(_rows[1]._Enum, Models.TestEnum.None);
+                Assert.AreEqual(_rows[1]._LowerCaseParserReading, "abc123");
             }
         }
 

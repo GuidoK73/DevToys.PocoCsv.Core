@@ -59,7 +59,7 @@ namespace DevToys.PocoCsv.Core
         private ImmutableArray<Action<T, BigInteger?>> _PropertySettersBigIntegerNull;
 
         private readonly List<CsvReadError> _Errors = new List<CsvReadError>();
-        private readonly StringBuilder _buffer = new StringBuilder(1027);
+        private readonly StringBuilder _buffer = new StringBuilder(1024);
         private readonly List<string> _CsvLineReaderResult = new List<string>();
 
         private const int _CR = '\r';
@@ -87,9 +87,9 @@ namespace DevToys.PocoCsv.Core
         {
             _Stream = stream;
             _Separator = separator;
-            BufferSize = buffersize;
             Encoding = Encoding.Default;
             DetectEncodingFromByteOrderMarks = true;
+            _buffer = new StringBuilder(buffersize);
         }
 
         /// <summary>
@@ -115,9 +115,9 @@ namespace DevToys.PocoCsv.Core
             }
 
             _Separator = separator;
-            BufferSize = buffersize;
             Encoding = Encoding.Default;
             DetectEncodingFromByteOrderMarks = true;
+            _buffer = new StringBuilder(buffersize);
         }
 
         /// <summary>
@@ -168,11 +168,6 @@ namespace DevToys.PocoCsv.Core
         /// indicates whether to look for byte order marks at the beginning of the file. Default: true
         /// </summary>
         public bool DetectEncodingFromByteOrderMarks { get; set; } = true;
-
-        /// <summary>
-        /// Stream buffer size, Default: 1024
-        /// </summary>
-        public int BufferSize { get; set; } = 1024;
 
         /// <summary>
         /// Culture info to use for serialization.
@@ -737,7 +732,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueString(T targetObject)
         {
-            if (_CustomParserString[_colIndex] == null)
+            if (_CustomParserString[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 _PropertySettersString[_colIndex](targetObject, _buffer.ToString());
             }
@@ -770,7 +765,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDecimal(T targetObject)
         {
-            if (_CustomParserDecimal[_colIndex] == null)
+            if (_CustomParserDecimal[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = Decimal.TryParse(_buffer.ToString(), NumberStyles.Any, Culture, out decimal _value);
                 if (succes)
@@ -798,7 +793,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt32(T targetObject)
         {
-            if (_CustomParserInt32[_colIndex] == null)
+            if (_CustomParserInt32[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = Int32.TryParse(_buffer.ToString(), NumberStyles.Any, Culture, out int _value);
                 if (succes)
@@ -826,7 +821,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt64(T targetObject)
         {
-            if (_CustomParserInt64[_colIndex] == null)
+            if (_CustomParserInt64[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = Int64.TryParse(_buffer.ToString(), NumberStyles.Any, Culture, out long _value);
                 if (succes)
@@ -855,7 +850,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDouble(T targetObject)
         {
-            if (_CustomParserDouble[_colIndex] == null)
+            if (_CustomParserDouble[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = Double.TryParse(_buffer.ToString(), NumberStyles.Any, Culture, out double _value);
                 if (succes)
@@ -883,7 +878,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDateTime(T targetObject)
         {
-            if (_CustomParserDateTime[_colIndex] == null)
+            if (_CustomParserDateTime[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = DateTime.TryParse(_buffer.ToString(), Culture, DateTimeStyles.None, out DateTime _value);
                 if (succes)
@@ -911,7 +906,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueGuid(T targetObject)
         {
-            if (_CustomParserGuid[_colIndex] == null)
+            if (_CustomParserGuid[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = Guid.TryParse(_buffer.ToString(), out Guid _value);
                 if (succes)
@@ -939,7 +934,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueSingle(T targetObject)
         {
-            if (_CustomParserSingle[_colIndex] == null)
+            if (_CustomParserSingle[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = Single.TryParse(_buffer.ToString(), NumberStyles.Any, Culture, out float _value);
                 if (succes)
@@ -967,7 +962,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueBoolean(T targetObject)
         {
-            if (_CustomParserBoolean[_colIndex] == null)
+            if (_CustomParserBoolean[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = Boolean.TryParse(_buffer.ToString(), out Boolean _value);
                 if (succes)
@@ -995,7 +990,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueTimeSpan(T targetObject)
         {
-            if (_CustomParserTimeSpan[_colIndex] == null)
+            if (_CustomParserTimeSpan[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = TimeSpan.TryParse(_buffer.ToString(), Culture, out TimeSpan _value);
                 if (succes)
@@ -1023,7 +1018,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt16(T targetObject)
         {
-            if (_CustomParserInt16[_colIndex] == null)
+            if (_CustomParserInt16[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = Int16.TryParse(_buffer.ToString(), NumberStyles.Any, Culture, out Int16 _value);
                 if (succes)
@@ -1052,7 +1047,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueByte(T targetObject)
         {
-            if (_CustomParserByte[_colIndex] == null)
+            if (_CustomParserByte[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = Byte.TryParse(_buffer.ToString(), NumberStyles.Any, Culture, out Byte _value);
                 if (succes)
@@ -1080,7 +1075,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDateTimeOffset(T targetObject)
         {
-            if (_CustomParserDateTimeOffset[_colIndex] == null)
+            if (_CustomParserDateTimeOffset[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = DateTimeOffset.TryParse(_buffer.ToString(), Culture, DateTimeStyles.None, out DateTimeOffset _value);
                 if (succes)
@@ -1122,7 +1117,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueSByte(T targetObject)
         {
-            if (_CustomParserSByte[_colIndex] == null)
+            if (_CustomParserSByte[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = SByte.TryParse(_buffer.ToString(), NumberStyles.Any, Culture, out SByte _value);
                 if (succes)
@@ -1150,7 +1145,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt16(T targetObject)
         {
-            if (_CustomParserUInt16[_colIndex] == null)
+            if (_CustomParserUInt16[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = UInt16.TryParse(_buffer.ToString(), NumberStyles.Any, Culture, out UInt16 _value);
                 if (succes)
@@ -1178,7 +1173,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt32(T targetObject)
         {
-            if (_CustomParserUInt32[_colIndex] == null)
+            if (_CustomParserUInt32[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = UInt32.TryParse(_buffer.ToString(), NumberStyles.Any, Culture, out UInt32 _value);
                 if (succes)
@@ -1206,7 +1201,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt64(T targetObject)
         {
-            if (_CustomParserUInt64[_colIndex] == null)
+            if (_CustomParserUInt64[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = UInt64.TryParse(_buffer.ToString(), NumberStyles.Any, Culture, out UInt64 _value);
                 if (succes)
@@ -1234,7 +1229,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueBigInteger(T targetObject)
         {
-            if (_CustomParserBigInteger[_colIndex] == null)
+            if (_CustomParserBigInteger[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 bool succes = BigInteger.TryParse(_buffer.ToString(), NumberStyles.Any, Culture, out BigInteger _value);
                 if (succes)
@@ -1266,7 +1261,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueGuidNull(T targetObject)
         {
-            if (_CustomParserGuidNullable[_colIndex] == null)
+            if (_CustomParserGuidNullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1301,7 +1296,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueBooleanNull(T targetObject)
         {
-            if (_CustomParserBooleanNullable[_colIndex] == null)
+            if (_CustomParserBooleanNullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1336,7 +1331,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDateTimeNull(T targetObject)
         {
-            if (_CustomParserDateTimeNullable[_colIndex] == null)
+            if (_CustomParserDateTimeNullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1371,7 +1366,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDateTimeOffsetNull(T targetObject)
         {
-            if (_CustomParserDateTimeOffsetNullable[_colIndex] == null)
+            if (_CustomParserDateTimeOffsetNullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1406,7 +1401,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueTimeSpanNull(T targetObject)
         {
-            if (_CustomParserTimeSpanNullable[_colIndex] == null)
+            if (_CustomParserTimeSpanNullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1441,7 +1436,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueByteNull(T targetObject)
         {
-            if (_CustomParserByteNullable[_colIndex] == null)
+            if (_CustomParserByteNullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1476,7 +1471,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueSByteNull(T targetObject)
         {
-            if (_CustomParserSByteNullable[_colIndex] == null)
+            if (_CustomParserSByteNullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1511,7 +1506,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt16Null(T targetObject)
         {
-            if (_CustomParserInt16Nullable[_colIndex] == null)
+            if (_CustomParserInt16Nullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1546,7 +1541,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt32Null(T targetObject)
         {
-            if (_CustomParserInt32Nullable[_colIndex] == null)
+            if (_CustomParserInt32Nullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1581,7 +1576,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueInt64Null(T targetObject)
         {
-            if (_CustomParserInt64Nullable[_colIndex] == null)
+            if (_CustomParserInt64Nullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1616,7 +1611,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueSingleNull(T targetObject)
         {
-            if (_CustomParserSingleNullable[_colIndex] == null)
+            if (_CustomParserSingleNullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1651,7 +1646,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDecimalNull(T targetObject)
         {
-            if (_CustomParserDecimalNullable[_colIndex] == null)
+            if (_CustomParserDecimalNullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1686,7 +1681,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueDoubleNull(T targetObject)
         {
-            if (_CustomParserDoubleNullable[_colIndex] == null)
+            if (_CustomParserDoubleNullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1721,7 +1716,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt16Null(T targetObject)
         {
-            if (_CustomParserUInt16Nullable[_colIndex] == null)
+            if (_CustomParserUInt16Nullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1756,7 +1751,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt32Null(T targetObject)
         {
-            if (_CustomParserUInt32Nullable[_colIndex] == null)
+            if (_CustomParserUInt32Nullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1791,7 +1786,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueUInt64Null(T targetObject)
         {
-            if (_CustomParserUInt64Nullable[_colIndex] == null)
+            if (_CustomParserUInt64Nullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1826,7 +1821,7 @@ namespace DevToys.PocoCsv.Core
 
         private void SetValueBigIntegerNull(T targetObject)
         {
-            if (_CustomParserBigIntegerNullable[_colIndex] == null)
+            if (_CustomParserBigIntegerNullable[_colIndex] == null || _CustomParserCall[_colIndex] == null)
             {
                 if (_buffer.Length > 0)
                 {
@@ -1877,7 +1872,7 @@ namespace DevToys.PocoCsv.Core
                 {
                     throw new FileNotFoundException($"File '{_File}' not found.");
                 }
-                _Stream = new StreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: true);
+                _Stream = new StreamReader(path: _File, encoding: Encoding, detectEncodingFromByteOrderMarks: true);                
             }
             Init();
         }
