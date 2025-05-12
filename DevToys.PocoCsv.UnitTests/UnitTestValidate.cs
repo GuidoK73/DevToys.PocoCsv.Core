@@ -305,11 +305,29 @@ namespace DevToys.PocoCsv.UnitTests
                     Mededelingen = $"test {ii}",
                     Rekening = "3434",
                     Tegenrekening = "3423424",
-                    NaamOmschrijving = $"bla,bla {ii}",
+                    NaamOmschrijving = $"bla{randomSeparator()}bla {ii}",
                     MutatieSoort = "Bij"
                 };
                 yield return _line;
             }
+        }
+
+
+        private static readonly int _Seed = DateTime.Now.Millisecond;
+        private static readonly Random Rnd = new Random(_Seed);
+
+        public static int RandomNumber(int min, int max) => Rnd.Next(min, max);
+
+        public static bool RandomBool(int percentagetrue) => RandomNumber(0, 100) > percentagetrue ? false : true;
+
+
+        private char randomSeparator()
+        {
+            if (RandomBool(20))
+            {
+                return ',';
+            }
+            return ' ';
         }
 
         [TestMethod]
@@ -566,15 +584,19 @@ namespace DevToys.PocoCsv.UnitTests
         }
 
 
+        // Test DetectSeparator
+        // Test Different Object types
         [TestMethod]
         public void TestColIndexCsvSerializer()
         {
             // Test using another class for reading without using all indexes.
-            CsvSerializer serializer = new CsvSerializer();
+            CsvSerializer serializer = new CsvSerializer(new CsvSerializerSettings() { Separator = ';'  });
 
             List<CsvSimple> _fullType = CsvSimpleData(5).ToList();
 
             string _text = serializer.SerializeObject<CsvSimple>(_fullType);
+
+            serializer = new CsvSerializer(new CsvSerializerSettings() {  DetectSeparator = true, Separator = ',' });
 
             List<CsvSimpleSmall> _smallType = serializer.DeserializeObject<CsvSimpleSmall>(_text).ToList();
 

@@ -133,6 +133,7 @@ namespace DevToys.PocoCsv.Core
         /// </summary>
         public IEnumerable<T> ReadAsEnumerable()
         {
+            InitSeparator();
             Init();
 
             int _endPosition = _Data.Length;            
@@ -154,6 +155,19 @@ namespace DevToys.PocoCsv.Core
             _ICustomCsvParseBase[_colIndex].Reading(_buffer, _CurrentLine, _colIndex, position, _linePosition, _colPosition, (char)_byte);
         }
 
+
+        private void InitSeparator()
+        {
+            if (_Properties == null)
+            {
+                if (DetectSeparator)
+                {
+                    CsvUtils.GetCsvSeparator(_Data, out char _separator);
+                    _Separator = _separator;
+                }
+            }
+        }
+
         /// <summary>
         /// Initialize the CsvReader
         /// </summary>
@@ -161,12 +175,6 @@ namespace DevToys.PocoCsv.Core
         {
             if (_Properties != null)
                 return;
-
-            if (DetectSeparator)
-            {
-                CsvUtils.GetCsvSeparator(_Data, out char _separator);
-                _Separator = _separator;
-            }
 
             var _type = typeof(T);
 
@@ -717,6 +725,7 @@ namespace DevToys.PocoCsv.Core
         //  Called each line.
         private T Read()
         {
+            InitSeparator();
             Init();
 
             T _result = new T();
@@ -863,7 +872,10 @@ namespace DevToys.PocoCsv.Core
 
             if (_buffer.Length > 0)
             {
-                SetValue(_result);
+                if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
+                {
+                    SetValue(_result);
+                }
                 _buffer.Length = 0;
             }
 

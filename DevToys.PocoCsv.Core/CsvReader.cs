@@ -508,6 +508,15 @@ namespace DevToys.PocoCsv.Core
                 }
             }
 
+            if (_buffer.Length > 0)
+            {
+                if (_colIndex < _propertyCount && _IsAssigned[_colIndex])
+                {
+                    SetValue(_result);
+                }
+                _buffer.Length = 0;
+            }
+
             if (_linePosition == 0)
             {
                 switch (EmptyLineBehaviour)
