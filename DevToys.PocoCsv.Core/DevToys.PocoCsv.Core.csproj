@@ -35,7 +35,9 @@ https://www.nuget.org/packages/DevToys.PocoCsv.Core/
     <Copyright>2024</Copyright>
     <Product>DevToys.Poco.Csv.Core</Product>
     <PackageReleaseNotes>5.0.2
-- Small improvements
+- Refactored
+- Updated unit tests
+- Fixed issue regarding ICustomCsvParse.Reading as only implementation.
 		
 5.0.1
 - Bug Fix: ICustomCsvParse.Reading new implementations not executed.
