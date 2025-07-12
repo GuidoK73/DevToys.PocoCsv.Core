@@ -239,6 +239,26 @@
             
             </summary>
         </member>
+        <member name="P:DevToys.PocoCsv.Core.BaseCsvReader`1.IgnoreColumnAttributes">
+            <summary>
+            All properties are handled in order of property occurrence and mapped directly to their respective index. Only use when CsvWriter has this set to true as well. (ColumnAttribute is ignored.)
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.BaseCsvReader`1.Culture">
+            <summary>
+            Culture info to use for serialization.
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.BaseCsvReader`1.CurrentLine">
+            <summary>
+            Returns current Line position.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.BaseCsvReader`1.Init">
+            <summary>
+            Initialize the CsvReader
+            </summary>
+        </member>
         <member name="T:DevToys.PocoCsv.Core.CsvColumnInfo">
             <summary>
             CsvUtils.GetCsvSchema result
@@ -818,16 +838,6 @@
             Indicates the stream has ended.
             </summary>
         </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.CurrentLine">
-            <summary>
-            Returns current Line position.
-            </summary>
-        </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.IgnoreColumnAttributes">
-            <summary>
-            All properties are handled in order of property occurrence and mapped directly to their respective index. Only use when CsvWriter has this set to true as well. (ColumnAttribute is ignored.)
-            </summary>
-        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.Encoding">
             <summary>
             the character encoding to use. (Use when DetectEncodingFromByteOrderMarks does not yield proper results.)
@@ -836,11 +846,6 @@
         <member name="P:DevToys.PocoCsv.Core.CsvReader`1.DetectEncodingFromByteOrderMarks">
             <summary>
             indicates whether to look for byte order marks at the beginning of the file. Default: true
-            </summary>
-        </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvReader`1.Culture">
-            <summary>
-            Culture info to use for serialization.
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Dispose">
@@ -907,11 +912,6 @@
         <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Open">
             <summary>
             Open the reader
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvReader`1.Init">
-            <summary>
-            Initialize the CsvReader
             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvReadError">
@@ -1315,16 +1315,6 @@
             Auto detect the separator.
             </summary>
         </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvStringReader`1.Culture">
-            <summary>
-            Culture info to use for serialization.
-            </summary>
-        </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvStringReader`1.CurrentLine">
-            <summary>
-            Returns current Line position.
-            </summary>
-        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStringReader`1.EmptyLineBehaviour">
             <summary>
             How should empty lines be treated.
@@ -1340,11 +1330,6 @@
             Indicates there are read conversion errors.
             </summary>
         </member>
-        <member name="P:DevToys.PocoCsv.Core.CsvStringReader`1.IgnoreColumnAttributes">
-            <summary>
-            All properties are handled in order of property occurrence and mapped directly to their respective index. Only use when CsvWriter has this set to true as well. (ColumnAttribute is ignored.)
-            </summary>
-        </member>
         <member name="P:DevToys.PocoCsv.Core.CsvStringReader`1.Separator">
             <summary>
             Csv Seperator to use default ','
@@ -1353,11 +1338,6 @@
         <member name="M:DevToys.PocoCsv.Core.CsvStringReader`1.ReadAsEnumerable">
             <summary>
             Each iteration will read the next row from stream or file
-            </summary>
-        </member>
-        <member name="M:DevToys.PocoCsv.Core.CsvStringReader`1.Init">
-            <summary>
-            Initialize the CsvReader
             </summary>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvStringReader`1.Read">
