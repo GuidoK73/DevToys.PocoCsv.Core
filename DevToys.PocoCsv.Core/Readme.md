@@ -30,6 +30,7 @@ It provides plenty of options on how you would either read from or write to CSV 
 <a href="#PlainObjects">Plain Object Serialization</a>\
 <a href="#CsvDataTypeObject">CsvDataTypeObject</a>\
 <a href="#DataTable">DataTable Import / Export</a>\
+<a href="#CsvUtils">CsvUtils</a>\
 <a href="#ExtensionMethods">ExtensionMethods</a>
 
 
@@ -708,6 +709,41 @@ if you would like to use it with the writer you can limit the number of output c
 
 ~~~
 
+<H1 id="CsvUtils">CsvUtils</H1>
+
+CsvUtils is a static class containing some CsvFunctions.
+
+
+
+~~~cs
+/// Returns first row of CSV
+string[] CsvHeader(string text, char separator)
+string[] CsvHeader(StringBuilder text, char separator)
+string[] CsvHeader(CsvStreamReader reader, char separator)
+
+/// Returns a schema for the CSV with best fitted types to use.
+IEnumerable<CsvColumnInfo> GetCsvSchema(CsvStreamReader reader, int sampleRows)
+IEnumerable<CsvColumnInfo> GetCsvSchema(string text, int sampleRows)
+IEnumerable<CsvColumnInfo> GetCsvSchema(StringBuilder text, int sampleRows)
+
+/// Guesses CSV separator from text.
+bool GetCsvSeparator(CsvStreamReader reader, out char separator, int sampleRows = 20)
+bool GetCsvSeparator(string text, out char separator, int sampleRows = 20)
+bool GetCsvSeparator(StringBuilder text, out char separator, int sampleRows = 20)
+
+/// Test whether piece of text is CSV
+bool IsCsv(string text, char separator, int sampleRows = 20)
+bool IsCsv(StringBuilder text, char separator, int sampleRows = 20)
+bool IsCsv(CsvStreamReader reader, char separator, int sampleRows = 20)
+
+/// Join a string as a CSV line.
+string JoinCsvLine(params string[] values)
+string JoinCsvLine(char separator, params string[] values)
+
+/// Split a CSV based line.
+string[] SplitCsvLine(string text, char separator)\
+
+~~~
 
 <H1 id="ExtensionMethods">Extension Methods</H1>
 

@@ -220,9 +220,6 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
-
-
-
         /// <summary>
         /// Guesses CSV separator from text.
         /// </summary>
