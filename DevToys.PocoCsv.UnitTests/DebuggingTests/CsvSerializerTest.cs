@@ -71,5 +71,21 @@ d,e,f";
             string _stringResult = _sbResult.ToString();
 
         }
+
+
+        [TestMethod]
+        public void TestSerialize4()
+        {
+            var _file = new FileInfo(Path.GetTempFileName());
+            CsvSerializer _serializer = new CsvSerializer();
+
+            _serializer.SerializeObject<TestSerializerObject>(_file, SimpleData());
+            List<TestSerializerObject> _result = _serializer.DeserializeObject<TestSerializerObject>(_file).ToList(); // ALWAYS consume to the en of file.
+
+            List<string[]> _resultString = _serializer.Deserialize(_file).ToList();
+
+                       
+
+        }
     }
 }

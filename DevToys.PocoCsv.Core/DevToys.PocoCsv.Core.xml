@@ -1028,6 +1028,15 @@
             <param name="selectIndexes">columns to select starting at 0, skip for all columns</param>
             <returns></returns>
         </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvSerializer.Deserialize(System.IO.FileInfo,System.Int32[])">
+            <summary>
+            Deserialize a CSV formatted file to a collection.
+            WARNING: FULLY CONSUME FILE FOR PROPER FILE DISPOSAL.
+            </summary>
+            <param name="file"></param>
+            <param name="selectIndexes"></param>
+            <returns></returns>
+        </member>
         <member name="M:DevToys.PocoCsv.Core.CsvSerializer.DeserializeObject``1(System.Text.StringBuilder)">
             <summary>
             Deserialize a CSV formatted string to a collection.
@@ -1043,6 +1052,29 @@
             <typeparam name="T"></typeparam>
             <param name="data"></param>
             <returns></returns>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvSerializer.DeserializeObject``1(System.IO.FileInfo)">
+            <summary>
+            Deserialize a CSV formatted file to a collection.
+            WARNING: FULLY CONSUME FILE FOR PROPER FILE DISPOSAL.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvSerializer.DeserializeObject``1(System.IO.DirectoryInfo)">
+            <summary>
+            Deserialize a CSV formatted file to a collection.
+            WARNING: FULLY CONSUME FILE FOR PROPER FILE DISPOSAL.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvSerializer.Serialize(System.IO.FileInfo,System.Collections.Generic.IEnumerable{System.String},System.Int32[])">
+            <summary>
+            Serialize a IEnumerable string[] collection to CSV file.
+            </summary>
+            <param name="file"></param>
+            <param name="items"></param>
         </member>
         <member name="M:DevToys.PocoCsv.Core.CsvSerializer.Serialize(System.Collections.Generic.IEnumerable{System.String[]},System.Int32[])">
             <summary>
@@ -1075,6 +1107,22 @@
             <param name="target">Target StringBuilder to write the result to.</param>
             <param name="items">Items collection to serialize.</param>
             <returns></returns>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvSerializer.SerializeObject``1(System.IO.DirectoryInfo,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Serialize a IEnumerable T collection to CSV file in folder. filename based on T
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="directoryPath"></param>
+            <param name="items"></param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvSerializer.SerializeObject``1(System.IO.FileInfo,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Serialize a IEnumerable T collection to CSV file.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="file"></param>
+            <param name="items"></param>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvSerializerSettings">
             <summary>
@@ -1109,6 +1157,73 @@
         <member name="P:DevToys.PocoCsv.Core.CsvSerializerSettings.BufferSize">
             <summary>
             Size of StringBuilder buffer.
+            </summary>
+        </member>
+        <member name="T:DevToys.PocoCsv.Core.CsvStreamByteReader">
+            <summary>
+            Implements a System.IO.TextReader that reads characters from a byte stream in a particular encoding.
+            Extended with ReadCsvLine to read a Csv Line conform RFC 4180.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamByteReader.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the System.IO.StreamReader class for the specified file name.
+            </summary>
+            <param name="path">The complete file path to be read.</param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamByteReader.#ctor(System.String,System.Text.Encoding,System.Boolean,System.Int32)">
+            <summary>
+            Initializes a new instance of the System.IO.StreamReader class for the specified file name, with the specified character encoding, byte order mark detection option, and buffer size.
+            </summary>
+            <param name="path">The complete file path to be read.</param>
+            <param name="encoding">The character encoding to use.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
+            <param name="bufferSize">The minimum buffer size.</param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamByteReader.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the System.IO.StreamReader class for the specified stream.
+            </summary>
+            <param name="stream">The stream to be read.</param>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamByteReader.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32,System.Boolean)">
+            <summary>
+            Initializes a new instance of the System.IO.StreamReader class for the specified stream based on the specified character encoding, byte order mark detection option, and buffer size, and optionally leaves the stream open.
+            </summary>
+            <param name="stream">The stream to be read.</param>
+            <param name="encoding">The character encoding to use.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
+            <param name="bufferSize">The minimum buffer size.</param>
+            <param name="leaveOpen">true to leave the stream open after the System.IO.StreamReader object is disposed; otherwise, false.</param>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamByteReader.EndOfStream">
+            <summary>
+            Indicates the stream has ended.
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamByteReader.CurrentLine">
+            <summary>
+            Returns the current line number
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamByteReader.Position">
+            <summary>
+            Get / Sets the position.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamByteReader.MoveToStart">
+            <summary>
+            Move reader to the start position 0
+            </summary>
+        </member>
+        <member name="P:DevToys.PocoCsv.Core.CsvStreamByteReader.Separator">
+            <summary>
+            Get / Sets the Separator character to use.
+            </summary>
+        </member>
+        <member name="M:DevToys.PocoCsv.Core.CsvStreamByteReader.ReadCsvByte">
+            <summary>
+            Reads the CSV line into string array, and advances to the next.
             </summary>
         </member>
         <member name="T:DevToys.PocoCsv.Core.CsvStreamReader">

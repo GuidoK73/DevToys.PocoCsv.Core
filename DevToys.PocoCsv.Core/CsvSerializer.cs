@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -81,6 +82,31 @@ namespace DevToys.PocoCsv.Core
             }
         }
 
+        /// <summary>
+        /// Deserialize a CSV formatted file to a collection.
+        /// WARNING: FULLY CONSUME FILE FOR PROPER FILE DISPOSAL.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="selectIndexes"></param>
+        /// <returns></returns>
+        public IEnumerable<string[]> Deserialize(FileInfo file, params int[] selectIndexes)
+        {
+            using (CsvStreamReader _reader = new CsvStreamReader(file.FullName) { Separator = Settings.Separator  })
+            {
+                _reader.SetColumnIndexes(selectIndexes);
+                if (Settings.DetectSeparator)
+                {
+                    _reader.DetectSeparator();
+                }
+
+
+                while (!_reader.EndOfStream)
+                {
+                    string[] _resultArray = _reader.ReadCsvLine();
+                    yield return _resultArray;
+                }
+            }
+        }
 
         /// <summary>
         /// Deserialize a CSV formatted string to a collection.
@@ -117,6 +143,62 @@ namespace DevToys.PocoCsv.Core
                 return _reader.ReadAsEnumerable().Skip(1);
             }
             return _reader.ReadAsEnumerable();
+        }
+
+
+        /// <summary>
+        /// Deserialize a CSV formatted file to a collection.
+        /// WARNING: FULLY CONSUME FILE FOR PROPER FILE DISPOSAL.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public IEnumerable<T> DeserializeObject<T>(FileInfo file) where T : class, new() => DeserializeObject<T>((FileSystemInfo)file);
+
+        /// <summary>
+        /// Deserialize a CSV formatted file to a collection.
+        /// WARNING: FULLY CONSUME FILE FOR PROPER FILE DISPOSAL.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public IEnumerable<T> DeserializeObject<T>(DirectoryInfo file) where T : class, new() => DeserializeObject<T>((FileSystemInfo)file);
+
+        private IEnumerable<T> DeserializeObject<T>(FileSystemInfo fileOrDirectory) where T : class, new()
+        {
+            using (CsvReader<T> _reader = new CsvReader<T>(fileOrDirectory.FullName)
+            {
+                Separator = Settings.Separator,
+                Culture = Settings.Culture,
+                EmptyLineBehaviour = EmptyLineBehaviour.SkipAndReadNext
+            })
+            {
+                if (Settings.DetectSeparator)
+                {
+                    _reader.DetectSeparator();
+                }
+
+                foreach (T item in _reader.ReadAsEnumerable())
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Serialize a IEnumerable string[] collection to CSV file.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="items"></param>
+        public void Serialize(FileInfo file, IEnumerable<string> items, params int[] selectIndexes)
+        {
+            using (CsvStreamWriter _writer = new CsvStreamWriter(file.FullName)
+            {
+                Separator = Settings.Separator,
+                CRLFMode = Settings.CRLFMode,
+            })
+            {
+                _writer.SetColumnIndexes(selectIndexes);
+                _writer.Write(items);
+            }
         }
 
         /// <summary>
@@ -180,6 +262,38 @@ namespace DevToys.PocoCsv.Core
                 _writer.WriteHeader();
             }
             return _writer.Write(items);
+        }
+
+
+        /// <summary>
+        /// Serialize a IEnumerable T collection to CSV file in folder. filename based on T
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="directoryPath"></param>
+        /// <param name="items"></param>
+        public void SerializeObject<T>(DirectoryInfo directoryPath, IEnumerable<T> items) where T : class, new() => SerializeObject<T>((FileSystemInfo)directoryPath, items);
+
+
+        /// <summary>
+        /// Serialize a IEnumerable T collection to CSV file.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="file"></param>
+        /// <param name="items"></param>
+        public void SerializeObject<T>(FileInfo file, IEnumerable<T> items) where T : class, new() => SerializeObject<T>((FileSystemInfo)file, items);
+
+
+        private void SerializeObject<T>(FileSystemInfo fileOrDirectory, IEnumerable<T> items) where T : class, new()
+        {
+            using (CsvWriter<T> _writer = new CsvWriter<T>(fileOrDirectory.FullName)
+            {
+                Separator = Settings.Separator,
+                Culture = Settings.Culture,
+                CRLFMode = Settings.CRLFMode,
+            })
+            {
+                _writer.Write(items);
+            }
         }
 
         private string[] Deserialize(string data, ref int position, char seperator, int bufferSize, params int[] selectIndexes)

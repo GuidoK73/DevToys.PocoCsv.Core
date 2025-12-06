@@ -15,7 +15,28 @@ It provides plenty of options on how you would either read from or write to CSV 
 - StreamReader / StreamWriter for writing CSV from and to streams or files.
 - CsvSerializer to serialize/deserialize objects to and from strings. (NEW in v5)
 
-# CsvStreamReader
+
+# Topics 
+<a href="#CsvStreamReader">CsvStreamReader</a>\
+<a href="#CsvStreamWriter">CsvStreamWriter</a>\
+<a href="#CsvReaderT">CsvReader&lt;T&gt;</a>\
+<a href="#CsvWriterT">CsvWriter&lt;T&gt;</a>\
+<a href="#CsvSerializer">CsvSerializer</a>\
+<a href="#ColumnAttribute">ColumnAttribute</a>\
+<a href="#CustomParserType">CustomParserType</a>\
+<a href="#CsvAttribute">CsvAttribute</a>\
+<a href="#DataTable">DataTable</a>\
+<a href="#RowSampling">RowSampling</a>\
+<a href="#PlainObjects">Plain Object Serialization</a>\
+<a href="#CsvDataTypeObject">CsvDataTypeObject</a>\
+<a href="#DataTable">DataTable Import / Export</a>\
+<a href="#ExtensionMethods">ExtensionMethods</a>
+
+
+
+
+<H1 id="CsvStreamReader">CsvStreamReader</H1>
+
 ~~~cs
     string _file = @"C:\Temp\data.csv";
     using (CsvStreamReader _reader = new CsvStreamReader(_file))
@@ -89,7 +110,8 @@ Note: this option may have some performance degradation.
 | **SetColumnIndexes()**           | Limit the result array for ReadCsvLine to only these columns.                               |
 | **Skip()**                       | Use to skip first row without materializing, usefull for skipping header.                   |
 
-# CsvStreamWriter
+
+<H1 id="CsvStreamWriter">CsvStreamWriter</H1>
 
 ~~~cs
     string file = @"D:\Temp\test.csv";
@@ -109,7 +131,9 @@ Note: this option may have some performance degradation.
 | **SetColumnIndexes() | Limit the output columns from the source array                                                                                                                                                                                                             |
 
 
-# CsvReader\<T\>
+<H1 id="CsvReaderT">CsvReader&lt;T&gt;</H1>
+
+# 
 
 The CsvReader is a full type CSV deserializer.\
 All simple types are allowed to be used as property type, including byte[]. All other complex types are ignored.
@@ -177,7 +201,8 @@ The path given to the constructor can be a specific file or directory, in case a
 
 (Skip does not deserialize, that's why it's faster then normal IEnumerable operations).
 
-# CsvWriter\<T\>
+
+<H1 id="CsvWriterT">CsvWriter&lt;T&gt;</H1>
 
 The CsvReader is a full type CSV serializer.\
 All simple types are allowed to be used as property type, including byte[]. All other complex types are ignored.
@@ -248,7 +273,7 @@ The path given to the constructor can be a specific file or directory, in case a
 The writer is for performance reasons unrelated to the CsvStreamWriter.
 
 
-# CsvSerializer
+<H1 id="CsvSerializer">CsvSerializer</H1>
 
 Class to serialize and deserialize to and from strings or StringBuilders.
 
@@ -306,6 +331,27 @@ Example 2:
 
 ~~~
 
+Example 3:\
+using the CsvSerializer to read and write to files.
+
+Important note: ALWAYS consume the full file or collection to ensure proper file disposal.
+
+FileInfo or DirectoryInfo can be used, in case a directory is given, the filename will be expected as [TYPENAME].csv, or based on the FileName given by the CsvAttribute.
+
+
+~~~cs
+
+        var _file = new FileInfo(Path.GetTempFileName());
+        CsvSerializer _serializer = new CsvSerializer();
+
+        _serializer.SerializeObject<TestSerializerObject>(_file, SimpleData());
+        List<TestSerializerObject> _result = _serializer.DeserializeObject<TestSerializerObject>(_file).ToList(); // ALWAYS consume to the en of file.
+
+        List<string[]> _resultString = _serializer.Deserialize(_file).ToList();
+
+
+~~~
+
 both examples work with string or StringBuilder.
 
 #### CsvSerializerSettings
@@ -320,8 +366,8 @@ both examples work with string or StringBuilder.
 | BufferSize      | Buffersize to use                    |
 
 
+<H1 id="ColumnAttribute">ColumnAttribute</H1>
 
-# ColumnAttribute
 
 The column attribute defines the properties to be serialized or deserialized.
 
@@ -335,8 +381,9 @@ The column attribute defines the properties to be serialized or deserialized.
 | **CustomParserType** | CustomParserType allows for custom parsing of values to a specific type.                                                                                                                      |
 
 
-# CustomParserType
-CustomParserType allows the Reader<T> and Writer<T> to use a custom parsing for a specific field.
+<H1 id="CustomParserType">CustomParserType</H1>
+
+CustomParserType allows the Reader<T> and Writer<T> and the CsvSerializer to use a custom parsing for a specific field.
 
 In general you can use the Column attribute on any simple type and the value will be converted if possible.
 When using the reader you might have csv's from third party sources where columns might require some extra conversion, 
@@ -442,7 +489,7 @@ All values and characters at this point are unescaped / escaped as required by t
 
 ~~~
 
-# CsvAttribute
+<H1 id="CsvAttribute">CsvAttribute</H1>
 
 the CsvAttribute can be set at defaults for CustomParserType, these CustomParserTypes will be applied to all properties of that specific type.\
 until they are overruled at property level.
@@ -518,7 +565,7 @@ until they are overruled at property level.
 
 ~~~
 
-# Sampling only a few rows without reading entire csv.
+<H1 id="RowSampling">RowSampling: Sampling only a few rows without reading entire csv.</H1>
 
 ~~~cs
 
@@ -550,7 +597,7 @@ Use MoveToStart() to move the reader to the starting position.
 
 _reader.Skip() is different then _reader.ReadAsEnumerable().Skip() as the first does not materialize to T and is faster.
 
-# Serialize / Deserialize plain C# objects without specific ColumnAttributes
+<H1 id="PlainObjects">Serialize / Deserialize plain C# objects without specific ColumnAttributes</H1>
 
 Mapping will be determined by the Header in the Csv, columns will only be mapped to corresponding property names.
 
@@ -589,7 +636,8 @@ Mapping will be determined by the Header in the Csv, columns will only be mapped
 ~~~
 
 
-# CsvDataTypeObject
+<H1 id="CsvDataTypeObject">CsvDataTypeObject</H1>
+
 Convenience class to read up to 50 CsvColumns from a Csv document.
 
 - All fields are string only.
@@ -641,8 +689,7 @@ if you would like to use it with the writer you can limit the number of output c
     }
 ~~~
 
-
-# DataTable Import / Export
+<H1 id="DataTable">DataTable Import / Export</H1>
 
 2 Extension methods on the DataTable object.
 
@@ -662,8 +709,7 @@ if you would like to use it with the writer you can limit the number of output c
 ~~~
 
 
-# Extension Methods
-
+<H1 id="ExtensionMethods">Extension Methods</H1>
 
 #### StringBuilder
 ~~~cs
