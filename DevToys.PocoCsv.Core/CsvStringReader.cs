@@ -7,7 +7,7 @@ namespace DevToys.PocoCsv.Core
     /// Enumerate Csv string over T.
     /// Properties needs to be marked with ColumnAttribute
     /// </summary>
-    internal sealed class CsvStringReader<T> : BaseCsvReader<T> where T : class, new()
+    public sealed class CsvStringReader<T> : BaseCsvReader<T> where T : class, new()
     {
         private const int _CR = '\r';
         private const int _ESCAPE = '"';

@@ -17,26 +17,25 @@ It provides plenty of options on how you would either read from or write to CSV 
 
 
 # Topics 
-<a href="#CsvStreamReader">CsvStreamReader</a>\
-<a href="#CsvStreamWriter">CsvStreamWriter</a>\
-<a href="#CsvReaderT">CsvReader&lt;T&gt;</a>\
-<a href="#CsvWriterT">CsvWriter&lt;T&gt;</a>\
-<a href="#CsvSerializer">CsvSerializer</a>\
-<a href="#ColumnAttribute">ColumnAttribute</a>\
-<a href="#CustomParserType">CustomParserType</a>\
-<a href="#CsvAttribute">CsvAttribute</a>\
-<a href="#DataTable">DataTable</a>\
-<a href="#RowSampling">RowSampling</a>\
-<a href="#PlainObjects">Plain Object Serialization</a>\
-<a href="#CsvDataTypeObject">CsvDataTypeObject</a>\
-<a href="#DataTable">DataTable Import / Export</a>\
-<a href="#CsvUtils">CsvUtils</a>\
-<a href="#ExtensionMethods">ExtensionMethods</a>
+[CsvStreamReader](#csvstreamreader)\
+[CsvStreamWriter](#csvstreamwriter)\
+[CsvReader&lt;T&gt;](#csvreadert)\
+[CsvWriter&lt;T&gt;](#csvwritert)\
+[CsvSerializer](#csvserializer)\
+[ColumnAttribute](#columnattribute)\
+[CustomParserType](#customparsertype)\
+[CsvAttribute](#csvattribute)\
+[RowSampling](#rowsampling-sampling-only-a-few-rows-without-reading-entire-csv)\
+[PlainObjects](#serialize--deserialize-plain-c-objects-without-specific-columnattributes)\
+[CsvDataTypeObject](#csvdatatypeobject)\
+[DataTable](#datatable-import--export)\
+[CsvUtils](#csvutils)\
+[ExtensionMethods](#extensionmethods)
 
 
 
 
-<H1 id="CsvStreamReader">CsvStreamReader</H1>
+# CsvStreamReader
 
 ~~~cs
     string _file = @"C:\Temp\data.csv";
@@ -112,7 +111,7 @@ Note: this option may have some performance degradation.
 | **Skip()**                       | Use to skip first row without materializing, usefull for skipping header.                   |
 
 
-<H1 id="CsvStreamWriter">CsvStreamWriter</H1>
+# CsvStreamWriter
 
 ~~~cs
     string file = @"D:\Temp\test.csv";
@@ -132,9 +131,7 @@ Note: this option may have some performance degradation.
 | **SetColumnIndexes() | Limit the output columns from the source array                                                                                                                                                                                                             |
 
 
-<H1 id="CsvReaderT">CsvReader&lt;T&gt;</H1>
-
-# 
+# CsvReader\<T\>
 
 The CsvReader is a full type CSV deserializer.\
 All simple types are allowed to be used as property type, including byte[]. All other complex types are ignored.
@@ -203,7 +200,7 @@ The path given to the constructor can be a specific file or directory, in case a
 (Skip does not deserialize, that's why it's faster then normal IEnumerable operations).
 
 
-<H1 id="CsvWriterT">CsvWriter&lt;T&gt;</H1>
+# CsvWriter\<T\>
 
 The CsvReader is a full type CSV serializer.\
 All simple types are allowed to be used as property type, including byte[]. All other complex types are ignored.
@@ -274,7 +271,7 @@ The path given to the constructor can be a specific file or directory, in case a
 The writer is for performance reasons unrelated to the CsvStreamWriter.
 
 
-<H1 id="CsvSerializer">CsvSerializer</H1>
+# CsvSerializer
 
 Class to serialize and deserialize to and from strings or StringBuilders.
 
@@ -367,8 +364,9 @@ both examples work with string or StringBuilder.
 | BufferSize      | Buffersize to use                    |
 
 
-<H1 id="ColumnAttribute">ColumnAttribute</H1>
 
+
+# ColumnAttribute
 
 The column attribute defines the properties to be serialized or deserialized.
 
@@ -382,7 +380,7 @@ The column attribute defines the properties to be serialized or deserialized.
 | **CustomParserType** | CustomParserType allows for custom parsing of values to a specific type.                                                                                                                      |
 
 
-<H1 id="CustomParserType">CustomParserType</H1>
+# CustomParserType
 
 CustomParserType allows the Reader<T> and Writer<T> and the CsvSerializer to use a custom parsing for a specific field.
 
@@ -490,7 +488,7 @@ All values and characters at this point are unescaped / escaped as required by t
 
 ~~~
 
-<H1 id="CsvAttribute">CsvAttribute</H1>
+# CsvAttribute
 
 the CsvAttribute can be set at defaults for CustomParserType, these CustomParserTypes will be applied to all properties of that specific type.\
 until they are overruled at property level.
@@ -566,7 +564,7 @@ until they are overruled at property level.
 
 ~~~
 
-<H1 id="RowSampling">RowSampling: Sampling only a few rows without reading entire csv.</H1>
+# RowSampling: Sampling only a few rows without reading entire csv.
 
 ~~~cs
 
@@ -598,7 +596,8 @@ Use MoveToStart() to move the reader to the starting position.
 
 _reader.Skip() is different then _reader.ReadAsEnumerable().Skip() as the first does not materialize to T and is faster.
 
-<H1 id="PlainObjects">Serialize / Deserialize plain C# objects without specific ColumnAttributes</H1>
+
+# Serialize / Deserialize plain C# objects without specific ColumnAttributes
 
 Mapping will be determined by the Header in the Csv, columns will only be mapped to corresponding property names.
 
@@ -637,7 +636,7 @@ Mapping will be determined by the Header in the Csv, columns will only be mapped
 ~~~
 
 
-<H1 id="CsvDataTypeObject">CsvDataTypeObject</H1>
+# CsvDataTypeObject
 
 Convenience class to read up to 50 CsvColumns from a Csv document.
 
@@ -690,7 +689,7 @@ if you would like to use it with the writer you can limit the number of output c
     }
 ~~~
 
-<H1 id="DataTable">DataTable Import / Export</H1>
+# DataTable Import / Export
 
 2 Extension methods on the DataTable object.
 
@@ -709,7 +708,7 @@ if you would like to use it with the writer you can limit the number of output c
 
 ~~~
 
-<H1 id="CsvUtils">CsvUtils</H1>
+# CsvUtils
 
 CsvUtils is a static class containing some CsvFunctions.
 
@@ -745,7 +744,7 @@ string[] SplitCsvLine(string text, char separator)\
 
 ~~~
 
-<H1 id="ExtensionMethods">Extension Methods</H1>
+# ExtensionMethods
 
 #### StringBuilder
 ~~~cs
